@@ -26,8 +26,6 @@ public:
 	{
 		STONE, DIRT, GRASS, BEDROCK, SAND, INV /* will add more types of blocks */
 	};
-	//static Texture TEXTURE_ATLAS;
-	//static unsigned int m_textures[3];
 
 	static const unsigned int AVAILABLE_TEXTURES;
 	static const TextureData BLOCK_TEXTURE_DATA[static_cast<signed int>(block_t::INV)];

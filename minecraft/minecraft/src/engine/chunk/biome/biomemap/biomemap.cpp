@@ -5,7 +5,7 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeMap::BiomeMap(signed int seed)
-			: m_seed(seed)
+			: m_seed(seed), BIOME_MAP_CELL_DIMENSION(128)
 		{
 		}
 		const biome_t BiomeMap::Biome(const glm::vec2& blockCoordxz, const BCCorners& corners, const GradientVectors& gv)
@@ -73,13 +73,14 @@ namespace minecraft
 			signed int biomeCellCoordz = xz.z == 0 ? 0 :
 				(abs(xz.z) + BIOME_MAP_CELL_DIMENSION / 2) * (xz.z / abs(xz.z)) / BIOME_MAP_CELL_DIMENSION;
 
-			return glm::vec2(biomeCellCoordx * BIOME_MAP_CELL_DIMENSION - 32.5f, biomeCellCoordz * BIOME_MAP_CELL_DIMENSION - 32.5f);
+			return glm::vec2(biomeCellCoordx * BIOME_MAP_CELL_DIMENSION - (static_cast<float>(BIOME_MAP_CELL_DIMENSION / 2 + 0.5f)), 
+				biomeCellCoordz * BIOME_MAP_CELL_DIMENSION - (static_cast<float>(BIOME_MAP_CELL_DIMENSION / 2 + 0.5f)));
 		}
 		biome_t BiomeMap::DetermineBiome(float av)
 		{
 			av *= 10.0f;
 			// av is between -10.0f, and 10.0f
-			if (av >= -5.0f)
+			if (av >= 0.0f)
 			{
 				return biome_t::PLAINS;
 			}

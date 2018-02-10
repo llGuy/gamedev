@@ -50,8 +50,8 @@ namespace minecraft
 
 			const float Test(const glm::vec2& blockCoordxz, const BCCorners& corners, const GradientVectors& gv);
 		private:
-			static const signed int BIOME_MAP_CELL_DIMENSION = 64;
-			static const float BIOME_NOISE_VALUES[2];
+			const signed int BIOME_MAP_CELL_DIMENSION;
+			float BIOME_NOISE_VALUES[2];
 
 			// calculates the negative-x and negative-z corner (used to calculate the other corners)
 			glm::vec2 NegCornerOfBiomeMap(signed int x, signed int z);

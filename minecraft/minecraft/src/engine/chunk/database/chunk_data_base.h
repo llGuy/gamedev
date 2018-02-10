@@ -49,17 +49,21 @@ namespace minecraft
 				LoadGPUData(chunkCoords, negCorner);
 			}
 			// chunk mesh
+			enum class chunkExtr_t
+				: unsigned int
+			{
+				NEG_X = 0,
+
+				POS_X = 1,
+
+				POS_Z = 2,
+
+				NEG_Z = 3
+			};
 			void LoadTop(WVec2 chunkCoords, WVec2 negCorner, biome::BiomeHandler& bh)
 			{
 				biome::BiomeMap::BCCorners bcc = bh.BiomeMapCellCorners(chunkCoords);
  				biome::BiomeMap::GradientVectors gv = bh.GVectors(bcc);
-
-				// neighbouring chunk data
-				// positive z
-				biome::BiomeMap::BCCorners bccpz = bh.BiomeMapCellCorners(WVec2{ chunkCoords.x, chunkCoords.z + 1 });
-				biome::BiomeMap::GradientVectors gvpz = bh.GVectors(bccpz);
-				// negative z
-				
 
 				GenerateCorners(negCorner);
 				m_gradientVectors = m_perlinNoiseGenerator->GVectors(m_corners);
@@ -73,110 +77,21 @@ namespace minecraft
 
 						// calculating neibouring biomes
 						biome::biome_t neighbouringBiomes[4];
-						if (x == 0 && x != 15)
-						{
-							biome::BiomeMap::BCCorners bccnx = bh.BiomeMapCellCorners(WVec2{ chunkCoords.x - 1, chunkCoords.z });
-							biome::BiomeMap::GradientVectors gvnx = bh.GVectors(bccnx);
-							neighbouringBiomes[0] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x - 1, negCorner.z + z)), bccnx, gvnx);
-						}
-						else neighbouringBiomes[0] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x - 1, negCorner.z + z)), bcc, gv);
-						if (x == 15 && x != 0)
-						{
-							biome::BiomeMap::BCCorners bccpx = bh.BiomeMapCellCorners(WVec2{ chunkCoords.x + 1, chunkCoords.z });
-							biome::BiomeMap::GradientVectors gvpx = bh.GVectors(bccpx);
-							neighbouringBiomes[1] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x + 1, negCorner.z + z)), bccpx, gvpx);
-						}
-						else neighbouringBiomes[1] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x + 1, negCorner.z + z)), bcc, gv);
-						if (z == 15)
-						{
-							biome::BiomeMap::BCCorners bccpz = bh.BiomeMapCellCorners(WVec2{ chunkCoords.x, chunkCoords.z + 1 });
-							biome::BiomeMap::GradientVectors gvpz = bh.GVectors(bccpz);
-							neighbouringBiomes[2] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x, negCorner.z + z + 1)), bccpz, gvpz);
-						}
-						else neighbouringBiomes[2] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x, negCorner.z + z + 1)), bcc, gv);
-						if (z == 0)
-						{
-							biome::BiomeMap::BCCorners bccnz = bh.BiomeMapCellCorners(WVec2{ chunkCoords.x, chunkCoords.z - 1 });
-							biome::BiomeMap::GradientVectors gvnz = bh.GVectors(bccnz);
-							neighbouringBiomes[3] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x, negCorner.z + z - 1)), bccnz, gvnz);
-						}
-						else neighbouringBiomes[3] = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x, negCorner.z + z - 1)), bcc, gv);
-						if (neighbouringBiomes[0] != b)
-							std::cout << "hi" << std::endl;
+						NeighbouringBiomes(neighbouringBiomes, chunkCoords, bh, negCorner, x, z, bcc, gv);
 
 						float neighbouringHeights[4];
-						
-						if (x == 0 && x != 15)
-						{
-							CCorners cc = { m_corners.nn - glm::vec2(16.0f, 0.0f), m_corners.np - glm::vec2(16.0f, 0.0f),
-								m_corners.pn - glm::vec2(16.0f, 0.0f), m_corners.pp - glm::vec2(16.0f, 0.0f) };
-							noise::PerlinNoise::GradientVectors gv = m_perlinNoiseGenerator->GVectors(cc);
-							
-							neighbouringHeights[0] = Height({ negCorner.x - 16, negCorner.z }, 15, z,
-								bh.MaxBiomeHeight(neighbouringBiomes[0]), cc, gv) + bh.BiomeOffset(neighbouringBiomes[0]);
-						}
-						else neighbouringHeights[0] = Height(negCorner, x - 1, z, 
-							bh.MaxBiomeHeight(neighbouringBiomes[0]), m_corners, m_gradientVectors) + bh.BiomeOffset(neighbouringBiomes[0]);
-						if(x == 15 && x != 0)
-						{
-							CCorners cc = { m_corners.nn + glm::vec2(16.0f, 0.0f), m_corners.np + glm::vec2(16.0f, 0.0f),
-								m_corners.pn + glm::vec2(16.0f, 0.0f), m_corners.pp + glm::vec2(16.0f, 0.0f) };
-							noise::PerlinNoise::GradientVectors gv = m_perlinNoiseGenerator->GVectors(cc);
-
-							neighbouringHeights[1] = Height({ negCorner.x + 16, negCorner.z }, 0, z,
-								bh.MaxBiomeHeight(neighbouringBiomes[1]), cc, gv) + bh.BiomeOffset(neighbouringBiomes[1]);
-						}
-						else neighbouringHeights[1] = Height(negCorner, x + 1, z,
-							bh.MaxBiomeHeight(neighbouringBiomes[1]), m_corners, m_gradientVectors) + bh.BiomeOffset(neighbouringBiomes[1]);
-						if (z == 15 && z != 0)
-						{
-							CCorners cc = { m_corners.nn + glm::vec2(0.0f, 16.0f), m_corners.np + glm::vec2(0.0f, 16.0f),
-								m_corners.pn + glm::vec2(0.0f, 16.0f), m_corners.pp + glm::vec2(0.0f, 16.0f) };
-							noise::PerlinNoise::GradientVectors gv = m_perlinNoiseGenerator->GVectors(cc);
-
-							neighbouringHeights[2] = Height({ negCorner.x, negCorner.z + 16 }, x, 0,
-								bh.MaxBiomeHeight(neighbouringBiomes[2]), cc, gv) + bh.BiomeOffset(neighbouringBiomes[2]);
-						}
-						else neighbouringHeights[2] = Height(negCorner, x, z + 1,
-							bh.MaxBiomeHeight(neighbouringBiomes[2]), m_corners, m_gradientVectors) + bh.BiomeOffset(neighbouringBiomes[2]);
-						if (z == 0 && z != 15)
-						{
-							CCorners cc = { m_corners.nn - glm::vec2(0.0f, 16.0f), m_corners.np - glm::vec2(0.0f, 16.0f),
-								m_corners.pn - glm::vec2(0.0f, 16.0f), m_corners.pp - glm::vec2(0.0f, 16.0f) };
-							noise::PerlinNoise::GradientVectors gv = m_perlinNoiseGenerator->GVectors(cc);
-
-							neighbouringHeights[3] = Height({ negCorner.x, negCorner.z - 16 }, x, 15,
-								bh.MaxBiomeHeight(neighbouringBiomes[3]), cc, gv) + bh.BiomeOffset(neighbouringBiomes[3]);
-						}
-						else neighbouringHeights[3] = Height(negCorner, x, z - 1,
-							bh.MaxBiomeHeight(neighbouringBiomes[3]), m_corners, m_gradientVectors) + bh.BiomeOffset(neighbouringBiomes[3]);
+						NeighbouringHeights(neighbouringBiomes, bh, negCorner, neighbouringHeights, x, z);
 
 						// height of current block
-						float height = Height(negCorner, x, z, bh.MaxBiomeHeight(b), m_corners, m_gradientVectors) + bh.BiomeOffset(b);
-						signed int h = static_cast<signed int>(height);
+						signed int h = static_cast<signed int>(Height(negCorner, x, z, 
+							bh.MaxBiomeHeight(b), m_corners, m_gradientVectors) + bh.BiomeOffset(b));
 
 						// calculating smallest height
-						unsigned int smallest = 0;
-						for (unsigned int i = 1; i < 4; ++i)
-						{
-							if (neighbouringHeights[smallest] > neighbouringHeights[i])
-								smallest = i;
-						}
-						signed int smallestNeighbour = static_cast<signed int>(neighbouringHeights[smallest]);
+						signed int smallestNeighbour = SmallestNeighbour(neighbouringHeights);
 
 						// regardless of whether at corner of chunk
-						for (signed int y = h; y >= smallestNeighbour; --y)
-						{
-							CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
-							BlockYStrip& bys = m_blocks[Index(cc)];
-							bys.ystrip[y] = Block(CompressChunkCoord(cc), bh.BlockType(b, h, y));
-						}
-						if (h < smallestNeighbour)
-						{
-							CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
-							BlockYStrip& bys = m_blocks[Index(cc)];
-							bys.ystrip[h] = Block(CompressChunkCoord(cc), bh.BlockType(b, h, h));
-						}
+						for (signed int y = h; y >= smallestNeighbour; --y) AppendBlock(x, z, y, bh, b, h);
+						if (h < smallestNeighbour) AppendBlock(x, z, h, bh, b, h);
 					}
 				}
 				LoadGPUData(chunkCoords, negCorner);
@@ -293,6 +208,119 @@ namespace minecraft
 				float blockz = static_cast<float>(negCorner.z + z);
 				glm::vec2 blockxzworld = glm::vec2(blockx, blockz);
 				return m_perlinNoiseGenerator->Height(blockxzworld, cc, gv, mh);
+			}
+
+			// for the LoadTop() for the neighbouring biomes
+			biome::biome_t DetermineNeighbouringBiome(biome::BiomeHandler& bh, 
+				const chunkExtr_t chunkExtr, const WVec2& chunkCoords, const WVec2& negCorner, signed int x, signed int z)
+			{
+				static signed int offsetx[4]
+				{
+					-1, 1, 0, 0
+				};
+				static signed int offsetz[4]
+				{
+					0, 0, 1, -1
+				};
+
+				biome::BiomeMap::BCCorners bccnx = bh.BiomeMapCellCorners(WVec2{ 
+					chunkCoords.x + offsetx[static_cast<unsigned int>(chunkExtr)], 
+					chunkCoords.z + offsetz[static_cast<unsigned int>(chunkExtr)] });
+				biome::BiomeMap::GradientVectors gvnx = bh.GVectors(bccnx);
+				return bh.Biome(glm::vec2(negCorner.x + x + offsetx[static_cast<unsigned int>(chunkExtr)], 
+					negCorner.z + z + offsetz[static_cast<unsigned int>(chunkExtr)]), bccnx, gvnx);
+			}
+			const bool AtExtr0(signed int xz)
+			{
+				return xz == 0 && xz != 15;
+			}
+			const bool AtExtr15(signed int xz)
+			{
+				return xz == 15 && xz != 0;
+			}
+			void NeighbouringBiomes(biome::biome_t* nb, const WVec2& chunkCoords, 
+				biome::BiomeHandler& bh, const WVec2& negCorner, 
+				const signed int x, const signed int z, biome::BiomeMap::BCCorners& bcc, biome::BiomeMap::GradientVectors& gv)
+			{
+				if (AtExtr0(x))nb[0] = DetermineNeighbouringBiome(bh, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
+				else nb[0] = bh.Biome(glm::vec2(negCorner.x + x - 1, negCorner.z + z), bcc, gv);
+
+				if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(bh, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
+				else nb[1] = bh.Biome(glm::vec2(negCorner.x + x + 1, negCorner.z + z), bcc, gv);
+
+				if (AtExtr15(z)) nb[2] = DetermineNeighbouringBiome(bh, chunkExtr_t::POS_Z, chunkCoords, negCorner, x, z);
+				else nb[2] = bh.Biome(glm::vec2(negCorner.x + x, negCorner.z + z + 1), bcc, gv);
+				
+				if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(bh, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
+				else nb[3] = bh.Biome(glm::vec2(negCorner.x + x, negCorner.z + z - 1), bcc, gv);
+			}
+			float DetermineNeighbouringHeight(biome::biome_t* nb, biome::BiomeHandler& bh, 
+				const chunkExtr_t ce, const WVec2& negCorner, signed int x, signed int z)
+			{
+				static float offsetx[4]
+				{
+					-16.0f, 16.0f, 0.0f, 0.0f
+				};
+				static float offsetz[4]
+				{
+					0.0f, 0.0f, 16.0f, -16.0f
+				};
+
+				glm::vec2 offsetv = glm::vec2(offsetx[static_cast<signed int>(ce)], offsetz[static_cast<signed int>(ce)]);
+
+				CCorners cc = { m_corners.nn + offsetv,
+					m_corners.np + offsetv,
+					m_corners.pn + offsetv,
+					m_corners.pp + offsetv };
+
+				signed int xOnOtherChunk = (static_cast<signed int>(ce) <= 1) ? ((ce == chunkExtr_t::NEG_X) ? 15 : 0) : x;
+				signed int zOnOtherChunk = (static_cast<signed int>(ce) >= 2) ? ((ce == chunkExtr_t::NEG_Z) ? 15 : 0) : z;
+
+				WVec2 blockC = { 
+					negCorner.x +
+					static_cast<signed int>(offsetx[static_cast<signed int>(ce)]), 
+					negCorner.z +
+					static_cast<signed int>(offsetz[static_cast<signed int>(ce)]) };
+
+				signed int biomeMaxHeight = bh.MaxBiomeHeight(nb[static_cast<signed int>(ce)]);
+				signed int biomeOffset = bh.BiomeOffset(nb[static_cast<signed int>(ce)]);
+
+				noise::PerlinNoise::GradientVectors gv = m_perlinNoiseGenerator->GVectors(cc);
+				return Height(blockC, 
+					xOnOtherChunk, zOnOtherChunk,
+					biomeMaxHeight, cc, gv) + 
+					biomeOffset;
+			}
+			void NeighbouringHeights(biome::biome_t* nb, biome::BiomeHandler& bh, const WVec2& negCorner, float* nh, signed int x, signed int z)
+			{
+				if (AtExtr0(x)) nh[0] = DetermineNeighbouringHeight(nb, bh, chunkExtr_t::NEG_X, negCorner, x, z);
+				else nh[0] = Height(negCorner, x - 1, z, bh.MaxBiomeHeight(nb[0]), m_corners, m_gradientVectors) + bh.BiomeOffset(nb[0]);
+
+				if (AtExtr15(x)) nh[1] = DetermineNeighbouringHeight(nb, bh, chunkExtr_t::POS_X, negCorner, x, z);
+				else nh[1] = Height(negCorner, x + 1, z, bh.MaxBiomeHeight(nb[1]), m_corners, m_gradientVectors) + bh.BiomeOffset(nb[1]);
+
+				if (AtExtr15(z)) nh[2] = DetermineNeighbouringHeight(nb, bh, chunkExtr_t::POS_Z, negCorner, x, z);
+				else nh[2] = Height(negCorner, x, z + 1, bh.MaxBiomeHeight(nb[2]), m_corners, m_gradientVectors) + bh.BiomeOffset(nb[2]);
+
+				if (AtExtr0(z)) nh[3] = DetermineNeighbouringHeight(nb, bh, chunkExtr_t::NEG_Z, negCorner, x, z);
+				else nh[3] = Height(negCorner, x, z - 1, bh.MaxBiomeHeight(nb[3]), m_corners, m_gradientVectors) + bh.BiomeOffset(nb[3]);
+			}
+			signed int SmallestNeighbour(float* nh)
+			{
+				unsigned int smallest = 0;
+				for (unsigned int i = 1; i < 4; ++i)
+				{
+					if (nh[smallest] > nh[i])
+						smallest = i;
+				}
+				return static_cast<signed int>(nh[smallest]);
+			}
+			void AppendBlock(signed int x, signed int z, signed int y, 
+				biome::BiomeHandler& bh, biome::biome_t b, signed int bysH)
+			{
+				CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
+				BlockYStrip& bys = m_blocks[Index(cc)];
+				bys.ystrip[y] = Block(CompressChunkCoord(cc), bh.BlockType(b, bysH, y));
 			}
 		private:
 			CCorners m_corners;

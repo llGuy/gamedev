@@ -14,7 +14,7 @@ namespace minecraft
 			}
 			float Reg_PerlinNoise::Height(const glm::vec2& blockwCoordXZ, const CCorners& corners, const GradientVectors& gv, signed int mh)
 			{
-				DifferenceVectors dv = DVectors(blockwCoordXZ / 8192.0f, corners);
+				DifferenceVectors dv = DVectors(blockwCoordXZ / 10000.0F, corners);
 
 				float dotnn = cos(glm::dot(gv.nn, dv.nn));
 				float dotnp = cos(glm::dot(gv.np, dv.np));
