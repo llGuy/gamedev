@@ -191,7 +191,7 @@ namespace minecraft
 			{
 				return m_blocks[Index(ccoord)].ystrip[elevation].WPos(wchunkCoord, elevation, negativeCornerWPos);
 			}
-			const Block::BlType BlockType(CVec2 ccoord, unsigned char elevation)
+			const Block::block_t BlockType(CVec2 ccoord, unsigned char elevation)
 			{
 				return m_blocks[Index(ccoord)].ystrip[elevation].BlockType();
 			}

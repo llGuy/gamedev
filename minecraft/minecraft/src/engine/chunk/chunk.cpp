@@ -44,7 +44,7 @@ namespace minecraft
 			return m_dataBase.WCoord(m_wcoordChunk.wpos, cc, elevation, NegativeCornerWPos());
 		}
 
-		Block::BlType Chunk::BlockType(const CVec2 cc, signed int elevation)
+		Block::block_t Chunk::BlockType(const CVec2 cc, signed int elevation)
 		{
 			return m_dataBase.BlockType(cc, elevation);
 		}

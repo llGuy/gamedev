@@ -26,12 +26,13 @@ namespace minecraft
 			return m_biomeMap.Biome(v, bcc, dv);
 		}
 
-		const Block::BlType&& BiomeHandler::BlockType(const biome_t& b, signed int maxH, signed int y)
+		const Block::block_t BiomeHandler::BlockType(const biome_t& b, signed int maxH, signed int y)
 		{
 			switch (b)
 			{
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y); break;
 			case biome_t::DESERT: return DesertBlockType(maxH, y); break;
+			default: return Block::block_t::INV;
 			}
 		}
 		const signed int BiomeHandler::MaxBiomeHeight(const biome_t& b)
@@ -52,19 +53,19 @@ namespace minecraft
 			default: return 0;
 			}
 		}
-		const Block::BlType&& BiomeHandler::PlainsBlockType(signed int maxH, signed int y)
+		const Block::block_t BiomeHandler::PlainsBlockType(signed int maxH, signed int y)
 		{
-			if (y == maxH) return Block::BlType::GRASS;
-			else if (y >= maxH * m_plainsData.DIRT_LEVEL) return Block::BlType::DIRT;
-			else if (y >= maxH * m_plainsData.STONE_LEVEL) return Block::BlType::STONE;
-			else return Block::BlType::BEDROCK;
+			if (y == maxH) return Block::block_t::GRASS;
+			else if (y >= maxH * m_plainsData.DIRT_LEVEL) return Block::block_t::DIRT;
+			else if (y >= maxH * m_plainsData.STONE_LEVEL) return Block::block_t::STONE;
+			else return Block::block_t::BEDROCK;
 		}
-		const Block::BlType&& BiomeHandler::DesertBlockType(signed int maxH, signed int y)
+		const Block::block_t BiomeHandler::DesertBlockType(signed int maxH, signed int y)
 		{
-			if (y >= maxH * m_desertData.SAND_LEVEL) return Block::BlType::SAND;
-			else if (y >= maxH * m_desertData.DIRT_LEVEL) return Block::BlType::DIRT;
-			else if (y >= maxH * m_desertData.STONE_LEVEL) return Block::BlType::STONE;
-			else return Block::BlType::BEDROCK;
+			if (y >= maxH * m_desertData.SAND_LEVEL) return Block::block_t::SAND;
+			else if (y >= maxH * m_desertData.DIRT_LEVEL) return Block::block_t::DIRT;
+			else if (y >= maxH * m_desertData.STONE_LEVEL) return Block::block_t::STONE;
+			else return Block::block_t::BEDROCK;
 		}
 	}
 }

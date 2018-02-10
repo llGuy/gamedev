@@ -51,7 +51,7 @@ namespace minecraft
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);
 			WCoordChunk ChunkCoordinate(void);
-			Block::BlType BlockType(const CVec2 cc, signed int elevation);
+			Block::block_t BlockType(const CVec2 cc, signed int elevation);
 			::std::size_t NumBlocks(void);
 			VAO* Vao(void);
 			const bool Loaded(void);

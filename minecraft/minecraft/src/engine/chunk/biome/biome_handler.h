@@ -25,10 +25,10 @@ namespace minecraft
 			const signed int MaxBiomeHeight(const biome_t& b);
 			const signed int BiomeOffset(const biome_t& b);
 
-			const Block::BlType&& BlockType(const biome_t& b, signed int maxH, signed int y);
+			const Block::block_t BlockType(const biome_t& b, signed int maxH, signed int y);
 		private:
-			const Block::BlType&& PlainsBlockType(signed int maxH, signed int y);
-			const Block::BlType&& DesertBlockType(signed int maxH, signed int y);
+			const Block::block_t PlainsBlockType(signed int maxH, signed int y);
+			const Block::block_t DesertBlockType(signed int maxH, signed int y);
 		private:
 			BiomeMap m_biomeMap;
 			PlainData m_plainsData;

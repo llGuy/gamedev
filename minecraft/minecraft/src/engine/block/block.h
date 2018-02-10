@@ -21,7 +21,7 @@ struct TextureData
 class Block
 {
 public:
-	enum class BlType
+	enum class block_t
 		: unsigned char	
 	{
 		STONE, DIRT, GRASS, BEDROCK, SAND, INV /* will add more types of blocks */
@@ -30,20 +30,20 @@ public:
 	//static unsigned int m_textures[3];
 
 	static const unsigned int AVAILABLE_TEXTURES;
-	static const TextureData BLOCK_TEXTURE_DATA[static_cast<signed int>(BlType::INV)];
+	static const TextureData BLOCK_TEXTURE_DATA[static_cast<signed int>(block_t::INV)];
 public:
 	explicit Block(void) = default;
-	explicit Block(const CCoord& cc, const BlType& bt);
-	explicit Block(const CCoord&& cc, const BlType&& bt);
+	explicit Block(const CCoord& cc, const block_t& bt);
+	explicit Block(const CCoord&& cc, const block_t&& bt);
 public:
 	/* getter */
 	glm::vec3 WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const;
 	CVec2 ExtrCPos(void) const;
-	const BlType BlockType(void) const;
+	const block_t BlockType(void) const;
 	const TextureData& TextureD(void);
 private:
 	CCoord m_cc;
-	BlType m_bt;
+	block_t m_bt;
 	TextureData m_textureData;
 };
 

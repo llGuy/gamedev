@@ -1,9 +1,9 @@
 #include "block.h"
 
 const unsigned int Block::AVAILABLE_TEXTURES = 
-	static_cast<unsigned int>(Block::BlType::INV);
+	static_cast<unsigned int>(Block::block_t::INV);
 
-const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(BlType::INV)]
+const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(block_t::INV)]
 {
 	{glm::vec3(1.0f, 1.0f, 1.0f)},
 	{glm::vec3(2.0f, 2.0f, 2.0f)},
@@ -12,12 +12,12 @@ const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(BlType::IN
 	{glm::vec3(18.0f, 18.0f, 18.0f)}
 };
 
-Block::Block(const CCoord& cc, const BlType& bt)
+Block::Block(const CCoord& cc, const block_t& bt)
 	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(bt)])
 {
 }
 
-Block::Block(const CCoord&& cc, const BlType&& bt)
+Block::Block(const CCoord&& cc, const block_t&& bt)
 	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(bt)])
 {
 }
@@ -34,7 +34,7 @@ CVec2 Block::ExtrCPos(void) const
 	return { static_cast<unsigned char>(m_cc.cc >> 4), static_cast<unsigned char>(m_cc.cc & 0x0f) };
 }
 
-const Block::BlType Block::BlockType(void) const
+const Block::block_t Block::BlockType(void) const
 {
 	return m_bt;
 }
