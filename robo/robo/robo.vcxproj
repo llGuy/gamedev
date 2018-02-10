@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{248BD51B-C8E1-48AE-9214-5C1F9062650F}</ProjectGuid>
+    <RootNamespace>robo</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/GLFW/include;$(SolutionDir)Dependencies/GLEW/include;$(SolutionDir)Dependencies</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies/GLFW/lib-vc2015;$(SolutionDir)Dependencies/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\buffer\buffer.cpp" />
+    <ClCompile Include="src\engine\bullet\bullet.cpp" />
+    <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\entities\troop\troop.cpp" />
+    <ClCompile Include="src\engine\heightmap\heightmap.cpp" />
+    <ClCompile Include="src\engine\robot\robot.cpp" />
+    <ClCompile Include="src\engine\shape\cube.cpp" />
+    <ClCompile Include="src\engine\terrain\terrain.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\window\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="res\lavaGsh.shader" />
+    <ClInclude Include="src\buffer\buffer.h" />
+    <ClInclude Include="src\camera\camera.h" />
+    <ClInclude Include="src\engine\biome\biome.h" />
+    <ClInclude Include="src\engine\biome\desert.h" />
+    <ClInclude Include="src\engine\biome\plains.h" />
+    <ClInclude Include="src\engine\biome\snow.h" />
+    <ClInclude Include="src\engine\biome\volcano.h" />
+    <ClInclude Include="src\engine\bullet\bullet.h" />
+    <ClInclude Include="src\engine\bullet\gun.h" />
+    <ClInclude Include="src\engine\configs\configs.h" />
+    <ClInclude Include="src\engine\data\index_data.h" />
+    <ClInclude Include="src\engine\data\time.h" />
+    <ClInclude Include="src\engine\data\vertex_data.h" />
+    <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\engine_comon.h" />
+    <ClInclude Include="src\engine\entities\entity.h" />
+    <ClInclude Include="src\engine\entities\player\fpsplayer.h" />
+    <ClInclude Include="src\engine\entities\troop\troop.h" />
+    <ClInclude Include="src\engine\events\keyboard.h" />
+    <ClInclude Include="src\engine\events\mouse.h" />
+    <ClInclude Include="src\engine\heightmap\heightmap.h" />
+    <ClInclude Include="src\engine\mesh\mesh.h" />
+    <ClInclude Include="src\engine\primitives\vertex.h" />
+    <ClInclude Include="src\engine\robot\robot.h" />
+    <ClInclude Include="src\engine\shape\cube.h" />
+    <ClInclude Include="src\engine\shape\shape.h" />
+    <ClInclude Include="src\engine\terrain\terrain.h" />
+    <ClInclude Include="src\log.h" />
+    <ClInclude Include="src\shader\shader.h" />
+    <ClInclude Include="src\shader\shprogram.h" />
+    <ClInclude Include="src\window\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\fsh.shader" />
+    <None Include="res\gsh.shader" />
+    <None Include="res\lavaFsh.shader" />
+    <None Include="res\lavaVsh.shader" />
+    <None Include="res\vsh.shader" />
+    <None Include="res\wavingFsh.shader" />
+    <None Include="res\wavingGsh.shader" />
+    <None Include="res\wavingVsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\terrain1.png" />
+    <Image Include="res\terrain2.png" />
+    <Image Include="res\terrain3.bmp" />
+    <Image Include="res\terrain4.png" />
+    <Image Include="res\terrain5.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,172 @@
+### OPENGL - JAIME KING # 65		: OPENGL MULTIPLE OBJECTS IN ONE BUFFER
+
+Currently have :
+	Cube vertex buffer
+	Cube index buffer
+	Arrow vertex buffer
+	Arrow index buffer
+	
+Better to combine it into one buffer :
+	Cube vertex buffer + Arrow vertex buffer
+	Cube index buffer  + Arrow index buffer
+	
+Only have one vertexBufferID
+
+// for the vertex data
+glBufferData(GL_ARRAY_BUFFER, cubeVertexBufferSize + arrowVertexBufferSize, 0, GL_STATIC_DRAW);
+
+glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertexBufferSize, cubeVertices);
+								 ^ start the buffer at byte 0
+glBufferSubDatat(GL_ARRAY_BUFFER, cubeVertexBufferSize, arrowVertexBufferSize, arrowVertices);
+								 ^ start the sub buffer at byte cubeVertextBufferSize
+								 
+
+// for the index buffer
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeIndexBufferSize + arrowIndexBufferSize, 0, GL_STATIC_DRAW);
+
+glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, cubeIndexSize, cubeIndices);
+glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, cubeIndexSize, arrowIndexSize, arrowIndices);
+
+// for the vertex arrays
+Instead of the attrib pointers pointing to 2 buffers, point to one
+
+glBindBuffer(GL_ARRAY_BUFFER, theVertexBufferID);	// there is now only one buffer
+
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, 0);
+																  ^ offset of the attrib pointer is 0
+																    where the cube vertex data starts
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, INDEX_BUFFER_SIZE, (void*)(3 * sizeof(float)));
+
+
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_BYTE_SIZE, (void*)cubeVertexBufferSize);
+																  ^ offset of the attrib pointer is 0
+																    where the cube vertex data starts
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 
+	INDEX_BUFFER_SIZE, (void*)(cubeVertexBufferSize + 3 * sizeof(float)));		
+
+// for drawing
+
+/// for the cube
+
+/* binding all the buffers */
+glBindVertexArrays(...);
+glDrawElements(GL_TRIANGLES, cubeNumIndices, GL_UNSIGNED_SHORT, 0);
+																^ byte offset of the cube indices
+glBindVertexArrays(...);
+glDrawElements(GL_TRIANGLES, cubeNumIndices, GL_UNSIGNED_SHORT, cubeIndexBufferSize);
+																^ byte offset of the arrow indices			
+
+																
+																
+### OPENGL - JAIME KING # 66		: OPENGL DATA ALL IN ONE BUFFER
+
+In order to put all the data in one buffer, 
+- bind the element_array binding point and array_buffer binding point to the same buffer.
+- do more subData for the index buffers and vertex buffers
+- get the right offsets for the vertex attrib pointers
+- for the draw calls, get the right index offsets (last parameter)
+
+### OPENGL - JAIME KING # 67		: OPENGL DELETE BUFFERS GLDELETEBUFFERS
+
+When the program exits, use glDeleteBuffers (takes the same params as glGenBuffers) on the buffers
+to delete.
+
+### OPENGL - JAIME KING # 68		: OPENGL PLANE CODE
+
+For the planes an algorithm would be:
+- create the vertices (just go down the dimensions and stick a vert)
+- create the indices : 
+	for each vertex : the indices are the dimensions * row + column, dimensions * row + column + dimensions
+	and dimensions * row + dimensions * column + 1
+	then for the next one, it's dimensions * row + col, dimensions * row + col + dimensions + 1,
+	and dimensions * row + col + 1
+
+### OPENGL - JAIME KING # 70   		: OPENGL BACKFACE CULLING OPENGL GLCULLFACE
+
+glEnable(GL_CULL_FACE);
+
+makes sure that the triangles we are not interested aren't rendered
+
+anything that is not facing the camera is not rendered
+
+### OPENGL - JAIME KING # 71		: DEFAULT WINDING ORDER
+
+Any triangle that is rendered with clock-wise indices, that hardware thinks that the 
+triangle is not facing the screen.
+
+### OPENGL - JAIME KING # 72 		: BACKFACE CULLING ALGORITHM
+
+Shoe lace algorithm.
+
+Idea : take all the vertex positions. Take in order that we send them to the GPU. 
+Example : 0, 1 ; -1, -1; 1, -1; 0, 1 (triangle)
+          a1, a2; b1,b2; c1,c2; d1,d2
+		  
+A = a1 * b2 - b1 * a2 = 0 - (-1)
+B = b1 * c2 - c1 * b2 = 1 - - 1
+C = c1 * d2 - d1 * c2 = 1 - 0
+
+A = 1
+B = 2
+C = 1
+
+result = A + B + C = 4
+
+These are all counter clock-wise
+
+if we swap the middle 2 we get:
+0 - 1 + -1 - 1 + -1 - 0
+= -4
+
+this is negative so: it is clock-wise therefore it is not facing the camera
+
+are of the triangle = 4 / 2
+					= 2
+					
+area of other triangle = -4 / 2
+					   = -2
+the hardware only cares about the sign of the result
+
+### OPENGL - JAIME KING # 73 		: OPENGL SETTING UP THE SCENE FOR LIGHTING
+
+3 core lighting types = 
+	ambient : result of a lightbulb
+	diffuse
+	specular
+	
+ambient :
+	inside the vertex shader
+	
+	uniform vec3 ambientLight;
+	
+	theColor = vertexColor * ambientLight;
+	
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												
