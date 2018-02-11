@@ -6,7 +6,7 @@ namespace minecraft
 	namespace chunk
 	{
 		CHandler::CHandler(signed int seed)
-			: m_chunkMap(seed), m_seed(seed), m_biomeHandler(seed)
+			: m_chunkMap(seed), m_seed(seed), m_terrain(seed)
 		{
 			Log("seed : ", m_seed);
 		}
@@ -37,7 +37,7 @@ namespace minecraft
 		}
 		void CHandler::ChunkLoaderInit(ent::Entity* player, GLFWwindow* window)
 		{
-			m_chunkloader = new loader::CLoader(&m_chunkMap, player, m_seed, m_biomeHandler);
+			m_chunkloader = new loader::CLoader(&m_chunkMap, player, m_seed, m_terrain);
 			m_chunkloader->Spawn(window);
 		}
 		void CHandler::SHInit(void)

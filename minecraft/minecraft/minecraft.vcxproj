@@ -134,6 +134,9 @@
     <ClCompile Include="src\engine\entities\camera\camera.cpp" />
     <ClCompile Include="src\engine\entities\player\player.cpp" />
     <ClCompile Include="src\engine\renderer\renderer.cpp" />
+    <ClCompile Include="src\engine\terrain\biome\biome_handler.cpp" />
+    <ClCompile Include="src\engine\terrain\heightmap\heightmap.cpp" />
+    <ClCompile Include="src\engine\terrain\terrain.cpp" />
     <ClCompile Include="src\engine\utility\glm_vecio.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\texture\texture.cpp" />
@@ -158,6 +161,7 @@
     <ClInclude Include="src\engine\chunk\handler\chandler.h" />
     <ClInclude Include="src\engine\chunk\loader\chunk_loader.h" />
     <ClInclude Include="src\engine\chunk\map\cmap.h" />
+    <ClInclude Include="src\engine\chunk\noise\noise.h" />
     <ClInclude Include="src\engine\chunk\noise\perlinnoise.h" />
     <ClInclude Include="src\engine\chunk\noise\regular\reg_perlin_noise.h" />
     <ClInclude Include="src\engine\configs\configs.h" />
@@ -168,7 +172,14 @@
     <ClInclude Include="src\engine\entities\camera\camera.h" />
     <ClInclude Include="src\engine\entities\entity.h" />
     <ClInclude Include="src\engine\entities\player\player.h" />
+    <ClInclude Include="src\engine\noise\noise.h" />
     <ClInclude Include="src\engine\renderer\renderer.h" />
+    <ClInclude Include="src\engine\terrain\biome\biome.h" />
+    <ClInclude Include="src\engine\terrain\biome\biome_handler.h" />
+    <ClInclude Include="src\engine\terrain\biome\desert\desert.h" />
+    <ClInclude Include="src\engine\terrain\biome\plains\plains.h" />
+    <ClInclude Include="src\engine\terrain\heightmap\heightmap.h" />
+    <ClInclude Include="src\engine\terrain\terrain.h" />
     <ClInclude Include="src\engine\utility\glm_vecio.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\shader\shader.h" />

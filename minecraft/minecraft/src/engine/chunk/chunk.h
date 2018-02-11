@@ -4,6 +4,7 @@
 #include "../block/block.h"
 #include "database/chunk_data_base.h"
 #include "biome/plains/plains.h"
+#include "../terrain/terrain.h"
 #include "noise/regular/reg_perlin_noise.h"
 #include "gpu/gpuhandler/chunk_gpu_side_handler.h"
 
@@ -43,10 +44,10 @@ namespace minecraft
 			explicit Chunk(void);
 			explicit Chunk(signed int seed) : m_wcoordChunk({ {0, 0} }), m_dataBase(seed), 
 				m_loaded(false), m_gpubufferloaded(false) {}
-			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, biome::BiomeHandler& bh);
-			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, biome::BiomeHandler& bh);
+			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t);
+			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t);
 			void LoadGPUBuffer(void);
-			void LoadAll(biome::BiomeHandler& bh);
+			void LoadAll(terrain::Terrain& t);
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);
@@ -58,7 +59,7 @@ namespace minecraft
 			const bool BufferLoaded(void);
 			const bool CreatedVAO(void);
 		private:
-			void LoadTop(biome::BiomeHandler& bh);
+			void LoadTop(terrain::Terrain& t);
 			WVec2 NegativeCornerWPos(void) const;
 		private:
 			WCoordChunk m_wcoordChunk;

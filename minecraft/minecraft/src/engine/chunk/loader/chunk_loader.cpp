@@ -32,7 +32,7 @@ namespace minecraft
 								if (!(ch.Loaded()) && !ch.BufferLoaded())
 								{
 									std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_biomeHandler);
+									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain);
 									std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 									std::cout << d.count() / 1000000.0 << std::endl;
 								}
@@ -70,7 +70,7 @@ namespace minecraft
 							if (!(ch.Loaded()) && !ch.BufferLoaded())
 							{
 								std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-								m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_biomeHandler);
+								m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain);
 								std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 								std::cout << d.count() / 1000000.0 << std::endl;
 							}
@@ -78,8 +78,8 @@ namespace minecraft
 					}
 				}
 			}
-			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, biome::BiomeHandler& bh)
-				: m_currentMap(cm), m_player(player), m_biomeHandler(&bh)
+			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t)
+				: m_currentMap(cm), m_player(player), m_currentTerrain(&t)
 			{
 			}
 			// spawn thread

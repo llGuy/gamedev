@@ -9,27 +9,27 @@ namespace minecraft
 			: m_dataBase(0), m_loaded(false), m_gpubufferloaded(false)
 		{
 		}
-		Chunk::Chunk(const WCoordChunk& wcoordChunk, signed int seed, biome::BiomeHandler& bh)
+		Chunk::Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
-			LoadTop(bh);
+			LoadTop(t);
 		}
 
-		Chunk::Chunk(const WCoordChunk&& wcoordChunk, signed int seed, biome::BiomeHandler& bh)
+		Chunk::Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
-			LoadTop(bh);
+			LoadTop(t);
 		}
 
-		void Chunk::LoadAll(biome::BiomeHandler& bh)
+		void Chunk::LoadAll(terrain::Terrain& t)
 		{
-			m_dataBase.Load(m_wcoordChunk.wpos, NegativeCornerWPos(), bh);
+			m_dataBase.Load(m_wcoordChunk.wpos, NegativeCornerWPos(), t);
 			m_loaded = true;
 		}
 
-		void Chunk::LoadTop(biome::BiomeHandler& bh)
+		void Chunk::LoadTop(terrain::Terrain& t)
 		{
-			m_dataBase.LoadTop(m_wcoordChunk.wpos, NegativeCornerWPos(), bh);
+			m_dataBase.LoadTop(m_wcoordChunk.wpos, NegativeCornerWPos(), t);
 			m_loaded = true;
 		}
 

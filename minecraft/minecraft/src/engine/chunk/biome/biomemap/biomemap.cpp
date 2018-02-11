@@ -72,7 +72,7 @@ namespace minecraft
 				(abs(xz.x) + BIOME_MAP_CELL_DIMENSION / 2) * (xz.x / abs(xz.x)) / BIOME_MAP_CELL_DIMENSION;
 			signed int biomeCellCoordz = xz.z == 0 ? 0 :
 				(abs(xz.z) + BIOME_MAP_CELL_DIMENSION / 2) * (xz.z / abs(xz.z)) / BIOME_MAP_CELL_DIMENSION;
-
+			
 			return glm::vec2(biomeCellCoordx * BIOME_MAP_CELL_DIMENSION - (static_cast<float>(BIOME_MAP_CELL_DIMENSION / 2 + 0.5f)), 
 				biomeCellCoordz * BIOME_MAP_CELL_DIMENSION - (static_cast<float>(BIOME_MAP_CELL_DIMENSION / 2 + 0.5f)));
 		}

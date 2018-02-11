@@ -7,6 +7,7 @@
 #include "../../data/common.h"
 #include "../loader/chunk_loader.h"
 #include "../../../shader/shprogram.h"
+#include "../../terrain/terrain.h"
 #include "../biome/biome_handler.h"
 #include "../map/cmap.h"
 
@@ -45,7 +46,8 @@ namespace minecraft
 			::sh::SHProgram m_chunkshprogram;
 			data::CUDataLocs m_udataloc;
 			loader::CLoader* m_chunkloader;
-			biome::BiomeHandler m_biomeHandler;
+			terrain::Terrain m_terrain;
+			//biome::BiomeHandler m_biomeHandler;
 			cmap::CMap m_chunkMap;
 			signed int m_seed;
 		};
