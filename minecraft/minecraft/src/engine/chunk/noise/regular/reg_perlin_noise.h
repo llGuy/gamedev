@@ -3,6 +3,7 @@
 
 #include "../perlinnoise.h"
 
+/*
 namespace minecraft
 {
 	namespace chunk
@@ -28,6 +29,6 @@ namespace minecraft
 			};
 		}
 	}
-}
+}*/
 
 #endif

@@ -1,7 +1,7 @@
 #include "reg_perlin_noise.h"
 #include <iostream>
 #include <math.h>
-
+/*
 namespace minecraft
 {
 	namespace chunk
@@ -59,4 +59,4 @@ namespace minecraft
 			}
 		}
 	}
-}
+}*/

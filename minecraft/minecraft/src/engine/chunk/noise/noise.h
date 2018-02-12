@@ -5,6 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/glm.hpp>
 
+/*
 namespace minecraft
 {
 	namespace pnoise
@@ -101,7 +102,7 @@ namespace minecraft
 				float rz = static_cast<float>(rand() % 0xff);
 
 				/* scaling the values of rx and rz to be between 0.5f and -0.5f */
-				return glm::normalize(glm::vec2(glm::vec2((rx / 0xff) - 0.5f, (rz / 0xff) - 0.5f)) * static_cast<float>(CELL_DIMENSION));
+			/*	return glm::normalize(glm::vec2(glm::vec2((rx / 0xff) - 0.5f, (rz / 0xff) - 0.5f)) * static_cast<float>(CELL_DIMENSION));
 			}
 		protected:
 			__forceinline float Lerp(const glm::vec2& a, const glm::vec2& b, float ref)
@@ -113,5 +114,5 @@ namespace minecraft
 		};
 	}
 }
-
+*/
 #endif

@@ -8,7 +8,6 @@
 #include "../loader/chunk_loader.h"
 #include "../../../shader/shprogram.h"
 #include "../../terrain/terrain.h"
-#include "../biome/biome_handler.h"
 #include "../map/cmap.h"
 
 namespace minecraft

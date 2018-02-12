@@ -5,13 +5,13 @@ namespace minecraft
 	namespace terrain
 	{
 		Heightmap::Heightmap(const signed int seed)
-			: m_noiseGenerator(seed, 128), COEFF(8.0f)
+			: m_noiseGenerator(seed, 16 * 9), COEFF(8.0f)
 		{
 		}
 		const signed int Heightmap::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
 			const pnoise::PNoise::GradientVectors& gv, signed int biomeMapHeight)
 		{
-			return m_noiseGenerator.Noise(blockCoord, cc, gv, COEFF) * biomeMapHeight;
+			return static_cast<signed int>(m_noiseGenerator.Noise(blockCoord, cc, gv, COEFF) * biomeMapHeight);
 		}
 		const pnoise::PNoise::DifferenceVectors Heightmap::DVectors(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc)
 		{

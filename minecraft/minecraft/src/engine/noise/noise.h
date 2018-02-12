@@ -69,41 +69,31 @@ namespace minecraft
 			}
 			const CellCorners Corners(const WVec2& chunkCoord) 
 			{
-				signed int xchunkCenter = chunkCoord.x * 16;
-				signed int zchunkCenter = chunkCoord.z * 16;
+				WVec2 chunkCoordWorld;
+				chunkCoordWorld.x = chunkCoord.x * 16;
+				chunkCoordWorld.z = chunkCoord.z * 16;
 
-				glm::vec2 ncorner = CellNCorner(xchunkCenter, zchunkCenter);
-				glm::vec2 pcorner = CellPCorner(xchunkCenter, zchunkCenter);
+				WVec2 cellCoordwv2 = CellCoord(chunkCoordWorld);
+				glm::vec2 cellCoordWorld;
+				cellCoordWorld.x = static_cast<float>(cellCoordwv2.x * CELL_DIMENSION);
+				cellCoordWorld.y = static_cast<float>(cellCoordwv2.z * CELL_DIMENSION);
+
+				float half = static_cast<float>(CELL_DIMENSION / 2.0f);
 
 				return
 				{
-					ncorner,
-					glm::vec2(ncorner.x, ncorner.y + CELL_DIMENSION),
-					glm::vec2(ncorner.x + CELL_DIMENSION, ncorner.y),
-					glm::vec2(ncorner.x + CELL_DIMENSION, ncorner.y + CELL_DIMENSION)
+					glm::vec2(cellCoordWorld.x - half - 0.5f, cellCoordWorld.y - half - 0.5f),
+					glm::vec2(cellCoordWorld.x - half - 0.5f, cellCoordWorld.y + half - 0.5f),
+					glm::vec2(cellCoordWorld.x + half - 0.5f, cellCoordWorld.y - half - 0.5f),
+					glm::vec2(cellCoordWorld.x + half - 0.5f, cellCoordWorld.y + half - 0.5f)
 				};
 			}
-			const glm::vec2 CellNCorner(signed int x, signed int z)
+			const WVec2 CellCoord(const WVec2& chunkCoord)
 			{
-				WVec2 xz = { x, z };
-				signed int biomeCellCoordx = xz.x == 0 ? 0 :
-					(abs(xz.x) + CELL_DIMENSION / 2) * (xz.x / abs(xz.x)) / CELL_DIMENSION;
-				signed int biomeCellCoordz = xz.z == 0 ? 0 :
-					(abs(xz.z) + CELL_DIMENSION / 2) * (xz.z / abs(xz.z)) / CELL_DIMENSION;
-
-				return glm::vec2(biomeCellCoordx * CELL_DIMENSION - (static_cast<float>(CELL_DIMENSION / 2 + 0.5f)),
-					biomeCellCoordz * CELL_DIMENSION - (static_cast<float>(CELL_DIMENSION / 2 + 0.5f)));
-			}
-			const glm::vec2 CellPCorner(signed int x, signed int z)
-			{
-				WVec2 xz = { x, z };
-				signed int biomeCellCoordx = xz.x == 0 ? 0 :
-					(abs(xz.x) + CELL_DIMENSION / 2) * (xz.x / abs(xz.x)) / CELL_DIMENSION;
-				signed int biomeCellCoordz = xz.z == 0 ? 0 :
-					(abs(xz.z) + CELL_DIMENSION / 2) * (xz.z / abs(xz.z)) / CELL_DIMENSION;
-
-				return glm::vec2(biomeCellCoordx * CELL_DIMENSION + (static_cast<float>(CELL_DIMENSION / 2 + 0.5f)),
-					biomeCellCoordz * CELL_DIMENSION + (static_cast<float>(CELL_DIMENSION / 2 + 0.5f)));
+				WVec2 cellCoord;
+				cellCoord.x = chunkCoord.x == 0 ? 0 : (abs(chunkCoord.x) + CELL_DIMENSION / 2) * (chunkCoord.x / abs(chunkCoord.x)) / CELL_DIMENSION;
+				cellCoord.z = chunkCoord.z == 0 ? 0 : (abs(chunkCoord.z) + CELL_DIMENSION / 2) * (chunkCoord.z / abs(chunkCoord.z)) / CELL_DIMENSION;
+				return cellCoord;
 			}
 		protected:
 			const glm::vec2 GenerateGVector(const glm::vec2& corner)

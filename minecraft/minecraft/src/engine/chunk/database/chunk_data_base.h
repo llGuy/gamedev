@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include "../biome/biomemap/biomemap.h"
+#include "../../utility/glm_vecio.h"
 #include "../../block/block.h"
 #include "../gpu/gpuhandler/chunk_gpu_side_handler.h"
 #include "../cdata/cvec2.h"
@@ -11,7 +11,6 @@
 #include "../../terrain/terrain.h"
 #include "../../terrain/terrain.h"
 #include "blockystrip.h"
-#include "../biome/plains/plains.h"
 
 namespace minecraft
 {
@@ -69,6 +68,12 @@ namespace minecraft
 				GenerateHeightmapCellCorners(chunkCoords, t);
 				GenerateHeightmapCellGVectors(t);
 
+				std::cout << m_corners.nn << std::endl;
+				std::cout << m_corners.np << std::endl;
+				std::cout << m_corners.pn << std::endl;
+				std::cout << m_corners.pp << std::endl << std::endl;
+
+
 				for (signed int z = 0; z < 16; ++z)
 				{
 					for (signed int x = 0; x < 16; ++x)
@@ -81,12 +86,11 @@ namespace minecraft
 						biome::biome_t neighbouringBiomes[4];
 						NeighbouringBiomes(neighbouringBiomes, chunkCoords, t, negCorner, x, z, bcc, gv);
 
-						float neighbouringHeights[4];
+						signed int neighbouringHeights[4];
 						NeighbouringHeights(neighbouringBiomes, t, negCorner, neighbouringHeights, x, z, chunkCoords);
 
 						// height of current block
-						signed int h = static_cast<signed int>(Height(negCorner, x, z, 
-							t.BiomeMaxHeight(b), m_corners, m_gradientVectors, t) + t.BiomeOffset(b));
+						signed int h = Height(negCorner, x, z, t.BiomeMaxHeight(b), m_corners, m_gradientVectors, t) + t.BiomeOffset(b);
 
 						// calculating smallest height
 						signed int smallestNeighbour = SmallestNeighbour(neighbouringHeights);
@@ -201,7 +205,7 @@ namespace minecraft
 				m_corners.pp = glm::vec2(negativeCorner.x + 15.5f,
 					negativeCorner.y + 15.5f);
 			}*/
-			float Height(const WVec2& negCorner, const signed int& x, const signed int& z, 
+			signed Height(const WVec2& negCorner, const signed int& x, const signed int& z, 
 				signed int mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t)
 			{
 				float blockx = static_cast<float>(negCorner.x + x);
@@ -279,7 +283,7 @@ namespace minecraft
 			{
 				return t.GVectors(c, terrain::Terrain::choice_t::HM);
 			}
-			float DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, 
+			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, 
 				const chunkExtr_t ce, const WVec2& negCorner, signed int x, signed int z, WVec2& chunkCoord)
 			{
 				static float offsetx[4]
@@ -312,10 +316,6 @@ namespace minecraft
 
 				if (ce == chunkExtr_t::NEG_X)
 				{
-					if (static_cast<signed int>(negCorner.x + x) == -192)
-					{
-						std::cout << "err" << std::endl;
-					}
 					if (AtHeightmapExtrN(x + negCorner.x))
 					{
 						cc = t.CellCorners({ chunkCoord.x - 1, chunkCoord.z }, terrain::Terrain::choice_t::HM);
@@ -362,8 +362,10 @@ namespace minecraft
 					biomeOffset;
 			}
 			void NeighbouringHeights(biome::biome_t* nb, terrain::Terrain& t, const WVec2& negCorner, 
-				float* nh, signed int x, signed int z, WVec2& chunkCoord)
+				signed int* nh, signed int x, signed int z, WVec2& chunkCoord)
 			{
+				if(AtHeightmapExtrN(x)) std::cout << "at extr !!!" << std::endl;
+
 				if (AtExtr0(x)) nh[0] = DetermineNeighbouringHeight(nb, t, chunkExtr_t::NEG_X, negCorner, x, z, chunkCoord);
 				else nh[0] = Height(negCorner, x - 1, z, t.BiomeMaxHeight(nb[0]), m_corners, m_gradientVectors, t) + t.BiomeOffset(nb[0]);
 
@@ -376,7 +378,7 @@ namespace minecraft
 				if (AtExtr0(z)) nh[3] = DetermineNeighbouringHeight(nb, t, chunkExtr_t::NEG_Z, negCorner, x, z, chunkCoord);
 				else nh[3] = Height(negCorner, x, z - 1, t.BiomeMaxHeight(nb[3]), m_corners, m_gradientVectors, t) + t.BiomeOffset(nb[3]);
 			}
-			signed int SmallestNeighbour(float* nh)
+			signed int SmallestNeighbour(signed int* nh)
 			{
 				unsigned int smallest = 0;
 				for (unsigned int i = 1; i < 4; ++i)
@@ -384,7 +386,7 @@ namespace minecraft
 					if (nh[smallest] > nh[i])
 						smallest = i;
 				}
-				return static_cast<signed int>(nh[smallest]);
+				return nh[smallest];
 			}
 			void AppendBlock(signed int x, signed int z, signed int y, 
 				terrain::Terrain& t, biome::biome_t b, signed int bysH)

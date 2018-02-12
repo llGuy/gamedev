@@ -1,5 +1,4 @@
 #include "chunk.h"
-#include "biome/biome_handler.h"
 
 namespace minecraft
 {

@@ -3,7 +3,6 @@
 
 #include "../block/block.h"
 #include "database/chunk_data_base.h"
-#include "biome/plains/plains.h"
 #include "../terrain/terrain.h"
 #include "noise/regular/reg_perlin_noise.h"
 #include "gpu/gpuhandler/chunk_gpu_side_handler.h"

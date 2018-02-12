@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "../cdata/cvec2.h"
 
+/*
 namespace minecraft
 {
 	namespace chunk
@@ -36,5 +37,5 @@ namespace minecraft
 		}
 	}
 }
-
+*/
 #endif
