@@ -26,6 +26,8 @@ namespace minecraft
 			void AfterGLEWInit(void);
 			void GetUniform(void);
 		public:
+			float BlockUnderPoint(glm::vec3 wpos);
+			float HighestBlock(glm::vec3 wpos);
 			glm::vec3 BlockWPos(glm::vec3 wpos);
 			data::CUDataLocs& Locations(void);
 			cmap::CMap::iterator Begin(void);

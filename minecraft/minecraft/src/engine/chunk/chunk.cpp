@@ -38,6 +38,11 @@ namespace minecraft
 			m_gpubufferloaded = true;
 		}
 
+		void Chunk::DestroyHEAPMemoryForBlocksWPos(void)
+		{
+			m_dataBase.DestroyHEAPMemoryForBlocksWPos();
+		}
+
 		glm::vec3 Chunk::BlockWorldCoord(const CVec2 cc, signed int elevation)
 		{
 			return m_dataBase.WCoord(m_wcoordChunk.wpos, cc, elevation, NegativeCornerWPos());
@@ -81,6 +86,11 @@ namespace minecraft
 		const bool Chunk::CreatedVAO(void)
 		{
 			return m_dataBase.CreatedVAO();
+		}
+
+		float Chunk::HighestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
+		{
+			return static_cast<float>(m_dataBase.HightestBlock(chunkCoord, ccoord, wpos, negativeCornerWPos));
 		}
 	}
 }

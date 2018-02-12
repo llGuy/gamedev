@@ -56,6 +56,14 @@ namespace minecraft
 							return i;
 					return App(v);
 				}
+				const bool Exists(Chunk::WCoordChunk& v)
+				{
+					int h = CHash()(v) % m_llists->size();
+					for (auto& i : m_llists->operator[](h))
+						if (i.ChunkCoordinate() == v)
+							return i.Loaded();
+					return false;
+				}
 				void AfterGLEWInit(void)
 				{
 					for (auto& i : *m_llists)

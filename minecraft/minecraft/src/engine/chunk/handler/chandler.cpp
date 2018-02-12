@@ -14,6 +14,22 @@ namespace minecraft
 		{
 			ChunkMapInit();
 		}
+		float CHandler::BlockUnderPoint(glm::vec3 wpos)
+		{
+			return 0.0f;
+		}
+		float CHandler::HighestBlock(glm::vec3 wpos)
+		{
+			// convert to backend coordinate space
+			wpos;
+			wpos = glm::round(wpos);
+			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos);
+			CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
+			// convert back to world coordinate space
+			if (!m_chunkMap.Exists(wcc)) return 0.0f;
+			return m_chunkMap[wcc].HighestBlock(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos()) + 0.5f;
+		}
+		
 		cmap::CMap::iterator CHandler::Begin(void)
 		{
 			return m_chunkMap.Begin();

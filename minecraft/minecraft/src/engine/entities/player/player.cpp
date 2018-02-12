@@ -8,9 +8,9 @@ namespace minecraft
 	{
 		Player::Player(void)
 			: m_playerViewDirection(1.0f, 0.0f, 0.0f), 
-			m_playerPosition(0.0f, 50.0f, 0.0f), UP(0.0f, 1.0f, 0.0f), m_speed(3.0f)
+			m_playerPosition(0.23f, 80.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(3.0f),
+			m_playerData({2.0f}), m_jumping(false)
 		{
-
 		}
 		glm::vec3* Player::EntityViewDirection(void)
 		{
@@ -21,9 +21,20 @@ namespace minecraft
 			return &m_playerPosition;
 		}
 
-		void Player::UpdData(void)
+		void Player::UpdData(glm::vec3* gravity, float blockUnderneath, float deltaT)
 		{
-			// when jumping
+			if (m_playerPosition.y < m_playerData.height + blockUnderneath + 0.1f)
+			{
+				m_playerPosition.y = blockUnderneath + m_playerData.height;
+				m_jumpData.upvelocity = glm::vec3(0.0f, 4.0f, 0.0f);
+				m_jumping = false;
+			}
+			else if (!m_jumping)
+			{
+				m_playerPosition = m_playerPosition + m_jumpData.upvelocity * deltaT;
+				m_jumpData.upvelocity = m_jumpData.upvelocity + *gravity * deltaT;
+			}
+			else m_jumpData.Update(gravity, deltaT, m_playerPosition);
 		}
 		void Player::Move(const move_t&& movement, data::Time* time)
 		{
@@ -35,6 +46,9 @@ namespace minecraft
 				break;
 			case Entity::move_t::BACKWARD:
 				m_playerPosition -= moveVector * Speed(time);
+				break;
+			case Entity::move_t::JUMP:
+				Jump();
 				break;
 			}
 		}
@@ -66,7 +80,11 @@ namespace minecraft
 		}
 		float Player::Speed(data::Time* time) const
 		{
-			return m_speed * static_cast<float>(time->deltaT) * 10.0f;
+			return m_speed * static_cast<float>(time->deltaT) * 3.0f;
+		}
+		void Player::Jump(void)
+		{
+			if (!m_jumping) m_jumpData.Start();
 		}
 	}
 }

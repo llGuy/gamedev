@@ -46,7 +46,10 @@ namespace minecraft
 			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t);
 			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t);
 			void LoadGPUBuffer(void);
+			void DestroyHEAPMemoryForBlocksWPos(void);
 			void LoadAll(terrain::Terrain& t);
+			float HighestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos);
+			WVec2 NegativeCornerWPos(void) const;
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);
@@ -59,7 +62,6 @@ namespace minecraft
 			const bool CreatedVAO(void);
 		private:
 			void LoadTop(terrain::Terrain& t);
-			WVec2 NegativeCornerWPos(void) const;
 		private:
 			WCoordChunk m_wcoordChunk;
 			ChunkDB m_dataBase;

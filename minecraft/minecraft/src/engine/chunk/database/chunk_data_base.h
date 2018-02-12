@@ -68,12 +68,6 @@ namespace minecraft
 				GenerateHeightmapCellCorners(chunkCoords, t);
 				GenerateHeightmapCellGVectors(t);
 
-				std::cout << m_corners.nn << std::endl;
-				std::cout << m_corners.np << std::endl;
-				std::cout << m_corners.pn << std::endl;
-				std::cout << m_corners.pp << std::endl << std::endl;
-
-
 				for (signed int z = 0; z < 16; ++z)
 				{
 					for (signed int x = 0; x < 16; ++x)
@@ -106,13 +100,26 @@ namespace minecraft
 			{
 				m_gpuh.LoadGPUBuffer();
 			}
+			void DestroyHEAPMemoryForBlocksWPos(void)
+			{
+				m_gpuh.DestroyVector();
+			}
 		public:
 			/* getter */
-			glm::vec3 WCoord(WVec2 wchunkCoord, CVec2 ccoord, unsigned char elevation, const WVec2&& negativeCornerWPos)
+			signed int HightestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
+			{
+				signed int smallest = 0xfffff;
+				for (auto& bys : m_blocks[Index(ccoord)].ystrip)
+				{
+					if (smallest > bys.first) smallest = bys.first;
+				}
+				return smallest;
+			}
+			glm::vec3 WCoord(WVec2 wchunkCoord, CVec2 ccoord, signed int elevation, const WVec2&& negativeCornerWPos)
 			{
 				return m_blocks[Index(ccoord)].ystrip[elevation].WPos(wchunkCoord, elevation, negativeCornerWPos);
 			}
-			const Block::block_t BlockType(CVec2 ccoord, unsigned char elevation)
+			const Block::block_t BlockType(CVec2 ccoord, signed int elevation)
 			{
 				return m_blocks[Index(ccoord)].ystrip[elevation].BlockType();
 			}
@@ -135,6 +142,7 @@ namespace minecraft
 		private:
 			void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner)
 			{
+				m_gpuh.PrepareVector();
 				for (signed int z = 0; z < 16; ++z)
 				{
 					for (signed int x = 0; x < 16; ++x)
@@ -364,8 +372,6 @@ namespace minecraft
 			void NeighbouringHeights(biome::biome_t* nb, terrain::Terrain& t, const WVec2& negCorner, 
 				signed int* nh, signed int x, signed int z, WVec2& chunkCoord)
 			{
-				if(AtHeightmapExtrN(x)) std::cout << "at extr !!!" << std::endl;
-
 				if (AtExtr0(x)) nh[0] = DetermineNeighbouringHeight(nb, t, chunkExtr_t::NEG_X, negCorner, x, z, chunkCoord);
 				else nh[0] = Height(negCorner, x - 1, z, t.BiomeMaxHeight(nb[0]), m_corners, m_gradientVectors, t) + t.BiomeOffset(nb[0]);
 

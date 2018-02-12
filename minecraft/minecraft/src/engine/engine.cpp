@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <glm/gtx/transform.hpp>
+#include <thread>
 
 namespace minecraft
 {
@@ -14,7 +15,7 @@ namespace minecraft
 		glClearColor(m_udata.skyColor.r, m_udata.skyColor.g, m_udata.skyColor.b, 0.2f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		UpdateUniformData();
+		UpdateData();
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -25,7 +26,10 @@ namespace minecraft
 					return;
 				}
 				chunk::Chunk& c = jt;
-				if (c.Loaded() && !c.BufferLoaded()) c.LoadGPUBuffer();
+				if (c.Loaded() && !c.BufferLoaded())
+				{
+					c.LoadGPUBuffer();
+				}
 				if (c.Loaded() && c.BufferLoaded() && c.Vao() != nullptr && c.CreatedVAO())
 				{
 					m_renderer.UniformData(m_udata, m_chunkHandler->Locations());
@@ -33,6 +37,11 @@ namespace minecraft
 				}
 			}
 		}
+	}
+	void Engine::UpdateData(void)
+	{
+		UpdatePlayerData();
+		UpdateUniformData();
 	}
 	void Engine::Init(void)
 	{
@@ -51,6 +60,8 @@ namespace minecraft
 		m_variableConfigs.FOV = glm::radians(60.0f);
 		m_variableConfigs.renderDistance = 50.0f;
 		m_variableConfigs.mouseSensitivity = 0.02f;
+
+		m_constantConfigs.gravity = glm::vec3(0.0f, -8.6f, 0.0f);
 	}
 	void Engine::UDataInit(unsigned int wwidth, unsigned int wheight)
 	{
@@ -90,7 +101,7 @@ namespace minecraft
 			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time);
 			break;
 		case key_t::SPACE:
-			m_player->VMove(ent::Entity::vmove_t::UP, &m_time);
+			m_player->Move(ent::Entity::move_t::JUMP, &m_time);
 			break;
 		case key_t::LSHIFT:
 			m_player->VMove(ent::Entity::vmove_t::DOWN, &m_time);
@@ -109,5 +120,10 @@ namespace minecraft
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
 		m_time.currentTime = std::chrono::high_resolution_clock::now();
+	}
+	void Engine::UpdatePlayerData(void)
+	{
+		float blockUnderPlayer = m_chunkHandler->HighestBlock(*m_player->EntityWorldPosition());
+		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayer, m_time.deltaT);
 	}
 }

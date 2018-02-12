@@ -5,7 +5,7 @@ namespace minecraft
 	namespace terrain
 	{
 		Heightmap::Heightmap(const signed int seed)
-			: m_noiseGenerator(seed, 16 * 9), COEFF(8.0f)
+			: m_noiseGenerator(seed, 16 * 7), COEFF(16.0f)
 		{
 		}
 		const signed int Heightmap::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,

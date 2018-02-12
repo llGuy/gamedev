@@ -48,6 +48,8 @@ namespace minecraft
 		void Configure(void);
 		void UDataInit(unsigned int wwidth, unsigned int wheight);
 		void UpdateUniformData(void);
+		void UpdateData(void);
+		void UpdatePlayerData(void);
 	private:
 		Texture m_textureAtlas;
 		ent::Camera m_camera;

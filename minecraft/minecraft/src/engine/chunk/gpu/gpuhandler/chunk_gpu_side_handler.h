@@ -17,6 +17,8 @@ namespace minecraft
 			public:
 				explicit CGPUHandler(void);
 			public:
+				void PrepareVector(void);
+				void DestroyVector(void);
 				/* initializations are gradual							*/
 				/* (done in the for loop in the ChunkDB)				*/
 				void Load(BlockYStrip* ys, unsigned int index, signed int y,
@@ -31,7 +33,7 @@ namespace minecraft
 				const bool CreatedVAO(void);
 			private:
 				CGPUBuffer m_buff;
-				std::vector<BData> m_blocks;
+				std::vector<BData>* m_blocks;
 			};
 		}
 	}
