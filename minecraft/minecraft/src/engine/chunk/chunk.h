@@ -49,7 +49,10 @@ namespace minecraft
 			void DestroyHEAPMemoryForBlocksWPos(void);
 			void LoadAll(terrain::Terrain& t);
 			float HighestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos);
+			float BlockUnder(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos);
 			WVec2 NegativeCornerWPos(void) const;
+			ChunkDB::CCorners ChunkCorners(void);
+			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos);
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);

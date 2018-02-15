@@ -4,11 +4,12 @@
 
 int main(int argc, char* argv[])
 {
-	Window window(1700, 1100, "minecraft");
+	Window window(2500, 1700, "minecraft");
 	while (window.WindowOpen())
 	{
 		window.Draw();
 		window.Update();
 	}
+	window.Destroy();
 	return 0;
 }

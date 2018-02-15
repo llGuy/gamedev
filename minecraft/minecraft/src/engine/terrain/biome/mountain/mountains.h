@@ -1,14 +1,15 @@
-#ifndef PLAINS_HEADER
-#define PLAINS_HEADER
+#ifndef MOUNTAINS_HEADER
+#define MOUNTAINS_HEADER
 
 namespace minecraft
 {
 	namespace biome
 	{
-		struct PlainData
+		struct MountainsData
 		{
-			const signed int OFFSET = 25;
-			const signed int MAX_HEIGHT = 7;
+			const signed int OFFSET = 40;
+			const signed int MAX_HEIGHT = 25;
+			const float STONE_TOP = 0.9f;
 			// start of dirt level
 			const float DIRT_LEVEL = 0.8f;
 			// start of stone level

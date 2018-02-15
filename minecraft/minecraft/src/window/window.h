@@ -10,7 +10,8 @@ class Window
 {
 public:
 	explicit Window(unsigned int width, unsigned int height, const char* title);
-	~Window(void);
+	//~Window(void);
+	void Destroy(void);
 public:
 	void Draw(void);
 	void Update(void);

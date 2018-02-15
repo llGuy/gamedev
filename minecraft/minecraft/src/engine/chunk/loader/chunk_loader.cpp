@@ -34,7 +34,6 @@ namespace minecraft
 									std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
 									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain);
 									std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-									//std::cout << d.count() / 1000000.0 << std::endl;
 								}
 							}
 						}

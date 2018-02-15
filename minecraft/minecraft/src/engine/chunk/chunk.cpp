@@ -48,6 +48,11 @@ namespace minecraft
 			return m_dataBase.WCoord(m_wcoordChunk.wpos, cc, elevation, NegativeCornerWPos());
 		}
 
+		const bool Chunk::BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
+		{
+			return m_dataBase.BlockExists(chunkCoord, ccoord, wpos);
+		}
+
 		Block::block_t Chunk::BlockType(const CVec2 cc, signed int elevation)
 		{
 			return m_dataBase.BlockType(cc, elevation);
@@ -91,6 +96,14 @@ namespace minecraft
 		float Chunk::HighestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
 		{
 			return static_cast<float>(m_dataBase.HightestBlock(chunkCoord, ccoord, wpos, negativeCornerWPos));
+		}
+		float Chunk::BlockUnder(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
+		{
+			return static_cast<float>(m_dataBase.BlockUnder(chunkCoord, ccoord, wpos, negativeCornerWPos));
+		}
+		ChunkDB::CCorners Chunk::ChunkCorners(void)
+		{
+			return m_dataBase.ChunkCorners();
 		}
 	}
 }

@@ -33,7 +33,7 @@ namespace minecraft
 				const bool CreatedVAO(void);
 			private:
 				CGPUBuffer m_buff;
-				std::vector<BData>* m_blocks;
+				std::vector<BData> m_blocks;
 			};
 		}
 	}

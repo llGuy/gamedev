@@ -11,6 +11,8 @@ namespace minecraft
 
 			DESERT,
 
+			MOUNTAINS,
+
 			INV
 		};
 	}

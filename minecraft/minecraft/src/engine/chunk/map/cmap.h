@@ -51,7 +51,8 @@ namespace minecraft
 				Chunk& operator[](Chunk::WCoordChunk& v)
 				{
 					int h = CHash()(v) % m_llists->size();
-					for (auto& i : m_llists->operator[](h))
+					auto& l = m_llists->operator[](h);
+					for (auto& i : l)
 						if (i.ChunkCoordinate() == v) 
 							return i;
 					return App(v);

@@ -35,11 +35,13 @@ namespace minecraft
 			void LaunchChunkLoader(ent::Entity* player, GLFWwindow* window);
 			cmap::CMap::update_t MapUpdateState(void);
 			const bool MapDeltedLLists(void);
+			ChunkDB::CCorners ChunkCorners(Chunk::WCoordChunk wcc);
 			void ResetMapDeletedLListsBool(void);
+			WVec2 CalculateCoordsInChunks(const glm::vec2& worldxz);
+			bool Obstruction(glm::vec3 flags, glm::vec3 wpos);
 		private:
 			void ChunkMapInit(void);
 			void ChunkLoaderInit(ent::Entity* player, GLFWwindow* window);
-			WVec2 CalculateCoordsInChunks(const glm::vec2& worldxz);
 			chunk::Chunk::WCoordChunk CalculateChunkCoordinateOfWPos(const glm::vec3& v) const;
 			CVec2 CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
 			void SHInit(void);

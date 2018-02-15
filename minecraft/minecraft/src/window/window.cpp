@@ -15,8 +15,9 @@ Window::Window(unsigned int width, unsigned int height, const char* title)
 	GLEWInit();
 	AfterGLEWInit();
 }
-Window::~Window(void)
+void Window::Destroy(void)
 {
+	//m_engine.HEAPDelete();
 }
 void Window::Draw(void)
 { 
@@ -85,6 +86,7 @@ void Window::PollKeys(void)
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::D);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))		m_engine.RecieveKeyInput(minecraft::Engine::key_t::SPACE);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))	m_engine.RecieveKeyInput(minecraft::Engine::key_t::LSHIFT);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_R))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::R);
 }
 void Window::PollMouseMovement(void)
 {

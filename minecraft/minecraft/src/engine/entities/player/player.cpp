@@ -2,14 +2,16 @@
 
 #include <glm/gtx/transform.hpp>
 
+#define DEBUG
+
 namespace minecraft
 {
 	namespace ent
 	{
 		Player::Player(void)
 			: m_playerViewDirection(1.0f, 0.0f, 0.0f), 
-			m_playerPosition(0.23f, 80.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(3.0f),
-			m_playerData({2.0f}), m_jumping(false)
+			m_playerPosition(0.23f, 80.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(2.5f),
+			m_playerData({2.0f}), m_jumping(false), m_speedCoeff(1.5f)
 		{
 		}
 		glm::vec3* Player::EntityViewDirection(void)
@@ -23,47 +25,85 @@ namespace minecraft
 
 		void Player::UpdData(glm::vec3* gravity, float blockUnderneath, float deltaT)
 		{
-			if (m_playerPosition.y < m_playerData.height + blockUnderneath + 0.1f)
+			if (m_jumping) 
+				m_jumpData.Update(gravity, deltaT, m_playerPosition);
+
+			if (fabs(m_playerPosition.y - (m_playerData.height + blockUnderneath)) < 0.1f || 
+				m_playerPosition.y < (m_playerData.height + blockUnderneath + 0.01f))
 			{
 				m_playerPosition.y = blockUnderneath + m_playerData.height;
-				m_jumpData.upvelocity = glm::vec3(0.0f, 4.0f, 0.0f);
+				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
 				m_jumping = false;
 			}
-			else if (!m_jumping)
+			else
 			{
-				m_playerPosition = m_playerPosition + m_jumpData.upvelocity * deltaT;
-				m_jumpData.upvelocity = m_jumpData.upvelocity + *gravity * deltaT;
+				if (!m_jumping) Fall(deltaT, *gravity);
 			}
-			else m_jumpData.Update(gravity, deltaT, m_playerPosition);
 		}
-		void Player::Move(const move_t&& movement, data::Time* time)
+		void Player::UpdData(glm::vec3* gravity, bool blockUnderneathPresent, float deltaT)
+		{
+			if (m_jumping) m_jumpData.Update(gravity, deltaT, m_playerPosition);
+			if (!blockUnderneathPresent) Fall(deltaT, *gravity);
+			else
+			{
+				/* reset */
+				//m_playerPosition.y = glm::round(m_playerPosition.y);
+				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
+				m_jumping = false;
+			}
+		}
+		void Player::Fall(float deltaT, glm::vec3& gravity)
+		{
+			m_playerPosition = m_playerPosition + m_jumpData.upvelocity * deltaT;
+			m_jumpData.upvelocity = m_jumpData.upvelocity + gravity * deltaT;
+		}
+		void Player::Move(const move_t&& movement, data::Time* time, bool obstx[2], bool obstz[2])
 		{
 			glm::vec3 moveVector = glm::normalize(glm::vec3(m_playerViewDirection.x, 0.0f, m_playerViewDirection.z));
+			
 			switch (movement)
 			{
 			case Entity::move_t::FORWARD:
-				m_playerPosition += moveVector * Speed(time);
 				break;
 			case Entity::move_t::BACKWARD:
-				m_playerPosition -= moveVector * Speed(time);
+				moveVector *= -1.0f;
 				break;
 			case Entity::move_t::JUMP:
 				Jump();
-				break;
+				return;
 			}
+			/* positive x obstruction */
+			if (obstx[0] && moveVector.x > 0.00001f) moveVector.x = 0.0f;
+			/* negative x obstruction */
+			else if (obstx[1] && moveVector.x < -0.00001f) moveVector.x = 0.0f;
+
+			if (obstz[0] && moveVector.z > 0.00001f) moveVector.z = 0.0f;
+			else if (obstz[1] && moveVector.z < -0.00001f) moveVector.z = 0.0f;
+
+			m_playerPosition += moveVector * Speed(time) * (m_running ? m_speedCoeff : 1.0f);
+			/* reset speed */
+			m_running = false;
 		}
-		void Player::Strafe(const strafe_t&& strafe, data::Time* time)
+		void Player::Strafe(const strafe_t&& strafe, data::Time* time, bool obstx[2], bool obstz[2])
 		{
 			glm::vec3 moveVector = glm::normalize(glm::cross(m_playerViewDirection, UP));
 			switch (strafe)
 			{
-			case Entity::strafe_t::RIGHT:
-				m_playerPosition += moveVector * Speed(time);
-				break;
+			case Entity::strafe_t::RIGHT: break;
 			case Entity::strafe_t::LEFT:
-				m_playerPosition -= moveVector * Speed(time);
+				moveVector *= -1.0f;
 				break;
 			}
+			if (obstx[0] && moveVector.x > 0.00001f) moveVector.x = 0.0f;
+			/* negative x obstruction */
+			else if (obstx[1] && moveVector.x < -0.00001f) moveVector.x = 0.0f;
+
+			if (obstz[0] && moveVector.z > 0.00001f) moveVector.z = 0.0f;
+			else if (obstz[1] && moveVector.z < -0.00001f) moveVector.z = 0.0f;
+
+			m_playerPosition += moveVector * Speed(time) * (m_running ? m_speedCoeff : 1.0f);
+			/* reset speed */
+			m_running = false;
 		}
 		void Player::VMove(const vmove_t&& vmovement, data::Time* time)
 		{
@@ -80,11 +120,15 @@ namespace minecraft
 		}
 		float Player::Speed(data::Time* time) const
 		{
-			return m_speed * static_cast<float>(time->deltaT) * 3.0f;
+			return m_speed * static_cast<float>(time->deltaT) * m_speed;
 		}
 		void Player::Jump(void)
 		{
-			if (!m_jumping) m_jumpData.Start();
+			if (!m_jumping) m_jumpData.Start(m_jumping);
+		}
+		void Player::SpeedUp(void)
+		{
+			m_running = true;
 		}
 	}
 }

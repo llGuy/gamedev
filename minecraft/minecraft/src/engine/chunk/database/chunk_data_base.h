@@ -23,6 +23,13 @@ namespace minecraft
 			{
 			}
 		public:
+			struct CCorners
+			{
+				glm::vec2 nn;
+				glm::vec2 np;
+				glm::vec2 pn;
+				glm::vec2 pp;
+			};
 			void Load(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 			{
 				pnoise::PNoise::CellCorners bcc = t.CellCorners(chunkCoords, terrain::Terrain::choice_t::BM);
@@ -62,6 +69,8 @@ namespace minecraft
 			};
 			void LoadTop(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 			{
+				GenerateCorners(negCorner);
+
 				pnoise::PNoise::CellCorners bcc = t.CellCorners(chunkCoords, terrain::Terrain::choice_t::BM);
 				pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::HM);
 
@@ -89,9 +98,15 @@ namespace minecraft
 						// calculating smallest height
 						signed int smallestNeighbour = SmallestNeighbour(neighbouringHeights);
 
+						BlockYStrip& bys = m_blocks[(Index({ static_cast<unsigned char>(x), static_cast<unsigned char>(z) }))];
 						// regardless of whether at corner of chunk
-						for (signed int y = h; y >= smallestNeighbour; --y) AppendBlock(x, z, y, t, b, h);
-						if (h < smallestNeighbour) AppendBlock(x, z, h, t, b, h);
+						for (signed int y = h; y >= smallestNeighbour; --y) AppendBlock(x, z, y, t, b, h, bys);
+						bys.smallest = smallestNeighbour;
+						if (h < smallestNeighbour)
+						{
+							AppendBlock(x, z, h, t, b, h, bys);
+							bys.smallest = h;
+						}
 					}
 				}
 				LoadGPUData(chunkCoords, negCorner);
@@ -106,6 +121,13 @@ namespace minecraft
 			}
 		public:
 			/* getter */
+			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
+			{
+				signed int y = static_cast<signed int>(wpos.y);
+				unsigned int index = Index(ccoord);
+				// if not equal then the block exists
+				return m_blocks[index].ystrip.find(y) != m_blocks[index].ystrip.end();
+			}
 			signed int HightestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
 			{
 				signed int smallest = 0xfffff;
@@ -114,6 +136,18 @@ namespace minecraft
 					if (smallest > bys.first) smallest = bys.first;
 				}
 				return smallest;
+			}
+			signed int BlockUnder(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
+			{
+				signed int y = static_cast<signed int>(wpos.y + 1.0f);
+				unsigned int index = Index(ccoord);
+				auto& bys = m_blocks[index];
+				for (; y >= bys.smallest; --y)
+				{
+					if (bys.ystrip.find(y) != bys.ystrip.end()) return y;
+				}
+				/* if there aren't any blocks under the player, function will return -0xff */
+				return -0xff;
 			}
 			glm::vec3 WCoord(WVec2 wchunkCoord, CVec2 ccoord, signed int elevation, const WVec2&& negativeCornerWPos)
 			{
@@ -138,6 +172,10 @@ namespace minecraft
 			const bool CreatedVAO(void)
 			{
 				return m_gpuh.CreatedVAO();
+			}
+			CCorners& ChunkCorners(void)
+			{
+				return m_ccorners;
 			}
 		private:
 			void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner)
@@ -200,19 +238,19 @@ namespace minecraft
 				unsigned char z = static_cast<unsigned char>(cc.z);
 				return { static_cast<unsigned char>((x << 4) + z) };
 			}
-			/*void GenerateCorners(WVec2 negCorner)
+			void GenerateCorners(WVec2 negCorner)
 			{
 				glm::vec2 negativeCorner = glm::vec2(static_cast<float>(negCorner.x), static_cast<float>(negCorner.z));
 
-				m_corners.nn = glm::vec2(negativeCorner.x - 0.5f,
+				m_ccorners.nn = glm::vec2(negativeCorner.x - 0.5f,
 					negativeCorner.y - 0.5f);
-				m_corners.np = glm::vec2(negativeCorner.x - 0.5f,
+				m_ccorners.np = glm::vec2(negativeCorner.x - 0.5f,
 					negativeCorner.y + 15.5f);
-				m_corners.pn = glm::vec2(negativeCorner.x + 15.5f,
+				m_ccorners.pn = glm::vec2(negativeCorner.x + 15.5f,
 					negativeCorner.y - 0.5f);
-				m_corners.pp = glm::vec2(negativeCorner.x + 15.5f,
+				m_ccorners.pp = glm::vec2(negativeCorner.x + 15.5f,
 					negativeCorner.y + 15.5f);
-			}*/
+			}
 			signed Height(const WVec2& negCorner, const signed int& x, const signed int& z, 
 				signed int mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t)
 			{
@@ -395,10 +433,9 @@ namespace minecraft
 				return nh[smallest];
 			}
 			void AppendBlock(signed int x, signed int z, signed int y, 
-				terrain::Terrain& t, biome::biome_t b, signed int bysH)
+				terrain::Terrain& t, biome::biome_t b, signed int bysH, BlockYStrip& bys)
 			{
 				CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
-				BlockYStrip& bys = m_blocks[Index(cc)];
 				bys.ystrip[y] = Block(CompressChunkCoord(cc), t.BlockType(b, bysH, y));
 			}
 			void GenerateHeightmapCellCorners(const WVec2& chunkCoord, terrain::Terrain& t)
@@ -413,6 +450,8 @@ namespace minecraft
 			gpu::CGPUHandler m_gpuh;
 			// heightmap cell corners
 			pnoise::PNoise::CellCorners m_corners;
+			// chunk corners
+			CCorners m_ccorners;
 			// heightmap cell gradient vectors
 			pnoise::PNoise::GradientVectors m_gradientVectors;
 			BlockYStrip m_blocks[16 * 16];

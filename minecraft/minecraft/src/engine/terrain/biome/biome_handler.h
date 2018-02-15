@@ -6,7 +6,7 @@
 #include "plains/plains.h"
 #include "desert/desert.h"
 #include "../../noise/noise.h"
-
+#include "mountain/mountains.h"
 
 namespace minecraft
 {
@@ -30,11 +30,13 @@ namespace minecraft
 		private:
 			const Block::block_t PlainsBlockType(signed int maxH, signed int y);
 			const Block::block_t DesertBlockType(signed int maxH, signed int y);
+			const Block::block_t MountainsBlockType(signed int maxH, signed int y);
 		private:
 			const float COEFF;
 			pnoise::PNoise m_noiseGenerator;
 			PlainData m_plainsData;
 			DesertData m_desertData;
+			MountainsData m_mountains;
 		};
 	}
 }

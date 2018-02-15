@@ -9,7 +9,8 @@ const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(block_t::I
 	{glm::vec3(2.0f, 2.0f, 2.0f)},
 	{glm::vec3(0.0f, 3.0f, 2.0f)},
 	{glm::vec3(17.0f, 17.0f, 17.0f)},
-	{glm::vec3(18.0f, 18.0f, 18.0f)}
+	{glm::vec3(18.0f, 18.0f, 18.0f)},
+	{glm::vec3(21.0f, 20.0f, 21.0f)}
 };
 
 Block::Block(const CCoord& cc, const block_t& bt)
@@ -26,7 +27,7 @@ glm::vec3 Block::WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 neg
 {
 	CVec2 blockPosOnChunk = ExtrCPos();
 	return glm::vec3(negativeCornerWPos.x + blockPosOnChunk.x, y,
-		negativeCornerWPos.z + blockPosOnChunk.z) + 0.5f;
+		negativeCornerWPos.z + blockPosOnChunk.z);// +0.5f;
 } 
 
 CVec2 Block::ExtrCPos(void) const

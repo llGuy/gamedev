@@ -20,10 +20,11 @@ namespace minecraft
 			// data for jumping
 			struct JData
 			{
-				void Start(void)
+				void Start(bool& jumping)
 				{
-					upvelocity = glm::vec3(0.0f, 3.5f, 0.0f);
+					upvelocity = glm::vec3(0.0f, 5.0f, 0.0f);
 					rising = true;
+					jumping = true;
 				}
 				void Update(glm::vec3* gravity, float deltaT, glm::vec3& playerPosition)
 				{
@@ -45,15 +46,19 @@ namespace minecraft
 			glm::vec3* EntityWorldPosition(void) override;
 
 			void UpdData(glm::vec3* gravity, float blockUnderneath, float deltaT) override;
-			void Move(const move_t&& movement, data::Time* time) override;
-			void Strafe(const strafe_t&& strafe, data::Time* time) override;
+			void UpdData(glm::vec3* gravity, bool blockUnderneathPresent, float deltaT) override;
+			void Move(const move_t&& movement, data::Time* time, bool obstx[2], bool obstz[2]) override;
+			void Strafe(const strafe_t&& strafe, data::Time* time, bool obstx[2], bool obstz[2]) override;
 			void VMove(const vmove_t&& vmovement, data::Time* time) override;
 			float Speed(data::Time* time) const;
+			void SpeedUp(void) override;
 		private:
 			void Jump(void);
+			void Fall(float deltaT, glm::vec3& gravity);
 		private:
 			Name m_name;
 			float m_speed;
+			float m_speedCoeff;
 			const glm::vec3 UP;
 			glm::vec3 m_playerPosition;
 			glm::mat4 m_translateMatrix;
@@ -63,7 +68,9 @@ namespace minecraft
 
 			glm::vec3* m_currentGravity;
 			JData m_jumpData;
+
 			bool m_jumping;
+			bool m_running;
 
 			PData m_playerData;
 		};

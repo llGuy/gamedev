@@ -43,9 +43,11 @@ namespace minecraft
 			virtual glm::vec3* EntityWorldPosition(void) { return nullptr; }
 
 			virtual void UpdData(glm::vec3* gravity, float blockUnderneath, float deltaT) {}
-			virtual void Move(const move_t&& movement, data::Time* time) {}
-			virtual void Strafe(const strafe_t&& strafe, data::Time* time) {}
+			virtual void UpdData(glm::vec3* gravity, bool blockUnderneathPresent, float deltaT) {}
+			virtual void Move(const move_t&& movement, data::Time* time, bool obstx[2], bool obstz[2]) {}
+			virtual void Strafe(const strafe_t&& strafe, data::Time* time, bool obstx[2], bool obstz[2]) {}
 			virtual void VMove(const vmove_t&& vmovement, data::Time* time) {}
+			virtual void SpeedUp(void) {}
 		};
 	}
 }

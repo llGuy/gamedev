@@ -72,6 +72,9 @@
     <ClCompile Include="src\engine\debug\debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\terrain\tree\oak\oak.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\block\block.h">
@@ -194,7 +197,19 @@
     <ClInclude Include="src\engine\debug\line\line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\debug\line\buffer\line_buffer.h">
+    <ClInclude Include="src\engine\terrain\biome\mountain\mountains.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\biome\ocean\ocean.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\tree\tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\tree\tree_mesh\tree_mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\tree\oak\oak.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

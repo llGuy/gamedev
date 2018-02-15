@@ -16,12 +16,23 @@ namespace minecraft
 		}
 		float CHandler::BlockUnderPoint(glm::vec3 wpos)
 		{
-			return 0.0f;
+			wpos = glm::round(wpos);
+			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos);
+			CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
+			// convert back to world coordinate space
+			if (!m_chunkMap.Exists(wcc)) return 0.0f;
+			float blockY = m_chunkMap[wcc].BlockUnder(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos());
+			
+			if (static_cast<int>(blockY) == -255)
+			{
+				m_chunkMap[wcc].BlockUnder(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos());
+			}
+
+			return blockY;// +0.5f;
 		}
 		float CHandler::HighestBlock(glm::vec3 wpos)
 		{
 			// convert to backend coordinate space
-			wpos;
 			wpos = glm::round(wpos);
 			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos);
 			CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
@@ -29,7 +40,38 @@ namespace minecraft
 			if (!m_chunkMap.Exists(wcc)) return 0.0f;
 			return m_chunkMap[wcc].HighestBlock(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos()) + 0.5f;
 		}
-		
+		bool CHandler::Obstruction(glm::vec3 flags, glm::vec3 wpos)
+		{
+			enum
+				: bool
+			{
+				NO_OBSTRUCTION = false,
+
+				OBSTRUCTION = true
+			};
+
+			glm::vec3 rwpos = glm::round(wpos + flags);
+			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(rwpos);
+			CVec2 blockchunkCoordinate = CalculateBlockCoordInChunk(wcc, rwpos);
+			if (!m_chunkMap.Exists(wcc)) return NO_OBSTRUCTION;
+			else
+			{
+				if (fabs(flags.y) > 0.5f)
+				{
+					auto& c = m_chunkMap[wcc];
+					bool exists = c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos);
+					return exists;
+				}
+				else
+				{
+					auto& c = m_chunkMap[wcc];
+					return (c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos) ||
+						c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos - glm::vec3(0.0f, 1.0f, 0.0f))) &&
+						glm::all(glm::lessThan(glm::abs(wpos - rwpos), glm::vec3(1.05f)));
+				}
+			}
+			return false;
+		}
 		cmap::CMap::iterator CHandler::Begin(void)
 		{
 			return m_chunkMap.Begin();
@@ -118,6 +160,10 @@ namespace minecraft
 		void CHandler::ResetMapDeletedLListsBool(void)
 		{
 			m_chunkMap.ResetDeltedLListsBool();
+		}
+		ChunkDB::CCorners CHandler::ChunkCorners(Chunk::WCoordChunk wcc)
+		{
+			return m_chunkMap[wcc].ChunkCorners();
 		}
 	}
 }

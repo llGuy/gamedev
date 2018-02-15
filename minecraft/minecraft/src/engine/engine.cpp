@@ -3,6 +3,8 @@
 #include <glm/gtx/transform.hpp>
 #include <thread>
 
+#define DEBUG 
+
 namespace minecraft
 {
 	Engine::Engine(void)
@@ -10,12 +12,27 @@ namespace minecraft
 	{
 		Init();
 	}
+	Engine::~Engine(void)
+	{
+		
+	}
+	void Engine::HEAPDelete(void)
+	{
+		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
+			for (auto& jt : *it)
+				jt.DestroyHEAPMemoryForBlocksWPos();
+	}
 	void Engine::Render(void)
 	{
 		glClearColor(m_udata.skyColor.r, m_udata.skyColor.g, m_udata.skyColor.b, 0.2f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		UpdateData();
+		RenderChunks();
+		//if(m_debug.EnabledDebugMode()) RenderDebug();
+	}
+	void Engine::RenderChunks(void)
+	{
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -38,10 +55,21 @@ namespace minecraft
 			}
 		}
 	}
+	void Engine::RenderDebug(void)
+	{
+		UpdateDebugData();
+		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES), m_debug.Size(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES));
+		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_CHUNK_CORNER), m_debug.Size(debug::Debug::option_t::RENDER_CHUNK_CORNER));
+	}
 	void Engine::UpdateData(void)
 	{
 		UpdatePlayerData();
 		UpdateUniformData();
+	}
+	void Engine::InitDebugData(void)
+	{;
+		m_debug.Resize(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES, 3);
+		m_debug.Resize(debug::Debug::option_t::RENDER_CHUNK_CORNER, 4);
 	}
 	void Engine::Init(void)
 	{
@@ -61,7 +89,7 @@ namespace minecraft
 		m_variableConfigs.renderDistance = 50.0f;
 		m_variableConfigs.mouseSensitivity = 0.02f;
 
-		m_constantConfigs.gravity = glm::vec3(0.0f, -8.6f, 0.0f);
+		m_constantConfigs.gravity = glm::vec3(0.0f, -9.5f, 0.0f);
 	}
 	void Engine::UDataInit(unsigned int wwidth, unsigned int wheight)
 	{
@@ -83,25 +111,38 @@ namespace minecraft
 		m_camera.Bind(m_player);
 
 		m_chunkHandler->UseSHProgram();
+		EnableDebugger();
+		InitDebugData();
 	}
 	void Engine::RecieveKeyInput(key_t&& key)
 	{
+		/* obstruction handling */
+		bool obstx[2];
+		obstx[0] = m_chunkHandler->Obstruction(glm::vec3(1.0f, 0.0f, 0.0f), *m_player->EntityWorldPosition());
+		obstx[1] = m_chunkHandler->Obstruction(glm::vec3(-1.0f, 0.0f, 0.0f), *m_player->EntityWorldPosition());
+		bool obstz[2];
+		obstz[0] = m_chunkHandler->Obstruction(glm::vec3(0.0f, 0.0f, 1.0f), *m_player->EntityWorldPosition());
+		obstz[1] = m_chunkHandler->Obstruction(glm::vec3(0.0f, 0.0, -1.0f), *m_player->EntityWorldPosition());
+
 		switch (key)
 		{
+		case key_t::R:
+			m_player->SpeedUp();
+			break;
 		case key_t::W:
-			m_player->Move(ent::Entity::move_t::FORWARD, &m_time);
+			m_player->Move(ent::Entity::move_t::FORWARD, &m_time, obstx, obstz);
 			break;
 		case key_t::A:
-			m_player->Strafe(ent::Entity::strafe_t::LEFT, &m_time);
+			m_player->Strafe(ent::Entity::strafe_t::LEFT, &m_time, obstx, obstz);
 			break;
 		case key_t::S:
-			m_player->Move(ent::Entity::move_t::BACKWARD, &m_time);
+			m_player->Move(ent::Entity::move_t::BACKWARD, &m_time, obstx, obstz);
 			break;
 		case key_t::D:
-			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time);
+			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time, obstx, obstz);
 			break;
 		case key_t::SPACE:
-			m_player->Move(ent::Entity::move_t::JUMP, &m_time);
+			m_player->Move(ent::Entity::move_t::JUMP, &m_time, obstx, obstz);
 			break;
 		case key_t::LSHIFT:
 			m_player->VMove(ent::Entity::vmove_t::DOWN, &m_time);
@@ -123,7 +164,50 @@ namespace minecraft
 	}
 	void Engine::UpdatePlayerData(void)
 	{
-		float blockUnderPlayer = m_chunkHandler->HighestBlock(*m_player->EntityWorldPosition());
-		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayer, m_time.deltaT);
+		bool blockUnderPlayerPresent = m_chunkHandler->Obstruction(glm::vec3(0.0f, -2.0f, 0.0f), *m_player->EntityWorldPosition());
+		//float blockUnderPlayer = m_chunkHandler->BlockUnderPoint(*m_player->EntityWorldPosition());
+		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayerPresent, static_cast<float>(m_time.deltaT));
+	}
+	void Engine::EnableDebugger(void)
+	{
+		m_debug.DebugMode(true);
+		m_debug.Enable(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES);
+		m_debug.Enable(debug::Debug::option_t::RENDER_CHUNK_CORNER);
+	}
+
+	void Engine::UpdateDebugData(void)
+	{
+		/* for the axes next to the player */
+		auto YAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(0.0f, 3.0f, 0.0f),
+			*m_player->EntityWorldPosition() + glm::vec3(0.0f, 0.01f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) }; };
+		auto XAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(3.0f, 0.0f, 0.0f),
+			*m_player->EntityWorldPosition() + glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) }; };
+		auto ZAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(0.0f, 0.0f, 3.0f),
+			*m_player->EntityWorldPosition() + glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 1.0f) }; };
+
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[0] = YAxisLine();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = XAxisLine();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = ZAxisLine();
+
+		/* for the chunk corners */
+		glm::vec3 playerPosition = *m_player->EntityWorldPosition();
+		//	chunk::ChunkDB::CCorners cc = m_chunkHandler->ChunkCorners(
+		//	m_chunkHandler->CalculateCoordsInChunks(glm::vec2(playerPosition.x, playerPosition.z)));
+
+		chunk::ChunkDB::CCorners cc = { glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f) };
+
+		auto nn = [&](void)->debug::Line { return { glm::vec3(cc.nn.x, -50.0f, cc.nn.y) - 0.5f,
+			glm::vec3(cc.nn.x, 50.0f, cc.nn.y) - 0.5f, glm::vec3(1.0f) }; };
+		auto np = [&](void)->debug::Line { return { glm::vec3(cc.np.x, -50.0f, cc.np.y) - 0.5f,
+			glm::vec3(cc.np.x, 50.0f, cc.np.y) - 0.5f, glm::vec3(1.0f) }; };
+		auto pn = [&](void)->debug::Line { return { glm::vec3(cc.pn.x, -50.0f, cc.pn.y) - 0.5f,
+			glm::vec3(cc.pn.x, 50.0f, cc.pn.y) - 0.5f, glm::vec3(1.0f) }; };
+		auto pp = [&](void)->debug::Line { return { glm::vec3(cc.pp.x, -50.0f, cc.pp.y) - 0.5f,
+			glm::vec3(cc.pp.x, 50.0f, cc.pp.y) - 0.5f, glm::vec3(1.0f) }; };
+
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[0] = nn();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = np();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = pn();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[3] = pp();
 	}
 }

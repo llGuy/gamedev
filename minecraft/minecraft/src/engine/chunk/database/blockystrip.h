@@ -13,6 +13,7 @@ namespace minecraft
 		struct BlockYStrip
 		{
 			ysmap_t ystrip;
+			signed int smallest;
 		};
 	}
 }

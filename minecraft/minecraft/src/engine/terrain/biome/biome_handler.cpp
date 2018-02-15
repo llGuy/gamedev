@@ -5,7 +5,7 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(signed int seed)
-			: m_noiseGenerator(seed, 16 * 13), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f)
+			: m_noiseGenerator(seed, 16 * 23), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f)
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -26,7 +26,8 @@ namespace minecraft
 			float noise = m_noiseGenerator.Noise(v, bcc, dv, COEFF);
 			noise *= 10.0f;
 			// av is between -10.0f, and 10.0f
-			if (noise >= 0.0f) return biome_t::PLAINS;
+			if (noise >= 0.5f) return biome_t::MOUNTAINS;
+			if (noise >= -0.4f) return biome_t::PLAINS;
 			return biome_t::DESERT;
 		}
 
@@ -36,6 +37,7 @@ namespace minecraft
 			{
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y); break;
 			case biome_t::DESERT: return DesertBlockType(maxH, y); break;
+			case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); break;
 			default: return Block::block_t::INV;
 			}
 		}
@@ -45,6 +47,7 @@ namespace minecraft
 			{
 			case biome_t::PLAINS: return m_plainsData.MAX_HEIGHT; break;
 			case biome_t::DESERT: return m_desertData.MAX_HEIGHT; break;
+			case biome_t::MOUNTAINS: return m_mountains.MAX_HEIGHT; break;
 			default: return 0;
 			}
 		}
@@ -54,6 +57,7 @@ namespace minecraft
 			{
 			case biome_t::PLAINS: return m_plainsData.OFFSET; break;
 			case biome_t::DESERT: return m_desertData.OFFSET; break;
+			case biome_t::MOUNTAINS: return m_mountains.OFFSET; break;
 			default: return 0;
 			}
 		}
@@ -69,6 +73,15 @@ namespace minecraft
 			if (y >= maxH * m_desertData.SAND_LEVEL) return Block::block_t::SAND;
 			else if (y >= maxH * m_desertData.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_desertData.STONE_LEVEL) return Block::block_t::STONE;
+			else return Block::block_t::BEDROCK;
+		}
+		const Block::block_t BiomeHandler::MountainsBlockType(signed int maxH, signed int y)
+		{
+			/* at the top there is stone */
+			if (y == maxH && maxH > m_mountains.STONE_TOP * (m_mountains.OFFSET + m_mountains.MAX_HEIGHT)) return Block::block_t::STONE;
+			else if (y == maxH) return Block::block_t::GRASS;
+			else if (y >= maxH * m_mountains.DIRT_LEVEL) return Block::block_t::DIRT;
+			else if (y >= maxH * m_mountains.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;
 		}
 	}
