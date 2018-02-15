@@ -29,7 +29,6 @@ namespace minecraft
 
 		UpdateData();
 		RenderChunks();
-		//if(m_debug.EnabledDebugMode()) RenderDebug();
 	}
 	void Engine::RenderChunks(void)
 	{
@@ -37,16 +36,14 @@ namespace minecraft
 		{
 			for (auto& jt : *it)
 			{
+				// check if the chunk map deleted the lists to create new ones
 				if (m_chunkHandler->MapDeltedLLists())
 				{
 					m_chunkHandler->ResetMapDeletedLListsBool();
 					return;
 				}
 				chunk::Chunk& c = jt;
-				if (c.Loaded() && !c.BufferLoaded())
-				{
-					c.LoadGPUBuffer();
-				}
+				if (c.Loaded() && !c.BufferLoaded()) c.LoadGPUBuffer();
 				if (c.Loaded() && c.BufferLoaded() && c.Vao() != nullptr && c.CreatedVAO())
 				{
 					m_renderer.UniformData(m_udata, m_chunkHandler->Locations());

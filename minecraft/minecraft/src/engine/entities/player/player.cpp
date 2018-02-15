@@ -35,10 +35,7 @@ namespace minecraft
 				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
 				m_jumping = false;
 			}
-			else
-			{
-				if (!m_jumping) Fall(deltaT, *gravity);
-			}
+			else { if (!m_jumping) Fall(deltaT, *gravity); }
 		}
 		void Player::UpdData(glm::vec3* gravity, bool blockUnderneathPresent, float deltaT)
 		{
@@ -47,7 +44,6 @@ namespace minecraft
 			else
 			{
 				/* reset */
-				//m_playerPosition.y = glm::round(m_playerPosition.y);
 				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
 				m_jumping = false;
 			}

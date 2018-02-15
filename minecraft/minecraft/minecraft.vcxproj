@@ -136,7 +136,7 @@
     <ClCompile Include="src\engine\terrain\biome\biome_handler.cpp" />
     <ClCompile Include="src\engine\terrain\heightmap\heightmap.cpp" />
     <ClCompile Include="src\engine\terrain\terrain.cpp" />
-    <ClCompile Include="src\engine\terrain\tree\oak\oak.cpp" />
+    <ClCompile Include="src\engine\terrain\tree\tree.cpp" />
     <ClCompile Include="src\engine\utility\glm_vecio.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\texture\texture.cpp" />
@@ -179,9 +179,7 @@
     <ClInclude Include="src\engine\terrain\biome\plains\plains.h" />
     <ClInclude Include="src\engine\terrain\heightmap\heightmap.h" />
     <ClInclude Include="src\engine\terrain\terrain.h" />
-    <ClInclude Include="src\engine\terrain\tree\oak\oak.h" />
     <ClInclude Include="src\engine\terrain\tree\tree.h" />
-    <ClInclude Include="src\engine\terrain\tree\tree_mesh\tree_mesh.h" />
     <ClInclude Include="src\engine\utility\glm_vecio.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\shader\shader.h" />
