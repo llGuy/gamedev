@@ -11,7 +11,7 @@ namespace minecraft
 		Player::Player(void)
 			: m_playerViewDirection(1.0f, 0.0f, 0.0f), 
 			m_playerPosition(0.23f, 80.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(2.5f),
-			m_playerData({2.0f}), m_jumping(false), m_speedCoeff(1.5f)
+			m_playerData({1.0f}), m_jumping(false), m_speedCoeff(1.5f)
 		{
 		}
 		glm::vec3* Player::EntityViewDirection(void)
@@ -32,7 +32,7 @@ namespace minecraft
 				m_playerPosition.y < (m_playerData.height + blockUnderneath + 0.01f))
 			{
 				m_playerPosition.y = blockUnderneath + m_playerData.height;
-				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
+				m_jumpData.upvelocity = glm::vec3(0.0f, -4.5f, 0.0f);
 				m_jumping = false;
 			}
 			else { if (!m_jumping) Fall(deltaT, *gravity); }
@@ -42,7 +42,7 @@ namespace minecraft
 			if (blockUnderneathPresent)
 			{
 				/* reset */
-				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
+				m_jumpData.upvelocity = glm::vec3(0.0f, -4.5f, 0.0f);
 				m_jumping = false;
 			}
 			if (m_jumping) m_jumpData.Update(gravity, deltaT, m_playerPosition);
@@ -133,6 +133,10 @@ namespace minecraft
 		bool Player::Jumping(void)
 		{
 			return m_jumping;
+		}
+		float Player::Height(void)
+		{
+			return m_playerData.height;
 		}
 	}
 }

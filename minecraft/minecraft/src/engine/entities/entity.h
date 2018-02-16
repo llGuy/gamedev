@@ -50,6 +50,7 @@ namespace minecraft
 			virtual void SpeedUp(void) {}
 			virtual bool AttainedMaxJHeight(void) { return false; }
 			virtual bool Jumping(void) { return false; }
+			virtual float Height(void) { return 0; };
 		};
 	}
 }

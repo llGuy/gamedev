@@ -131,19 +131,30 @@ namespace minecraft
 		chunk::Chunk::WCoordChunk CHandler::CalculateChunkCoordinateOfWPos(const glm::vec3& v) const
 		{
 			WVec2 xz = { static_cast<signed int>(v.x), static_cast<signed int>(v.z) };
-			signed int x = (xz.x == 0) || (abs((xz.x + 8) % 16)) == 0 ? xz.x / 16 : (abs(xz.x) + 8) * (xz.x / abs(xz.x)) / 16;
-			signed int z = (xz.z == 0) || (abs((xz.z + 8) % 16)) == 0 ? xz.z / 16 : (abs(xz.z) + 8) * (xz.z / abs(xz.z)) / 16;
+
+			signed int x, z;
+
+			//signed int absx = abs(xz.x);
+			//signed int absz = abs(xz.z);
+				
+			auto ccoord = [&](signed int a)->signed int 
+			{
+				signed int absa = abs(a);
+				if (a > 0) return (abs((a + 8) % 16)) == 0 ? (a + 16) / 16 : (absa + 8) * (a / absa) / 16;
+				else return a == 0 || (abs((a + 8) % 16)) == 0 ? a / 16 : (absa + 8) * (a / absa) / 16;
+			};
+
+			x = ccoord(xz.x);
+			z = ccoord(xz.z);
+
+			//if (xz.z > 0) z = (abs((xz.z + 8) % 16)) == 0 ? (xz.z + 16) / 16 : (absz + 8) * (xz.z / absz) / 16;
+			//else z = xz.z == 0 || (abs((xz.z + 8) % 16)) == 0 ? xz.z / 16 : (absz + 8) * (xz.z / absz) / 16;
 			return { { x, z } };
 		}
 		CVec2 CHandler::CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const
 		{
-			if ((wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
-				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)))) == 16)
-				std::cout << "hahahaha" << std::endl;
 			unsigned char x = wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
 				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
-			if (v.x + 8 == -1)
-				std::cout << "debug" << std::endl;
 			unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
 				static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
 			return { x , z };

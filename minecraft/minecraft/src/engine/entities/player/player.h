@@ -60,6 +60,7 @@ namespace minecraft
 			void SpeedUp(void) override;
 			bool AttainedMaxJHeight(void) override;
 			bool Jumping(void) override;
+			float Height(void) override;
 		private:
 			void Jump(void);
 			void Fall(float deltaT, glm::vec3& gravity);

@@ -18,7 +18,7 @@ namespace minecraft
 		}
 		glm::mat4& Camera::ViewMatrix(void)
 		{
-			glm::vec3 position = *m_boundEntity->EntityWorldPosition() + glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 position = *m_boundEntity->EntityWorldPosition() + glm::vec3(0.0f, m_boundEntity->Height(), 0.0f);
 			glm::vec3 center = position + *m_boundEntity->EntityViewDirection();
 			m_viewMatrix = glm::lookAt(position, center, UP);
 			return m_viewMatrix;
