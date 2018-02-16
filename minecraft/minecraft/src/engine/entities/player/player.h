@@ -20,18 +20,24 @@ namespace minecraft
 			// data for jumping
 			struct JData
 			{
-				void Start(bool& jumping)
+				void Start(bool& jumping, float y)
 				{
-					upvelocity = glm::vec3(0.0f, 5.0f, 0.0f);
+					upvelocity = glm::vec3(0.0f, 4.5f, 0.0f);
 					rising = true;
 					jumping = true;
+					yStart = y;
+					arrivedAtMaxHeight = false;
 				}
 				void Update(glm::vec3* gravity, float deltaT, glm::vec3& playerPosition)
 				{
+					if (glm::round(playerPosition.y) - (yStart + 1.0f) < 0.001f)
+						arrivedAtMaxHeight = true;
 					playerPosition = playerPosition + upvelocity * deltaT;
 					upvelocity = upvelocity + *gravity * deltaT;
 				}
 				glm::vec3 upvelocity;
+				float yStart;
+				bool arrivedAtMaxHeight;
 				bool rising;
 			};
 		public:
@@ -52,6 +58,8 @@ namespace minecraft
 			void VMove(const vmove_t&& vmovement, data::Time* time) override;
 			float Speed(data::Time* time) const;
 			void SpeedUp(void) override;
+			bool AttainedMaxJHeight(void) override;
+			bool Jumping(void) override;
 		private:
 			void Jump(void);
 			void Fall(float deltaT, glm::vec3& gravity);

@@ -32,7 +32,7 @@ namespace minecraft
 								if (!(ch.Loaded()) && !ch.BufferLoaded())
 								{
 									std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain);
+									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
 									std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 								}
 							}
@@ -69,15 +69,15 @@ namespace minecraft
 							if (!(ch.Loaded()) && !ch.BufferLoaded())
 							{
 								std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-								m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain);
+								m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
 								std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 							}
 						}
 					}
 				}
 			}
-			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t)
-				: m_currentMap(cm), m_player(player), m_currentTerrain(&t)
+			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh)
 			{
 			}
 			// spawn thread

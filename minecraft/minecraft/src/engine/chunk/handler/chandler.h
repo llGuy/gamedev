@@ -50,6 +50,7 @@ namespace minecraft
 			data::CUDataLocs m_udataloc;
 			loader::CLoader* m_chunkloader;
 			terrain::Terrain m_terrain;
+			structures::StructuresHandler m_structHandler;
 			//biome::BiomeHandler m_biomeHandler;
 			cmap::CMap m_chunkMap;
 			signed int m_seed;

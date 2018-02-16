@@ -43,11 +43,11 @@ namespace minecraft
 			explicit Chunk(void);
 			explicit Chunk(signed int seed) : m_wcoordChunk({ {0, 0} }), m_dataBase(seed), 
 				m_loaded(false), m_gpubufferloaded(false) {}
-			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t);
-			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t);
+			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
+			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
 			void LoadGPUBuffer(void);
 			void DestroyHEAPMemoryForBlocksWPos(void);
-			void LoadAll(terrain::Terrain& t);
+			void LoadAll(terrain::Terrain& t, structures::StructuresHandler& sh);
 			float HighestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos);
 			float BlockUnder(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos);
 			WVec2 NegativeCornerWPos(void) const;
@@ -64,7 +64,8 @@ namespace minecraft
 			const bool BufferLoaded(void);
 			const bool CreatedVAO(void);
 		private:
-			void LoadTop(terrain::Terrain& t);
+			void LoadTop(terrain::Terrain& t, structures::StructuresHandler& sh);
+			void LoadStructures(terrain::Terrain& t, structures::StructuresHandler& sh);
 		private:
 			WCoordChunk m_wcoordChunk;
 			ChunkDB m_dataBase;

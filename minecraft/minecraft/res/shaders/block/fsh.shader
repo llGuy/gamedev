@@ -33,14 +33,22 @@ vec4 Grass(void)
 	return texture2D(diffuse_texture, texture_coords) + vec4(141.0f / 255.0f, 198.0f / 255.0f, 79.0f / 255.0f, 1.0f) * 0.4f;
 }
 
+vec4 Leaves(void)
+{
+	return texture2D(diffuse_texture, texture_coords) + vec4(141.0f / 255.0f, 198.0f / 255.0f, 79.0f / 255.0f, 1.0f) * 0.4f;
+}
+
 vec4 FragmentColor(void)
 {
 	if (abs(texture_data - 0.0f) < 0.0001f) return Grass();
+	if (abs(texture_data - 53.0f) < 0.0001f) return Leaves();
 	return texture2D(diffuse_texture, texture_coords);
 }
 
 void main()
 {
+
+
 	vec3 light_vector = normalize(light_position - vertex_position);
 	float diffuse_brightness = Diffuse(light_vector);
 	float specular_brightness = Specular(light_vector);

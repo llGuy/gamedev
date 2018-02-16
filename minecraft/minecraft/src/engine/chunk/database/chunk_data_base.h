@@ -11,6 +11,7 @@
 #include "../../terrain/terrain.h"
 #include "../../terrain/terrain.h"
 #include "blockystrip.h"
+#include "../../structures/handler/structures_handler.h"
 
 namespace minecraft
 {
@@ -67,6 +68,33 @@ namespace minecraft
 
 				NEG_Z = 3
 			};
+			void LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner)
+			{
+				WCoordChunk wcc = {chunkCoords};
+				std::vector<structures::Structure*> structs = sh.StructuresOfChunk(wcc, negCorner);
+				for (auto& i : structs)
+				{
+					unsigned char x = i->OriginC().x;
+					unsigned char z = i->OriginC().z;
+
+					unsigned int index = Index({x, z});
+
+					BlockYStrip& bys = m_blocks[index];
+					CVec2 cc = { x, z };
+
+					structures::StructCompBYS scbys = i->GenerateYStripOfStruct({negCorner.x + x, negCorner.z + z});
+
+					// for trees
+					if (bys.bio != biome::biome_t::DESERT)
+					{
+						for (unsigned int y = scbys.start; y <= scbys.end; ++y)
+						{
+							AppendBlock(x, z, y + bys.top, bys, scbys.bys[y].block);
+							GradLoadGPUData(chunkCoords, negCorner, x, z, bys, y + bys.top);
+						}
+					}
+				}
+			}
 			void LoadTop(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 			{
 				GenerateCorners(negCorner);
@@ -99,17 +127,23 @@ namespace minecraft
 						signed int smallestNeighbour = SmallestNeighbour(neighbouringHeights);
 
 						BlockYStrip& bys = m_blocks[(Index({ static_cast<unsigned char>(x), static_cast<unsigned char>(z) }))];
+						bys.bio = b;
 						// regardless of whether at corner of chunk
-						for (signed int y = h; y >= smallestNeighbour; --y) AppendBlock(x, z, y, t, b, h, bys);
+						for (signed int y = h; y >= smallestNeighbour; --y)
+						{
+							AppendBlock(x, z, y, t, b, h, bys);
+							GradLoadGPUData(chunkCoords, negCorner, x, z, bys, y);
+						}
 						bys.smallest = smallestNeighbour;
+						bys.top = h;
 						if (h < smallestNeighbour)
 						{
 							AppendBlock(x, z, h, t, b, h, bys);
 							bys.smallest = h;
+							bys.top = h;
 						}
 					}
 				}
-				LoadGPUData(chunkCoords, negCorner);
 			}
 			void LoadGPUBuffer(void)
 			{
@@ -209,6 +243,11 @@ namespace minecraft
 						}
 					}
 				}
+			}
+			void GradLoadGPUData(WVec2 chunkCoord, WVec2 negCorner, unsigned int x, unsigned int z, BlockYStrip& bys, signed int y)
+			{
+				CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
+				m_gpuh.Load(&bys, Index(cc), y, chunkCoord, negCorner);
 			}
 			bool BlockIsVisible(signed int x, signed int y, signed int z, const BlockYStrip& bys)
 			{
@@ -329,6 +368,7 @@ namespace minecraft
 			{
 				return t.GVectors(c, terrain::Terrain::choice_t::HM);
 			}
+
 			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, 
 				const chunkExtr_t ce, const WVec2& negCorner, signed int x, signed int z, WVec2& chunkCoord)
 			{
@@ -437,6 +477,12 @@ namespace minecraft
 			{
 				CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
 				bys.ystrip[y] = Block(CompressChunkCoord(cc), t.BlockType(b, bysH, y));
+			}
+			void AppendBlock(unsigned char x, unsigned char z, unsigned int y,
+				BlockYStrip& bys, Block::block_t b)
+			{
+				CVec2 cc = {x, z };
+				bys.ystrip[y] = Block(CompressChunkCoord(cc), b);
 			}
 			void GenerateHeightmapCellCorners(const WVec2& chunkCoord, terrain::Terrain& t)
 			{

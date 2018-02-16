@@ -64,7 +64,7 @@ namespace minecraft
 		UpdateUniformData();
 	}
 	void Engine::InitDebugData(void)
-	{;
+	{
 		m_debug.Resize(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES, 3);
 		m_debug.Resize(debug::Debug::option_t::RENDER_CHUNK_CORNER, 4);
 	}
@@ -86,7 +86,7 @@ namespace minecraft
 		m_variableConfigs.renderDistance = 50.0f;
 		m_variableConfigs.mouseSensitivity = 0.02f;
 
-		m_constantConfigs.gravity = glm::vec3(0.0f, -9.5f, 0.0f);
+		m_constantConfigs.gravity = glm::vec3(0.0f, -12.5f, 0.0f);
 	}
 	void Engine::UDataInit(unsigned int wwidth, unsigned int wheight)
 	{
@@ -161,7 +161,11 @@ namespace minecraft
 	}
 	void Engine::UpdatePlayerData(void)
 	{
-		bool blockUnderPlayerPresent = m_chunkHandler->Obstruction(glm::vec3(0.0f, -2.0f, 0.0f), *m_player->EntityWorldPosition());
+		bool blockUnderPlayerPresent = m_chunkHandler->Obstruction(glm::vec3(0.0f, -1.0f, 0.0f), *m_player->EntityWorldPosition());
+		if (!m_player->AttainedMaxJHeight() && m_player->Jumping())
+		{
+			blockUnderPlayerPresent = false;
+		}
 		//float blockUnderPlayer = m_chunkHandler->BlockUnderPoint(*m_player->EntityWorldPosition());
 		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayerPresent, static_cast<float>(m_time.deltaT));
 	}

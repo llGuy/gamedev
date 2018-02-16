@@ -4,7 +4,7 @@
 #include "../map/cmap.h"
 #include "../../entities/player/player.h"
 #include "../../terrain/terrain.h"
-//#include "../biome/biome_handler.h"
+#include "../../structures/handler/structures_handler.h"
 
 #include <thread>
 #include <iostream>
@@ -31,7 +31,7 @@ namespace minecraft
 				};
 				explicit CLoader(void) = default;
 				CLoader& operator=(const CLoader&) = default;
-				explicit CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t);
+				explicit CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
 				//CLoader& operator=(const CLoader&& cl);
 			public:
 				void UpdateChunksUnder(std::function<bool(int, int)> x, std::function<void(int&)> xi,
@@ -45,6 +45,8 @@ namespace minecraft
 				std::thread m_clthread[2];
 				cmap::CMap* m_currentMap;
 				terrain::Terrain* m_currentTerrain;
+				structures::StructuresHandler* m_currentStructuresHandler;
+
 				ent::Entity* m_player;
 				
 				chunk::Chunk::WCoordChunk m_playerCurrentChunkCoordinates;

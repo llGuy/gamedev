@@ -39,14 +39,14 @@ namespace minecraft
 		}
 		void Player::UpdData(glm::vec3* gravity, bool blockUnderneathPresent, float deltaT)
 		{
-			if (m_jumping) m_jumpData.Update(gravity, deltaT, m_playerPosition);
-			if (!blockUnderneathPresent) Fall(deltaT, *gravity);
-			else
+			if (blockUnderneathPresent)
 			{
 				/* reset */
 				m_jumpData.upvelocity = glm::vec3(0.0f, -3.5f, 0.0f);
 				m_jumping = false;
 			}
+			if (m_jumping) m_jumpData.Update(gravity, deltaT, m_playerPosition);
+			else if (!blockUnderneathPresent) Fall(deltaT, *gravity);
 		}
 		void Player::Fall(float deltaT, glm::vec3& gravity)
 		{
@@ -120,11 +120,19 @@ namespace minecraft
 		}
 		void Player::Jump(void)
 		{
-			if (!m_jumping) m_jumpData.Start(m_jumping);
+			if (!m_jumping) m_jumpData.Start(m_jumping, glm::round(m_playerPosition.y));
 		}
 		void Player::SpeedUp(void)
 		{
 			m_running = true;
+		}
+		bool Player::AttainedMaxJHeight(void)
+		{
+			return m_jumpData.arrivedAtMaxHeight;
+		}
+		bool Player::Jumping(void)
+		{
+			return m_jumping;
 		}
 	}
 }

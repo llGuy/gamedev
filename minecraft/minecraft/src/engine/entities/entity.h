@@ -48,6 +48,8 @@ namespace minecraft
 			virtual void Strafe(const strafe_t&& strafe, data::Time* time, bool obstx[2], bool obstz[2]) {}
 			virtual void VMove(const vmove_t&& vmovement, data::Time* time) {}
 			virtual void SpeedUp(void) {}
+			virtual bool AttainedMaxJHeight(void) { return false; }
+			virtual bool Jumping(void) { return false; }
 		};
 	}
 }

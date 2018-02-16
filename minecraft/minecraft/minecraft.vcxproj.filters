@@ -72,7 +72,13 @@
     <ClCompile Include="src\engine\debug\debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\terrain\tree\tree.cpp">
+    <ClCompile Include="src\engine\structures\structure\structure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\structures\tree\tree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\structures\handler\structures_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +209,13 @@
     <ClInclude Include="src\engine\terrain\biome\ocean\ocean.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\terrain\tree\tree.h">
+    <ClInclude Include="src\engine\structures\structure\structure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\structures\tree\tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\structures\handler\structures_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

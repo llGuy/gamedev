@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include "../../block/block.h"
+#include "../../terrain/biome/biome.h"
 
 namespace minecraft
 {
@@ -14,6 +15,8 @@ namespace minecraft
 		{
 			ysmap_t ystrip;
 			signed int smallest;
+			signed int top;
+			biome::biome_t bio;
 		};
 	}
 }

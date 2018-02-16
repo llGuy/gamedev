@@ -24,7 +24,7 @@ public:
 	enum class block_t
 		: unsigned char	
 	{
-		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, INV /* will add more types of blocks */
+		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, LEAVES, INV /* will add more types of blocks */
 	};
 
 	static const unsigned int AVAILABLE_TEXTURES;

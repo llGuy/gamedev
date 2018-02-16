@@ -6,7 +6,7 @@ namespace minecraft
 	namespace chunk
 	{
 		CHandler::CHandler(signed int seed)
-			: m_chunkMap(seed), m_seed(seed), m_terrain(seed)
+			: m_chunkMap(seed), m_seed(seed), m_terrain(seed), m_structHandler(seed)
 		{
 			Log("seed : ", m_seed);
 		}
@@ -59,6 +59,8 @@ namespace minecraft
 				if (fabs(flags.y) > 0.5f)
 				{
 					auto& c = m_chunkMap[wcc];
+					std::cout << wcc.wpos.x << ", " << wcc.wpos.z << "	" << 
+						static_cast<unsigned int>(blockchunkCoordinate.x) << ", " << static_cast<unsigned int>(blockchunkCoordinate.z) << std::endl;
 					bool exists = c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos);
 					return exists;
 				}
@@ -66,7 +68,7 @@ namespace minecraft
 				{
 					auto& c = m_chunkMap[wcc];
 					return (c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos) ||
-						c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos - glm::vec3(0.0f, 1.0f, 0.0f))) &&
+						c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos + glm::vec3(0.0f, 1.0f, 0.0f))) &&
 						glm::all(glm::lessThan(glm::abs(wpos - rwpos), glm::vec3(1.05f)));
 				}
 			}
@@ -95,7 +97,7 @@ namespace minecraft
 		}
 		void CHandler::ChunkLoaderInit(ent::Entity* player, GLFWwindow* window)
 		{
-			m_chunkloader = new loader::CLoader(&m_chunkMap, player, m_seed, m_terrain);
+			m_chunkloader = new loader::CLoader(&m_chunkMap, player, m_seed, m_terrain, m_structHandler);
 			m_chunkloader->Spawn(window);
 		}
 		void CHandler::SHInit(void)
@@ -112,7 +114,7 @@ namespace minecraft
 		}
 		glm::vec3 CHandler::BlockWPos(glm::vec3 wpos)
 		{
-			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos);
+			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos) ;
 			CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
 			return m_chunkMap[wcc].BlockWorldCoord(blockChunkCoordinate, static_cast<signed int>(wpos.y));
 		}
@@ -129,14 +131,19 @@ namespace minecraft
 		chunk::Chunk::WCoordChunk CHandler::CalculateChunkCoordinateOfWPos(const glm::vec3& v) const
 		{
 			WVec2 xz = { static_cast<signed int>(v.x), static_cast<signed int>(v.z) };
-			signed int x = xz.x == 0 ? 0 : (abs(xz.x) + 8) * (xz.x / abs(xz.x)) / 16;
-			signed int z = xz.z == 0 ? 0 : (abs(xz.z) + 8) * (xz.z / abs(xz.z)) / 16;
+			signed int x = (xz.x == 0) || (abs((xz.x + 8) % 16)) == 0 ? xz.x / 16 : (abs(xz.x) + 8) * (xz.x / abs(xz.x)) / 16;
+			signed int z = (xz.z == 0) || (abs((xz.z + 8) % 16)) == 0 ? xz.z / 16 : (abs(xz.z) + 8) * (xz.z / abs(xz.z)) / 16;
 			return { { x, z } };
 		}
 		CVec2 CHandler::CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const
 		{
+			if ((wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
+				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)))) == 16)
+				std::cout << "hahahaha" << std::endl;
 			unsigned char x = wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
 				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
+			if (v.x + 8 == -1)
+				std::cout << "debug" << std::endl;
 			unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
 				static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
 			return { x , z };
