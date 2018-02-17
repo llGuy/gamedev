@@ -42,10 +42,14 @@ namespace minecraft
 		class Structure
 		{
 		public:
-			explicit Structure(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, GenRange sr, WVec2 worldCoord);
+			explicit Structure(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, 
+				GenRange sr, WVec2 worldCoord, structure_t s);
+			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s);
 		public:
 			virtual CVec2 OriginC(void) final;
 			virtual WVec2 OriginW(void) final;
+			virtual structure_t SType(void) final;
+			virtual GenRange& GRange(void) final;
 			virtual GenRange GenerateStructRangeAll(void) const;
 			virtual StructCompBYS GenerateYStripOfStruct(WVec2 worldCoord);
 		protected:
@@ -53,6 +57,7 @@ namespace minecraft
 			GenRange m_structGenRange;
 			CVec2 m_structureOriginChunk;
 			WVec2 m_structureOriginWorld;
+			structure_t m_structureType;
 		};
 	}
 }

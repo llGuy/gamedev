@@ -43,15 +43,7 @@ namespace minecraft
 				{
 					for (signed int x = 0; x < 16; ++x)
 					{
-						//biome::BiomeMap::DifferenceVectors dv = t.DVectors(glm::vec2(negCorner.x + x, negCorner.z + z), bcc, terrain::Terrain::choice_t::HM);
-						//biome::biome_t b = bh.Biome(glm::vec2(glm::vec2(negCorner.x + x, negCorner.z + z)), bcc, gv);
-						//float height = Height(negCorner, x, z, bh.MaxBiomeHeight(b), m_corners, m_gradientVectors) + 20;
-						//for (signed int y = -30; y < static_cast<signed int>(height); ++y)
-						//{
-						//	CVec2 cc = { static_cast<unsigned char>(x), static_cast<unsigned char>(z) };
-						//	BlockYStrip& bys = m_blocks[Index(cc)];
-						//	bys.ystrip[y] = Block(CompressChunkCoord(cc), bh.BlockType(b, bh.MaxBiomeHeight(b), y));
-						//}
+						// load every blockc 
 					}
 				}
 				LoadGPUData(chunkCoords, negCorner);
@@ -74,13 +66,19 @@ namespace minecraft
 				std::vector<structures::Structure*> structs = sh.StructuresOfChunk(wcc, negCorner);
 				for (auto& i : structs)
 				{
-					unsigned char x = i->OriginC().x;
-					unsigned char z = i->OriginC().z;
+					structures::GenRange gr = i->GRange();
+					WVec2 wpos = i->OriginW();
+					for (signed int z = wpos.z + gr.nz; z <= wpos.z + gr.pz; ++z)
+					{
+						for (signed int x = wpos.x + gr.nx; x <= wpos.x + gr.px; ++x)
+						{
+							CVec2 cc = sh.SCompCoordInChunk(chunkCoords, { x,z });
+							unsigned int index = Index(cc);
+							BlockYStrip& bys = m_blocks[index];
 
-					unsigned int index = Index({x, z});
-
-					BlockYStrip& bys = m_blocks[index];
-					CVec2 cc = { x, z };
+							structures::StructCompBYS scbys = i->GenerateYStripOfStruct({});
+						}
+					}
 
 					structures::StructCompBYS scbys = i->GenerateYStripOfStruct({negCorner.x + x, negCorner.z + z});
 
@@ -321,14 +319,10 @@ namespace minecraft
 			}
 			const bool AtExtr0(signed int xz)
 			{
-				//signed int extrn = static_cast<signed int>(m_corners.nn.x + 0.5f);
-				//signed int extrp = static_cast<signed int>(m_corners.pp.x - 0.5f);
 				return xz == 0 && xz != 15;
 			}
 			const bool AtExtr15(signed int xz)
 			{
-				//signed int extrn = static_cast<signed int>(m_corners.nn.x + 0.5f);
-				//signed int extrp = static_cast<signed int>(m_corners.pp.x - 0.5f);
 				return xz == 15 && xz != 0;
 			}
 			const bool AtHeightmapExtrN(const int xz)
@@ -368,7 +362,7 @@ namespace minecraft
 			{
 				return t.GVectors(c, terrain::Terrain::choice_t::HM);
 			}
-
+			
 			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, 
 				const chunkExtr_t ce, const WVec2& negCorner, signed int x, signed int z, WVec2& chunkCoord)
 			{

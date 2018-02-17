@@ -4,10 +4,17 @@ namespace minecraft
 {
 	namespace structures
 	{
-		Tree::Tree(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, GenRange sr, const tsize_t s, WVec2 wc)
-			: Structure(wcc, originCoordInChunk, sr, wc), STRUCT_MAX_HEIGHT(static_cast<unsigned int>(s)),
+		Tree::Tree(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, GenRange sr, const tsize_t s, 
+			WVec2 wc, structure_t st)
+			: Structure(wcc, originCoordInChunk, sr, wc, st), STRUCT_MAX_HEIGHT(static_cast<unsigned int>(s)),
 			NX(-2), PX(2), NZ(-2), PZ(2)
 		{
+		}
+		Tree::Tree(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s)
+			: Structure(wcc, sr, worldCoord, s), STRUCT_MAX_HEIGHT(static_cast<unsigned int>(s)),
+			NX(-2), PX(2), NZ(-2), PZ(2)
+		{
+
 		}
 		GenRange Tree::GenerateStructRangeAll(void) const
 		{

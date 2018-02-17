@@ -59,8 +59,6 @@ namespace minecraft
 				if (fabs(flags.y) > 0.5f)
 				{
 					auto& c = m_chunkMap[wcc];
-					std::cout << wcc.wpos.x << ", " << wcc.wpos.z << "	" << 
-						static_cast<unsigned int>(blockchunkCoordinate.x) << ", " << static_cast<unsigned int>(blockchunkCoordinate.z) << std::endl;
 					bool exists = c.BlockExists(wcc.wpos, blockchunkCoordinate, rwpos);
 					return exists;
 				}
@@ -134,9 +132,6 @@ namespace minecraft
 
 			signed int x, z;
 
-			//signed int absx = abs(xz.x);
-			//signed int absz = abs(xz.z);
-				
 			auto ccoord = [&](signed int a)->signed int 
 			{
 				signed int absa = abs(a);
@@ -147,8 +142,6 @@ namespace minecraft
 			x = ccoord(xz.x);
 			z = ccoord(xz.z);
 
-			//if (xz.z > 0) z = (abs((xz.z + 8) % 16)) == 0 ? (xz.z + 16) / 16 : (absz + 8) * (xz.z / absz) / 16;
-			//else z = xz.z == 0 || (abs((xz.z + 8) % 16)) == 0 ? xz.z / 16 : (absz + 8) * (xz.z / absz) / 16;
 			return { { x, z } };
 		}
 		CVec2 CHandler::CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const
