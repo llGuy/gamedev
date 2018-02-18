@@ -34,7 +34,7 @@ namespace minecraft
 			void Load(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 			{
 				pnoise::PNoise::CellCorners bcc = t.CellCorners(chunkCoords, terrain::Terrain::choice_t::BM);
-				pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::HM);
+				pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::BM);
 
 				GenerateHeightmapCellCorners(chunkCoords, t);
 				GenerateHeightmapCellGVectors(t);
@@ -60,35 +60,55 @@ namespace minecraft
 
 				NEG_Z = 3
 			};
-			void LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner)
+			void LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner, terrain::Terrain& t)
 			{
+				auto discardSCBYS = []() {};
+
 				WCoordChunk wcc = {chunkCoords};
-				std::vector<structures::Structure*> structs = sh.StructuresOfChunk(wcc, negCorner);
+				std::vector<structures::Structure*> structs = sh.AllStructuresOfChunk(wcc, negCorner, t);
 				for (auto& i : structs)
 				{
-					structures::GenRange gr = i->GRange();
-					WVec2 wpos = i->OriginW();
-					for (signed int z = wpos.z + gr.nz; z <= wpos.z + gr.pz; ++z)
+					if (i != nullptr)
 					{
-						for (signed int x = wpos.x + gr.nx; x <= wpos.x + gr.px; ++x)
+						structures::GenRange gr = i->GRange();
+						WVec2 wpos = i->OriginW();
+
+						if (gr.nx != -2 || gr.nz != -2 || gr.px != 2 || gr.pz != 2)
+ 							std::cout << "hi" << std::endl;
+
+						for (signed int z = wpos.z + gr.nz; z <= wpos.z + gr.pz; ++z)
 						{
-							CVec2 cc = sh.SCompCoordInChunk(chunkCoords, { x,z });
-							unsigned int index = Index(cc);
-							BlockYStrip& bys = m_blocks[index];
+							for (signed int x = wpos.x + gr.nx; x <= wpos.x + gr.px; ++x)
+							{
+								CVec2 cc = sh.SCompCoordInChunk(chunkCoords, { x , z});
+								if (cc.x > 15 || cc.z > 15) discardSCBYS();
+								else
+								{
+									uint32_t index = Index(cc);
+									BlockYStrip& bys = m_blocks[index];
+									BlockYStrip test = m_blocks[Index(i->OriginC())];
+									
+									int32_t oheight = i->Height(); // function that returns the height of the origin
+									int32_t oheightTest = test.top;
 
-							structures::StructCompBYS scbys = i->GenerateYStripOfStruct({});
-						}
-					}
+									int32_t orterrainHeight = bys.top;
 
-					structures::StructCompBYS scbys = i->GenerateYStripOfStruct({negCorner.x + x, negCorner.z + z});
+								//	if (i->OriginW().x != wpos.x || i->OriginW().z != wpos.z)
+								//		std::cout << "wth" << std::endl;
 
-					// for trees
-					if (bys.bio != biome::biome_t::DESERT)
-					{
-						for (unsigned int y = scbys.start; y <= scbys.end; ++y)
-						{
-							AppendBlock(x, z, y + bys.top, bys, scbys.bys[y].block);
-							GradLoadGPUData(chunkCoords, negCorner, x, z, bys, y + bys.top);
+									WVec2 wpos2 = i->OriginW();
+
+									structures::StructCompBYS scbys = i->GenerateYStripOfStruct({ x, z });
+									int32_t start = scbys.start;
+									int32_t end = scbys.end;
+
+									for (int32_t y = start; y <= end; ++y)
+									{
+										AppendBlock(cc.x, cc.z, y + oheight, bys, scbys.bys[y].block);
+										GradLoadGPUData(chunkCoords, negCorner, cc.x, cc.z, bys, y + oheight);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -98,7 +118,7 @@ namespace minecraft
 				GenerateCorners(negCorner);
 
 				pnoise::PNoise::CellCorners bcc = t.CellCorners(chunkCoords, terrain::Terrain::choice_t::BM);
-				pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::HM);
+				pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::BM);
 
 				GenerateHeightmapCellCorners(chunkCoords, t);
 				GenerateHeightmapCellGVectors(t);
@@ -119,6 +139,8 @@ namespace minecraft
 						NeighbouringHeights(neighbouringBiomes, t, negCorner, neighbouringHeights, x, z, chunkCoords);
 
 						// height of current block
+						if (x == 8 && z == 8 && chunkCoords.x == 0 && chunkCoords.z == 0)
+							std::cout << "debug " << std::endl;
 						signed int h = Height(negCorner, x, z, t.BiomeMaxHeight(b), m_corners, m_gradientVectors, t) + t.BiomeOffset(b);
 
 						// calculating smallest height
@@ -164,9 +186,7 @@ namespace minecraft
 			{
 				signed int smallest = 0xfffff;
 				for (auto& bys : m_blocks[Index(ccoord)].ystrip)
-				{
 					if (smallest > bys.first) smallest = bys.first;
-				}
 				return smallest;
 			}
 			signed int BlockUnder(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
@@ -175,9 +195,7 @@ namespace minecraft
 				unsigned int index = Index(ccoord);
 				auto& bys = m_blocks[index];
 				for (; y >= bys.smallest; --y)
-				{
 					if (bys.ystrip.find(y) != bys.ystrip.end()) return y;
-				}
 				/* if there aren't any blocks under the player, function will return -0xff */
 				return -0xff;
 			}

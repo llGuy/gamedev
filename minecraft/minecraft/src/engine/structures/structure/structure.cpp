@@ -5,14 +5,15 @@ namespace minecraft
 	namespace structures
 	{
 		Structure::Structure(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, GenRange sr, 
-			WVec2 worldCoord, structure_t s)
+			WVec2 worldCoord, structure_t s, const int32_t height)
 			: m_worldChunkCoord(wcc), m_structGenRange(sr), m_structureOriginChunk(originCoordInChunk), 
-			m_structureOriginWorld(worldCoord), m_structureType(s)
+			m_structureOriginWorld(worldCoord), m_structureType(s), m_oheight(height)
 		{
 		}
-		Structure::Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s)
+		Structure::Structure(chunk::WCoordChunk wcc, GenRange sr, 
+			WVec2 worldCoord, structure_t s, const int32_t height)
 			: m_worldChunkCoord(wcc), m_structGenRange(sr), 
-			m_structureOriginWorld(worldCoord), m_structureType(s)
+			m_structureOriginWorld(worldCoord), m_structureType(s), m_oheight(height)
 		{
 
 		}
@@ -24,19 +25,23 @@ namespace minecraft
 		{
 			return GenRange();
 		}
-		StructCompBYS Structure::GenerateYStripOfStruct(WVec2 worldCoord) 
+		int32_t Structure::Height(void) const
+		{
+			return m_oheight;
+		}
+		StructCompBYS Structure::GenerateYStripOfStruct(WVec2 worldCoord)
 		{
 			return StructCompBYS();
 		}
-		CVec2 Structure::OriginC(void)
+		CVec2 Structure::OriginC(void) const
 		{
 			return m_structureOriginChunk;
 		}
-		WVec2 Structure::OriginW(void)
+		WVec2 Structure::OriginW(void) const
 		{
 			return m_structureOriginWorld;
 		}
-		structure_t Structure::SType(void)
+		structure_t Structure::SType(void) const
 		{
 			return m_structureType;
 		}

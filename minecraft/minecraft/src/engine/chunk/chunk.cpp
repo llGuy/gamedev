@@ -36,7 +36,7 @@ namespace minecraft
 
 		void Chunk::LoadStructures(terrain::Terrain& t, structures::StructuresHandler& sh)
 		{
-			m_dataBase.LoadStructures(m_wcoordChunk.wpos, sh, NegativeCornerWPos());
+			m_dataBase.LoadStructures(m_wcoordChunk.wpos, sh, NegativeCornerWPos(), t);
 		}
 
 		void Chunk::LoadGPUBuffer(void)

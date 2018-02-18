@@ -53,6 +53,10 @@ namespace minecraft
 			glm::vec3 rwpos = glm::round(wpos + flags);
 			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(rwpos);
 			CVec2 blockchunkCoordinate = CalculateBlockCoordInChunk(wcc, rwpos);
+
+			//std::cout << wcc.wpos.x << ", " << wcc.wpos.z << std::endl; // "\t\t" <<
+				//static_cast<unsigned int>(blockchunkCoordinate.x) << ", " << static_cast<unsigned int>(blockchunkCoordinate.z) << std::endl;
+
 			if (!m_chunkMap.Exists(wcc)) return NO_OBSTRUCTION;
 			else
 			{

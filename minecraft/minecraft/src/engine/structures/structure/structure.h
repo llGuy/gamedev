@@ -6,6 +6,7 @@
 #include "../../block/block.h"
 #include "../../chunk/cdata/cvec2.h"
 #include "../../chunk/cdata/wchunkcoord.h"
+#include <stdint.h>
 
 namespace minecraft
 {
@@ -43,21 +44,23 @@ namespace minecraft
 		{
 		public:
 			explicit Structure(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, 
-				GenRange sr, WVec2 worldCoord, structure_t s);
-			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s);
+				GenRange sr, WVec2 worldCoord, structure_t s, const int32_t height);
+			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s, const int32_t height);
 		public:
-			virtual CVec2 OriginC(void) final;
-			virtual WVec2 OriginW(void) final;
-			virtual structure_t SType(void) final;
 			virtual GenRange& GRange(void) final;
+			virtual CVec2 OriginC(void) const final;
+			virtual WVec2 OriginW(void) const final;
+			virtual int32_t Height(void) const final;
+			virtual structure_t SType(void) const final;
 			virtual GenRange GenerateStructRangeAll(void) const;
 			virtual StructCompBYS GenerateYStripOfStruct(WVec2 worldCoord);
 		protected:
 			chunk::WCoordChunk m_worldChunkCoord;
 			GenRange m_structGenRange;
 			CVec2 m_structureOriginChunk;
-			WVec2 m_structureOriginWorld;
+			const WVec2 m_structureOriginWorld;
 			structure_t m_structureType;
+			int32_t m_oheight;
 		};
 	}
 }

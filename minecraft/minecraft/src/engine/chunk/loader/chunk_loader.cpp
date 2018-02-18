@@ -89,10 +89,10 @@ namespace minecraft
 					[=](int a, int b) {return a < b; } /* conditional lambda */, [&](int& x) { ++x; },/* incremental lambda */
 					[=](int a, int b) {return a < b; } /* conditional lambda */, [&](int& z) { ++z; },/* incremental lambda */ -4, -4);
 				// loads the chunks in the direction of the player
-				m_clthread[1] = std::thread(&CLoader::UpdateChunksDistant, this);
+				//m_clthread[1] = std::thread(&CLoader::UpdateChunksDistant, this);
 
 				m_clthread[0].detach();
-				m_clthread[1].detach();
+				//m_clthread[1].detach();
 			}
 			chunk::Chunk::WCoordChunk CLoader::PlayerWPosInChunkCoordinates(void)
 			{

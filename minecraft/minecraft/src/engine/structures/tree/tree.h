@@ -21,8 +21,8 @@ namespace minecraft
 		{
 		public:
 			explicit Tree(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, GenRange sr, const tsize_t s, 
-				WVec2 wc, structure_t st);
-			explicit Tree(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s);
+				WVec2 wc, structure_t st, const int32_t height);
+			explicit Tree(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s, const int32_t height, tsize_t ts);
 		public:
 			GenRange GenerateStructRangeAll(void) const override;
 			StructCompBYS GenerateYStripOfStruct(WVec2 worldCoord) override;
