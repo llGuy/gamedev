@@ -40,8 +40,8 @@ namespace minecraft
 			// bottom
 			std::vector<Structure*> nb = StructuresOfNeighbouringChunks(wcc, { { wcc.wpos.x, wcc.wpos.z - 1 } },
 				{ wcc.wpos.x * 16 - 8, (wcc.wpos.z - 1) * 16 - 8 }, t);
-			if (nt.size() > 0) 
-				allStructures.insert(allStructures.end(), nt.begin(), nt.end());
+			if (nb.size() > 0) 
+				allStructures.insert(allStructures.end(), nb.begin(), nb.end());
 	
 			return allStructures;
 		}
@@ -78,16 +78,9 @@ namespace minecraft
 					// for now there are only trees
 					if (bio != biome::biome_t::DESERT)
 					{
-						v[i] = new Tree(wcc, { x, z }, { -2, 2, -2, 2 }, tsize_t::BIG,
+						v[i] = new Tree(wcc, { x, z }, { -2, 2, -2, 2 }, tsize_t::MEDIUM,
 							{ negCorner.x + x, negCorner.z + z }, structure_t::TREE, height);
 					}
-
-					// for now there are only trees
-					//if (bio != biome::biome_t::DESERT)
-					//{
-					//	v[0] = new Tree(wcc, { x, z }, { -2, 2, -2, 2 }, tsize_t::BIG,
-					//		{ negCorner.x + x, negCorner.z + z }, structure_t::TREE, height);
-					//}
 				}
 			}
 			return v;
@@ -122,17 +115,16 @@ namespace minecraft
 									nx = x - ox;
 									nz = z - oz;
 								}
-								else
+								if (x == ox + gr.px)
 								{
-									if (x == ox + gr.px)
-									{
-										px = gr.px;
-									}
+									px = gr.px;
+									break;
 								}
 							}
 							else if (nx != -0xff && nz != -0xff)
 							{
 								px = x - ox - 1;
+								break;
 							}
 						}
 						if (nx != -0xff && nz != -0xff && px != -0xff) break;
@@ -140,6 +132,8 @@ namespace minecraft
 					// found the negative corner, now check the positive corner
 					if (nx != -0xff && nz != -0xff && px != -0xff)
 					{
+						if (nx < -2 || px > 2 || nz < -2 || pz > 2)
+							std::cout << "err" << std::endl;
 						// looking for pz
 						for (int32_t z = oz + nz, x = ox + nx; z <= oz + gr.pz; ++z)
 						{

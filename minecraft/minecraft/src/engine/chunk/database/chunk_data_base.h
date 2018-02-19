@@ -62,7 +62,7 @@ namespace minecraft
 			};
 			void LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner, terrain::Terrain& t)
 			{
-				auto discardSCBYS = []() {};
+				auto discardSCBYS = [](){};
 
 				WCoordChunk wcc = {chunkCoords};
 				std::vector<structures::Structure*> structs = sh.AllStructuresOfChunk(wcc, negCorner, t);
@@ -73,15 +73,13 @@ namespace minecraft
 						structures::GenRange gr = i->GRange();
 						WVec2 wpos = i->OriginW();
 
-						if (gr.nx != -2 || gr.nz != -2 || gr.px != 2 || gr.pz != 2)
- 							std::cout << "hi" << std::endl;
-
 						for (signed int z = wpos.z + gr.nz; z <= wpos.z + gr.pz; ++z)
 						{
 							for (signed int x = wpos.x + gr.nx; x <= wpos.x + gr.px; ++x)
 							{
 								CVec2 cc = sh.SCompCoordInChunk(chunkCoords, { x , z});
-								if (cc.x > 15 || cc.z > 15) discardSCBYS();
+								if (cc.x > 15 || cc.z > 15) 
+									discardSCBYS();
 								else
 								{
 									uint32_t index = Index(cc);
@@ -92,9 +90,6 @@ namespace minecraft
 									int32_t oheightTest = test.top;
 
 									int32_t orterrainHeight = bys.top;
-
-								//	if (i->OriginW().x != wpos.x || i->OriginW().z != wpos.z)
-								//		std::cout << "wth" << std::endl;
 
 									WVec2 wpos2 = i->OriginW();
 
@@ -139,8 +134,6 @@ namespace minecraft
 						NeighbouringHeights(neighbouringBiomes, t, negCorner, neighbouringHeights, x, z, chunkCoords);
 
 						// height of current block
-						if (x == 8 && z == 8 && chunkCoords.x == 0 && chunkCoords.z == 0)
-							std::cout << "debug " << std::endl;
 						signed int h = Height(negCorner, x, z, t.BiomeMaxHeight(b), m_corners, m_gradientVectors, t) + t.BiomeOffset(b);
 
 						// calculating smallest height
