@@ -4,16 +4,16 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
-/* generic 3D x-z vector */
+/* generic 2D x-z vector */
 struct CVec2
 {
-	unsigned char x, z;
+	uint8_t x, z;
 };
 
-/* a x-z vector for the chunk coordinates in world position*/
+/* x-z vector for world positions */
 struct WVec2
 {
-	signed int x, z;
+	int32_t x, z;
 	bool operator==(const WVec2& v) const
 	{ return (x == v.x && z == v.z); }
 };

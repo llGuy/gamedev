@@ -5,7 +5,7 @@ namespace minecraft
 {
 	namespace structures
 	{
-		StructuresHandler::StructuresHandler(signed int seed)
+		StructuresHandler::StructuresHandler(int32_t seed)
 			: m_seed(seed)
 		{
 		}
@@ -18,14 +18,14 @@ namespace minecraft
 			allStructures.insert(allStructures.end(), currentChunk.begin(), currentChunk.end());
 			
 			// left
-			for (signed int z = wcc.wpos.z - 1, x = wcc.wpos.x - 1; z <= wcc.wpos.z + 1; ++z)
+			for (int32_t z = wcc.wpos.z - 1, x = wcc.wpos.x - 1; z <= wcc.wpos.z + 1; ++z)
 			{
 				std::vector<Structure*> n = StructuresOfNeighbouringChunks(wcc, { { x, z } }, { x * 16 - 8, z * 16 - 8 }, t);
 				if (n.size() > 0) 
 					allStructures.insert(allStructures.end(), n.begin(), n.end());
 			}
 			// right
-			for (signed int z = wcc.wpos.z - 1, x = wcc.wpos.x + 1; z <= wcc.wpos.z + 1; ++z)
+			for (int32_t z = wcc.wpos.z - 1, x = wcc.wpos.x + 1; z <= wcc.wpos.z + 1; ++z)
 			{
 				std::vector<Structure*> n = StructuresOfNeighbouringChunks(wcc, { { x, z } }, { x * 16 - 8, z * 16 - 8 }, t);
 				if (n.size() > 0) 
@@ -52,9 +52,9 @@ namespace minecraft
 
 			int32_t hcomp1 = wcc.wpos.x * 0x145;
 			int32_t hcomp2 = wcc.wpos.z * 0xf1a;
-			int32_t hash = std::hash<signed int>()(hcomp1 + hcomp2 + m_seed);
+			int32_t hash = std::hash<int32_t>()(hcomp1 + hcomp2 + m_seed);
 			srand(hash);
-			unsigned int size = rand() % 3;
+			uint32_t size = rand() % 3;
 			v.resize(size);
 
 			if (size != 0)
@@ -65,7 +65,7 @@ namespace minecraft
 				pnoise::PNoise::CellCorners hcc = t.CellCorners(wcc.wpos, terrain::Terrain::choice_t::HM);
 				pnoise::PNoise::GradientVectors hgv = t.GVectors(hcc, terrain::Terrain::choice_t::HM);
 
-				for (unsigned int i = 0; i < size; ++i)
+				for (uint32_t i = 0; i < size; ++i)
 				{
 					uint8_t x = abs(rand() % 16);
 					uint8_t z = abs(rand() % 16);
@@ -76,10 +76,12 @@ namespace minecraft
 						t.BiomeOffset(bio);
 
 					// for now there are only trees
-					if (bio != biome::biome_t::DESERT)
+					if (bio != biome::biome_t::DESERT && bio != biome::biome_t::OCEAN)
 					{
-						v[i] = new Tree(wcc, { x, z }, { -2, 2, -2, 2 }, tsize_t::MEDIUM,
-							{ negCorner.x + x, negCorner.z + z }, structure_t::TREE, height);
+						int32_t random = rand() % tsize_t::INV;
+						uint32_t size = Tree::SIZE[random];
+						v[i] = new Tree(wcc, { x, z }, { -2, 2, -2, 2 }, 
+							{ negCorner.x + x, negCorner.z + z }, structure_t::TREE, height, size);
 					}
 				}
 			}
@@ -160,7 +162,7 @@ namespace minecraft
 						switch (s->SType())
 						{
 						case structure_t::TREE:
-							r.push_back(new Tree(wcc, { nx, px, nz, pz }, { ox,oz }, structure_t::TREE, s->Height(), tsize_t::BIG));
+							r.push_back(new Tree(wcc, { nx, px, nz, pz }, { ox,oz }, structure_t::TREE, s->Height(), *s->Size()));
 							break;
 						}
 					}
@@ -170,11 +172,11 @@ namespace minecraft
 		}
 		chunk::WCoordChunk StructuresHandler::ChunkCoordOfSComp(const WVec2 v) const
 		{
-			signed int x, z;
+			int32_t x, z;
 
-			auto ccoord = [&](signed int a)->signed int
+			auto ccoord = [&](int32_t a)->int32_t
 			{
-				signed int absa = abs(a);
+				int32_t absa = abs(a);
 				if (a > 0) return (abs((a + 8) % 16)) == 0 ? (a + 16) / 16 : (absa + 8) * (a / absa) / 16;
 				else return a == 0 || (abs((a + 8) % 16)) == 0 ? a / 16 : (absa + 8) * (a / absa) / 16;
 			};
@@ -186,10 +188,10 @@ namespace minecraft
 		}
 		CVec2 StructuresHandler::SCompCoordInChunk(const chunk::WCoordChunk& wcc, WVec2 v) const
 		{
-			unsigned char x = wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
-				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
-			unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
-				static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
+			uint8_t x = static_cast<uint8_t>(wcc.wpos.x == 0 ? v.x + 8 :
+				v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
+			uint8_t z = static_cast<uint8_t>(wcc.wpos.z == 0 ? v.z + 8 :
+				v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
 			return { x , z };
 		}
 	}

@@ -4,7 +4,6 @@
 #include "../block/block.h"
 #include "database/chunk_data_base.h"
 #include "../terrain/terrain.h"
-#include "noise/regular/reg_perlin_noise.h"
 #include "gpu/gpuhandler/chunk_gpu_side_handler.h"
 
 namespace minecraft
@@ -41,10 +40,10 @@ namespace minecraft
 			}
 
 			explicit Chunk(void);
-			explicit Chunk(signed int seed) : m_wcoordChunk({ {0, 0} }), m_dataBase(seed), 
+			explicit Chunk(int32_t seed) : m_wcoordChunk({ {0, 0} }), m_dataBase(seed), 
 				m_loaded(false), m_gpubufferloaded(false) {}
-			explicit Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
-			explicit Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
+			explicit Chunk(const WCoordChunk& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
+			explicit Chunk(const WCoordChunk&& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
 			void LoadGPUBuffer(void);
 			void DestroyHEAPMemoryForBlocksWPos(void);
 			void LoadAll(terrain::Terrain& t, structures::StructuresHandler& sh);
@@ -55,9 +54,9 @@ namespace minecraft
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos);
 		public:
 			/* getters */
-			glm::vec3 BlockWorldCoord(const CVec2 cc, signed int elevation);
+			glm::vec3 BlockWorldCoord(const CVec2 cc, int32_t elevation);
 			WCoordChunk ChunkCoordinate(void);
-			Block::block_t BlockType(const CVec2 cc, signed int elevation);
+			Block::block_t BlockType(const CVec2 cc, int32_t elevation);
 			::std::size_t NumBlocks(void);
 			VAO* Vao(void);
 			const bool Loaded(void);

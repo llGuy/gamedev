@@ -8,14 +8,14 @@ namespace minecraft
 			: m_dataBase(0), m_loaded(false), m_gpubufferloaded(false)
 		{
 		}
-		Chunk::Chunk(const WCoordChunk& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+		Chunk::Chunk(const WCoordChunk& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
 			LoadTop(t, sh);
 			LoadStructures(t, sh);
 		}
 
-		Chunk::Chunk(const WCoordChunk&& wcoordChunk, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+		Chunk::Chunk(const WCoordChunk&& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
 			LoadTop(t, sh);
@@ -50,7 +50,7 @@ namespace minecraft
 			m_dataBase.DestroyHEAPMemoryForBlocksWPos();
 		}
 
-		glm::vec3 Chunk::BlockWorldCoord(const CVec2 cc, signed int elevation)
+		glm::vec3 Chunk::BlockWorldCoord(const CVec2 cc, int32_t elevation)
 		{
 			return m_dataBase.WCoord(m_wcoordChunk.wpos, cc, elevation, NegativeCornerWPos());
 		}
@@ -60,7 +60,7 @@ namespace minecraft
 			return m_dataBase.BlockExists(chunkCoord, ccoord, wpos);
 		}
 
-		Block::block_t Chunk::BlockType(const CVec2 cc, signed int elevation)
+		Block::block_t Chunk::BlockType(const CVec2 cc, int32_t elevation)
 		{
 			return m_dataBase.BlockType(cc, elevation);
 		}

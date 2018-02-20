@@ -18,7 +18,7 @@ namespace minecraft
 		{
 		public:
 			explicit CHandler(void) = default;
-			explicit CHandler(signed int seed);
+			explicit CHandler(int32_t seed);
 		public:
 			// initializations
 			void Init(void);
@@ -53,7 +53,7 @@ namespace minecraft
 			structures::StructuresHandler m_structHandler;
 			//biome::BiomeHandler m_biomeHandler;
 			cmap::CMap m_chunkMap;
-			signed int m_seed;
+			int32_t m_seed;
 		};
 	}
 }

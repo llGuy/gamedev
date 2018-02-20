@@ -4,12 +4,12 @@ namespace minecraft
 {
 	namespace terrain
 	{
-		Terrain::Terrain(const signed int seed)
+		Terrain::Terrain(const int32_t seed)
 			: m_heightMap(seed), m_biomeHandler(seed)
 		{
 		}
-		const signed int Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
-			pnoise::PNoise::GradientVectors& gv, signed int biomeMapHeight)
+		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
+			pnoise::PNoise::GradientVectors& gv, int32_t biomeMapHeight)
 		{
 			return m_heightMap.Height(blockCoord, cc, gv, biomeMapHeight);
 		}
@@ -47,15 +47,15 @@ namespace minecraft
 			default: return pnoise::PNoise::CellCorners();
 			}
 		}
-		const signed int Terrain::BiomeMaxHeight(const biome::biome_t b)
+		const int32_t Terrain::BiomeMaxHeight(const biome::biome_t b)
 		{
 			return m_biomeHandler.MaxBiomeHeight(b);
 		}
-		const signed int Terrain::BiomeOffset(const biome::biome_t b)
+		const int32_t Terrain::BiomeOffset(const biome::biome_t b)
 		{
 			return m_biomeHandler.BiomeOffset(b);
 		}
-		const Block::block_t Terrain::BlockType(const biome::biome_t& b, signed int maxH, signed int y)
+		const Block::block_t Terrain::BlockType(const biome::biome_t& b, int32_t maxH, int32_t y)
 		{
 			return m_biomeHandler.BlockType(b, maxH, y);
 		}

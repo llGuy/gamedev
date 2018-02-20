@@ -18,12 +18,12 @@ namespace minecraft
 			void UniformData(data::CUData& cud, data::CUDataLocs& cudl) const;
 		public:
 			void ARender(GLenum mode, const VAO* vao,
-				unsigned first, unsigned int count);
+				uint32_t first, uint32_t count);
 			void AInstancedRender(GLenum mode, const VAO* vao,
-				unsigned first, unsigned int count, unsigned int primCount);
+				uint32_t first, uint32_t count, uint32_t primCount);
 
 			/* immediate mode rendering */
-			void VecIMMRender(const debug::Line* l, const unsigned int size);
+			void VecIMMRender(const debug::Line* l, const uint32_t size);
 		};
 	}
 }

@@ -40,7 +40,7 @@ namespace minecraft
 		};
 		explicit Engine(void);
 		~Engine(void);
-		void AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
+		void AfterGLEWInit(uint32_t wwidth, uint32_t wheight, 
 			glm::vec2 cursorPos, GLFWwindow* window);
 	public:
 		void RecieveKeyInput(key_t&& key);
@@ -51,7 +51,7 @@ namespace minecraft
 		void Init(void);
 		void TimeDataInit(void);
 		void Configure(void);
-		void UDataInit(unsigned int wwidth, unsigned int wheight);
+		void UDataInit(uint32_t wwidth, uint32_t wheight);
 		void UpdateUniformData(void);
 		void UpdateData(void);
 		void UpdateDebugData(void);

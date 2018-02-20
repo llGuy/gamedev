@@ -12,7 +12,7 @@ namespace minecraft
 		class StructuresHandler
 		{
 		public:
-			explicit StructuresHandler(signed int seed);
+			explicit StructuresHandler(int32_t seed);
 		public:
 			std::vector<Structure*> AllStructuresOfChunk(chunk::WCoordChunk wcc,
 				WVec2 negCorner, terrain::Terrain& t);
@@ -24,7 +24,7 @@ namespace minecraft
 			std::vector<Structure*> StructuresOfNeighbouringChunks(chunk::WCoordChunk wcc, 
 				chunk::WCoordChunk nwcc, WVec2 negCorner, terrain::Terrain& t) const;
 		private:
-			signed int m_seed;
+			int32_t m_seed;
 		};
 	}
 }

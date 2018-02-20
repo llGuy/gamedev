@@ -21,23 +21,22 @@ namespace minecraft
 		// of the structure it should be generated
 		struct GenRange
 		{
-			signed int nx;
-			signed int px;
-			signed int nz;
-			signed int pz;
+			int32_t nx;
+			int32_t px;
+			int32_t nz;
+			int32_t pz;
 		};
 
 		struct StructComp
 		{
-			signed int x, z;
 			Block::block_t block;
 		};
 
 		struct StructCompBYS
 		{
 			StructComp* bys;
-			unsigned int start;
-			unsigned int end;
+			uint32_t start;
+			uint32_t end;
 		};
 
 		class Structure
@@ -45,8 +44,10 @@ namespace minecraft
 		public:
 			explicit Structure(chunk::WCoordChunk wcc, CVec2 originCoordInChunk, 
 				GenRange sr, WVec2 worldCoord, structure_t s, const int32_t height);
-			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, structure_t s, const int32_t height);
+			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, 
+				structure_t s, const int32_t height);
 		public:
+			virtual const uint32_t* Size(void);
 			virtual GenRange& GRange(void) final;
 			virtual CVec2 OriginC(void) const final;
 			virtual WVec2 OriginW(void) const final;

@@ -71,7 +71,7 @@ namespace minecraft
 	void Engine::Init(void)
 	{
 		m_player = new ent::Player();
-		m_chunkHandler = new chunk::CHandler(static_cast<signed int>(time(NULL)));
+		m_chunkHandler = new chunk::CHandler(static_cast<int32_t>(time(NULL)));
 		m_chunkHandler->Init();
 		Configure();
 	}
@@ -88,14 +88,14 @@ namespace minecraft
 
 		m_constantConfigs.gravity = glm::vec3(0.0f, -12.5f, 0.0f);
 	}
-	void Engine::UDataInit(unsigned int wwidth, unsigned int wheight)
+	void Engine::UDataInit(uint32_t wwidth, uint32_t wheight)
 	{
 		m_chunkHandler->GetUniform();
 
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 300.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
-	void Engine::AfterGLEWInit(unsigned int wwidth, unsigned int wheight, 
+	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight, 
 		glm::vec2 cursorPosition, GLFWwindow* window)
 	{
 		m_textureAtlas.Init();

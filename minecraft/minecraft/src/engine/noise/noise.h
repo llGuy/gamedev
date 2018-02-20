@@ -25,7 +25,7 @@ namespace minecraft
 			using GradientVectors = V2CornerStruct;
 			using CellCorners = V2CornerStruct;
 
-			explicit PNoise(signed int seed, const signed int cellDim)
+			explicit PNoise(int32_t seed, const int32_t cellDim)
 				: SEED(seed), CELL_DIMENSION(cellDim)
 			{
 			}
@@ -98,9 +98,9 @@ namespace minecraft
 		protected:
 			const glm::vec2 GenerateGVector(const glm::vec2& corner)
 			{
-				signed int hashComp1 = std::hash<signed int>()(static_cast<signed int>(corner.x * 0x12a));
-				signed int hashComp2 = std::hash<signed int>()(static_cast<signed int>(corner.y * 0xf12));
-				signed int hash = hashComp1 + hashComp2 + SEED;
+				int32_t hashComp1 = std::hash<int32_t>()(static_cast<int32_t>(corner.x * 0x12a));
+				int32_t hashComp2 = std::hash<int32_t>()(static_cast<int32_t>(corner.y * 0xf12));
+				int32_t hash = hashComp1 + hashComp2 + SEED;
 				srand(hash);
 
 				float rx = static_cast<float>(rand() % 0xff);
@@ -114,8 +114,8 @@ namespace minecraft
 			{
 				return a.y + ((ref - a.x) / (b.x - a.x)) * (b.y - a.y);
 			}
-			const signed int SEED;
-			const signed int CELL_DIMENSION;
+			const int32_t SEED;
+			const int32_t CELL_DIMENSION;
 		};
 	}
 }

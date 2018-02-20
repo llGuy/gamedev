@@ -20,8 +20,8 @@ void Texture::Bind(int unit)
 Texture::ImageData Texture::LoadImageData(const std::string& file)
 {
 	int w, h, numComp;
-	unsigned char* data = stbi_load(file.c_str(), &w, &h, &numComp, 4);
-	return { data, static_cast<unsigned int>(w), static_cast<unsigned int>(h) };
+	uint8_t* data = stbi_load(file.c_str(), &w, &h, &numComp, 4);
+	return { data, static_cast<uint32_t>(w), static_cast<uint32_t>(h) };
 }
 void Texture::SendData(ImageData id)
 {

@@ -36,7 +36,7 @@ namespace minecraft
 				void LoadBuffer(std::size_t components, BData* data);
 				void UnBind(void) const;
 			private:
-				unsigned int m_bufferID;
+				uint32_t m_bufferID;
 				bool m_createdVAO;
 				VAO* m_vao;
 			};

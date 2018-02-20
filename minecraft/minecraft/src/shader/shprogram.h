@@ -56,7 +56,7 @@ namespace sh
 			if (CheckProgramStatus(m_programID))
 				glUseProgram(m_programID);
 		}
-		unsigned int ProgramID(void)
+		uint32_t ProgramID(void)
 		{
 			return m_programID;
 		}
@@ -69,7 +69,7 @@ namespace sh
 		}
 		void BindAttribLocations(const std::vector<const char*>& locs)
 		{
-			for (unsigned int i = 0; i < locs.size(); ++i)
+			for (uint32_t i = 0; i < locs.size(); ++i)
 				glBindAttribLocation(m_programID, i, locs[i]);
 		}
 		void DeleteShaders(void)
@@ -111,7 +111,7 @@ namespace sh
 			return true;
 		}
 	private:
-		unsigned int m_programID;
+		uint32_t m_programID;
 		Shader m_vsh;
 		Shader m_fsh;
 		Shader m_gsh;

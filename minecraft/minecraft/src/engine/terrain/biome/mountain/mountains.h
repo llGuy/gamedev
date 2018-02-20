@@ -7,8 +7,8 @@ namespace minecraft
 	{
 		struct MountainsData
 		{
-			const signed int OFFSET = 40;
-			const signed int MAX_HEIGHT = 25;
+			const int32_t OFFSET = 40;
+			const int32_t MAX_HEIGHT = 25;
 			const float STONE_TOP = 0.9f;
 			// start of dirt level
 			const float DIRT_LEVEL = 0.8f;

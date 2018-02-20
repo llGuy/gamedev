@@ -25,25 +25,25 @@ namespace minecraft
 		}
 		void Camera::Look(glm::vec2 newCursorPosition, float sensitivity)
 		{
-			//if (glm::all(glm::lessThan(
-				//newCursorPosition - m_currentCursorPosition, glm::vec2(0.00001f))))
-			//{
-				glm::vec2 mouseDelta = newCursorPosition - m_currentCursorPosition;
-				/* rotating around the y axis*/
-				*m_boundEntity->EntityViewDirection() = glm::mat3(glm::rotate(glm::radians(-mouseDelta.x) * sensitivity, UP)) * 
-					*m_boundEntity->EntityViewDirection();
-				/* rotating around the x axis */
-				glm::vec3 toRotateAround = glm::cross(*(m_boundEntity->EntityViewDirection()), UP);
-				*(m_boundEntity->EntityViewDirection()) = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround))
-					* *(m_boundEntity->EntityViewDirection());
-				m_currentCursorPosition = newCursorPosition;
-			//}
+			glm::vec2 mouseDelta = newCursorPosition - m_currentCursorPosition;
+			/* rotating around the y axis*/
+			*m_boundEntity->EntityViewDirection() = glm::mat3(glm::rotate(glm::radians(-mouseDelta.x) * sensitivity, UP)) * 
+				*m_boundEntity->EntityViewDirection();
+			/* rotating around the x axis */
+			glm::vec3 toRotateAround = glm::cross(*(m_boundEntity->EntityViewDirection()), UP);
+			*(m_boundEntity->EntityViewDirection()) = glm::mat3(glm::rotate(glm::radians(-mouseDelta.y) * 0.02f, toRotateAround))
+				* *(m_boundEntity->EntityViewDirection());
+			m_currentCursorPosition = newCursorPosition;
 		}
-		Camera& Camera::operator=(const Camera&& cam)
+		Camera& Camera::operator=(Camera&& cam)
 		{
 			m_boundEntity = cam.m_boundEntity;
 			m_currentCursorPosition = cam.m_currentCursorPosition;
 			m_viewMatrix = cam.m_viewMatrix;
+
+			cam.m_boundEntity = nullptr;
+			cam.m_currentCursorPosition = glm::vec3(0.0f);
+			cam.m_viewMatrix = glm::mat4(1.0f);
 
 			return *this;
 		}

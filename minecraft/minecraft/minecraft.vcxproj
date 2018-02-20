@@ -127,7 +127,6 @@
     <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp" />
     <ClCompile Include="src\engine\chunk\handler\chandler.cpp" />
     <ClCompile Include="src\engine\chunk\loader\chunk_loader.cpp" />
-    <ClCompile Include="src\engine\chunk\noise\regular\reg_perlin_noise.cpp" />
     <ClCompile Include="src\engine\debug\debug.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\entities\camera\camera.cpp" />
@@ -158,9 +157,6 @@
     <ClInclude Include="src\engine\chunk\handler\chandler.h" />
     <ClInclude Include="src\engine\chunk\loader\chunk_loader.h" />
     <ClInclude Include="src\engine\chunk\map\cmap.h" />
-    <ClInclude Include="src\engine\chunk\noise\noise.h" />
-    <ClInclude Include="src\engine\chunk\noise\perlinnoise.h" />
-    <ClInclude Include="src\engine\chunk\noise\regular\reg_perlin_noise.h" />
     <ClInclude Include="src\engine\configs\configs.h" />
     <ClInclude Include="src\engine\data\common.h" />
     <ClInclude Include="src\engine\data\time_data.h" />

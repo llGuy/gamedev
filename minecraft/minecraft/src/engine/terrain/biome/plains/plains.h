@@ -7,8 +7,8 @@ namespace minecraft
 	{
 		struct PlainData
 		{
-			const signed int OFFSET = 25;
-			const signed int MAX_HEIGHT = 7;
+			const int32_t OFFSET = 25;
+			const int32_t MAX_HEIGHT = 7;
 			// start of dirt level
 			const float DIRT_LEVEL = 0.8f;
 			// start of stone level

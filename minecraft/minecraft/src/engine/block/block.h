@@ -10,7 +10,7 @@
 /* is stored in an unsigned char to make it RAM efficient */
 struct CCoord
 {
-	unsigned char cc;
+	uint8_t cc;
 };
 struct TextureData
 {
@@ -21,21 +21,24 @@ struct TextureData
 class Block
 {
 public:
-	enum class block_t
-		: unsigned char	
+	enum block_t
+		: uint8_t
 	{
-		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, LEAVES, INV /* will add more types of blocks */
+		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, LEAVES, WATER, INV /* will add more types of blocks */
 	};
 
-	static const unsigned int AVAILABLE_TEXTURES;
-	static const TextureData BLOCK_TEXTURE_DATA[static_cast<signed int>(block_t::INV)];
+	static const uint32_t AVAILABLE_TEXTURES;
+	static const TextureData BLOCK_TEXTURE_DATA[block_t::INV];
 public:
 	explicit Block(void) = default;
 	explicit Block(const CCoord& cc, const block_t& bt);
 	explicit Block(const CCoord&& cc, const block_t&& bt);
+
+	//Block& operator=(const Block&);
+	//Block& operator=(const Block&&);
 public:
 	/* getter */
-	glm::vec3 WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const;
+	glm::vec3 WPos(const WVec2 chunkCoordinate, int32_t y, const WVec2 negativeCornerWPos) const;
 	CVec2 ExtrCPos(void) const;
 	const block_t BlockType(void) const;
 	const TextureData& TextureD(void);

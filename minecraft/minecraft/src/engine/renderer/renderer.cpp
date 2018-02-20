@@ -15,7 +15,7 @@ namespace minecraft
 		}
 
 		void Renderer::ARender(GLenum mode, const VAO* vao,
-			unsigned first, unsigned int count)
+			uint32_t first, uint32_t count)
 		{
 			vao->Bind();
 			/* glDrawArrays() */
@@ -23,16 +23,16 @@ namespace minecraft
 		}
 
 		void Renderer::AInstancedRender(GLenum mode, const VAO* vao,
-			unsigned first, unsigned int count, unsigned int primCount)
+			uint32_t first, uint32_t count, uint32_t primCount)
 		{
 			vao->Bind();
 			glDrawArraysInstanced(mode, first, count, primCount);
 			vao->UnBind();
 		}
 
-		void Renderer::VecIMMRender(const debug::Line* l, const unsigned int size)
+		void Renderer::VecIMMRender(const debug::Line* l, const uint32_t size)
 		{
-			for (unsigned int i = 0; i < size; ++i)
+			for (uint32_t i = 0; i < size; ++i)
 			{
 				glBegin(GL_LINES);
 				glVertex3f(l[i].a.x, l[i].a.y, l[i].a.z);

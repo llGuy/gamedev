@@ -9,13 +9,13 @@ namespace minecraft
 {
 	namespace chunk
 	{
-		typedef std::unordered_map<signed int, Block> ysmap_t;
+		typedef std::unordered_map<int32_t, Block> ysmap_t;
 
 		struct BlockYStrip
 		{
 			ysmap_t ystrip;
-			signed int smallest;
-			signed int top;
+			int32_t smallest;
+			int32_t top;
 			biome::biome_t bio;
 		};
 	}

@@ -17,6 +17,10 @@ namespace minecraft
 		{
 
 		}
+		const uint32_t* Structure::Size(void)
+		{
+			return nullptr;
+		}
 		GenRange& Structure::GRange(void)
 		{
 			return m_structGenRange;

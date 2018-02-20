@@ -9,7 +9,7 @@ struct GLFWwindow;
 class Window
 {
 public:
-	explicit Window(unsigned int width, unsigned int height, const char* title);
+	explicit Window(uint32_t width, uint32_t height, const char* title);
 	//~Window(void);
 	void Destroy(void);
 public:
@@ -24,8 +24,8 @@ private:
 	void PollMouseMovement(void);
 	void AfterGLEWInit(void);
 private:
-	unsigned int m_width;
-	unsigned int m_height;
+	uint32_t m_width;
+	uint32_t m_height;
 	const char* m_title;
 	GLFWwindow* m_glfwWindow;
 	minecraft::Engine m_engine;

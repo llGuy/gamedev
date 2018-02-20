@@ -21,7 +21,7 @@ namespace minecraft
 			}
 
 			void CGPUHandler::Load(BlockYStrip* ys,
-				unsigned int index, signed int y, WVec2 chunkCoords, WVec2 negCorner)
+				uint32_t index, int32_t y, WVec2 chunkCoords, WVec2 negCorner)
 			{
 				Block* b = &(ys->ystrip[y]);
 				glm::vec3 position = b->WPos(chunkCoords, y, negCorner);

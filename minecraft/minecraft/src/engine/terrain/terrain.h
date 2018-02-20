@@ -21,20 +21,20 @@ namespace minecraft
 			};
 
 			explicit Terrain(void) = default;
-			explicit Terrain(const signed int seed);
+			explicit Terrain(const int32_t seed);
 
-			const signed int Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
-				pnoise::PNoise::GradientVectors& gv, signed int biomeMapHeight);
+			const int32_t Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
+				pnoise::PNoise::GradientVectors& gv, int32_t biomeMapHeight);
 			const biome::biome_t Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& dv);
 
 			const pnoise::PNoise::DifferenceVectors DVectors(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc, choice_t c);
 			const pnoise::PNoise::GradientVectors GVectors(pnoise::PNoise::CellCorners& cc, choice_t c);
 			const pnoise::PNoise::CellCorners CellCorners(const WVec2& chunkCoord, choice_t c);        
 
-			const signed int BiomeMaxHeight(const biome::biome_t b);
-			const signed int BiomeOffset(const biome::biome_t b);
+			const int32_t BiomeMaxHeight(const biome::biome_t b);
+			const int32_t BiomeOffset(const biome::biome_t b);
 
-			const Block::block_t BlockType(const biome::biome_t& b, signed int maxH, signed int y);
+			const Block::block_t BlockType(const biome::biome_t& b, int32_t maxH, int32_t y);
 		private:
 			biome::BiomeHandler m_biomeHandler;
 			Heightmap m_heightMap;

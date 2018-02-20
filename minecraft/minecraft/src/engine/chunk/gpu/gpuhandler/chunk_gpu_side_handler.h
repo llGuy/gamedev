@@ -21,7 +21,7 @@ namespace minecraft
 				void DestroyVector(void);
 				/* initializations are gradual							*/
 				/* (done in the for loop in the ChunkDB)				*/
-				void Load(BlockYStrip* ys, unsigned int index, signed int y,
+				void Load(BlockYStrip* ys, uint32_t index, int32_t y,
 					WVec2 chunkCoords, WVec2 negCorner);
 				::std::size_t NumBlocks(void);
 			public:

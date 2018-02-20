@@ -24,9 +24,6 @@
     <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\chunk\noise\regular\reg_perlin_noise.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\chunk\chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,12 +110,6 @@
     <ClInclude Include="src\engine\chunk\map\cmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\chunk\noise\regular\reg_perlin_noise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\engine\chunk\noise\perlinnoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\engine\chunk\chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -171,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\chunk\cdata\wchunkcoord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\engine\chunk\noise\noise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\terrain\terrain.h">

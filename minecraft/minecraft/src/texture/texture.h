@@ -4,7 +4,7 @@
 #include <string>
 #include <GL/glew.h>
 
-typedef unsigned int tex_id;
+typedef uint32_t tex_id;
 
 class Texture
 {	
@@ -16,9 +16,9 @@ public:
 private:
 	struct ImageData
 	{
-		unsigned char* data;
-		unsigned int w;
-		unsigned int h;
+		uint8_t* data;
+		uint32_t w;
+		uint32_t h;
 	};
 	ImageData LoadImageData(const std::string& file);
 	void SendData(ImageData id);

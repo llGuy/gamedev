@@ -13,6 +13,8 @@ namespace minecraft
 
 			MOUNTAINS,
 
+			OCEAN,
+
 			INV
 		};
 	}

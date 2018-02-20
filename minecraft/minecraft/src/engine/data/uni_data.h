@@ -18,11 +18,11 @@ namespace minecraft
 
 		struct CUDataLocs
 		{
-			unsigned int projectionMatrixLocation;
-			unsigned int viewMatrixLocation;
-			unsigned int lightPositionLocation;
-			unsigned int eyePositionLocation;
-			unsigned int skyColorLocation;
+			uint32_t projectionMatrixLocation;
+			uint32_t viewMatrixLocation;
+			uint32_t lightPositionLocation;
+			uint32_t eyePositionLocation;
+			uint32_t skyColorLocation;
 		};
 	}
 }

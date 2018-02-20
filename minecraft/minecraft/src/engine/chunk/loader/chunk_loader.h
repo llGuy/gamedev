@@ -23,7 +23,7 @@ namespace minecraft
 			public:
 				struct ChunkViewDirection
 				{
-					signed int x, z;
+					int32_t x, z;
 					const bool operator==(const ChunkViewDirection& other)
 					{
 						return (x == other.x && z == other.z);
@@ -31,12 +31,12 @@ namespace minecraft
 				};
 				explicit CLoader(void) = default;
 				CLoader& operator=(const CLoader&) = default;
-				explicit CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh);
+				explicit CLoader(cmap::CMap* cm, ent::Entity* player, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
 				//CLoader& operator=(const CLoader&& cl);
 			public:
-				void UpdateChunksUnder(std::function<bool(int, int)> x, std::function<void(int&)> xi,
-					std::function<bool(int, int)> z, std::function<void(int&)> zi,
-					int startx, int startz);
+				void UpdateChunksUnder(std::function<bool(int32_t, int32_t)> x, std::function<void(int32_t&)> xi,
+					std::function<bool(int32_t, int32_t)> z, std::function<void(int32_t&)> zi,
+					int32_t startx, int32_t startz);
 				void UpdateChunksDistant(void);
 				// spawn thread
 				void Spawn(GLFWwindow* window);
@@ -50,7 +50,7 @@ namespace minecraft
 				ent::Entity* m_player;
 				
 				chunk::Chunk::WCoordChunk m_playerCurrentChunkCoordinates;
-				signed int m_seed;
+				int32_t m_seed;
 			};
 		}
 	}

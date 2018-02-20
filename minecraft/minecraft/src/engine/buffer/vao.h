@@ -10,7 +10,7 @@ public:
 	virtual void Bind(void) const = 0;
 	virtual void UnBind(void) const = 0;
 protected:
-	unsigned int m_vaoID;
+	uint32_t m_vaoID;
 };
 
 #endif

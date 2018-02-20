@@ -5,7 +5,7 @@ namespace minecraft
 {
 	namespace chunk
 	{
-		CHandler::CHandler(signed int seed)
+		CHandler::CHandler(int32_t seed)
 			: m_chunkMap(seed), m_seed(seed), m_terrain(seed), m_structHandler(seed)
 		{
 			Log("seed : ", m_seed);
@@ -23,7 +23,7 @@ namespace minecraft
 			if (!m_chunkMap.Exists(wcc)) return 0.0f;
 			float blockY = m_chunkMap[wcc].BlockUnder(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos());
 			
-			if (static_cast<int>(blockY) == -255)
+			if (static_cast<int32_t>(blockY) == -255)
 			{
 				m_chunkMap[wcc].BlockUnder(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos());
 			}
@@ -55,7 +55,7 @@ namespace minecraft
 			CVec2 blockchunkCoordinate = CalculateBlockCoordInChunk(wcc, rwpos);
 
 			//std::cout << wcc.wpos.x << ", " << wcc.wpos.z << std::endl; // "\t\t" <<
-				//static_cast<unsigned int>(blockchunkCoordinate.x) << ", " << static_cast<unsigned int>(blockchunkCoordinate.z) << std::endl;
+				//static_cast<uint32_t>(blockchunkCoordinate.x) << ", " << static_cast<uint32_t>(blockchunkCoordinate.z) << std::endl;
 
 			if (!m_chunkMap.Exists(wcc)) return NO_OBSTRUCTION;
 			else
@@ -118,7 +118,7 @@ namespace minecraft
 		{
 			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(wpos) ;
 			CVec2 blockChunkCoordinate = CalculateBlockCoordInChunk(wcc, wpos);
-			return m_chunkMap[wcc].BlockWorldCoord(blockChunkCoordinate, static_cast<signed int>(wpos.y));
+			return m_chunkMap[wcc].BlockWorldCoord(blockChunkCoordinate, static_cast<int32_t>(wpos.y));
 		}
 		data::CUDataLocs& CHandler::Locations(void)
 		{
@@ -126,19 +126,19 @@ namespace minecraft
 		}
 		WVec2 CHandler::CalculateCoordsInChunks(const glm::vec2& worldxz)
 		{
-			signed int x = static_cast<signed int>(worldxz.x);
-			signed int z = static_cast<signed int>(worldxz.y);
+			int32_t x = static_cast<int32_t>(worldxz.x);
+			int32_t z = static_cast<int32_t>(worldxz.y);
 			return { x / 16, z / 16 };
 		}
 		chunk::Chunk::WCoordChunk CHandler::CalculateChunkCoordinateOfWPos(const glm::vec3& v) const
 		{
-			WVec2 xz = { static_cast<signed int>(v.x), static_cast<signed int>(v.z) };
+			WVec2 xz = { static_cast<int32_t>(v.x), static_cast<int32_t>(v.z) };
 
-			signed int x, z;
+			int32_t x, z;
 
-			auto ccoord = [&](signed int a)->signed int 
+			auto ccoord = [&](int32_t a)->int32_t 
 			{
-				signed int absa = abs(a);
+				int32_t absa = abs(a);
 				if (a > 0) return (abs((a + 8) % 16)) == 0 ? (a + 16) / 16 : (absa + 8) * (a / absa) / 16;
 				else return a == 0 || (abs((a + 8) % 16)) == 0 ? a / 16 : (absa + 8) * (a / absa) / 16;
 			};
@@ -150,10 +150,10 @@ namespace minecraft
 		}
 		CVec2 CHandler::CalculateBlockCoordInChunk(const chunk::Chunk::WCoordChunk& wcc, const glm::vec3& v) const
 		{
-			unsigned char x = wcc.wpos.x == 0 ? static_cast<unsigned char>(v.x + 8) :
-				static_cast<unsigned char>(v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
-			unsigned char z = wcc.wpos.z == 0 ? static_cast<unsigned char>(v.z + 8) :
-				static_cast<unsigned char>(v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
+			uint8_t x = static_cast<uint8_t>(wcc.wpos.x == 0 ? v.x + 8 :
+				v.x - (wcc.wpos.x * 16 + 8 * (-wcc.wpos.x / wcc.wpos.x)));
+			uint8_t z = static_cast<uint8_t>(wcc.wpos.z == 0 ? v.z + 8 :
+				v.z - (wcc.wpos.z * 16 + 8 * (-wcc.wpos.z / wcc.wpos.z)));
 			return { x , z };
 		}
 		void CHandler::GetUniform(void)

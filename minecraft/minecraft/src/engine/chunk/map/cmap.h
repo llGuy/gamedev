@@ -18,8 +18,8 @@ namespace minecraft
 			{
 				int operator()(const Chunk::WCoordChunk& v) const
 				{
-					return std::hash<int>()(v.wpos.x)
-						^ (std::hash<int>()(v.wpos.z) >> 1) << 1;
+					return std::hash<int32_t>()(v.wpos.x)
+						^ (std::hash<int32_t>()(v.wpos.z) >> 1) << 1;
 				}
 			};
 
@@ -27,7 +27,8 @@ namespace minecraft
 			{
 			public:
 				using iterator = std::vector<std::list<Chunk>>::iterator;
-				enum class update_t : bool
+				enum class update_t 
+					: bool
 				{
 					UPDATE_ACTIVE = false,
 
@@ -35,22 +36,22 @@ namespace minecraft
 				};
 
 				CMap(void) = default;
-				CMap(signed int seed)
+				CMap(int32_t seed)
 					: m_nll(4), m_size(0), m_seed(seed), m_llists(new std::vector<std::list<Chunk>>), m_updateState(update_t::UPDATE_INACTIVE)
 				{
-					for (unsigned int i = 0; i < m_nll; ++i)
+					for (uint32_t i = 0; i < m_nll; ++i)
 						m_llists->push_back(std::list<Chunk>());
 				}
 				void Load(Chunk::WCoordChunk& v)
 				{
-					int h = CHash()(v) % m_llists->size();
+					int32_t h = CHash()(v) % m_llists->size();
 					for (auto& i : m_llists->operator[](h))
 						if (i.ChunkCoordinate() == v) return;
 					App(v);
 				}
 				Chunk& operator[](Chunk::WCoordChunk& v)
 				{
-					int h = CHash()(v) % m_llists->size();
+					int32_t h = CHash()(v) % m_llists->size();
 					auto& l = m_llists->operator[](h);
 					for (auto& i : l)
 						if (i.ChunkCoordinate() == v) 
@@ -59,7 +60,7 @@ namespace minecraft
 				}
 				const bool Exists(Chunk::WCoordChunk& v)
 				{
-					int h = CHash()(v) % m_llists->size();
+					int32_t h = CHash()(v) % m_llists->size();
 					for (auto& i : m_llists->operator[](h))
 						if (i.ChunkCoordinate() == v)
 							return i.Loaded();
@@ -112,7 +113,7 @@ namespace minecraft
 							for (auto& j : i)
 							{
 								Chunk::WCoordChunk wcc = j.ChunkCoordinate();
-								int h = CHash()(wcc) % newl->size();
+								int32_t h = CHash()(wcc) % newl->size();
 								newl->operator[](h).push_back(j);
 							}
 						}
@@ -122,7 +123,7 @@ namespace minecraft
 						m_deletedCurrentLLists = true;
 						delete current;
 					}
-					int h = CHash()(v) % m_llists->size();
+					int32_t h = CHash()(v) % m_llists->size();
 					m_llists->operator[](h).push_back(Chunk(m_seed));
 					Chunk& newChunk = m_llists->operator[](h).back();
 					++m_size;
@@ -134,7 +135,7 @@ namespace minecraft
 				std::size_t m_nll;
 				/* size of the Chunk Map */
 				std::size_t m_size;
-				signed int m_seed;
+				int32_t m_seed;
 				
 				bool m_deletedCurrentLLists;
 				update_t m_updateState;

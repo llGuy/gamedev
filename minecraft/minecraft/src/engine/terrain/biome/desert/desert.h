@@ -7,8 +7,8 @@ namespace minecraft
 	{
 		struct DesertData
 		{
-			const signed int OFFSET = 20;
-			const signed int MAX_HEIGHT = 3;
+			const int32_t OFFSET = 20;
+			const int32_t MAX_HEIGHT = 3;
 			const float SAND_LEVEL = 0.9f;
 			const float DIRT_LEVEL = 0.8f;
 			const float STONE_LEVEL = 0.3f;

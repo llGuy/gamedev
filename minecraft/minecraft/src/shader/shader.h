@@ -43,7 +43,7 @@ namespace sh
 			glShaderSource(m_shaderID, 1, srcs, 0);
 			glCompileShader(m_shaderID);
 		}
-		unsigned int& ShaderID(void)
+		uint32_t& ShaderID(void)
 		{
 			return m_shaderID;
 		}
@@ -68,7 +68,7 @@ namespace sh
 			);
 		}
 	private:
-		unsigned int m_shaderID;
+		uint32_t m_shaderID;
 		std::string m_src;
 		std::string m_strShaderType;
 		GLenum m_shaderType;

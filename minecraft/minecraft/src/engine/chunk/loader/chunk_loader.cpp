@@ -9,9 +9,9 @@ namespace minecraft
 	{
 		namespace loader
 		{
-			void CLoader::UpdateChunksUnder(std::function<bool(int, int)> xf, std::function<void(int&)> xi,
-				std::function<bool(int, int)> zf, std::function<void(int&)> zi,
-				int startx, int startz)
+			void CLoader::UpdateChunksUnder(std::function<bool(int32_t, int32_t)> xf, std::function<void(int32_t&)> xi,
+				std::function<bool(int32_t, int32_t)> zf, std::function<void(int32_t&)> zi,
+				int32_t startx, int32_t startz)
 			{
 				for (;;)
 				{
@@ -19,9 +19,9 @@ namespace minecraft
 
 					if (wc != m_playerCurrentChunkCoordinates)
 					{
-						for (int z = wc.wpos.z + startz; zf(z, wc.wpos.z - startz); zi(z))
+						for (int32_t z = wc.wpos.z + startz; zf(z, wc.wpos.z - startz); zi(z))
 						{
-							for (signed int x = wc.wpos.x + startx; xf(x, wc.wpos.x - startx); xi(x))
+							for (int32_t x = wc.wpos.x + startx; xf(x, wc.wpos.x - startx); xi(x))
 							{
 								WVec2 c = { x, z };
 								chunk::Chunk::WCoordChunk wcc = c;
@@ -47,18 +47,18 @@ namespace minecraft
 				{
 					chunk::Chunk::WCoordChunk wc = PlayerWPosInChunkCoordinates();
 					glm::vec3 playerViewDirection = *m_player->EntityViewDirection();
-					signed int x = static_cast<signed int>(playerViewDirection.x * 8.0f) + wc.wpos.x;
-					signed int z = static_cast<signed int>(playerViewDirection.z * 8.0f) + wc.wpos.z;
+					int32_t x = static_cast<int32_t>(playerViewDirection.x * 8.0f) + wc.wpos.x;
+					int32_t z = static_cast<int32_t>(playerViewDirection.z * 8.0f) + wc.wpos.z;
 
-					signed int diffx = (x == 0 ? -2 : (abs(x) / x) * 2);
-					signed int diffz = (z == 0 ? -2 : (abs(z) / z) * 2);
+					int32_t diffx = (x == 0 ? -2 : (abs(x) / x) * 2);
+					int32_t diffz = (z == 0 ? -2 : (abs(z) / z) * 2);
 
 					x = (x == 0 ? -2 : x + (abs(x) / x) * 2);
 					z = (z == 0 ? -2 : z + (abs(z) / z) * 2);
 
-					for (signed int zi = wc.wpos.z - diffz; zi != z + diffz; (zi > z + diffz ? --zi : ++zi))
+					for (int32_t zi = wc.wpos.z - diffz; zi != z + diffz; (zi > z + diffz ? --zi : ++zi))
 					{
-						for (signed int xi = wc.wpos.x - diffx; xi != x + diffx; (xi > x + diffx ? --xi : ++xi))
+						for (int32_t xi = wc.wpos.x - diffx; xi != x + diffx; (xi > x + diffx ? --xi : ++xi))
 						{
 							WVec2 c = { xi, zi };
 							chunk::Chunk::WCoordChunk wcc = c;
@@ -76,7 +76,7 @@ namespace minecraft
 					}
 				}
 			}
-			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, signed int seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
 				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh)
 			{
 			}
@@ -86,8 +86,8 @@ namespace minecraft
 				m_playerCurrentChunkCoordinates = { { -0x551, -0x914} };
 				// loads all the chunks under the player
 				m_clthread[0] = std::thread(&CLoader::UpdateChunksUnder, this,
-					[=](int a, int b) {return a < b; } /* conditional lambda */, [&](int& x) { ++x; },/* incremental lambda */
-					[=](int a, int b) {return a < b; } /* conditional lambda */, [&](int& z) { ++z; },/* incremental lambda */ -4, -4);
+					[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& x) { ++x; },/* incremental lambda */
+					[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& z) { ++z; },/* incremental lambda */ -4, -4);
 				// loads the chunks in the direction of the player
 				m_clthread[1] = std::thread(&CLoader::UpdateChunksDistant, this);
 
@@ -97,9 +97,9 @@ namespace minecraft
 			chunk::Chunk::WCoordChunk CLoader::PlayerWPosInChunkCoordinates(void)
 			{
 				glm::vec3 v = *m_player->EntityWorldPosition();
-				WVec2 xz = { static_cast<signed int>(v.x), static_cast<signed int>(v.z) };
-				signed int x = xz.x == 0 ? 0 : (abs(xz.x) + 8) * (xz.x / abs(xz.x)) / 16;
-				signed int z = xz.z == 0 ? 0 : (abs(xz.z) + 8) * (xz.z / abs(xz.z)) / 16;
+				WVec2 xz = { static_cast<int32_t>(v.x), static_cast<int32_t>(v.z) };
+				int32_t x = xz.x == 0 ? 0 : (abs(xz.x) + 8) * (xz.x / abs(xz.x)) / 16;
+				int32_t z = xz.z == 0 ? 0 : (abs(xz.z) + 8) * (xz.z / abs(xz.z)) / 16;
 				return { { x, z } };
 			}
 		}

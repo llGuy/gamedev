@@ -19,7 +19,7 @@ namespace minecraft
 			void Bind(Entity* ent);
 			glm::mat4& ViewMatrix(void);
 			void Look(glm::vec2 newCursorPosition, float sensitivity);
-			Camera& operator=(const Camera&& cam);
+			Camera& operator=(Camera&& cam);
 		private:
 			const glm::vec3 UP;
 			Entity* m_boundEntity;

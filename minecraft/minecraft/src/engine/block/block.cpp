@@ -1,9 +1,8 @@
 #include "block.h"
 
-const unsigned int Block::AVAILABLE_TEXTURES = 
-	static_cast<unsigned int>(Block::block_t::INV);
+const uint32_t Block::AVAILABLE_TEXTURES = Block::block_t::INV;
 
-const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(block_t::INV)]
+const TextureData Block::BLOCK_TEXTURE_DATA[block_t::INV]
 {
 	{glm::vec3(1.0f, 1.0f, 1.0f)},
 	{glm::vec3(2.0f, 2.0f, 2.0f)},
@@ -11,20 +10,21 @@ const TextureData Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(block_t::I
 	{glm::vec3(17.0f, 17.0f, 17.0f)},
 	{glm::vec3(18.0f, 18.0f, 18.0f)},
 	{glm::vec3(21.0f, 20.0f, 21.0f)},
-	{glm::vec3(53.0f, 53.0f, 53.0f)}						// temporary
+	{glm::vec3(53.0f, 53.0f, 53.0f)},
+	{glm::vec3(207.0f, 207.0f, 207.0f)}
 };
 
 Block::Block(const CCoord& cc, const block_t& bt)
-	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(bt)])
+	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[bt])
 {
 }
 
 Block::Block(const CCoord&& cc, const block_t&& bt)
-	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[static_cast<unsigned int>(bt)])
+	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[bt])
 {
 }
 
-glm::vec3 Block::WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 negativeCornerWPos) const
+glm::vec3 Block::WPos(const WVec2 chunkCoordinate, int32_t y, const WVec2 negativeCornerWPos) const
 {
 	CVec2 blockPosOnChunk = ExtrCPos();
 	return glm::vec3(negativeCornerWPos.x + blockPosOnChunk.x, y,
@@ -33,7 +33,8 @@ glm::vec3 Block::WPos(const WVec2 chunkCoordinate, signed int y, const WVec2 neg
 
 CVec2 Block::ExtrCPos(void) const
 {
-	return { static_cast<unsigned char>(m_cc.cc >> 4), static_cast<unsigned char>(m_cc.cc & 0x0f) };
+	return { static_cast<uint8_t>(m_cc.cc >> 4u), 
+		static_cast<uint8_t>(m_cc.cc & 0x0fu) };
 }
 
 const Block::block_t Block::BlockType(void) const
