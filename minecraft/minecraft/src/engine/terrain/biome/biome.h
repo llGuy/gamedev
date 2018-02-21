@@ -17,6 +17,13 @@ namespace minecraft
 
 			INV
 		};
+
+		// test
+		struct Biome
+		{
+			biome_t b;
+			float lerp;
+		};
 	}
 }
 
