@@ -30,7 +30,7 @@ namespace minecraft
 				}
 				void Update(glm::vec3* gravity, float deltaT, glm::vec3& playerPosition)
 				{
-					if (glm::round(playerPosition.y) - (yStart + 1.0f) < 0.001f)
+					if (fabs(glm::round(playerPosition.y) - (yStart + 1.0f)) < 0.001f)
 						arrivedAtMaxHeight = true;
 					playerPosition = playerPosition + upvelocity * deltaT;
 					upvelocity = upvelocity + *gravity * deltaT;

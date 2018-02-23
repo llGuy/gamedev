@@ -52,6 +52,7 @@ namespace minecraft
 			WVec2 NegativeCornerWPos(void) const;
 			ChunkDB::CCorners ChunkCorners(void);
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos);
+			void DestroyBlock(CVec2 c, float y);
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, int32_t elevation);

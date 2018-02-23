@@ -22,6 +22,12 @@ namespace minecraft
 	class Engine
 	{
 	public:
+		enum class mbutton_t
+		{
+			MOUSEL,
+
+			MOUSER
+		};
 		enum class key_t
 		{
 			W,				// forward
@@ -43,6 +49,7 @@ namespace minecraft
 		void AfterGLEWInit(uint32_t wwidth, uint32_t wheight, 
 			glm::vec2 cursorPos, GLFWwindow* window);
 	public:
+		void RecieveMouseInput(mbutton_t&& button);
 		void RecieveKeyInput(key_t&& key);
 		void RecieveMouseMovement(glm::vec2 newMousePosition);
 		void Render(void);

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../chunk.h"
-#include "../loader/chunk_loader.h"
+//#include "../loader/chunk_loader.h"
 
 namespace minecraft
 {
@@ -36,99 +36,20 @@ namespace minecraft
 				};
 
 				CMap(void) = default;
-				CMap(int32_t seed)
-					: m_nll(4), m_size(0), m_seed(seed), m_llists(new std::vector<std::list<Chunk>>), m_updateState(update_t::UPDATE_INACTIVE)
-				{
-					for (uint32_t i = 0; i < m_nll; ++i)
-						m_llists->push_back(std::list<Chunk>());
-				}
-				void Load(Chunk::WCoordChunk& v)
-				{
-					int32_t h = CHash()(v) % m_llists->size();
-					for (auto& i : m_llists->operator[](h))
-						if (i.ChunkCoordinate() == v) return;
-					App(v);
-				}
-				Chunk& operator[](Chunk::WCoordChunk& v)
-				{
-					int32_t h = CHash()(v) % m_llists->size();
-					auto& l = m_llists->operator[](h);
-					for (auto& i : l)
-						if (i.ChunkCoordinate() == v) 
-							return i;
-					return App(v);
-				}
-				const bool Exists(Chunk::WCoordChunk& v)
-				{
-					int32_t h = CHash()(v) % m_llists->size();
-					for (auto& i : m_llists->operator[](h))
-						if (i.ChunkCoordinate() == v)
-							return i.Loaded();
-					return false;
-				}
-				void AfterGLEWInit(void)
-				{
-					for (auto& i : *m_llists)
-						for (auto& j : i)
-						{
-							j.LoadGPUBuffer();
-						}
-				}
-				iterator Begin(void)
-				{
-					return m_llists->begin();
-				}
-				iterator End(void)
-				{
-					return m_llists->end();
-				}
-				::std::size_t Size(void) const
-				{
-					return m_size;
-				}
-				update_t UpdateState(void)
-				{
-					return m_updateState;
-				}
-				const bool DeletedLLists(void)
-				{
-					return m_deletedCurrentLLists;
-				}
-				void ResetDeltedLListsBool(void)
-				{
-					m_deletedCurrentLLists = false;
-				}
+				CMap(int32_t seed);
+				void Load(Chunk::WCoordChunk& v);
+				Chunk& operator[](Chunk::WCoordChunk& v);
+				const bool Exists(Chunk::WCoordChunk& v);
+				void AfterGLEWInit(void);
+				iterator Begin(void);
+				iterator End(void);
+				::std::size_t Size(void) const;
+				update_t UpdateState(void);
+				const bool DeletedLLists(void);
+				void ResetDeltedLListsBool(void);
 			private:
 				/* append */
-				Chunk & App(const Chunk::WCoordChunk& v)
-				{
-					if (m_size == m_nll)
-					{
-						std::vector<std::list<Chunk>>* newl = new std::vector<std::list<Chunk>>;
-						m_updateState = update_t::UPDATE_ACTIVE;
-						m_nll *= 2;
-						newl->resize(m_nll);
-						for (auto& i : *m_llists)
-						{
-							for (auto& j : i)
-							{
-								Chunk::WCoordChunk wcc = j.ChunkCoordinate();
-								int32_t h = CHash()(wcc) % newl->size();
-								newl->operator[](h).push_back(j);
-							}
-						}
-						std::vector<std::list<Chunk>>* current = m_llists;
-						m_llists = newl;
-						m_updateState = update_t::UPDATE_INACTIVE;
-						m_deletedCurrentLLists = true;
-						delete current;
-					}
-					int32_t h = CHash()(v) % m_llists->size();
-					m_llists->operator[](h).push_back(Chunk(m_seed));
-					Chunk& newChunk = m_llists->operator[](h).back();
-					++m_size;
-					return newChunk;
-				}
+				Chunk & App(const Chunk::WCoordChunk& v);
 			private:
 				std::vector<std::list<Chunk>>* m_llists;
 				/* number of linked lists */

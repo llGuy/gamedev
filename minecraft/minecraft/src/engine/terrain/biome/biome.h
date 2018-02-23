@@ -19,10 +19,10 @@ namespace minecraft
 		};
 
 		// test
-		struct Biome
+		struct Bio
 		{
 			biome_t b;
-			float lerp;
+			float lerp;	// coefficient that applies to the height
 		};
 	}
 }

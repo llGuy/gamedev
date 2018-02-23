@@ -1,10 +1,10 @@
 #ifndef CHUNK_LOADER_HEADER
 #define CHUNK_LOADER_HEADER
 
-#include "../map/cmap.h"
 #include "../../entities/player/player.h"
 #include "../../terrain/terrain.h"
 #include "../../structures/handler/structures_handler.h"
+#include "../map/cmap.h"
 
 #include <thread>
 #include <iostream>
@@ -32,7 +32,6 @@ namespace minecraft
 				explicit CLoader(void) = default;
 				CLoader& operator=(const CLoader&) = default;
 				explicit CLoader(cmap::CMap* cm, ent::Entity* player, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
-				//CLoader& operator=(const CLoader&& cl);
 			public:
 				void UpdateChunksUnder(std::function<bool(int32_t, int32_t)> x, std::function<void(int32_t&)> xi,
 					std::function<bool(int32_t, int32_t)> z, std::function<void(int32_t&)> zi,

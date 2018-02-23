@@ -22,6 +22,7 @@ private:
 	void GLEWInit(void);
 	void PollKeys(void);
 	void PollMouseMovement(void);
+	void PollMouseInput(void);
 	void AfterGLEWInit(void);
 private:
 	uint32_t m_width;

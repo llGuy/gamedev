@@ -23,7 +23,8 @@ namespace minecraft
 			const pnoise::PNoise::CellCorners BiomeMapCellCorners(const WVec2& c);
 			const pnoise::PNoise::GradientVectors GVectors(pnoise::PNoise::CellCorners& bcc);
 			const pnoise::PNoise::DifferenceVectors DVectors(const glm::vec2& v, const pnoise::PNoise::CellCorners& bcc);
-			const biome_t Biome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& dv);
+			const biome_t Biome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv);
+			const Bio DetBiome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv);
 			const int32_t MaxBiomeHeight(const biome_t& b);
 			const int32_t BiomeOffset(const biome_t& b);
 

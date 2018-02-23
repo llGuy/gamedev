@@ -95,7 +95,7 @@ namespace minecraft
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 300.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
-	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight, 
+	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight,
 		glm::vec2 cursorPosition, GLFWwindow* window)
 	{
 		m_textureAtlas.Init();
@@ -210,5 +210,14 @@ namespace minecraft
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = np();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = pn();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[3] = pp();
+	}
+	void Engine::RecieveMouseInput(mbutton_t&& button)
+	{
+		switch (button)
+		{
+		case mbutton_t::MOUSEL:
+			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::DIG, 
+				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection());
+		}
 	}
 }

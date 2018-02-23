@@ -31,9 +31,12 @@ namespace minecraft
 				void LoadGPUBuffer(void);
 				VAO* Vao(void);
 				const bool CreatedVAO(void);
+				void RemoveBlock(uint16_t i);
 			private:
 				CGPUBuffer m_buff;
 				std::vector<BData> m_blocks;
+				uint32_t m_deletedBlocks[16];
+				uint32_t m_deletedBlocksPointer;
 			};
 		}
 	}

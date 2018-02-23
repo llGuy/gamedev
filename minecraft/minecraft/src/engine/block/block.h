@@ -42,7 +42,9 @@ public:
 	CVec2 ExtrCPos(void) const;
 	const block_t BlockType(void) const;
 	const TextureData& TextureD(void);
+	uint16_t& VIndex(void);
 private:
+	uint16_t m_vIndex;
 	CCoord m_cc;
 	block_t m_bt;
 	TextureData m_textureData;

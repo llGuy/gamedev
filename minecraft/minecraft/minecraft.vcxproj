@@ -123,14 +123,17 @@
   <ItemGroup>
     <ClCompile Include="src\engine\block\block.cpp" />
     <ClCompile Include="src\engine\chunk\chunk.cpp" />
+    <ClCompile Include="src\engine\chunk\event\cevent.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp" />
     <ClCompile Include="src\engine\chunk\handler\chandler.cpp" />
     <ClCompile Include="src\engine\chunk\loader\chunk_loader.cpp" />
+    <ClCompile Include="src\engine\chunk\map\cmap.cpp" />
     <ClCompile Include="src\engine\debug\debug.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\entities\camera\camera.cpp" />
     <ClCompile Include="src\engine\entities\player\player.cpp" />
+    <ClCompile Include="src\engine\entities\player\raycast\ray.cpp" />
     <ClCompile Include="src\engine\renderer\renderer.cpp" />
     <ClCompile Include="src\engine\structures\handler\structures_handler.cpp" />
     <ClCompile Include="src\engine\structures\structure\structure.cpp" />
@@ -151,6 +154,7 @@
     <ClInclude Include="src\engine\chunk\chunk.h" />
     <ClInclude Include="src\engine\chunk\database\blockystrip.h" />
     <ClInclude Include="src\engine\chunk\database\chunk_data_base.h" />
+    <ClInclude Include="src\engine\chunk\event\cevent.h" />
     <ClInclude Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.h" />
     <ClInclude Include="src\engine\chunk\gpu\gpublockdata.h" />
     <ClInclude Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.h" />
@@ -167,6 +171,7 @@
     <ClInclude Include="src\engine\entities\camera\camera.h" />
     <ClInclude Include="src\engine\entities\entity.h" />
     <ClInclude Include="src\engine\entities\player\player.h" />
+    <ClInclude Include="src\engine\entities\player\raycast\ray.h" />
     <ClInclude Include="src\engine\noise\noise.h" />
     <ClInclude Include="src\engine\renderer\renderer.h" />
     <ClInclude Include="src\engine\structures\handler\structures_handler.h" />

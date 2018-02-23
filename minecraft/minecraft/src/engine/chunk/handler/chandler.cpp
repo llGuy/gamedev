@@ -40,6 +40,10 @@ namespace minecraft
 			if (!m_chunkMap.Exists(wcc)) return 0.0f;
 			return m_chunkMap[wcc].HighestBlock(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos()) + 0.5f;
 		}
+		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d)
+		{
+			m_eventHandler.Event(e, m_chunkMap, p, d);
+		}
 		bool CHandler::Obstruction(glm::vec3 flags, glm::vec3 wpos)
 		{
 			enum

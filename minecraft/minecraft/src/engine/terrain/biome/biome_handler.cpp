@@ -31,7 +31,39 @@ namespace minecraft
 			else if(noise >= -10.0f) return biome_t::DESERT;
 			else return biome_t::OCEAN;
 		}
-
+		const Bio BiomeHandler::DetBiome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv)
+		{
+			float noise = m_noiseGenerator.Noise(v, bcc, gv, COEFF);
+			noise *= 100.0f;
+			Bio b;
+			if (noise >= 70.0f)
+			{
+				b.b = biome_t::MOUNTAINS;
+				float temp = noise - 70.0f;
+				if (temp <= 10.0f) b.lerp = temp / 10.0f;
+				else b.lerp = 1.0f;
+			}
+			else if (noise >= 20.0f)
+			{
+				b.b = biome_t::PLAINS;
+				float temp = noise - 20.0f;
+				if (temp <= 20.0f) b.lerp = temp / 20.0f;
+				else b.lerp = 1.0f;
+			}
+			else if (noise >= -10.0f)
+			{
+				b.b = biome_t::DESERT;
+				float temp = noise - -10.0f;
+				if (temp <= 10.0f) b.lerp = temp / 10.0f;
+				else b.lerp = 1.0f;
+			}
+			else
+			{
+				b.b = biome_t::OCEAN;
+				b.lerp = 1.0f;
+			}
+			return b;
+		}
 		const Block::block_t BiomeHandler::BlockType(const biome_t& b, int32_t maxH, int32_t y)
 		{
 			switch (b)

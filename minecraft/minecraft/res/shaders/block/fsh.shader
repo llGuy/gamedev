@@ -30,12 +30,12 @@ float Specular(vec3 light_vector)
 
 vec4 Grass(void)
 {
-	return texture2D(diffuse_texture, texture_coords) + vec4(141.0f / 255.0f, 198.0f / 255.0f, 79.0f / 255.0f, 1.0f) * 0.4f;
+	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 198.0f / 255.0f, 0.0f, 1.0f) * 0.4f;
 }
 
 vec4 Leaves(void)
 {
-	return texture2D(diffuse_texture, texture_coords) + vec4(141.0f / 255.0f, 198.0f / 255.0f, 79.0f / 255.0f, 1.0f) * 0.4f;
+	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 140.0f / 255.0f, 0.0f / 255.0f, 1.0f) * 0.4f;
 }
 
 vec4 FragmentColor(void)

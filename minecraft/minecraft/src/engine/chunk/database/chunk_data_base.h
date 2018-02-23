@@ -160,6 +160,16 @@ namespace minecraft
 					}
 				}
 			}
+			void DestroyBlock(CVec2 bcoord, float y)
+			{
+				int32_t cast = static_cast<int32_t>(y);
+				// erases y from the ystrip
+				uint16_t vindex = m_blocks[Index(bcoord)].ystrip[cast].VIndex();
+				m_blocks[Index(bcoord)].ystrip.erase(cast);
+				m_gpuh.RemoveBlock(vindex);
+
+
+			}
 			void LoadGPUBuffer(void)
 			{
 				m_gpuh.LoadGPUBuffer();
@@ -169,6 +179,14 @@ namespace minecraft
 				m_gpuh.DestroyVector();
 			}
 		public:
+			void LoadNeighbouringBlocks(CVec2 originxz, int32_t flagoriginy, CVec2 flagxz, int32_t flagy)
+			{
+				originxz.x += flagxz.x;
+				originxz.z += flagxz.z;
+				flagoriginy += flagy;
+
+
+			}
 			/* getter */
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
 			{
@@ -223,6 +241,10 @@ namespace minecraft
 				return m_ccorners;
 			}
 		private:
+			void BlockIsAdjacentToAir(CVec2 cv, int32_t y)
+			{
+
+			}
 			void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner)
 			{
 				m_gpuh.PrepareVector();

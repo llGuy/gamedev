@@ -29,6 +29,7 @@ void Window::Update(void)
 	glfwPollEvents();
 	PollKeys();
 	PollMouseMovement();
+	PollMouseInput();
 }
 const bool Window::WindowOpen(void)
 {
@@ -94,4 +95,9 @@ void Window::PollMouseMovement(void)
 	glfwGetCursorPos(m_glfwWindow, &x, &y);
 	m_engine.RecieveMouseMovement(
 		glm::vec2(static_cast<float>(x), static_cast<float>(y)));
+}
+void Window::PollMouseInput(void)
+{
+	if (glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_1)) 
+		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL);
 }

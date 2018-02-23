@@ -40,7 +40,7 @@ namespace minecraft
 			int32_t x = worldCoord.x - m_structureOriginWorld.x;
 			int32_t z = worldCoord.z - m_structureOriginWorld.z;
 			
-			if (true) return GenerateYStripOfStructOfOrdinaryTree(x, z);
+			return GenerateYStripOfStructOfOrdinaryTree(x, z);
 		}
 		StructCompBYS Tree::GenerateYStripOfStructOfOrdinaryTree(int32_t x, int32_t z)
 		{

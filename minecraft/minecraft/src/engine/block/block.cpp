@@ -46,3 +46,8 @@ const TextureData& Block::TextureD(void)
 {
 	return m_textureData;
 }
+
+uint16_t& Block::VIndex(void)
+{
+	return m_vIndex;
+}
