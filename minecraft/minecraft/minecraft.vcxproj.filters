@@ -227,6 +227,9 @@
     <ClInclude Include="src\window\callbacks\callbacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\terrain\biome\extreme_mountains\extrmountains.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\block\fsh.shader" />

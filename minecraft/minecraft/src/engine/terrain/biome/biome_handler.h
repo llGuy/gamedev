@@ -9,6 +9,7 @@
 #include "mountain/mountains.h"
 #include "ocean/ocean.h"
 #include "mega_taiga/mega_taiga.h"
+#include "extreme_mountains/extrmountains.h"
 
 namespace minecraft
 {
@@ -34,6 +35,7 @@ namespace minecraft
 			const Block::block_t PlainsBlockType(int32_t maxH, int32_t y);
 			const Block::block_t DesertBlockType(int32_t maxH, int32_t y);
 			const Block::block_t MountainsBlockType(int32_t maxH, int32_t y);
+			const Block::block_t EMountainsBlockType(int32_t maxH, int32_t y);
 			const Block::block_t OceanBlockType(int32_t maxH, int32_t y);
 			const Block::block_t MegaTaigaBlockType(int32_t maxH, int32_t y);
 		private:
@@ -44,6 +46,7 @@ namespace minecraft
 			MountainsData m_mountains;
 			OceanData m_oceanData;
 			MTaigaData m_megaTaigaData;
+			ExtrMountainsData m_emountainsData;
 			int32_t m_seed;
 		};
 	}

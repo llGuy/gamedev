@@ -17,6 +17,8 @@ namespace minecraft
 
 			MEGA_TAIGA,
 
+			EXTREME_MOUNTAINS,
+
 			INV
 		};
 

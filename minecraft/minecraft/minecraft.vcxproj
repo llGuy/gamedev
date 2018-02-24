@@ -180,6 +180,7 @@
     <ClInclude Include="src\engine\terrain\biome\biome.h" />
     <ClInclude Include="src\engine\terrain\biome\biome_handler.h" />
     <ClInclude Include="src\engine\terrain\biome\desert\desert.h" />
+    <ClInclude Include="src\engine\terrain\biome\extreme_mountains\extrmountains.h" />
     <ClInclude Include="src\engine\terrain\biome\mega_taiga\mega_taiga.h" />
     <ClInclude Include="src\engine\terrain\biome\mountain\mountains.h" />
     <ClInclude Include="src\engine\terrain\biome\ocean\ocean.h" />

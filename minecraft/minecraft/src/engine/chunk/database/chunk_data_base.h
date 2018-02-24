@@ -169,6 +169,9 @@ namespace minecraft
 				m_gpuh.RemoveBlock(vindex);
 				--m_numBlocks;
 
+				// check for neighbouring blocks
+
+
 				if (m_gpuh.MaxDBPointer() == m_gpuh.DBPointer())
 				{
 					m_gpuh.DBPointer() = 0;
