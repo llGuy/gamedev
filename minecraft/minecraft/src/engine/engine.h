@@ -39,6 +39,8 @@ namespace minecraft
 			D,				// right
 
 			R,				// run
+
+			F,				// toggle fly
 			
 			SPACE,			// jump
 			

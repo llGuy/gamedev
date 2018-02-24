@@ -16,6 +16,7 @@ public:
 	void Draw(void);
 	void Update(void);
 	const bool WindowOpen(void);
+	void MouseCallback(uint32_t);
 private:
 	void WindowInit(void);
 	void GLFWInit(void);

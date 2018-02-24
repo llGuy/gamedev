@@ -92,7 +92,7 @@ namespace minecraft
 	{
 		m_chunkHandler->GetUniform();
 
-		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 300.0f);
+		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 1000.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
 	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight,
@@ -138,11 +138,14 @@ namespace minecraft
 		case key_t::D:
 			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time, obstx, obstz);
 			break;
+		case key_t::F:
+			m_player->ToggleState(ent::Entity::state_t::TOGGLE_FLY);
+			break;
 		case key_t::SPACE:
 			m_player->Move(ent::Entity::move_t::JUMP, &m_time, obstx, obstz);
 			break;
 		case key_t::LSHIFT:
-			m_player->VMove(ent::Entity::vmove_t::DOWN, &m_time);
+			m_player->Move(ent::Entity::move_t::CROUCH, &m_time, obstx, obstz);
 			break;
 		}
 	}

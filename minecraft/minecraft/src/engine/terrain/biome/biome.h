@@ -15,6 +15,8 @@ namespace minecraft
 
 			OCEAN,
 
+			MEGA_TAIGA,
+
 			INV
 		};
 

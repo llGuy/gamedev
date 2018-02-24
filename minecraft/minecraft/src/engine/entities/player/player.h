@@ -61,6 +61,7 @@ namespace minecraft
 			bool AttainedMaxJHeight(void) override;
 			bool Jumping(void) override;
 			float Height(void) override;
+			void ToggleState(const state_t&& state) override;
 		private:
 			void Jump(void);
 			void Fall(float deltaT, glm::vec3& gravity);
@@ -79,6 +80,7 @@ namespace minecraft
 			JData m_jumpData;
 
 			bool m_jumping;
+			bool m_flying;
 			bool m_running;
 
 			PData m_playerData;

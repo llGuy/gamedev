@@ -5,7 +5,7 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
-			: m_noiseGenerator(seed, 16 * 23), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f)
+			: m_noiseGenerator(seed, 16 * 23), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed)
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -26,9 +26,10 @@ namespace minecraft
 			float noise = m_noiseGenerator.Noise(v, bcc, dv, COEFF);
 			noise *= 100.0f;
 			// av is between -10.0f, and 10.0f
-			if (noise >= 70.0f) return biome_t::MOUNTAINS;
+			if (noise >= 90.0f) return biome_t::MEGA_TAIGA;
+			else if (noise >= 70.0f) return biome_t::MOUNTAINS;
 			else if (noise >= 20.0f) return biome_t::PLAINS;
-			else if(noise >= -10.0f) return biome_t::DESERT;
+			else if(noise >= -10.0f) return biome_t::DESERT; 
 			else return biome_t::OCEAN;
 		}
 		const Bio BiomeHandler::DetBiome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv)
@@ -72,6 +73,7 @@ namespace minecraft
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y);
 			case biome_t::DESERT: return DesertBlockType(maxH, y); 
 			case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); 
+			case biome_t::MEGA_TAIGA: return MegaTaigaBlockType(maxH, y);
 			default: return Block::block_t::INV;
 			}
 		}
@@ -82,7 +84,8 @@ namespace minecraft
 			case biome_t::OCEAN: return m_oceanData.MAX_HEIGHT;
 			case biome_t::PLAINS: return m_plainsData.MAX_HEIGHT; 
 			case biome_t::DESERT: return m_desertData.MAX_HEIGHT; 
-			case biome_t::MOUNTAINS: return m_mountains.MAX_HEIGHT; 
+			case biome_t::MOUNTAINS: return m_mountains.MAX_HEIGHT;
+			case biome_t::MEGA_TAIGA: return m_megaTaigaData.MAX_HEIGHT; 
 			default: return 0;
 			}
 		}
@@ -94,6 +97,7 @@ namespace minecraft
 			case biome_t::PLAINS: return m_plainsData.OFFSET; 
 			case biome_t::DESERT: return m_desertData.OFFSET; 
 			case biome_t::MOUNTAINS: return m_mountains.OFFSET; 
+			case biome_t::MEGA_TAIGA: return m_megaTaigaData.OFFSET;
 			default: return 0;
 			}
 		}
@@ -126,6 +130,15 @@ namespace minecraft
 			if (y >= maxH * m_oceanData.SAND_LEVEL) return Block::block_t::SAND;
 			else if (y >= maxH * m_oceanData.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_oceanData.STONE_LEVEL) return Block::block_t::STONE;
+			else return Block::block_t::BEDROCK;
+		}
+		const Block::block_t BiomeHandler::MegaTaigaBlockType(int32_t maxH, int32_t y)
+		{
+			if (y == maxH)
+				return m_megaTaigaData.GrassOfDirt(m_seed) ? 
+					Block::block_t::GRASS : Block::block_t::DIRT;
+			else if (y >= maxH * m_megaTaigaData.DIRT_LEVEL) return Block::block_t::DIRT;
+			else if (y >= maxH * m_plainsData.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;
 		}
 	}

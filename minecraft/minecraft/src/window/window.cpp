@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 
+#include "callbacks/callbacks.h"
 #include "window.h"
 #include "../log.h"
 
@@ -29,7 +30,15 @@ void Window::Update(void)
 	glfwPollEvents();
 	PollKeys();
 	PollMouseMovement();
-	PollMouseInput();
+	//PollMouseInput();
+}
+void Window::MouseCallback(uint32_t b)
+{
+	switch (b)
+	{
+	case GLFW_MOUSE_BUTTON_1:
+		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL);
+	}
 }
 const bool Window::WindowOpen(void)
 {
@@ -49,6 +58,7 @@ void Window::WindowInit(void)
 	}
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowUserPointer(m_glfwWindow, this);
+	glfwSetMouseButtonCallback(m_glfwWindow, CursorEnterCallback);
 }
 void Window::GLFWInit(void)
 {
@@ -88,6 +98,7 @@ void Window::PollKeys(void)
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))		m_engine.RecieveKeyInput(minecraft::Engine::key_t::SPACE);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))	m_engine.RecieveKeyInput(minecraft::Engine::key_t::LSHIFT);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_R))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::R);
+	if(glfwGetKey(m_glfwWindow, GLFW_KEY_F))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::F);
 }
 void Window::PollMouseMovement(void)
 {

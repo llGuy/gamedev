@@ -180,6 +180,7 @@
     <ClInclude Include="src\engine\terrain\biome\biome.h" />
     <ClInclude Include="src\engine\terrain\biome\biome_handler.h" />
     <ClInclude Include="src\engine\terrain\biome\desert\desert.h" />
+    <ClInclude Include="src\engine\terrain\biome\mega_taiga\mega_taiga.h" />
     <ClInclude Include="src\engine\terrain\biome\mountain\mountains.h" />
     <ClInclude Include="src\engine\terrain\biome\ocean\ocean.h" />
     <ClInclude Include="src\engine\terrain\biome\plains\plains.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="src\shader\shader.h" />
     <ClInclude Include="src\shader\shprogram.h" />
     <ClInclude Include="src\texture\texture.h" />
+    <ClInclude Include="src\window\callbacks\callbacks.h" />
     <ClInclude Include="src\window\window.h" />
   </ItemGroup>
   <ItemGroup>

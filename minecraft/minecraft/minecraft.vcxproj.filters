@@ -221,6 +221,12 @@
     <ClInclude Include="src\engine\chunk\event\cevent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\terrain\biome\mega_taiga\mega_taiga.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\callbacks\callbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\block\fsh.shader" />

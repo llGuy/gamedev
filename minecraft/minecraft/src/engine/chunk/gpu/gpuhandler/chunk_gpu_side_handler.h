@@ -1,6 +1,8 @@
 #ifndef CHUNK_GPU_SIDE_HANDLER_HEADER
 #define CHUNK_GPU_SIDE_HANDLER_HEADER
 
+#include <array>
+
 #include "../../database/blockystrip.h"
 #include "../cgpubuffer/cgpubuffer.h"
 #include "../gpublockdata.h"
@@ -23,6 +25,7 @@ namespace minecraft
 				/* (done in the for loop in the ChunkDB)				*/
 				void Load(BlockYStrip* ys, uint32_t index, int32_t y,
 					WVec2 chunkCoords, WVec2 negCorner);
+				void LoadAdditional(BlockYStrip* ys, uint32_t index, int32_t y, WVec2 chunkCoords, WVec2 negCorner);
 				::std::size_t NumBlocks(void);
 			public:
 				/* gets called in Init to initialize the texture maps	*/
@@ -31,12 +34,17 @@ namespace minecraft
 				void LoadGPUBuffer(void);
 				VAO* Vao(void);
 				const bool CreatedVAO(void);
-				void RemoveBlock(uint16_t i);
+				void RemoveBlock(uint16_t& i);
+				std::array<uint32_t, 16>& DeletedBlocksIndices(void);
+				uint32_t& DBPointer(void);
+				uint32_t MaxDBPointer(void);
+				//void Resize(uint32_t s);
 			private:
 				CGPUBuffer m_buff;
 				std::vector<BData> m_blocks;
-				uint32_t m_deletedBlocks[16];
+				//uint32_t m_deletedBlocks[16];
 				uint32_t m_deletedBlocksPointer;
+				std::array<uint32_t, 16> m_dBlocks;
 			};
 		}
 	}

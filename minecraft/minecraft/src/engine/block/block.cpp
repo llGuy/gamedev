@@ -28,7 +28,7 @@ glm::vec3 Block::WPos(const WVec2 chunkCoordinate, int32_t y, const WVec2 negati
 {
 	CVec2 blockPosOnChunk = ExtrCPos();
 	return glm::vec3(negativeCornerWPos.x + blockPosOnChunk.x, y,
-		negativeCornerWPos.z + blockPosOnChunk.z);// +0.5f;
+		negativeCornerWPos.z + blockPosOnChunk.z); // +0.5f;
 } 
 
 CVec2 Block::ExtrCPos(void) const

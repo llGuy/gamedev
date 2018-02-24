@@ -167,8 +167,13 @@ namespace minecraft
 				uint16_t vindex = m_blocks[Index(bcoord)].ystrip[cast].VIndex();
 				m_blocks[Index(bcoord)].ystrip.erase(cast);
 				m_gpuh.RemoveBlock(vindex);
+				--m_numBlocks;
 
-
+				if (m_gpuh.MaxDBPointer() == m_gpuh.DBPointer())
+				{
+					m_gpuh.DBPointer() = 0;
+					UpdateIndices(m_gpuh.DeletedBlocksIndices());
+				}
 			}
 			void LoadGPUBuffer(void)
 			{
@@ -179,13 +184,16 @@ namespace minecraft
 				m_gpuh.DestroyVector();
 			}
 		public:
-			void LoadNeighbouringBlocks(CVec2 originxz, int32_t flagoriginy, CVec2 flagxz, int32_t flagy)
+			void LoadNeighbouringBlocks(CVec2 originxz, int32_t flagoriginy, CVec2 flagxz, int32_t flagy, const BlockYStrip& bys)
 			{
 				originxz.x += flagxz.x;
 				originxz.z += flagxz.z;
 				flagoriginy += flagy;
 
+				if (BlockIsVisible(originxz.x, flagoriginy, originxz.z, bys))
+				{
 
+				}
 			}
 			/* getter */
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
@@ -241,9 +249,26 @@ namespace minecraft
 				return m_ccorners;
 			}
 		private:
-			void BlockIsAdjacentToAir(CVec2 cv, int32_t y)
+			void UpdateIndices(std::array<uint32_t, 16>& indices)
 			{
-
+				std::sort(indices.begin(), indices.end());
+				for (uint32_t i = 0; i < 16 * 16; ++i)
+				{
+					BlockYStrip& bys = m_blocks[i];
+					for (auto& j : bys.ystrip)
+					{
+						uint16_t& index = j.second.VIndex();
+						uint16_t original = index;
+						for (uint32_t indexDB : indices)
+						{
+							if (indexDB < original)
+							{
+								--index;
+							}
+							else break;
+						}
+					}
+				}
 			}
 			void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner)
 			{
@@ -509,12 +534,14 @@ namespace minecraft
 			{
 				CVec2 cc = { x, z };
 				bys.ystrip[y] = Block(CompressChunkCoord(cc), t.BlockType(b, bysH, y));
+				++m_numBlocks;
 			}
 			void AppendBlock(uint8_t x, uint8_t z, int32_t y,
 				BlockYStrip& bys, Block::block_t b)
 			{
 				CVec2 cc = {x, z };
 				bys.ystrip[y] = Block(CompressChunkCoord(cc), b);
+				++m_numBlocks;
 			}
 			void GenerateHeightmapCellCorners(const WVec2& chunkCoord, terrain::Terrain& t)
 			{
@@ -533,6 +560,7 @@ namespace minecraft
 			// heightmap cell gradient vectors
 			pnoise::PNoise::GradientVectors m_gradientVectors;
 			BlockYStrip m_blocks[16 * 16];
+			uint32_t m_numBlocks;
 		};
 	}
 }
