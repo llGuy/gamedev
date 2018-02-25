@@ -30,13 +30,9 @@ namespace minecraft
 				m_blocks.push_back({ position, b->TextureD() });
 			}
 
-			void CGPUHandler::LoadAdditional(BlockYStrip* ys, uint32_t index, int32_t y, WVec2 chunkCoords, WVec2 negCorner)
+			void CGPUHandler::PushBack(glm::vec3& position, const TextureData& t)
 			{
-				Block* b = &(ys->ystrip[y]);
-				b->VIndex() = static_cast<uint16_t>(m_blocks.size());
-
-				glm::vec3 position = b->WPos(chunkCoords, y, negCorner);
-				m_blocks.at(index) = { position, b->TextureD() };
+				m_blocks.push_back({ position, t });
 			}
 
 			::std::size_t CGPUHandler::NumBlocks(void)

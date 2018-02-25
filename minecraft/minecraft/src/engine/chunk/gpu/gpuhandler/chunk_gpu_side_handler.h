@@ -25,7 +25,7 @@ namespace minecraft
 				/* (done in the for loop in the ChunkDB)				*/
 				void Load(BlockYStrip* ys, uint32_t index, int32_t y,
 					WVec2 chunkCoords, WVec2 negCorner);
-				void LoadAdditional(BlockYStrip* ys, uint32_t index, int32_t y, WVec2 chunkCoords, WVec2 negCorner);
+				void PushBack(glm::vec3& position, const TextureData& t);
 				::std::size_t NumBlocks(void);
 			public:
 				/* gets called in Init to initialize the texture maps	*/

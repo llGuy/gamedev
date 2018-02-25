@@ -160,22 +160,22 @@ namespace minecraft
 					}
 				}
 			}
-			void DestroyBlock(CVec2 bcoord, float y)
+			void DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t)
 			{
 				int32_t cast = static_cast<int32_t>(y);
 				// erases y from the ystrip
 				uint16_t vindex = m_blocks[Index(bcoord)].ystrip[cast].VIndex();
 				m_blocks[Index(bcoord)].ystrip.erase(cast);
 				m_gpuh.RemoveBlock(vindex);
-				--m_numBlocks;
 
 				// check for neighbouring blocks
-
+				LoadAllNeighbouringVisibleBlocks(bcoord, cast, t);
 
 				if (m_gpuh.MaxDBPointer() == m_gpuh.DBPointer())
 				{
 					m_gpuh.DBPointer() = 0;
 					UpdateIndices(m_gpuh.DeletedBlocksIndices());
+					m_numBlocks -= 16;
 				}
 			}
 			void LoadGPUBuffer(void)
@@ -187,15 +187,41 @@ namespace minecraft
 				m_gpuh.DestroyVector();
 			}
 		public:
-			void LoadNeighbouringBlocks(CVec2 originxz, int32_t flagoriginy, CVec2 flagxz, int32_t flagy, const BlockYStrip& bys)
+			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t)
 			{
-				originxz.x += flagxz.x;
-				originxz.z += flagxz.z;
-				flagoriginy += flagy;
+				// top
+				BlockYStrip& byscenter = m_blocks[Index(c)];
+				LoadNeighbouringVisibleBlock(c, y + 1, byscenter, t);
+				LoadNeighbouringVisibleBlock(c, y - 1, byscenter, t);
 
-				if (BlockIsVisible(originxz.x, flagoriginy, originxz.z, bys))
+				CVec2 xp = { c.x + 1, c.z };
+				BlockYStrip& bysxp = m_blocks[Index(xp)];
+				LoadNeighbouringVisibleBlock(xp, y, bysxp, t);
+
+				CVec2 xn = { c.x - 1, c.z };
+				BlockYStrip& bysxn = m_blocks[Index(xn)];
+				LoadNeighbouringVisibleBlock(xn, y, bysxn, t);
+
+				CVec2 zp = { c.x, c.z + 1 };
+				BlockYStrip& byszp = m_blocks[Index(zp)];
+				LoadNeighbouringVisibleBlock(zp, y, byszp, t);
+
+				CVec2 zn = { c.x, c.z - 1 };
+				BlockYStrip& byszn = m_blocks[Index(zn)];
+				LoadNeighbouringVisibleBlock(zn, y, byszn, t);
+			}
+			void LoadNeighbouringVisibleBlock(CVec2 c, int32_t y, BlockYStrip& bys, terrain::Terrain& t)
+			{
+				if (BlockIsVisible(c.x, y, c.z, bys) && 
+					m_blocks[Index(c)].ystrip.find(y) == m_blocks[Index(c)].ystrip.end())
 				{
-
+					if (y < bys.top)
+					{
+						Block::block_t b = t.BlockType(bys.bio, bys.top, y);
+						Block& newB = AppendBlock(c.x, c.z, y, bys, b);
+						newB.VIndex() = m_numBlocks;
+						m_gpuh.PushBack();
+					}
 				}
 			}
 			/* getter */
@@ -539,12 +565,14 @@ namespace minecraft
 				bys.ystrip[y] = Block(CompressChunkCoord(cc), t.BlockType(b, bysH, y));
 				++m_numBlocks;
 			}
-			void AppendBlock(uint8_t x, uint8_t z, int32_t y,
+			Block& AppendBlock(uint8_t x, uint8_t z, int32_t y,
 				BlockYStrip& bys, Block::block_t b)
 			{
-				CVec2 cc = {x, z };
-				bys.ystrip[y] = Block(CompressChunkCoord(cc), b);
+				CVec2 cc = { x, z };
+				Block& newB = bys.ystrip[y];
+				newB = Block(CompressChunkCoord(cc), b);
 				++m_numBlocks;
+				return newB;
 			}
 			void GenerateHeightmapCellCorners(const WVec2& chunkCoord, terrain::Terrain& t)
 			{

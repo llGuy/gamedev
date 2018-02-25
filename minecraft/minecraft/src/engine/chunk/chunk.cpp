@@ -21,9 +21,9 @@ namespace minecraft
 			LoadTop(t, sh);
 			LoadStructures(t, sh);
 		}
-		void Chunk::DestroyBlock(CVec2 c, float y)
+		void Chunk::DestroyBlock(CVec2 c, float y, terrain::Terrain& t)
 		{
-			m_dataBase.DestroyBlock(c, y);
+			m_dataBase.DestroyBlock(c, y, t);
 			m_gpubufferloaded = false;	// requests to be reloaded
 		}
 

@@ -42,7 +42,7 @@ namespace minecraft
 		}
 		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d)
 		{
-			m_eventHandler.Event(e, m_chunkMap, p, d);
+			m_eventHandler.Event(e, m_chunkMap, m_terrain, p, d);
 		}
 		bool CHandler::Obstruction(glm::vec3 flags, glm::vec3 wpos)
 		{
@@ -57,9 +57,6 @@ namespace minecraft
 			glm::vec3 rwpos = glm::round(wpos + flags);
 			chunk::Chunk::WCoordChunk wcc = CalculateChunkCoordinateOfWPos(rwpos);
 			CVec2 blockchunkCoordinate = CalculateBlockCoordInChunk(wcc, rwpos);
-
-			//std::cout << wcc.wpos.x << ", " << wcc.wpos.z << std::endl; // "\t\t" <<
-				//static_cast<uint32_t>(blockchunkCoordinate.x) << ", " << static_cast<uint32_t>(blockchunkCoordinate.z) << std::endl;
 
 			if (!m_chunkMap.Exists(wcc)) return NO_OBSTRUCTION;
 			else

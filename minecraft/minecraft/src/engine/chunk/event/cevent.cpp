@@ -7,15 +7,16 @@ namespace minecraft
 		ChunkEventHandler::ChunkEventHandler(void)
 		{
 		}
-		void ChunkEventHandler::Event(const event_t ev, cmap::CMap& map, const glm::vec3& p, const glm::vec3& d)
+		void ChunkEventHandler::Event(const event_t ev, cmap::CMap& map, terrain::Terrain& t, 
+			const glm::vec3& p, const glm::vec3& d)
 		{
 			switch (ev)
 			{
-			case event_t::DIG: Dig(p, d, map); break;
+			case event_t::DIG: Dig(p, d, map, t); break;
 			//case event_t::PLACE: Place(); break;
 			}
 		}
-		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map)
+		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t)
 		{
 			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);	// adjust the coords to get the world vectors
 			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
@@ -28,7 +29,7 @@ namespace minecraft
 				bool exists = c.BlockExists(wcc.wpos, coordInChunk, rayPos);
 				if (exists)
 				{
-					c.DestroyBlock(coordInChunk, rayPos.y);
+					c.DestroyBlock(coordInChunk, rayPos.y, t);
 					return;
 				}
 			}
