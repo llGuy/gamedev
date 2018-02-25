@@ -30,7 +30,7 @@ namespace minecraft
 				m_blocks.push_back({ position, b->TextureD() });
 			}
 
-			void CGPUHandler::PushBack(glm::vec3& position, const TextureData& t)
+			void CGPUHandler::PushBack(const glm::vec3& position, const TextureData& t)
 			{
 				m_blocks.push_back({ position, t });
 			}

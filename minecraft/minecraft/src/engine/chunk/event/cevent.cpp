@@ -18,9 +18,9 @@ namespace minecraft
 		}
 		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t)
 		{
-			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);	// adjust the coords to get the world vectors
+			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
 			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
-			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.1f))
+			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.05f))
 			{
 				glm::vec3 rayPos = glm::round(r.EndPosition());
 				Chunk::WCoordChunk wcc = ChunkCoordOfPoint(rayPos);
@@ -34,9 +34,23 @@ namespace minecraft
 				}
 			}
 		}
-		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, const cmap::CMap& map)
+		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map)
 		{
+			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
+			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
+			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.1f))
+			{
+				glm::vec3 rayPos = r.EndPosition();
+				glm::vec3 round = glm::round(rayPos);
+				Chunk::WCoordChunk wcc = ChunkCoordOfPoint(round);
+				CVec2 coordInChunk = PointCoordInChunk(wcc, round);
+				Chunk& c = map[wcc];
+				bool exists = c.BlockExists(wcc.wpos, coordInChunk, rayPos);
+				if (exists)
+				{
 
+				}
+			}
 		}
 		const CVec2 ChunkEventHandler::PointCoordInChunk(const Chunk::WCoordChunk& wcc, const glm::vec3& v) const
 		{

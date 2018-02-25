@@ -25,7 +25,7 @@ namespace minecraft
 				const glm::vec3& d = glm::vec3(0.0f));
 		private:
 			void Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t);
-			void Place(const glm::vec3& p, const glm::vec3& d, const cmap::CMap& map);
+			void Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map);
 			const CVec2 PointCoordInChunk(const Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
 			const Chunk::WCoordChunk ChunkCoordOfPoint(const glm::vec3& v) const;
 		};

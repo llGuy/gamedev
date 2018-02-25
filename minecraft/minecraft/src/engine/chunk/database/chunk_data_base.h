@@ -20,6 +20,7 @@ namespace minecraft
 		{
 		public:
 			explicit ChunkDB(int32_t seed)
+				: m_numBlocks(0)
 			{
 			}
 		public:
@@ -160,7 +161,7 @@ namespace minecraft
 					}
 				}
 			}
-			void DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t)
+			void DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk wcc)
 			{
 				int32_t cast = static_cast<int32_t>(y);
 				// erases y from the ystrip
@@ -169,7 +170,7 @@ namespace minecraft
 				m_gpuh.RemoveBlock(vindex);
 
 				// check for neighbouring blocks
-				LoadAllNeighbouringVisibleBlocks(bcoord, cast, t);
+				LoadAllNeighbouringVisibleBlocks(bcoord, cast, t, negCorner, wcc);
 
 				if (m_gpuh.MaxDBPointer() == m_gpuh.DBPointer())
 				{
@@ -187,30 +188,31 @@ namespace minecraft
 				m_gpuh.DestroyVector();
 			}
 		public:
-			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t)
+			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk& wcc)
 			{
 				// top
 				BlockYStrip& byscenter = m_blocks[Index(c)];
-				LoadNeighbouringVisibleBlock(c, y + 1, byscenter, t);
-				LoadNeighbouringVisibleBlock(c, y - 1, byscenter, t);
+				LoadNeighbouringVisibleBlock(c, y + 1, byscenter, t, negCorner, wcc);
+				LoadNeighbouringVisibleBlock(c, y - 1, byscenter, t, negCorner, wcc);
 
-				CVec2 xp = { c.x + 1, c.z };
+				CVec2 xp = { c.x + 1u, c.z };
 				BlockYStrip& bysxp = m_blocks[Index(xp)];
-				LoadNeighbouringVisibleBlock(xp, y, bysxp, t);
+				LoadNeighbouringVisibleBlock(xp, y, bysxp, t, negCorner, wcc);
 
-				CVec2 xn = { c.x - 1, c.z };
+				CVec2 xn = { c.x - 1u, c.z };
 				BlockYStrip& bysxn = m_blocks[Index(xn)];
-				LoadNeighbouringVisibleBlock(xn, y, bysxn, t);
+				LoadNeighbouringVisibleBlock(xn, y, bysxn, t, negCorner, wcc);
 
-				CVec2 zp = { c.x, c.z + 1 };
+				CVec2 zp = { c.x, c.z + 1u };
 				BlockYStrip& byszp = m_blocks[Index(zp)];
-				LoadNeighbouringVisibleBlock(zp, y, byszp, t);
+				LoadNeighbouringVisibleBlock(zp, y, byszp, t, negCorner, wcc);
 
-				CVec2 zn = { c.x, c.z - 1 };
+				CVec2 zn = { c.x, c.z - 1u };
 				BlockYStrip& byszn = m_blocks[Index(zn)];
-				LoadNeighbouringVisibleBlock(zn, y, byszn, t);
+				LoadNeighbouringVisibleBlock(zn, y, byszn, t, negCorner, wcc);
 			}
-			void LoadNeighbouringVisibleBlock(CVec2 c, int32_t y, BlockYStrip& bys, terrain::Terrain& t)
+			void LoadNeighbouringVisibleBlock(CVec2 c, int32_t y, BlockYStrip& bys, 
+				terrain::Terrain& t, WVec2 negCorner, WCoordChunk& wcc)
 			{
 				if (BlockIsVisible(c.x, y, c.z, bys) && 
 					m_blocks[Index(c)].ystrip.find(y) == m_blocks[Index(c)].ystrip.end())
@@ -219,8 +221,8 @@ namespace minecraft
 					{
 						Block::block_t b = t.BlockType(bys.bio, bys.top, y);
 						Block& newB = AppendBlock(c.x, c.z, y, bys, b);
-						newB.VIndex() = m_numBlocks;
-						m_gpuh.PushBack();
+						newB.VIndex() = m_numBlocks - 1;
+						m_gpuh.PushBack(newB.WPos(wcc.wpos, y, negCorner), newB.TextureD());
 					}
 				}
 			}
@@ -278,6 +280,22 @@ namespace minecraft
 				return m_ccorners;
 			}
 		private:
+			bool Destroyed(CVec2 c, int32_t y)
+			{
+				float yf = static_cast<float>(y);
+				// top
+				if (BlockExists(WVec2(), c, glm::vec3(0.0f, yf + 1.0f, 0.0f))) return true;
+				// bottom
+				if (BlockExists(WVec2(), c, glm::vec3(0.0f, yf - 1.0f, 0.0f))) return true;
+				// xp
+				if (BlockExists(WVec2(), {c.x + 1u, c.z}, glm::vec3(0.0f, yf, 0.0f))) return true;
+				// xn
+				if (BlockExists(WVec2(), { c.x - 1u, c.z }, glm::vec3(0.0f, yf, 0.0f))) return true;
+				// zp
+				if (BlockExists(WVec2(), { c.x, c.z + 1u }, glm::vec3(0.0f, yf, 0.0f))) return true;
+				// zn
+				if (BlockExists(WVec2(), { c.x, c.z - 1u }, glm::vec3(0.0f, yf, 0.0f))) return true;
+			}
 			void UpdateIndices(std::array<uint32_t, 16>& indices)
 			{
 				std::sort(indices.begin(), indices.end());
@@ -379,7 +397,7 @@ namespace minecraft
 					negativeCorner.y + 15.5f);
 			}
 			int32_t Height(const WVec2& negCorner, const uint8_t& x, const uint8_t& z, 
-				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t)
+				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t) 
 			{
 				float blockx = static_cast<float>(negCorner.x + x);
 				float blockz = static_cast<float>(negCorner.z + z);
