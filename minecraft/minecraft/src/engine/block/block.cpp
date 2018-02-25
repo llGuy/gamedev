@@ -15,12 +15,12 @@ const TextureData Block::BLOCK_TEXTURE_DATA[block_t::INV]
 };
 
 Block::Block(const CCoord& cc, const block_t& bt)
-	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[bt])
+	: m_cc(cc), m_bt(bt), m_valid(true)
 {
 }
 
 Block::Block(const CCoord&& cc, const block_t&& bt)
-	: m_cc(cc), m_bt(bt), m_textureData(Block::BLOCK_TEXTURE_DATA[bt])
+	: m_cc(cc), m_bt(bt)
 {
 }
 
@@ -44,10 +44,15 @@ const Block::block_t Block::BlockType(void) const
 
 const TextureData& Block::TextureD(void)
 {
-	return m_textureData;
+	return BLOCK_TEXTURE_DATA[m_bt];
 }
 
 uint16_t& Block::VIndex(void)
 {
 	return m_vIndex;
+}
+
+bool& Block::Valid(void)
+{
+	return m_valid;
 }

@@ -166,7 +166,7 @@ namespace minecraft
 				int32_t cast = static_cast<int32_t>(y);
 				// erases y from the ystrip
 				uint16_t vindex = m_blocks[Index(bcoord)].ystrip[cast].VIndex();
-				m_blocks[Index(bcoord)].ystrip.erase(cast);
+				m_blocks[Index(bcoord)].ystrip.at(cast).Valid() = false;
 				m_gpuh.RemoveBlock(vindex);
 
 				// check for neighbouring blocks
@@ -214,8 +214,9 @@ namespace minecraft
 			void LoadNeighbouringVisibleBlock(CVec2 c, int32_t y, BlockYStrip& bys, 
 				terrain::Terrain& t, WVec2 negCorner, WCoordChunk& wcc)
 			{
+				uint8_t index = Index(c);
 				if (BlockIsVisible(c.x, y, c.z, bys) && 
-					m_blocks[Index(c)].ystrip.find(y) == m_blocks[Index(c)].ystrip.end())
+					m_blocks[index].ystrip.find(y) == m_blocks[index].ystrip.end())
 				{
 					if (y < bys.top)
 					{
@@ -232,7 +233,11 @@ namespace minecraft
 				int32_t y = static_cast<int32_t>(wpos.y);
 				uint8_t index = Index(ccoord);
 				// if not equal then the block exists
-				return m_blocks[index].ystrip.find(y) != m_blocks[index].ystrip.end();
+				if (m_blocks[index].ystrip.find(y) != m_blocks[index].ystrip.end())
+				{
+					return m_blocks[index].ystrip.at(y).Valid();
+				}
+				return false;
 			}
 			int32_t HightestBlock(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos, const WVec2& negativeCornerWPos)
 			{

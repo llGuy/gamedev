@@ -33,9 +33,6 @@ public:
 	explicit Block(void) = default;
 	explicit Block(const CCoord& cc, const block_t& bt);
 	explicit Block(const CCoord&& cc, const block_t&& bt);
-
-	//Block& operator=(const Block&);
-	//Block& operator=(const Block&&);
 public:
 	/* getter */
 	glm::vec3 WPos(const WVec2 chunkCoordinate, int32_t y, const WVec2 negativeCornerWPos) const;
@@ -43,11 +40,12 @@ public:
 	const block_t BlockType(void) const;
 	const TextureData& TextureD(void);
 	uint16_t& VIndex(void);
+	bool& Valid(void);
 private:
 	uint16_t m_vIndex;
 	CCoord m_cc;
 	block_t m_bt;
-	TextureData m_textureData;
+	bool m_valid;
 };
 
 #endif
