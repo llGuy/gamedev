@@ -21,10 +21,16 @@ namespace minecraft
 			LoadTop(t, sh);
 			LoadStructures(t, sh);
 		}
-		void Chunk::DestroyBlock(CVec2 c, float y, terrain::Terrain& t)
+		ChunkDB::DBNeighbourChunkData Chunk::DestroyBlock(CVec2 c, float y, terrain::Terrain& t)
 		{
-			m_dataBase.DestroyBlock(c, y, t, NegativeCornerWPos(), ChunkCoordinate().wpos);
 			m_gpubufferloaded = false;	// requests to be reloaded
+			return m_dataBase.DestroyBlock(c, y, t, NegativeCornerWPos(), ChunkCoordinate().wpos);
+		}
+
+		void Chunk::LoadBlockFromGen(CVec2 c, int32_t y, terrain::Terrain& t)
+		{
+			m_dataBase.LoadVisibleBlock(c, y, t, NegativeCornerWPos(), m_wcoordChunk.wpos);
+			m_gpubufferloaded = false;
 		}
 
 		void Chunk::LoadAll(terrain::Terrain& t, structures::StructuresHandler& sh)

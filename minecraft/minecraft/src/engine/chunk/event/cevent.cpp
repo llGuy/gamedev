@@ -29,7 +29,16 @@ namespace minecraft
 				bool exists = c.BlockExists(wcc.wpos, coordInChunk, rayPos);
 				if (exists)
 				{
-					c.DestroyBlock(coordInChunk, rayPos.y, t);
+					auto data = c.DestroyBlock(coordInChunk, rayPos.y, t);
+					if (data.quant > 0)
+					{
+						for (uint32_t i = 0; i < data.quant; ++i)
+						{
+							Chunk::WCoordChunk cwcc = { { data.offsets[i].wcc.wpos.x, data.offsets[i].wcc.wpos.z } };
+							Chunk& n = map[cwcc];
+							n.LoadBlockFromGen(data.offsets[i].cv, data.offsets[i].y, t);
+						}
+					}
 					return;
 				}
 			}

@@ -161,8 +161,32 @@ namespace minecraft
 					}
 				}
 			}
-			void DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk wcc)
+			// data for checking if neighbouring chunks need to load blocks
+			struct DBNeighbourChunkData {
+				// quantity
+				uint8_t quant;
+				struct
+				{
+					WCoordChunk wcc;
+					CVec2 cv;
+					int32_t y;
+				} offsets[2];	// maximum 2
+
+				void App(const WCoordChunk& wcc, CVec2 c, int32_t y, const WVec2 offset)
+				{
+					// to avoid the coords getting below 0 so that if
+					// -1 will go to 15 and 15 % 16 is 15
+					c.x += 16 + offset.x;	c.z += 16 + offset.z;
+					c.x %= 16;				c.z %= 16;
+					WCoordChunk newWcc = { {wcc.wpos.x + offset.x, wcc.wpos.z + offset.z} };
+					offsets[quant] = { newWcc, c, y };
+					++quant;
+				}
+			};
+			DBNeighbourChunkData DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk wcc)
 			{
+				DBNeighbourChunkData cbncd;
+				cbncd.quant = 0;
 				int32_t cast = static_cast<int32_t>(y);
 				// erases y from the ystrip
 				uint16_t vindex = m_blocks[Index(bcoord)].ystrip[cast].VIndex();
@@ -170,7 +194,7 @@ namespace minecraft
 				m_gpuh.RemoveBlock(vindex);
 
 				// check for neighbouring blocks
-				LoadAllNeighbouringVisibleBlocks(bcoord, cast, t, negCorner, wcc);
+				LoadAllNeighbouringVisibleBlocks(bcoord, cast, t, negCorner, wcc, cbncd);
 
 				if (m_gpuh.MaxDBPointer() == m_gpuh.DBPointer())
 				{
@@ -178,6 +202,7 @@ namespace minecraft
 					UpdateIndices(m_gpuh.DeletedBlocksIndices());
 					m_numBlocks -= 16;
 				}
+				return cbncd;
 			}
 			void LoadGPUBuffer(void)
 			{
@@ -187,8 +212,26 @@ namespace minecraft
 			{
 				m_gpuh.DestroyVector();
 			}
+			void LoadVisibleBlock(CVec2 c, int32_t y,
+				terrain::Terrain& t, WVec2 negCorner, WVec2& wcc)
+			{
+				BlockYStrip& bys = m_blocks[Index(c)];
+				uint8_t index = Index(c);
+				if (BlockIsVisible(c.x, y, c.z, bys) &&
+					m_blocks[index].ystrip.find(y) == m_blocks[index].ystrip.end())
+				{
+					if (y < bys.top)
+					{
+						Block::block_t b = t.BlockType(bys.bio, bys.top, y);
+						Block& newB = AppendBlock(c.x, c.z, y, bys, b);
+						newB.VIndex() = m_numBlocks - 1;
+						m_gpuh.PushBack(newB.WPos(wcc, y, negCorner), newB.TextureD());
+					}
+				}
+			}
 		public:
-			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk& wcc)
+			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t, 
+				WVec2 negCorner, WCoordChunk& wcc, DBNeighbourChunkData& d)
 			{
 				// top
 				BlockYStrip& byscenter = m_blocks[Index(c)];
@@ -196,20 +239,37 @@ namespace minecraft
 				LoadNeighbouringVisibleBlock(c, y - 1, byscenter, t, negCorner, wcc);
 
 				CVec2 xp = { c.x + 1u, c.z };
-				BlockYStrip& bysxp = m_blocks[Index(xp)];
-				LoadNeighbouringVisibleBlock(xp, y, bysxp, t, negCorner, wcc);
+				if (xp.x == 16u) 
+					d.App(wcc, c, y, {1, 0});
+				else
+				{
+					BlockYStrip& bysxp = m_blocks[Index(xp)];
+					LoadNeighbouringVisibleBlock(xp, y, bysxp, t, negCorner, wcc);
+				}
 
 				CVec2 xn = { c.x - 1u, c.z };
-				BlockYStrip& bysxn = m_blocks[Index(xn)];
-				LoadNeighbouringVisibleBlock(xn, y, bysxn, t, negCorner, wcc);
+				if (xn.x == static_cast<uint8_t>(-1)) d.App(wcc, c, y, {-1, 0});
+				else
+				{
+					BlockYStrip& bysxn = m_blocks[Index(xn)];
+					LoadNeighbouringVisibleBlock(xn, y, bysxn, t, negCorner, wcc);
+				}
 
 				CVec2 zp = { c.x, c.z + 1u };
-				BlockYStrip& byszp = m_blocks[Index(zp)];
-				LoadNeighbouringVisibleBlock(zp, y, byszp, t, negCorner, wcc);
+				if (zp.z == 16u) d.App(wcc, c, y, {0, 1});
+				else
+				{
+					BlockYStrip& byszp = m_blocks[Index(zp)];
+					LoadNeighbouringVisibleBlock(zp, y, byszp, t, negCorner, wcc);
+				}
 
 				CVec2 zn = { c.x, c.z - 1u };
-				BlockYStrip& byszn = m_blocks[Index(zn)];
-				LoadNeighbouringVisibleBlock(zn, y, byszn, t, negCorner, wcc);
+				if (zn.z == static_cast<uint8_t>(-1)) d.App(wcc, c, y, {0, -1});
+				else
+				{
+					BlockYStrip& byszn = m_blocks[Index(zn)];
+					LoadNeighbouringVisibleBlock(zn, y, byszn, t, negCorner, wcc);
+				}
 			}
 			void LoadNeighbouringVisibleBlock(CVec2 c, int32_t y, BlockYStrip& bys, 
 				terrain::Terrain& t, WVec2 negCorner, WCoordChunk& wcc)
@@ -227,6 +287,7 @@ namespace minecraft
 					}
 				}
 			}
+			
 			/* getter */
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
 			{
