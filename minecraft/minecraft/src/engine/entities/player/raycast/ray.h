@@ -14,6 +14,7 @@ namespace minecraft
 			const glm::vec3& EndPosition(void);
 			const float Distance(void);
 			const glm::vec3& Position(void);
+			const glm::vec3& Direction(void);
 			const float MaxDistance(void);
 			void Extend(float scale);
 		private:

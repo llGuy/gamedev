@@ -13,7 +13,7 @@ namespace minecraft
 			switch (ev)
 			{
 			case event_t::DIG: Dig(p, d, map, t); break;
-			//case event_t::PLACE: Place(); break;
+			case event_t::PLACE: Place(p, d, map); break;
 			}
 		}
 		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t)
@@ -57,7 +57,33 @@ namespace minecraft
 				bool exists = c.BlockExists(wcc.wpos, coordInChunk, rayPos);
 				if (exists)
 				{
+					struct FaceData
+					{
+						glm::vec3 p;
+						float frac;
+						glm::vec3 face;
+					};
+					auto lerp = [&](const glm::vec3& a, const glm::vec3& b, uint32_t xyorz, float val)->FaceData
+					{
+						glm::vec3 direction = b - a;
+						float val1 = a[xyorz];
+						float val2 = direction[xyorz];
+						float frac = (val - val1) / val2;
+						if (fabs(frac) > 1.0f) return { glm::vec3(-10.0f) };
+						return { (direction * frac) + a, frac };
+					};
 
+					float fracs[2];
+					uint32_t ptr = 0;
+					// top face
+					float topy = round.y;
+					FaceData fd1 = lerp(r.Position(), rayPos, 1, topy);
+					fd1.face = glm::vec3(0.0f, 1.0f, 0.0f);
+					glm::vec3 l = glm::round(fd1.p);
+					if (glm::all(glm::lessThan(glm::abs(l - round), glm::vec3(0.0001f))))
+					{
+						
+					}
 				}
 			}
 		}

@@ -38,6 +38,8 @@ void Window::MouseCallback(uint32_t b)
 	{
 	case GLFW_MOUSE_BUTTON_1:
 		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL);
+	case GLFW_MOUSE_BUTTON_2:
+		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSER);
 	}
 }
 const bool Window::WindowOpen(void)
