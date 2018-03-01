@@ -230,6 +230,13 @@ namespace minecraft
 				}
 			}
 		public:
+			void PlaceBlock(CVec2 c, float y, WVec2 negCorner, WCoordChunk wcc)
+			{
+				BlockYStrip& bys = m_blocks[Index(c)];
+				Block& newB = AppendBlock(c.x, c.z, static_cast<int32_t>(y), bys, Block::block_t::OAK_PLANKS);
+				newB.VIndex() = m_numBlocks - 1;
+				m_gpuh.PushBack(newB.WPos(wcc.wpos, static_cast<int32_t>(y), negCorner), newB.TextureD());
+			}
 			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t, 
 				WVec2 negCorner, WCoordChunk& wcc, DBNeighbourChunkData& d)
 			{

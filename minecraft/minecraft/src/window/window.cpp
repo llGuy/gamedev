@@ -37,9 +37,9 @@ void Window::MouseCallback(uint32_t b)
 	switch (b)
 	{
 	case GLFW_MOUSE_BUTTON_1:
-		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL);
+		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL); return;
 	case GLFW_MOUSE_BUTTON_2:
-		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSER);
+		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSER); return;
 	}
 }
 const bool Window::WindowOpen(void)

@@ -28,6 +28,15 @@ namespace minecraft
 			void Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map);
 			const CVec2 PointCoordInChunk(const Chunk::WCoordChunk& wcc, const glm::vec3& v) const;
 			const Chunk::WCoordChunk ChunkCoordOfPoint(const glm::vec3& v) const;
+			
+			struct FaceIntersectionData
+			{
+				glm::vec3 intersectionPoint;
+				float frac;
+				glm::vec3 face;
+			};
+			void BlockFaceRayIntersection(FaceIntersectionData* fid, uint32_t& ptr,
+				ent::Ray& r, glm::vec3 face, uint32_t xyorz, float val, glm::vec3 round);
 		};
 	}
 }

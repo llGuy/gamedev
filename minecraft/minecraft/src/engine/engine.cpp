@@ -220,10 +220,10 @@ namespace minecraft
 		{
 		case mbutton_t::MOUSEL:
 			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::DIG, 
-				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection());
+				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection()); return;
 		case mbutton_t::MOUSER:
 			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::PLACE,
-				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection());
+				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection()); return;
 		}
 	}
 }

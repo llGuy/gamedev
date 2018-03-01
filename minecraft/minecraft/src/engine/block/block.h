@@ -24,7 +24,7 @@ public:
 	enum block_t
 		: uint8_t
 	{
-		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, LEAVES, WATER, INV /* will add more types of blocks */
+		STONE, DIRT, GRASS, BEDROCK, SAND, OAK_LOG, LEAVES, WATER, OAK_PLANKS, INV /* will add more types of blocks */
 	};
 
 	static const uint32_t AVAILABLE_TEXTURES;
