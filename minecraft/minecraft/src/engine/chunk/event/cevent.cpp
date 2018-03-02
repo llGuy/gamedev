@@ -51,7 +51,7 @@ namespace minecraft
 				glm::vec3 direction = b - a;
 				float val1 = a[xyorz];
 				float val2 = direction[xyorz];
-				//float frac = (val - val1) / val2;
+				//float frac = (val - val1) / val2; 
 				float frac = (val - val1) / (val2);
 				if (fabs(frac) > 1.0f) return { glm::vec3(-10.0f) };
 				return { (direction * frac) + a, frac };
@@ -117,12 +117,12 @@ namespace minecraft
 					// check if there are multiple collision
 					if (ptr == 2) goto END;
 
-					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(0.0f, 0.0f, 0.0f), X, round.x, round);
+					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(1.0f, 0.0f, 0.0f), X, round.x + 1.0f, round + glm::vec3(1.0f, 0.0f, 0.0f));
 					if (ptr == 2) goto END;
 					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(-1.0f, 0.0f, 0.0f), X, round.x - 1.0f, round - glm::vec3(1.0f, 0.0f, 0.0f));
 					if (ptr == 2) goto END;
 
-					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(0.0f, 0.0f, 0.0f), Z, round.z, round);
+					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(0.0f, 0.0f, 1.0f), Z, round.z + 1.0f, round + glm::vec3(0.0f, 0.0f, 1.0f));
 					if (ptr == 2) goto END;
 					BlockFaceRayIntersection(fracs, ptr, r, glm::vec3(0.0f, 0.0f, -1.0f), Z, round.z - 1.0f, round - glm::vec3(0.0f, 0.0f, 1.0f));
 					if (ptr == 2) goto END;
@@ -138,7 +138,11 @@ namespace minecraft
 							ptr = 1;
 						}
 
-						c.PlaceBlock(PointCoordInChunk(wcc, round + fracs[ptr].face), round.y + fracs[ptr].face.y);
+						Chunk::WCoordChunk w = ChunkCoordOfPoint(round + fracs[ptr].face);
+						CVec2 cv = PointCoordInChunk(w, round + fracs[ptr].face);
+						if (cv.x > 15 || cv.z > 15)
+							std::cout << "error" << std::endl;
+						c.PlaceBlock(cv, round.y + fracs[ptr].face.y);
 						return;
 					}
 				}

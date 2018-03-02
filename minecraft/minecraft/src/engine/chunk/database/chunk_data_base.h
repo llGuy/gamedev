@@ -233,9 +233,12 @@ namespace minecraft
 			void PlaceBlock(CVec2 c, float y, WVec2 negCorner, WCoordChunk wcc)
 			{
 				BlockYStrip& bys = m_blocks[Index(c)];
-				Block& newB = AppendBlock(c.x, c.z, static_cast<int32_t>(y), bys, Block::block_t::OAK_PLANKS);
-				newB.VIndex() = m_numBlocks - 1;
-				m_gpuh.PushBack(newB.WPos(wcc.wpos, static_cast<int32_t>(y), negCorner), newB.TextureD());
+				if (!BlockExists(wcc.wpos, c, static_cast<int32_t>(y)))
+				{
+					Block& newB = AppendBlock(c.x, c.z, static_cast<int32_t>(y), bys, Block::block_t::OAK_PLANKS);
+					newB.VIndex() = m_numBlocks - 1;
+					m_gpuh.PushBack(newB.WPos(wcc.wpos, static_cast<int32_t>(y), negCorner), newB.TextureD());
+				}
 			}
 			void LoadAllNeighbouringVisibleBlocks(CVec2 c, int32_t y, terrain::Terrain& t, 
 				WVec2 negCorner, WCoordChunk& wcc, DBNeighbourChunkData& d)
@@ -299,6 +302,16 @@ namespace minecraft
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos)
 			{
 				int32_t y = static_cast<int32_t>(wpos.y);
+				uint8_t index = Index(ccoord);
+				// if not equal then the block exists
+				if (m_blocks[index].ystrip.find(y) != m_blocks[index].ystrip.end())
+				{
+					return m_blocks[index].ystrip.at(y).Valid();
+				}
+				return false;
+			}
+			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, int32_t y)
+			{
 				uint8_t index = Index(ccoord);
 				// if not equal then the block exists
 				if (m_blocks[index].ystrip.find(y) != m_blocks[index].ystrip.end())
