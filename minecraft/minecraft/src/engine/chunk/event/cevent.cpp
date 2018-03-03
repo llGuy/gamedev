@@ -72,6 +72,7 @@ namespace minecraft
 			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.05f))
 			{
 				glm::vec3 rayPos = r.EndPosition();
+				// block position is the position of the ray rounded
 				glm::vec3 round = glm::round(rayPos);
 				Chunk::WCoordChunk wcc = ChunkCoordOfPoint(round);
 				CVec2 coordInChunk = PointCoordInChunk(wcc, round);
@@ -91,18 +92,7 @@ namespace minecraft
 
 					FaceIntersectionData fracs[2] = { {glm::vec3(), 10.0f, glm::vec3()},{ glm::vec3(), 10.0f, glm::vec3() } };
 					uint32_t ptr = 0;
-					// top face
-					/*float topy = round.y;
-					FaceIntersectionData fd1 = lerp(r.Position(), rayPos, 1, topy);
-					fd1.face = glm::vec3(0.0f, 1.0f, 0.0f);
-					glm::vec3 l = glm::round(fd1.intersectionPoint);
-					if (glm::all(glm::lessThan(glm::abs(l - round), glm::vec3(0.0001f))))
-					{
-						fracs[ptr] = fd1;
-						++ptr;
-						c.PlaceBlock(PointCoordInChunk(wcc, round + glm::vec3(0.0f, 1.0f, 0.0f)), round.y);
-						return;
-					}*/
+				
 					enum
 					{
 						X,
@@ -140,9 +130,8 @@ namespace minecraft
 
 						Chunk::WCoordChunk w = ChunkCoordOfPoint(round + fracs[ptr].face);
 						CVec2 cv = PointCoordInChunk(w, round + fracs[ptr].face);
-						if (cv.x > 15 || cv.z > 15)
-							std::cout << "error" << std::endl;
-						c.PlaceBlock(cv, round.y + fracs[ptr].face.y);
+						Chunk& ch = map[w];
+						ch.PlaceBlock(cv, round.y + fracs[ptr].face.y);
 						return;
 					}
 				}

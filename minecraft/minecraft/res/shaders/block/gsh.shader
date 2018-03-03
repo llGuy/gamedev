@@ -1,4 +1,4 @@
-#version 430
+#version 330 core
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 24) out;
@@ -92,7 +92,7 @@ void CreateVertex(vec3 offset, vec3 n, vec2 tcoords, int f)
 	EmitVertex();
 }
 
-void CreateFaceVertex(vec3 flags, float vcomp1, float vcomp2, unsigned int i, vec2 tcoords, int f)
+void CreateFaceVertex(vec3 flags, float vcomp1, float vcomp2, int i, vec2 tcoords, int f)
 {
 	vec3 v1;
 	// creates vertex at the face that the flag is enabling
@@ -104,7 +104,7 @@ void CreateFaceVertex(vec3 flags, float vcomp1, float vcomp2, unsigned int i, ve
 
 void CreateFace(vec3 flags)
 {
-	for (unsigned int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		if (abs(flags[i]) != 0)
 		{
