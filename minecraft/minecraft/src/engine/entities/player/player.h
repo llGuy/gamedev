@@ -22,7 +22,7 @@ namespace minecraft
 			{
 				void Start(bool& jumping, float y)
 				{
-					upvelocity = glm::vec3(0.0f, 4.5f, 0.0f);
+					upvelocity = glm::vec3(0.0f, 5.5f, 0.0f);
 					rising = true;
 					jumping = true;
 					yStart = y;

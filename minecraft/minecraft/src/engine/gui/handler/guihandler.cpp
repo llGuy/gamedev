@@ -13,7 +13,7 @@ namespace minecraft
 			m_shp.Compile();
 			m_shp.Link({"vertex_position", "texture_data"});
 			// crosshair
-			m_guis[CROSSHAIR] = new Crosshair(glm::vec2(0.0f), glm::vec2(1.0f));
+			m_guis[CROSSHAIR] = new Crosshair(glm::vec2(0.0f), glm::vec2(0.01f));
 			m_guis[CROSSHAIR]->Init(projection);
 		}
 		void GUIHandler::UseProgram(void)

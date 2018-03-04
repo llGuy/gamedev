@@ -28,7 +28,7 @@ namespace minecraft
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		UpdateData();
-		//RenderChunks();
+		RenderChunks();
 		RenderGUI();
 	}
 	void Engine::RenderGUI(void)
@@ -100,7 +100,7 @@ namespace minecraft
 	}
 	void Engine::Configure(void)
 	{
-		m_variableConfigs.FOV = glm::radians(60.0f);
+		m_variableConfigs.FOV = glm::radians(70.0f);
 		m_variableConfigs.renderDistance = 50.0f;
 		m_variableConfigs.mouseSensitivity = 0.02f;
 
