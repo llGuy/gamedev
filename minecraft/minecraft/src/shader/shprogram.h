@@ -13,9 +13,10 @@ namespace sh
 		explicit SHProgram(const std::string& vshDir,
 			const std::string& fshDir, const std::string& gshDir)
 			: m_vsh(GL_VERTEX_SHADER, vshDir),
-			m_fsh(GL_FRAGMENT_SHADER, fshDir),
-			m_gsh(GL_GEOMETRY_SHADER, gshDir)
+			m_fsh(GL_FRAGMENT_SHADER, fshDir), m_hasGeometry(true)
 		{
+			if (gshDir == "INV") m_hasGeometry = false;
+			else m_gsh = Shader(GL_GEOMETRY_SHADER, gshDir);
 		}
 		~SHProgram(void)
 		{
@@ -26,7 +27,12 @@ namespace sh
 		{
 			m_vsh = Shader(GL_VERTEX_SHADER, vshDir);
 			m_fsh = Shader(GL_FRAGMENT_SHADER, fshDir);
-			m_gsh = Shader(GL_GEOMETRY_SHADER, gshDir);
+			if (gshDir == "INV") m_hasGeometry = false;
+			else
+			{
+				m_gsh = Shader(GL_GEOMETRY_SHADER, gshDir);
+				m_hasGeometry = true;
+			}
 		}
 		void UseProgram(void)
 		{
@@ -37,14 +43,14 @@ namespace sh
 			Log("compiling shaders");
 			m_vsh.Init();
 			m_fsh.Init();
-			m_gsh.Init();
+			if(m_hasGeometry) m_gsh.Init();
 		}
 		void Link(const std::vector<const char*>& locs)
 		{
 			Log("linking shaders");
 			if (CheckShaderStatus(m_vsh.ShaderID())
 				&& CheckShaderStatus(m_fsh.ShaderID())
-				&& CheckShaderStatus(m_gsh.ShaderID()))
+				&& (m_hasGeometry ? CheckShaderStatus(m_gsh.ShaderID()) : true))
 			{
 				m_programID = glCreateProgram();
 				AttachShadersToProgram();
@@ -65,7 +71,7 @@ namespace sh
 		{
 			glAttachShader(m_programID, m_vsh.ShaderID());
 			glAttachShader(m_programID, m_fsh.ShaderID());
-			glAttachShader(m_programID, m_gsh.ShaderID());
+			if(m_hasGeometry) glAttachShader(m_programID, m_gsh.ShaderID());
 		}
 		void BindAttribLocations(const std::vector<const char*>& locs)
 		{
@@ -76,7 +82,7 @@ namespace sh
 		{
 			glDeleteShader(m_vsh.ShaderID());
 			glDeleteShader(m_fsh.ShaderID());
-			glDeleteShader(m_gsh.ShaderID());
+			if(m_hasGeometry) glDeleteShader(m_gsh.ShaderID());
 		}
 		bool CheckShaderStatus(GLuint shaderID)
 		{

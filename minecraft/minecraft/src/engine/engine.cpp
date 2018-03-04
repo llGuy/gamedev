@@ -28,10 +28,28 @@ namespace minecraft
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		UpdateData();
-		RenderChunks();
+		//RenderChunks();
+		RenderGUI();
+	}
+	void Engine::RenderGUI(void)
+	{
+		m_guihandler.UseProgram();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+		for (uint32_t gui = 0; gui < m_guihandler.Size(); ++gui)
+		{
+			auto data = m_guihandler.RenderData(gui);
+			data.t->Bind(0);
+			m_renderer.ERender(GL_TRIANGLES, data, 6);
+		}
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
 	}
 	void Engine::RenderChunks(void)
 	{
+		m_textureAtlas.Bind(0);
+		m_chunkHandler->UseSHProgram();
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -99,7 +117,6 @@ namespace minecraft
 		glm::vec2 cursorPosition, GLFWwindow* window)
 	{
 		m_textureAtlas.Init();
-		m_textureAtlas.Bind(0);
 		m_chunkHandler->AfterGLEWInit();
 		m_chunkHandler->LaunchChunkLoader(m_player, window);
 		UDataInit(wwidth, wheight);
@@ -107,7 +124,8 @@ namespace minecraft
 		m_camera = ent::Camera(cursorPosition);
 		m_camera.Bind(m_player);
 
-		m_chunkHandler->UseSHProgram();
+		//m_chunkHandler->UseSHProgram();
+		m_guihandler.Init(m_udata.projectionMatrix);
 		EnableDebugger();
 		InitDebugData();
 	}

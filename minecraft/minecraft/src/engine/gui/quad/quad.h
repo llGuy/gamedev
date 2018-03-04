@@ -1,0 +1,18 @@
+#ifndef QUAD_HEADER
+#define QUAD_HEADER
+
+#include "../tpos/texture_position.h"
+
+namespace minecraft
+{
+	namespace gui
+	{
+		struct Quad
+		{
+			// coordinates
+			TPosition cs[4];
+		};
+	}
+}
+
+#endif

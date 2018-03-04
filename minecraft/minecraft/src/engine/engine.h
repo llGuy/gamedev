@@ -15,6 +15,7 @@
 #include "entities/player/player.h"
 #include "entities/camera/camera.h"
 #include "../texture/texture.h"
+#include "gui/handler/guihandler.h"
 
 namespace minecraft
 {
@@ -69,10 +70,12 @@ namespace minecraft
 		void UpdatePlayerData(void);
 		void RenderChunks(void);
 		void RenderDebug(void);
+		void RenderGUI(void);
 	private:
 		Texture m_textureAtlas;
 		ent::Camera m_camera;
 		ent::Entity* m_player;
+		gui::GUIHandler m_guihandler;
 		data::Time m_time;
 		data::CUData m_udata;
 		rnd::Renderer m_renderer;
