@@ -15,6 +15,7 @@ namespace minecraft
 		public:
 			explicit Crosshair(const glm::vec2 p, const glm::vec2 s);
 			void Init(const glm::mat4& projection) override;
+			void* IndexOffset(void) override;
 		private:
 			Quad m_quad;
 		};

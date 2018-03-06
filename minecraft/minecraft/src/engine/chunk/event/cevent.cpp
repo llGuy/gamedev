@@ -8,12 +8,12 @@ namespace minecraft
 		{
 		}
 		void ChunkEventHandler::Event(const event_t ev, cmap::CMap& map, terrain::Terrain& t, 
-			const glm::vec3& p, const glm::vec3& d)
+			const glm::vec3& p, const glm::vec3& d, const Block::block_t& b)
 		{
 			switch (ev)
 			{
 			case event_t::DIG: Dig(p, d, map, t); return;
-			case event_t::PLACE: Place(p, d, map); return;
+			case event_t::PLACE: Place(p, d, map, b); return;
 			}
 		}
 		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t)
@@ -65,7 +65,7 @@ namespace minecraft
 				++ptr;
 			}
 		}
-		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map)
+		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, const Block::block_t& b)
 		{
 			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
 			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
@@ -131,7 +131,7 @@ namespace minecraft
 						Chunk::WCoordChunk w = ChunkCoordOfPoint(round + fracs[ptr].face);
 						CVec2 cv = PointCoordInChunk(w, round + fracs[ptr].face);
 						Chunk& ch = map[w];
-						ch.PlaceBlock(cv, round.y + fracs[ptr].face.y);
+						ch.PlaceBlock(cv, round.y + fracs[ptr].face.y, b);
 						return;
 					}
 				}

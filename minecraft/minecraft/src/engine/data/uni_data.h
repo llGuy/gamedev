@@ -10,6 +10,7 @@ namespace minecraft
 		struct CUData
 		{
 			glm::mat4 projectionMatrix;
+			glm::mat4 modelMatrix;
 			glm::mat4 viewMatrix;
 			glm::vec3 lightPosition;
 			glm::vec3 eyePosition;
@@ -19,6 +20,7 @@ namespace minecraft
 		struct CUDataLocs
 		{
 			uint32_t projectionMatrixLocation;
+			uint32_t modelMatrixLocation;
 			uint32_t viewMatrixLocation;
 			uint32_t lightPositionLocation;
 			uint32_t eyePositionLocation;

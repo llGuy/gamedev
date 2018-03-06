@@ -54,7 +54,7 @@ namespace minecraft
 			const bool BlockExists(WVec2 chunkCoord, CVec2 ccoord, glm::vec3 wpos);
 			void LoadBlockFromGen(CVec2 c, int32_t y, terrain::Terrain& t);
 			ChunkDB::DBNeighbourChunkData DestroyBlock(CVec2 c, float y, terrain::Terrain& t);
-			void PlaceBlock(CVec2 c, float y);
+			void PlaceBlock(CVec2 c, float y, const Block::block_t& b);
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, int32_t elevation);

@@ -11,6 +11,7 @@ namespace minecraft
 	{
 		struct GLDrawElementsRenderData
 		{
+			glm::mat4 modelMatrix;
 			uint32_t bufferData;
 			void* offsetIndices;
 			VAO* vao;

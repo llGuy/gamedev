@@ -33,3 +33,10 @@ void Texture::SendData(ImageData id)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, id.w, id.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, id.data);
 }
+Texture& Texture::operator=(const Texture& t)
+{
+	m_texture = t.m_texture;
+	m_file = t.m_file;
+
+	return *this;
+}

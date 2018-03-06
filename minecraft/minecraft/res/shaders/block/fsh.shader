@@ -35,13 +35,17 @@ vec4 Grass(void)
 
 vec4 Leaves(void)
 {
-	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 140.0f / 255.0f, 0.0f / 255.0f, 1.0f) * 0.4f;
+	vec4 v = texture2D(diffuse_texture, texture_coords);
+	vec4 a;
+	if (v.a == 0.0f) a = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	else a = vec4(0.0f / 255.0f, 140.0f / 255.0f, 0.0f / 255.0f, 1.0f) * 0.4f;
+	return v + a;
 }
 
 vec4 FragmentColor(void)
 {
 	if (abs(texture_data - 0.0f) < 0.0001f) return Grass();
-	if (abs(texture_data - 53.0f) < 0.0001f) return Leaves();
+	if (abs(texture_data - 53.0f) < 0.0001f || abs(texture_data - 52.0f) < 0.0001f) return Leaves();
 	return texture2D(diffuse_texture, texture_coords);
 }
 

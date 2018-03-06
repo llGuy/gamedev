@@ -61,6 +61,7 @@ void Window::WindowInit(void)
 	glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowUserPointer(m_glfwWindow, this);
 	glfwSetMouseButtonCallback(m_glfwWindow, CursorEnterCallback);
+	glfwSetKeyCallback(m_glfwWindow, KeyboardEnterCallback);
 }
 void Window::GLFWInit(void)
 {
@@ -113,4 +114,11 @@ void Window::PollMouseInput(void)
 {
 	if (glfwGetMouseButton(m_glfwWindow, GLFW_MOUSE_BUTTON_1)) 
 		m_engine.RecieveMouseInput(minecraft::Engine::mbutton_t::MOUSEL);
+}
+void Window::KeyboardCallback(uint32_t k)
+{
+	minecraft::Engine::key_t key = static_cast<minecraft::Engine::key_t>((k - GLFW_KEY_1) + 
+		static_cast<int32_t>(minecraft::Engine::key_t::ONE));
+
+	m_engine.RecieveKeyInput(key);
 }

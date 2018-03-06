@@ -30,6 +30,7 @@ namespace minecraft
 			MOUSER
 		};
 		enum class key_t
+			: int32_t
 		{
 			W,				// forward
 			
@@ -45,7 +46,9 @@ namespace minecraft
 			
 			SPACE,			// jump
 			
-			LSHIFT			// crouch
+			LSHIFT,			// crouch
+
+			ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE	// for the hotbar
 		};
 		explicit Engine(void);
 		~Engine(void);
@@ -53,7 +56,7 @@ namespace minecraft
 			glm::vec2 cursorPos, GLFWwindow* window);
 	public:
 		void RecieveMouseInput(mbutton_t&& button);
-		void RecieveKeyInput(key_t&& key);
+		void RecieveKeyInput(const key_t& key);
 		void RecieveMouseMovement(glm::vec2 newMousePosition);
 		void Render(void);
 		void HEAPDelete(void);

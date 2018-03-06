@@ -24,9 +24,14 @@ namespace minecraft
 			m_quad.cs[2].t = glm::vec2(+0.0f, +1.0f);
 			m_quad.cs[3].t = glm::vec2(+1.0f, +1.0f);
 
-			m_buffer.Init(m_quad);
+			Quad quads[1] = {m_quad};
+			m_buffer.Init(quads, 1);
 			m_vao->Init(m_quad.cs);
 			m_texture.Init();
+		}
+		void* Crosshair::IndexOffset(void)
+		{
+			return (void*)sizeof(Quad);
 		}
 	}
 }

@@ -5,6 +5,8 @@ in layout(location = 1) vec2 texture_data;
 
 out vec2 tdata;
 
+uniform mat4 model_matrix;
+
 void main()
 {
 	tdata = texture_data;

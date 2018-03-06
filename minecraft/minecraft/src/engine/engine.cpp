@@ -14,7 +14,6 @@ namespace minecraft
 	}
 	Engine::~Engine(void)
 	{
-		
 	}
 	void Engine::HEAPDelete(void)
 	{
@@ -34,8 +33,8 @@ namespace minecraft
 	void Engine::RenderGUI(void)
 	{
 		m_guihandler.UseProgram();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
 		for (uint32_t gui = 0; gui < m_guihandler.Size(); ++gui)
 		{
@@ -44,7 +43,7 @@ namespace minecraft
 			m_renderer.ERender(GL_TRIANGLES, data, 6);
 		}
 		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 	}
 	void Engine::RenderChunks(void)
 	{
@@ -111,6 +110,7 @@ namespace minecraft
 		m_chunkHandler->GetUniform();
 
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 1000.0f);
+		m_udata.modelMatrix = glm::mat4(1.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);
 	}
 	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight,
@@ -128,8 +128,10 @@ namespace minecraft
 		m_guihandler.Init(m_udata.projectionMatrix);
 		EnableDebugger();
 		InitDebugData();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-	void Engine::RecieveKeyInput(key_t&& key)
+	void Engine::RecieveKeyInput(const key_t& key)
 	{
 		/* obstruction handling */
 		bool obstx[2];
@@ -143,28 +145,36 @@ namespace minecraft
 		{
 		case key_t::R:
 			m_player->SpeedUp();
-			break;
+			return;
 		case key_t::W:
 			m_player->Move(ent::Entity::move_t::FORWARD, &m_time, obstx, obstz);
-			break;
+			return;
 		case key_t::A:
 			m_player->Strafe(ent::Entity::strafe_t::LEFT, &m_time, obstx, obstz);
-			break;
+			return;
 		case key_t::S:
 			m_player->Move(ent::Entity::move_t::BACKWARD, &m_time, obstx, obstz);
-			break;
+			return;
 		case key_t::D:
 			m_player->Strafe(ent::Entity::strafe_t::RIGHT, &m_time, obstx, obstz);
-			break;
+			return;
 		case key_t::F:
 			m_player->ToggleState(ent::Entity::state_t::TOGGLE_FLY);
-			break;
+			return;
 		case key_t::SPACE:
 			m_player->Move(ent::Entity::move_t::JUMP, &m_time, obstx, obstz);
-			break;
+			return;
 		case key_t::LSHIFT:
 			m_player->Move(ent::Entity::move_t::CROUCH, &m_time, obstx, obstz);
-			break;
+			return;
+		}
+
+		int32_t k1 = static_cast<int32_t>(key_t::ONE);
+		int32_t k9 = static_cast<int32_t>(key_t::NINE);
+		int32_t k = static_cast<int32_t>(key);
+		if (k >= k1 && k <= k9)
+		{
+			m_guihandler.Event(gui::GUIEventHandler::event_t::NUMBER, k - k1);
 		}
 	}
 	void Engine::RecieveMouseMovement(glm::vec2 newMousePosition)
@@ -241,7 +251,7 @@ namespace minecraft
 				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection()); return;
 		case mbutton_t::MOUSER:
 			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::PLACE,
-				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection()); return;
+				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection(), m_guihandler.HotbarSelectedBlock()); return;
 		}
 	}
 }

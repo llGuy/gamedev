@@ -40,9 +40,9 @@ namespace minecraft
 			if (!m_chunkMap.Exists(wcc)) return 0.0f;
 			return m_chunkMap[wcc].HighestBlock(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos()) + 0.5f;
 		}
-		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d)
+		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d, const Block::block_t& b)
 		{
-			m_eventHandler.Event(e, m_chunkMap, m_terrain, p, d);
+			m_eventHandler.Event(e, m_chunkMap, m_terrain, p, d, b);
 		}
 		bool CHandler::Obstruction(glm::vec3 flags, glm::vec3 wpos)
 		{
@@ -164,6 +164,7 @@ namespace minecraft
 			m_udataloc.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
 			m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
 			m_udataloc.skyColorLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "sky_color");
+			m_udataloc.modelMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "model_matrix");
 		}
 		cmap::CMap::update_t CHandler::MapUpdateState(void)
 		{

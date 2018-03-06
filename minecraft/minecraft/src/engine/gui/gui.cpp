@@ -8,6 +8,10 @@ namespace minecraft
 			: m_translation(translation), m_scale(scale), m_vao(v), m_texture(f)
 		{
 		}
+		GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* vao, const Texture& t)
+			: m_translation(translation), m_scale(scale), m_vao(vao), m_texture(t)
+		{
+		}
 		void GUI::Init(const glm::mat4& projection)
 		{
 		}
@@ -30,6 +34,26 @@ namespace minecraft
 		Texture* GUI::Tex(void)
 		{
 			return &m_texture;
+		}
+		void* GUI::IndexOffset(void)
+		{
+			return nullptr;
+		}
+		const glm::vec2& GUI::Position(void)
+		{
+			return m_translation;
+		}
+		const float GUI::Stride(void)
+		{
+			return 0.0f;
+		}
+		void GUI::Update(const int32_t& slot)
+		{
+			// donoth
+		}
+		const Block::block_t& GUI::SelectedBlock(void)
+		{
+			return Block::block_t::INV;
 		}
 	}
 }

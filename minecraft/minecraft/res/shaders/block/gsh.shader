@@ -14,6 +14,7 @@ out vec2 texture_coords;
 out vec3 vertex_position;
 
 uniform mat4 projection_matrix;
+uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 
 // for the fog

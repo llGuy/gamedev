@@ -139,7 +139,8 @@ namespace minecraft
 		}
 		float Player::Speed(data::Time* time) const
 		{
-			return m_speed * static_cast<float>(time->deltaT) * m_speed * (m_flying ? 10.0f : 1.0f);
+			return m_speed * static_cast<float>(time->deltaT) * m_speed * (m_flying ? 2.0f : 1.0f);
+			//return m_speed * static_cast<float>(time->deltaT) * m_speed;
 		}
 		void Player::Jump(void)
 		{

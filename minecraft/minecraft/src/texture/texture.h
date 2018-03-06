@@ -13,6 +13,8 @@ public:
 	explicit Texture(const std::string& file);
 	void Init(void);
 	void Bind(int unit);
+
+	Texture& operator=(const Texture& t);
 private:
 	struct ImageData
 	{

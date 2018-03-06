@@ -10,6 +10,7 @@
 #include "../loader/chunk_loader.h"
 #include "../../../shader/shprogram.h"
 #include "../../terrain/terrain.h"
+#include "../../block/block.h"
 
 namespace minecraft
 {
@@ -28,7 +29,7 @@ namespace minecraft
 			void GetUniform(void);
 		public:
 			void RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p = glm::vec3(0.0f),
-				const glm::vec3& d = glm::vec3(0.0f));
+				const glm::vec3& d = glm::vec3(0.0f), const Block::block_t& b = Block::block_t::INV);
 			float BlockUnderPoint(glm::vec3 wpos);
 			float HighestBlock(glm::vec3 wpos);
 			glm::vec3 BlockWPos(glm::vec3 wpos);

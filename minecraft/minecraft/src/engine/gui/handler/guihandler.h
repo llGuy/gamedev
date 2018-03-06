@@ -3,6 +3,9 @@
 
 #include "../crosshair/crosshair.h"
 #include "../../../shader/shprogram.h"
+#include "../hotbar/hotbar.h"
+#include "../guitype.h"
+#include "../guievent_handler/guieventhandler.h"
 #include "../../renderer/glderenderdata/glderenderdata.h"
 
 namespace minecraft
@@ -18,14 +21,13 @@ namespace minecraft
 			const uint32_t Size(void) const;
 			rnd::GLDrawElementsRenderData RenderData(const uint32_t& index);
 			void UseProgram(void);
+			const Block::block_t& HotbarSelectedBlock(void);
+			void Event(const GUIEventHandler::event_t& e, int32_t slot = 0);
 		private:
-			enum
-			{
-				CROSSHAIR
-			};
-			const uint32_t SIZE = 1;
-			GUI* m_guis[1];
+			const uint32_t SIZE = 3;
+			GUI* m_guis[3];
 			sh::SHProgram m_shp;
+			GUIEventHandler m_guieventHandler;
 		};
 	}
 }

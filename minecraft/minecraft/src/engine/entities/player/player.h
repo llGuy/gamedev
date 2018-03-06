@@ -2,6 +2,7 @@
 #define PLAYER_HEADER
 
 #include "../entity.h"
+#include "../../block/block.h"
 
 #include <iostream>
 

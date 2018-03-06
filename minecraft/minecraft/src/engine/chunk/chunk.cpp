@@ -27,10 +27,10 @@ namespace minecraft
 			return m_dataBase.DestroyBlock(c, y, t, NegativeCornerWPos(), ChunkCoordinate().wpos);
 		}
 
-		void Chunk::PlaceBlock(CVec2 c, float y)
+		void Chunk::PlaceBlock(CVec2 c, float y, const Block::block_t& b)
 		{
 			m_gpubufferloaded = false;
-			m_dataBase.PlaceBlock(c, y, NegativeCornerWPos(), { ChunkCoordinate().wpos });
+			m_dataBase.PlaceBlock(c, y, NegativeCornerWPos(), { ChunkCoordinate().wpos }, b);
 		}
 
 		void Chunk::LoadBlockFromGen(CVec2 c, int32_t y, terrain::Terrain& t)

@@ -7,6 +7,7 @@ namespace minecraft
 	{
 		void Renderer::UniformData(data::CUData& cud, data::CUDataLocs& cudl) const
 		{
+			glUniformMatrix4fv(cudl.modelMatrixLocation, 1, GL_FALSE, &cud.modelMatrix[0][0]);
 			glUniformMatrix4fv(cudl.projectionMatrixLocation, 1, GL_FALSE, &cud.projectionMatrix[0][0]);
 			glUniformMatrix4fv(cudl.viewMatrixLocation, 1, GL_FALSE, &cud.viewMatrix[0][0]);
 			glUniform3fv(cudl.lightPositionLocation, 1, &cud.lightPosition[0]);
@@ -18,7 +19,7 @@ namespace minecraft
 			uint32_t first, uint32_t count)
 		{
 			vao->Bind();
-			/* glDrawArrays() */
+			glDrawArrays(mode, first, count);
 			vao->UnBind();
 		}
 
@@ -42,13 +43,12 @@ namespace minecraft
 				glEnd();
 			}
 		}
+
 		void Renderer::ERender(GLenum mode, const GLDrawElementsRenderData& d, uint32_t count)
 		{
 			d.vao->Bind();
-
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d.bufferData);
-			glDrawElements(mode, count, GL_UNSIGNED_SHORT, 0);
-
+			glDrawElements(mode, count, GL_UNSIGNED_SHORT, d.offsetIndices);
 			d.vao->UnBind();
 		}
 	}

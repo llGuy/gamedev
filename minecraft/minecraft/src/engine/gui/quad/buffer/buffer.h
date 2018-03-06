@@ -13,13 +13,13 @@ namespace minecraft
 		{
 		public:
 			explicit GUIBuffer(void);
-			void Init(const Quad& q);
+			void Init(const Quad* q, uint32_t size);
+			void Update(const Quad* q, uint32_t size);
 			void Bind(void);
 			void UnBind(void);
 			uint32_t BufferID(void);
 		private:
 			uint32_t m_bufferID;
-			uint32_t m_indexBufferID;
 		};
 	}
 }

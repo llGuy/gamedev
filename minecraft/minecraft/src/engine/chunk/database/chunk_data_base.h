@@ -230,12 +230,12 @@ namespace minecraft
 				}
 			}
 		public:
-			void PlaceBlock(CVec2 c, float y, WVec2 negCorner, WCoordChunk wcc)
+			void PlaceBlock(CVec2 c, float y, WVec2 negCorner, WCoordChunk wcc, const Block::block_t& b)
 			{
 				BlockYStrip& bys = m_blocks[Index(c)];
 				if (!BlockExists(wcc.wpos, c, static_cast<int32_t>(y)))
 				{
-					Block& newB = AppendBlock(c.x, c.z, static_cast<int32_t>(y), bys, Block::block_t::OAK_PLANKS);
+					Block& newB = AppendBlock(c.x, c.z, static_cast<int32_t>(y), bys, b);
 					newB.VIndex() = m_numBlocks - 1;
 					m_gpuh.PushBack(newB.WPos(wcc.wpos, static_cast<int32_t>(y), negCorner), newB.TextureD());
 				}
