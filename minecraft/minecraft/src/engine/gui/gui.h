@@ -20,7 +20,7 @@ namespace minecraft
 			}
 			//explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const std::string& f);
 			//explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const Texture& t);
-			explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, TextureAtlas& ta);
+			explicit GUI(uint32_t count, const glm::vec2, const float scale, VAO* vao, TextureAtlas& ta);
 			virtual void Init(const glm::mat4& projection);
 			VAO* Vao(void);
 			void BindBuffer(void);
@@ -28,6 +28,7 @@ namespace minecraft
 			uint32_t BufferID(void);
 			TextureAtlas* Tex(void);
 
+			virtual uint32_t Count(void);
 			virtual void* IndexOffset(void);
 			virtual const glm::vec2& Position(void);
 			// for the hotbar
@@ -36,7 +37,9 @@ namespace minecraft
 			virtual const Block::block_t& SelectedBlock(void);
 		protected:
 			glm::vec2 m_translation;
-			glm::vec2 m_scale;
+			float m_scale;
+
+			uint32_t m_count;
 
 			VAO* m_vao;
 

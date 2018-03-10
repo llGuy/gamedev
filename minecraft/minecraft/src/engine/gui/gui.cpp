@@ -12,8 +12,8 @@ namespace minecraft
 		//	: m_translation(translation), m_scale(scale), m_vao(vao), m_texture(t)
 		//{
 		//}
-		GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* v, TextureAtlas& ta)
-			: m_translation(translation), m_scale(scale), m_vao(v), m_textureAtlas(&ta)
+		GUI::GUI(uint32_t count, const glm::vec2 translation, const float scale, VAO* v, TextureAtlas& ta)
+			: m_translation(translation), m_scale(scale), m_vao(v), m_textureAtlas(&ta), m_count(count)
 		{
 
 		}
@@ -59,6 +59,10 @@ namespace minecraft
 		const Block::block_t& GUI::SelectedBlock(void)
 		{
 			return Block::block_t::INV;
+		}
+		uint32_t GUI::Count(void)
+		{
+			return m_count;
 		}
 	}
 }

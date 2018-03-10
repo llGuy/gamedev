@@ -22,7 +22,7 @@ namespace minecraft
 				uint32_t first, uint32_t count);
 			void AInstancedRender(GLenum mode, const VAO* vao,
 				uint32_t first, uint32_t count, uint32_t primCount);
-			void ERender(GLenum mode, const GLDrawElementsRenderData& d, uint32_t count);
+			void ERender(GLenum mode, const GLDrawElementsRenderData& d);
 
 			/* immediate mode rendering */
 			void VecIMMRender(const debug::Line* l, const uint32_t size);

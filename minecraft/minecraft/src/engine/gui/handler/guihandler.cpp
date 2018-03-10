@@ -26,17 +26,17 @@ namespace minecraft
 			m_guiTextureAtlas.Init();
 
 			// crosshair
-			m_guis[CROSSHAIR] = new Crosshair(glm::vec2(0.0f), glm::vec2(0.02f), m_crosshair);
+			m_guis[CROSSHAIR] = new Crosshair(glm::vec2(0.0f), 0.02f, m_crosshair);
 			m_guis[CROSSHAIR]->Init(projection);
 
 			m_guis[HOTBAR] = new Hotbar(position_t::BOTTOM, m_guiTextureAtlas);
 			m_guis[HOTBAR]->Init(projection);
 
 			m_guis[BLOCKSELECTOR] = new BlockSelector(position_t::BOTTOM, 
-				m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), glm::vec2(1.0f), *(m_guis[HOTBAR]->Tex()));
+				m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), 1.0f, *(m_guis[HOTBAR]->Tex()));
 			m_guis[BLOCKSELECTOR]->Init(projection);
 
-			m_guis[SLOTGUI] = new SlotGUI(m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), glm::vec2(1.0f), m_blockTextureAtlasPtr);
+			m_guis[SLOTGUI] = new SlotGUI(position_t::BOTTOM, m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), 0.06f, m_blockTextureAtlasPtr, 0);
 			m_guis[SLOTGUI]->Init(projection);
 		}
 		void GUIHandler::UseProgram(void)
@@ -58,6 +58,7 @@ namespace minecraft
 			d.offsetIndices = m_guis[index]->IndexOffset();
 			d.vao = m_guis[index]->Vao();
 			d.t = m_guis[index]->Tex()->Tex();
+			d.count = m_guis[index]->Count();
 			return d;
 		}
 		const Block::block_t& GUIHandler::HotbarSelectedBlock(void)

@@ -13,7 +13,7 @@ namespace minecraft
 			: public GUI
 		{
 		public:
-			explicit Crosshair(const glm::vec2 p, const glm::vec2 s, TextureAtlas& ta);
+			explicit Crosshair(const glm::vec2 p, const float s, TextureAtlas& ta);
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
 		private:

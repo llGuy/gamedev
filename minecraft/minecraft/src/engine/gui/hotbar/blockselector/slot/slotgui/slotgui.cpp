@@ -4,14 +4,16 @@ namespace minecraft
 {
 	namespace gui
 	{
-		SlotGUI::SlotGUI(const float& stride, const glm::vec2&,
-			const glm::vec2&, TextureAtlas* t)
-			: GUI::GUI(glm::vec2(0.0f), glm::vec2(0.0f), new GUIVAO, *t)
+		SlotGUI::SlotGUI(const position_t& p, const float& stride, const glm::vec2 translation,
+			const float s, TextureAtlas* t, uint32_t slot)
+			: GUI::GUI(6 * 3, translation, s, new GUIVAO, *t), m_position(p)
 		{
-
 		}
 		void SlotGUI::Init(const glm::mat4& projection)
 		{
+			float offsety = m_position * 0.8f;
+			float offsetx = -(3.35f * (1.0f / 9.0f));
+
 			CreateBlockImage();
 			for (uint32_t q = 0; q < 3; ++q)
 			{
@@ -21,9 +23,11 @@ namespace minecraft
 					pos.x = m_faces[q].cs[p].p.x;
 					pos.y = m_faces[q].cs[p].p.y;
 					m_faces[q].cs[p].p = projection * pos;
+					m_faces[q].cs[p].p += glm::vec2(offsetx, offsety);
 				}
 			}
-			m_buffer.Init(m_faces, 3);
+			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 1, 2, 3 };
+			m_buffer.Init(m_faces, 3, indexbones);
 			m_vao->Init(m_faces[0].cs);
 		}
 		void* SlotGUI::IndexOffset(void)
@@ -34,6 +38,7 @@ namespace minecraft
 		{
 			for (uint32_t i = 0; i < size; ++i)
 			{
+				v[i] *= m_scale;
 				v[i] = rotation * v[i];
 			}
 		}
@@ -63,7 +68,11 @@ namespace minecraft
 		}
 		void SlotGUI::CreateBlockImage(void)
 		{
-			glm::mat4 rotationMatrix = glm::rotate(glm::radians(-45.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+			m_btype = Block::block_t::STONE;
+			glm::mat4 rotationMatrix = glm::rotate(glm::radians(-50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			rotationMatrix *= glm::rotate(glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			rotationMatrix *= glm::rotate(glm::radians(-20.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
 			QuadV4 quads[3];
 			glm::vec3 faceIndices = Block::BLOCK_TEXTURE_DATA[static_cast<uint32_t>(m_btype)].topSidesBottom;
 			TextureAtlasTile tattop = m_textureAtlas->Tile(faceIndices[0]);

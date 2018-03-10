@@ -16,6 +16,7 @@ namespace minecraft
 			void* offsetIndices;
 			VAO* vao;
 			Texture* t;
+			uint32_t count;
 		};
 	}
 }

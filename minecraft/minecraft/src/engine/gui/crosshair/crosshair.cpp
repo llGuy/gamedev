@@ -4,8 +4,8 @@ namespace minecraft
 {
 	namespace gui
 	{
-		Crosshair::Crosshair(const glm::vec2 p, const glm::vec2 s, TextureAtlas& ta)
-			: GUI::GUI(p, s, new GUIVAO, ta)
+		Crosshair::Crosshair(const glm::vec2 p, const float s, TextureAtlas& ta)
+			: GUI::GUI(6, p, s, new GUIVAO, ta)
 		{
 		}
 		void Crosshair::Init(const glm::mat4& projection)
@@ -25,7 +25,8 @@ namespace minecraft
 			m_quad.cs[3].t = glm::vec2(+1.0f, +1.0f);
 
 			Quad quads[1] = {m_quad};
-			m_buffer.Init(quads, 1);
+			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3 };
+			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_quad.cs);
 			//m_textureAtlas->Init();
 		}

@@ -44,11 +44,11 @@ namespace minecraft
 			}
 		}
 
-		void Renderer::ERender(GLenum mode, const GLDrawElementsRenderData& d, uint32_t count)
+		void Renderer::ERender(GLenum mode, const GLDrawElementsRenderData& d)
 		{
 			d.vao->Bind();
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d.bufferData);
-			glDrawElements(mode, count, GL_UNSIGNED_SHORT, d.offsetIndices);
+			glDrawElements(mode, d.count, GL_UNSIGNED_SHORT, d.offsetIndices);
 			d.vao->UnBind();
 		}
 	}

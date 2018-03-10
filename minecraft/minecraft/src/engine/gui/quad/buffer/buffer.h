@@ -2,6 +2,7 @@
 #define BUFFER_HEADER
 
 #include <GL/glew.h>
+#include <array>
 
 #include "../quad.h"
 
@@ -13,8 +14,8 @@ namespace minecraft
 		{
 		public:
 			explicit GUIBuffer(void);
-			void Init(const Quad* q, uint32_t size);
-			void Update(const Quad* q, uint32_t size);
+			void Init(const Quad* q, uint32_t size, std::array<uint16_t, 6> ind);
+			void Update(const Quad* q, uint32_t size, std::array<uint16_t, 6> ind);
 			void Bind(void);
 			void UnBind(void);
 			uint32_t BufferID(void);

@@ -41,7 +41,7 @@ namespace minecraft
 		{
 			auto data = m_guihandler.RenderData(gui);
 			data.t->Bind(0);
-			m_renderer.ERender(GL_TRIANGLES, data, 6);
+			m_renderer.ERender(GL_TRIANGLES, data);
 		}
 		glEnable(GL_DEPTH_TEST);
 		//glDisable(GL_BLEND);

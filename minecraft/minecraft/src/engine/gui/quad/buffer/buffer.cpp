@@ -9,7 +9,7 @@ namespace minecraft
 		GUIBuffer::GUIBuffer(void)
 		{
 		}
-		void GUIBuffer::Init(const Quad* q, uint32_t size)
+		void GUIBuffer::Init(const Quad* q, uint32_t size, std::array<uint16_t, 6> ind)
 		{
 			glGenBuffers(1, &m_bufferID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
@@ -22,8 +22,8 @@ namespace minecraft
 				uint16_t diff = i * 4;
 				std::array<uint16_t, 6> is = 
 				{
-					0 + diff, 1 + diff, 2 + diff,
-					0 + diff, 2 + diff, 3 + diff
+					ind[0] + diff, ind[1] + diff, ind[2] + diff,
+					ind[3] + diff, ind[4] + diff, ind[5] + diff
 				};
 
 				indices.insert(indices.end(), is.begin(), is.end());
@@ -32,7 +32,7 @@ namespace minecraft
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Quad) * size, q);
 			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Quad) * size, sizeof(uint16_t) * 6 * size, &indices[0]);
 		}
-		void GUIBuffer::Update(const Quad* q, uint32_t size)
+		void GUIBuffer::Update(const Quad* q, uint32_t size, std::array<uint16_t, 6> ind)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
 			std::vector<uint16_t> indices;
@@ -41,8 +41,8 @@ namespace minecraft
 				uint16_t diff = i * 4;
 				std::array<uint16_t, 6> is =
 				{
-					0 + diff, 1 + diff, 2 + diff,
-					0 + diff, 2 + diff, 3 + diff
+					ind[0] + diff, ind[1] + diff, ind[2] + diff,
+					ind[3] + diff, ind[4] + diff, ind[5] + diff
 				};
 
 				indices.insert(indices.end(), is.begin(), is.end());

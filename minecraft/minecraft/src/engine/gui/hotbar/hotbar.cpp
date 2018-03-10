@@ -5,7 +5,7 @@ namespace minecraft
 	namespace gui
 	{
 		Hotbar::Hotbar(const position_t& p, TextureAtlas& ta)
-			: m_position(p), GUI::GUI(glm::vec2(0.0f), glm::vec2(1.0f), new GUIVAO, ta)
+			: m_position(p), GUI::GUI(6, glm::vec2(0.0f), 1.0f, new GUIVAO, ta)
 		{
 		}
 		void Hotbar::Init(const glm::mat4& projection) 
@@ -32,7 +32,8 @@ namespace minecraft
 			m_hotbar.cs[3].t = glm::vec2(+1.0f / 14.0f * 10.0f, +1.2f / 14.0f);
 
 			Quad quads[1] = {m_hotbar};
-			m_buffer.Init(quads, 1);
+			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3};
+			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_hotbar.cs);
 			//m_textureAtlas->Init();
 		}

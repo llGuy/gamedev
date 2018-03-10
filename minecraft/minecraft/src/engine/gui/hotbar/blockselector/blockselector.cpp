@@ -5,8 +5,8 @@ namespace minecraft
 	namespace gui
 	{
 		BlockSelector::BlockSelector(const position_t& position, const float& stride, 
-			const glm::vec2& p, const glm::vec2& scale, TextureAtlas& t)
-			: m_stride(stride), GUI::GUI(p, scale, new GUIVAO, t), m_position(position), m_slot(0)
+			const glm::vec2& p, const float scale, TextureAtlas& t)
+			: m_stride(stride), GUI::GUI(6, p, scale, new GUIVAO, t), m_position(position), m_slot(0)
 		{
 			m_slots[0].type = Block::block_t::GRASS;
 			m_slots[1].type = Block::block_t::OAK_LOG;
@@ -27,7 +27,8 @@ namespace minecraft
 				i.p.x += slot * m_stride;
 			}
 			Quad newquads[1] = { newQuad };
-			m_buffer.Update(newquads, 1);
+			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3 };
+			m_buffer.Update(newquads, 1, indexbones);
 		}
 
 		void BlockSelector::Init(const glm::mat4& projection)
@@ -54,7 +55,8 @@ namespace minecraft
 			m_selector.cs[3].t = glm::vec2(+1.2f / 14.0f, +1.2f / 7.0f);
 
 			Quad quads[1] = {m_selector};
-			m_buffer.Init(quads, 1);
+			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3 };
+			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_selector.cs);
 			//m_textureAtlas->Init();
 		}

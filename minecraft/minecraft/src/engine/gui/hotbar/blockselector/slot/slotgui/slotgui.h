@@ -4,6 +4,7 @@
 #include "../../../../../block/block.h"
 #include "../../../../gui.h"
 #include "../../../../../texture_atlas/texture_atlas.h"
+#include "../../../hotbarposition.h"
 #include <glm/gtx/transform.hpp>
 
 // TESTING
@@ -16,8 +17,8 @@ namespace minecraft
 			: public GUI
 		{
 		public:
-			explicit SlotGUI(const float& stride, const glm::vec2&,
-				const glm::vec2&, TextureAtlas* t);
+			explicit SlotGUI(const position_t& p, const float& stride, const glm::vec2,
+				const float, TextureAtlas* t, uint32_t slot);
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
 		private:
@@ -29,6 +30,7 @@ namespace minecraft
 		private:
 			Block::block_t m_btype;
 			Quad m_faces[3];
+			position_t m_position;
 		};
 	}
 }

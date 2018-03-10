@@ -15,7 +15,7 @@ namespace minecraft
 		{
 		public:
 			explicit BlockSelector(const position_t& p, const float& stride, const glm::vec2&,
-				const glm::vec2&, TextureAtlas &t);
+				const float, TextureAtlas &t);
 			void Update(const int32_t& slot) override;
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
