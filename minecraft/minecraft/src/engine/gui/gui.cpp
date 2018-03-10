@@ -64,5 +64,9 @@ namespace minecraft
 		{
 			return m_count;
 		}
+		rnd::GLDrawElementsRenderDataAll GUI::DrawData(void)
+		{
+			return rnd::GLDrawElementsRenderDataAll();
+		}
 	}
 }

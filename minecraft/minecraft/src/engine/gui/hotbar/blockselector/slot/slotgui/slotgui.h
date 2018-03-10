@@ -18,7 +18,7 @@ namespace minecraft
 		{
 		public:
 			explicit SlotGUI(const position_t& p, const float& stride, const glm::vec2,
-				const float, TextureAtlas* t, uint32_t slot);
+				const float, TextureAtlas* t, uint32_t slot, Block::block_t b);
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
 		private:
@@ -31,6 +31,8 @@ namespace minecraft
 			Block::block_t m_btype;
 			Quad m_faces[3];
 			position_t m_position;
+			uint32_t m_slot;
+			float m_stride;
 		};
 	}
 }

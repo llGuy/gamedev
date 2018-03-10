@@ -21,13 +21,13 @@ namespace minecraft
 			void Init(const glm::mat4& projection);
 
 			const uint32_t Size(void) const;
-			rnd::GLDrawElementsRenderData RenderData(const uint32_t& index);
+			rnd::GLDrawElementsRenderDataAll RenderData(const uint32_t& index);
 			void UseProgram(void);
 			const Block::block_t& HotbarSelectedBlock(void);
 			void Event(const GUIEventHandler::event_t& e, int32_t slot = 0);
 		private:
-			const uint32_t SIZE = 4;
-			GUI* m_guis[4];
+			const uint32_t SIZE = 3;
+			GUI* m_guis[3];
 			TextureAtlas* m_blockTextureAtlasPtr;
 			TextureAtlas m_guiTextureAtlas;
 			TextureAtlas m_crosshair;

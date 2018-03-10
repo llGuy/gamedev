@@ -5,10 +5,10 @@ namespace minecraft
 	namespace gui
 	{
 		BlockSelector::BlockSelector(const position_t& position, const float& stride, 
-			const glm::vec2& p, const float scale, TextureAtlas& t)
+			const glm::vec2& p, const float scale, TextureAtlas& t, TextureAtlas* blockt)
 			: m_stride(stride), GUI::GUI(6, p, scale, new GUIVAO, t), m_position(position), m_slot(0)
 		{
-			m_slots[0].type = Block::block_t::GRASS;
+			m_slots[0].type = Block::block_t::GRASS;			
 			m_slots[1].type = Block::block_t::OAK_LOG;
 			m_slots[2].type = Block::block_t::COBBLE;
 			m_slots[3].type = Block::block_t::OAK_PLANKS;
@@ -17,6 +17,9 @@ namespace minecraft
 			m_slots[6].type = Block::block_t::BEDROCK;
 			m_slots[7].type = Block::block_t::DIRT;
 			m_slots[8].type = Block::block_t::GLASS;
+
+			for(uint32_t i = 0; i < 9; ++i)
+				m_slots[i].slotgui = new SlotGUI(position_t::BOTTOM, stride, glm::vec2(0.0f), 0.06f, blockt, i, m_slots[i].type);
 		}
 		void BlockSelector::Update(const int32_t& slot)
 		{
@@ -29,6 +32,7 @@ namespace minecraft
 			Quad newquads[1] = { newQuad };
 			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3 };
 			m_buffer.Update(newquads, 1, indexbones);
+			BlockSelectorRndDataInit();
 		}
 
 		void BlockSelector::Init(const glm::mat4& projection)
@@ -59,6 +63,12 @@ namespace minecraft
 			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_selector.cs);
 			//m_textureAtlas->Init();
+
+			for (uint32_t i = 0; i < 9; ++i)
+			{
+				m_slots[i].slotgui->Init(projection);
+			}
+			RenderDataInit();
 		}
 		void* BlockSelector::IndexOffset(void)
 		{
@@ -67,6 +77,38 @@ namespace minecraft
 		const Block::block_t& BlockSelector::SelectedBlock(void)
 		{
 			return m_slots[m_slot].type;
+		}
+		void BlockSelector::BlockSelectorRndDataInit(void)
+		{
+			rnd::GLDrawElementsRenderData d;
+			d.bufferData = m_buffer.BufferID();
+			d.offsetIndices = IndexOffset();
+			d.vao = m_vao;
+			d.t = m_textureAtlas->Tex();
+			d.count = Count();
+			m_rndData[0] = d;
+		}
+		void BlockSelector::SlotGUIRndDataInit(void)
+		{
+			for (uint32_t i = 0; i < 9; ++i)
+			{
+				rnd::GLDrawElementsRenderData d;
+				d.bufferData = m_slots[i].slotgui->BufferID();
+				d.offsetIndices = m_slots[i].slotgui->IndexOffset();
+				d.vao = m_slots[i].slotgui->Vao();
+				d.t = m_slots[i].slotgui->Tex()->Tex();
+				d.count = m_slots[i].slotgui->Count();
+				m_rndData[i + 1] = d;
+			}
+		}
+		void BlockSelector::RenderDataInit(void)
+		{
+			BlockSelectorRndDataInit();
+			SlotGUIRndDataInit();
+		}
+		rnd::GLDrawElementsRenderDataAll BlockSelector::DrawData(void)
+		{
+			return {m_rndData, 10};
 		}
 	}
 }

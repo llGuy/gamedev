@@ -33,11 +33,8 @@ namespace minecraft
 			m_guis[HOTBAR]->Init(projection);
 
 			m_guis[BLOCKSELECTOR] = new BlockSelector(position_t::BOTTOM, 
-				m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), 1.0f, *(m_guis[HOTBAR]->Tex()));
+				m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), 1.0f, *(m_guis[HOTBAR]->Tex()), m_blockTextureAtlasPtr);
 			m_guis[BLOCKSELECTOR]->Init(projection);
-
-			m_guis[SLOTGUI] = new SlotGUI(position_t::BOTTOM, m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), 0.06f, m_blockTextureAtlasPtr, 0);
-			m_guis[SLOTGUI]->Init(projection);
 		}
 		void GUIHandler::UseProgram(void)
 		{
@@ -51,15 +48,9 @@ namespace minecraft
 		{
 			m_guieventHandler.HandlerEvent(e, m_guis, slot);
 		}
-		rnd::GLDrawElementsRenderData GUIHandler::RenderData(const uint32_t& index)
+		rnd::GLDrawElementsRenderDataAll GUIHandler::RenderData(const uint32_t& index)
 		{
-			rnd::GLDrawElementsRenderData d;
-			d.bufferData = m_guis[index]->BufferID();
-			d.offsetIndices = m_guis[index]->IndexOffset();
-			d.vao = m_guis[index]->Vao();
-			d.t = m_guis[index]->Tex()->Tex();
-			d.count = m_guis[index]->Count();
-			return d;
+			return m_guis[index]->DrawData();
 		}
 		const Block::block_t& GUIHandler::HotbarSelectedBlock(void)
 		{

@@ -35,7 +35,7 @@ namespace minecraft
 			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 0, 2, 3};
 			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_hotbar.cs);
-			//m_textureAtlas->Init();
+			RenderDataInit();
 		}
 		void* Hotbar::IndexOffset(void)
 		{
@@ -48,6 +48,22 @@ namespace minecraft
 		const float Hotbar::Stride(void)
 		{
 			return m_stride;
+		}
+		void Hotbar::RenderDataInit(void)
+		{
+			rnd::GLDrawElementsRenderData d;
+			d.bufferData = m_buffer.BufferID();
+			d.offsetIndices = IndexOffset();
+			d.vao = m_vao;
+			d.t = m_textureAtlas->Tex();
+			d.count = Count();
+			m_rndData[0] = d;
+		}
+		rnd::GLDrawElementsRenderDataAll Hotbar::DrawData(void)
+		{
+			rnd::GLDrawElementsRenderDataAll dataAll = { m_rndData, 1 };
+
+			return dataAll;
 		}
 	}
 }

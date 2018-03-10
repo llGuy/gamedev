@@ -7,6 +7,7 @@
 #include "vao/guivao.h"
 #include "../block/block.h"
 #include "../texture_atlas/texture_atlas.h"
+#include "../renderer/glderenderdata/glderenderdata.h"
 
 namespace minecraft
 {
@@ -28,6 +29,7 @@ namespace minecraft
 			uint32_t BufferID(void);
 			TextureAtlas* Tex(void);
 
+			virtual rnd::GLDrawElementsRenderDataAll DrawData(void);
 			virtual uint32_t Count(void);
 			virtual void* IndexOffset(void);
 			virtual const glm::vec2& Position(void);

@@ -5,14 +5,14 @@ namespace minecraft
 	namespace gui
 	{
 		SlotGUI::SlotGUI(const position_t& p, const float& stride, const glm::vec2 translation,
-			const float s, TextureAtlas* t, uint32_t slot)
-			: GUI::GUI(6 * 3, translation, s, new GUIVAO, *t), m_position(p)
+			const float s, TextureAtlas* t, uint32_t slot, Block::block_t b)
+			: GUI::GUI(6 * 3, translation, s, new GUIVAO, *t), m_position(p), m_slot(slot), m_stride(stride), m_btype(b)
 		{
 		}
 		void SlotGUI::Init(const glm::mat4& projection)
 		{
 			float offsety = m_position * 0.8f;
-			float offsetx = -(3.35f * (1.0f / 9.0f));
+			float offsetx = -(3.35f * (1.0f / 9.0f)) + static_cast<uint32_t>(m_slot) * m_stride;
 
 			CreateBlockImage();
 			for (uint32_t q = 0; q < 3; ++q)
@@ -68,7 +68,6 @@ namespace minecraft
 		}
 		void SlotGUI::CreateBlockImage(void)
 		{
-			m_btype = Block::block_t::STONE;
 			glm::mat4 rotationMatrix = glm::rotate(glm::radians(-50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			rotationMatrix *= glm::rotate(glm::radians(20.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 			rotationMatrix *= glm::rotate(glm::radians(-20.0f), glm::vec3(0.0f, 0.0f, 1.0f));

@@ -29,10 +29,25 @@ namespace minecraft
 			m_buffer.Init(quads, 1, indexbones);
 			m_vao->Init(m_quad.cs);
 			//m_textureAtlas->Init();
+			RenderDataInit();
 		}
 		void* Crosshair::IndexOffset(void)
 		{
 			return (void*)sizeof(Quad);
+		}
+		rnd::GLDrawElementsRenderDataAll Crosshair::DrawData(void)
+		{
+			return {m_rndData, 1};
+		}
+		void Crosshair::RenderDataInit(void)
+		{
+			rnd::GLDrawElementsRenderData d;
+			d.bufferData = m_buffer.BufferID();
+			d.offsetIndices = IndexOffset();
+			d.vao = m_vao;
+			d.t = m_textureAtlas->Tex();
+			d.count = Count();
+			m_rndData[0] = d;
 		}
 	}
 }

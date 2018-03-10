@@ -18,9 +18,13 @@ namespace minecraft
 			void* IndexOffset(void) override;
 			const glm::vec2& Position(void) override;
 			const float Stride(void) override;
+			rnd::GLDrawElementsRenderDataAll DrawData(void) override;
+		private:
+			void RenderDataInit(void);
 		private:
 			Quad m_hotbar;
 			GUI* m_blockSelector;
+			rnd::GLDrawElementsRenderData m_rndData[1];
 			position_t m_position;
 			float m_stride;
 		};

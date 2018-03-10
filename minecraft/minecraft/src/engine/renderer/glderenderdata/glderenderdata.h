@@ -9,7 +9,7 @@ namespace minecraft
 {
 	namespace rnd
 	{
-		struct GLDrawElementsRenderData
+		/*struct GLDrawElementsRenderData
 		{
 			glm::mat4 modelMatrix;
 			uint32_t bufferData;
@@ -17,6 +17,20 @@ namespace minecraft
 			VAO* vao;
 			Texture* t;
 			uint32_t count;
+		};*/
+		struct GLDrawElementsRenderData 
+		{
+			glm::mat4 modelMatrix;
+			uint32_t bufferData;
+			void* offsetIndices;
+			VAO* vao;
+			Texture* t;
+			uint32_t count;
+		};
+		struct GLDrawElementsRenderDataAll
+		{
+			GLDrawElementsRenderData* data;
+			uint32_t numberOfDraws;
 		};
 	}
 }

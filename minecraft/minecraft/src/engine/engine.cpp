@@ -40,8 +40,11 @@ namespace minecraft
 		for (uint32_t gui = 0; gui < m_guihandler.Size(); ++gui)
 		{
 			auto data = m_guihandler.RenderData(gui);
-			data.t->Bind(0);
-			m_renderer.ERender(GL_TRIANGLES, data);
+			for (uint32_t i = 0; i < data.numberOfDraws; ++i)
+			{
+				data.data[i].t->Bind(0);
+				m_renderer.ERender(GL_TRIANGLES, data.data[i]);
+			}
 		}
 		glEnable(GL_DEPTH_TEST);
 		//glDisable(GL_BLEND);

@@ -2,6 +2,7 @@
 #define SLOT_HEADER
 
 #include "../../../../block/block.h"
+#include "../../../gui.h"
 
 namespace minecraft
 {
@@ -10,6 +11,7 @@ namespace minecraft
 		struct Slot
 		{
 			Block::block_t type;
+			GUI* slotgui;
 		};
 	}
 }
