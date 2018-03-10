@@ -24,7 +24,7 @@ namespace minecraft
 					pos.y = m_faces[q].cs[p].p.y;
 					m_faces[q].cs[p].p = projection * pos;
 					m_faces[q].cs[p].p += glm::vec2(offsetx, offsety);
-				}
+				} 
 			}
 			std::array<uint16_t, 6> indexbones = { 0, 1, 2, 1, 2, 3 };
 			m_buffer.Init(m_faces, 3, indexbones);
