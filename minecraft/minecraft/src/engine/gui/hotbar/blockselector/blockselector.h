@@ -20,7 +20,7 @@ namespace minecraft
 			void Update(const int32_t& slot) override;
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
-			const Block::block_t& SelectedBlock(void) override;
+			const Block::block_t SelectedBlock(void) override;
 			rnd::GLDrawElementsRenderDataAll DrawData(void) override;
 		private:
 			void RenderDataInit(void);

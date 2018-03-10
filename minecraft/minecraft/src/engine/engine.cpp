@@ -34,8 +34,6 @@ namespace minecraft
 	void Engine::RenderGUI(void)
 	{
 		m_guihandler.UseProgram();
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
 		for (uint32_t gui = 0; gui < m_guihandler.Size(); ++gui)
 		{
@@ -47,11 +45,9 @@ namespace minecraft
 			}
 		}
 		glEnable(GL_DEPTH_TEST);
-		//glDisable(GL_BLEND);
 	}
 	void Engine::RenderChunks(void)
 	{
-		//m_textureAtlas.Bind(0);
 		m_blockTextureAtlas.Bind(0);
 		m_chunkHandler->UseSHProgram();
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)

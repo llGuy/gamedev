@@ -29,6 +29,8 @@ public:
 
 	static const uint32_t AVAILABLE_TEXTURES;
 	static const TextureData BLOCK_TEXTURE_DATA[block_t::INV];
+	static constexpr uint32_t NUM_TRANSPARENT_BLOCKS = 1;
+	static const block_t TRANSPARENT_BLOCKS[NUM_TRANSPARENT_BLOCKS];
 public:
 	explicit Block(void) = default;
 	explicit Block(const CCoord& cc, const block_t& bt);

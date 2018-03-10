@@ -20,12 +20,9 @@ namespace minecraft
 			for (uint16_t i = 0; i < size; ++i)
 			{
 				uint16_t diff = i * 4;
-				std::array<uint16_t, 6> is = 
-				{
-					ind[0] + diff, ind[1] + diff, ind[2] + diff,
-					ind[3] + diff, ind[4] + diff, ind[5] + diff
-				};
-
+				std::array<uint16_t, 6> is;
+				for (uint32_t i = 0; i < 6; ++i)
+					is[i] = ind[i] + diff;
 				indices.insert(indices.end(), is.begin(), is.end());
 			}
 
@@ -39,11 +36,9 @@ namespace minecraft
 			for (uint16_t i = 0; i < size; ++i)
 			{
 				uint16_t diff = i * 4;
-				std::array<uint16_t, 6> is =
-				{
-					ind[0] + diff, ind[1] + diff, ind[2] + diff,
-					ind[3] + diff, ind[4] + diff, ind[5] + diff
-				};
+				std::array<uint16_t, 6> is; 
+				for (uint32_t i = 0; i < 6; ++i)
+					is[i] = ind[i] + diff;
 
 				indices.insert(indices.end(), is.begin(), is.end());
 			}

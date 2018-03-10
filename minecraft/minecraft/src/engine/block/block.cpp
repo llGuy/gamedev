@@ -12,9 +12,14 @@ const TextureData Block::BLOCK_TEXTURE_DATA[block_t::INV]
 	{glm::vec3(21.0f, 20.0f, 21.0f)},
 	{glm::vec3(53.0f, 53.0f, 53.0f)},
 	{glm::vec3(207.0f, 207.0f, 207.0f)},
-	{glm::vec3(4.0f, 4.0f, 4.0f)},
+	{glm::vec3(4.0f, 4.0f, 4.0f)},	
 	{glm::vec3(49.0f, 49.0f, 49.0f)},
 	{glm::vec3(16.0f, 16.0f, 16.0f)}
+};
+
+const Block::block_t Block::TRANSPARENT_BLOCKS[Block::NUM_TRANSPARENT_BLOCKS]
+{
+	block_t::GLASS
 };
 
 Block::Block(const CCoord& cc, const block_t& bt)

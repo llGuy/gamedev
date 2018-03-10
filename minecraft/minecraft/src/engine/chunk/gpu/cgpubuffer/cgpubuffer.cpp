@@ -65,6 +65,11 @@ namespace minecraft
 			{
 				return m_vao;
 			}
+
+			const uint32_t& CGPUBuffer::BufferID(void)
+			{
+				return m_bufferID;
+			}
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace minecraft
 			// for the hotbar
 			virtual const float Stride(void);
 			virtual void Update(const int32_t& slot);
-			virtual const Block::block_t& SelectedBlock(void);
+			virtual const Block::block_t SelectedBlock(void);
 		protected:
 			glm::vec2 m_translation;
 			float m_scale;

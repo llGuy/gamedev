@@ -74,7 +74,7 @@ namespace minecraft
 		{
 			return (void*)(sizeof(Quad));
 		}
-		const Block::block_t& BlockSelector::SelectedBlock(void)
+		const Block::block_t BlockSelector::SelectedBlock(void)
 		{
 			return m_slots[m_slot].type;
 		}

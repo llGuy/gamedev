@@ -56,7 +56,7 @@ namespace minecraft
 		{
 			// donoth
 		}
-		const Block::block_t& GUI::SelectedBlock(void)
+		const Block::block_t GUI::SelectedBlock(void)
 		{
 			return Block::block_t::INV;
 		}
