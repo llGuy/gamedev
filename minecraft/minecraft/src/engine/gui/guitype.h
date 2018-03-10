@@ -11,7 +11,9 @@ namespace minecraft
 
 			HOTBAR,
 
-			BLOCKSELECTOR
+			BLOCKSELECTOR,
+
+			SLOTGUI
 		};
 	}
 }

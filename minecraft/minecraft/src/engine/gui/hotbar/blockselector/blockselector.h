@@ -4,6 +4,7 @@
 #include "slot/slot.h"
 #include "../../gui.h"
 #include "../hotbarposition.h"
+#include "slot/slotgui/slotgui.h"
 
 namespace minecraft
 {
@@ -25,6 +26,7 @@ namespace minecraft
 			int32_t m_slot;
 			Quad m_selector;
 			Slot m_slots[9];
+
 		};
 	}
 }

@@ -12,6 +12,11 @@ namespace minecraft
 			// coordinates
 			TPosition cs[4];
 		};
+
+		struct QuadV4
+		{
+			TPositionV4 cs[4];
+		};
 	}
 }
 

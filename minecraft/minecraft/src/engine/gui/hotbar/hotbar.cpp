@@ -34,7 +34,7 @@ namespace minecraft
 			Quad quads[1] = {m_hotbar};
 			m_buffer.Init(quads, 1);
 			m_vao->Init(m_hotbar.cs);
-			m_textureAtlas->Init();
+			//m_textureAtlas->Init();
 		}
 		void* Hotbar::IndexOffset(void)
 		{

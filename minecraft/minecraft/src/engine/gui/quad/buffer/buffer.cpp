@@ -30,7 +30,7 @@ namespace minecraft
 			}
 
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Quad) * size, q);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Quad), sizeof(uint16_t) * 6 * size, &indices[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Quad) * size, sizeof(uint16_t) * 6 * size, &indices[0]);
 		}
 		void GUIBuffer::Update(const Quad* q, uint32_t size)
 		{

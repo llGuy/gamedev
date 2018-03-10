@@ -27,7 +27,7 @@ namespace minecraft
 			Quad quads[1] = {m_quad};
 			m_buffer.Init(quads, 1);
 			m_vao->Init(m_quad.cs);
-			m_textureAtlas->Init();
+			//m_textureAtlas->Init();
 		}
 		void* Crosshair::IndexOffset(void)
 		{

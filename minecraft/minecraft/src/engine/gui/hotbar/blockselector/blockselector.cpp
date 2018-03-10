@@ -56,7 +56,7 @@ namespace minecraft
 			Quad quads[1] = {m_selector};
 			m_buffer.Init(quads, 1);
 			m_vao->Init(m_selector.cs);
-			m_textureAtlas->Init();
+			//m_textureAtlas->Init();
 		}
 		void* BlockSelector::IndexOffset(void)
 		{

@@ -35,6 +35,9 @@ namespace minecraft
 			m_guis[BLOCKSELECTOR] = new BlockSelector(position_t::BOTTOM, 
 				m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), glm::vec2(1.0f), *(m_guis[HOTBAR]->Tex()));
 			m_guis[BLOCKSELECTOR]->Init(projection);
+
+			m_guis[SLOTGUI] = new SlotGUI(m_guis[HOTBAR]->Stride(), m_guis[HOTBAR]->Position(), glm::vec2(1.0f), m_blockTextureAtlasPtr);
+			m_guis[SLOTGUI]->Init(projection);
 		}
 		void GUIHandler::UseProgram(void)
 		{
