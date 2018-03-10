@@ -4,8 +4,8 @@ namespace minecraft
 {
 	namespace gui
 	{
-		Hotbar::Hotbar(const position_t& p)
-			: m_position(p), GUI::GUI(glm::vec2(0.0f), glm::vec2(0.01f), new GUIVAO, "res\\textures\\gui\\menu\\menu_atlas.png")
+		Hotbar::Hotbar(const position_t& p, TextureAtlas& ta)
+			: m_position(p), GUI::GUI(glm::vec2(0.0f), glm::vec2(1.0f), new GUIVAO, ta)
 		{
 		}
 		void Hotbar::Init(const glm::mat4& projection) 
@@ -34,7 +34,7 @@ namespace minecraft
 			Quad quads[1] = {m_hotbar};
 			m_buffer.Init(quads, 1);
 			m_vao->Init(m_hotbar.cs);
-			m_texture.Init();
+			m_textureAtlas->Init();
 		}
 		void* Hotbar::IndexOffset(void)
 		{

@@ -47,6 +47,9 @@ namespace minecraft
 				TOGGLE_FLY
 			};
 
+			virtual ~Entity(void)
+			{
+			}
 			/* so that the camera can bind to a certain entity */
 			virtual glm::vec3* EntityViewDirection(void) { return nullptr; }
 			virtual glm::vec3* EntityWorldPosition(void) { return nullptr; }

@@ -13,7 +13,7 @@ namespace minecraft
 			: public GUI
 		{
 		public:
-			explicit Hotbar(const position_t& p);
+			explicit Hotbar(const position_t& p, TextureAtlas& ta);
 			void Init(const glm::mat4& projection) override;
 			void* IndexOffset(void) override;
 			const glm::vec2& Position(void) override;

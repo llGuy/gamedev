@@ -16,6 +16,7 @@
 #include "entities/camera/camera.h"
 #include "../texture/texture.h"
 #include "gui/handler/guihandler.h"
+#include "texture_atlas/texture_atlas.h"
 
 namespace minecraft
 {
@@ -76,6 +77,7 @@ namespace minecraft
 		void RenderGUI(void);
 	private:
 		Texture m_textureAtlas;
+		TextureAtlas m_blockTextureAtlas;
 		ent::Camera m_camera;
 		ent::Entity* m_player;
 		gui::GUIHandler m_guihandler;

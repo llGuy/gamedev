@@ -47,6 +47,9 @@ namespace minecraft
 			explicit Structure(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, 
 				structure_t s, const int32_t height);
 		public:
+			virtual ~Structure(void)
+			{
+			}
 			virtual const uint32_t* Size(void);
 			virtual GenRange& GRange(void) final;
 			virtual CVec2 OriginC(void) const final;

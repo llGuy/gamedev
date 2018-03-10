@@ -30,6 +30,9 @@ namespace minecraft
 				WVec2 wc, structure_t st, const int32_t height, uint32_t size);
 			explicit Tree(chunk::WCoordChunk wcc, GenRange sr, WVec2 worldCoord, 
 				structure_t s, const int32_t height, uint32_t size);
+			~Tree(void) override
+			{
+			}
 		public:
 			const uint32_t* Size(void) override;
 			GenRange GenerateStructRangeAll(void) const override;

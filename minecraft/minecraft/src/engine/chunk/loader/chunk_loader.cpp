@@ -15,6 +15,7 @@ namespace minecraft
 			{
 				for (;;)
 				{
+					if (m_ended) break;
 					chunk::Chunk::WCoordChunk wc = PlayerWPosInChunkCoordinates();
 
 					if (wc != m_playerCurrentChunkCoordinates)
@@ -45,6 +46,7 @@ namespace minecraft
 			{
 				for (;;)
 				{
+					if (m_ended) break;
 					chunk::Chunk::WCoordChunk wc = PlayerWPosInChunkCoordinates();
 					glm::vec3 playerViewDirection = *m_player->EntityViewDirection();
 					int32_t x = static_cast<int32_t>(playerViewDirection.x * 8.0f) + wc.wpos.x;
@@ -77,7 +79,7 @@ namespace minecraft
 				}
 			}
 			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
-				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh)
+				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh), m_ended(false)
 			{
 			}
 			// spawn thread

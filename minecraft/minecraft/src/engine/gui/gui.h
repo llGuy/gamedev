@@ -6,6 +6,7 @@
 #include "quad/buffer/buffer.h"
 #include "vao/guivao.h"
 #include "../block/block.h"
+#include "../texture_atlas/texture_atlas.h"
 
 namespace minecraft
 {
@@ -14,14 +15,18 @@ namespace minecraft
 		class GUI
 		{
 		public:
-			explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const std::string& f);
-			explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const Texture& t);
+			virtual ~GUI(void)
+			{
+			}
+			//explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const std::string& f);
+			//explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, const Texture& t);
+			explicit GUI(const glm::vec2, const glm::vec2 scale, VAO* vao, TextureAtlas& ta);
 			virtual void Init(const glm::mat4& projection);
 			VAO* Vao(void);
 			void BindBuffer(void);
 			void BindTexture(void);
 			uint32_t BufferID(void);
-			Texture* Tex(void);
+			TextureAtlas* Tex(void);
 
 			virtual void* IndexOffset(void);
 			virtual const glm::vec2& Position(void);
@@ -34,7 +39,9 @@ namespace minecraft
 			glm::vec2 m_scale;
 
 			VAO* m_vao;
-			Texture m_texture;
+
+			TextureAtlas* m_textureAtlas;
+
 			GUIBuffer m_buffer;
 		};
 	}

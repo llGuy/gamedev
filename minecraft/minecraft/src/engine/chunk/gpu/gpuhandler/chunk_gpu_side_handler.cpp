@@ -11,6 +11,9 @@ namespace minecraft
 				: m_buff(), m_deletedBlocksPointer(0)
 			{
 			}
+			CGPUHandler::~CGPUHandler(void)
+			{
+			}
 
 			void CGPUHandler::PrepareVector(void)
 			{

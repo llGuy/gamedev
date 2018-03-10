@@ -18,7 +18,7 @@ Window::Window(uint32_t width, uint32_t height, const char* title)
 }
 void Window::Destroy(void)
 {
-	//m_engine.HEAPDelete();
+	m_engine.HEAPDelete();
 }
 void Window::Draw(void)
 { 

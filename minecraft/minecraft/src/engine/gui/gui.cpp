@@ -4,13 +4,18 @@ namespace minecraft
 {
 	namespace gui
 	{
-		GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* v, const std::string& f)
-			: m_translation(translation), m_scale(scale), m_vao(v), m_texture(f)
+		//GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* v, const std::string& f)
+		//	: m_translation(translation), m_scale(scale), m_vao(v), m_texture(f)
+		//{
+		//}
+		//GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* vao, const Texture& t)
+		//	: m_translation(translation), m_scale(scale), m_vao(vao), m_texture(t)
+		//{
+		//}
+		GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* v, TextureAtlas& ta)
+			: m_translation(translation), m_scale(scale), m_vao(v), m_textureAtlas(&ta)
 		{
-		}
-		GUI::GUI(const glm::vec2 translation, const glm::vec2 scale, VAO* vao, const Texture& t)
-			: m_translation(translation), m_scale(scale), m_vao(vao), m_texture(t)
-		{
+
 		}
 		void GUI::Init(const glm::mat4& projection)
 		{
@@ -25,15 +30,15 @@ namespace minecraft
 		}
 		void GUI::BindTexture(void)
 		{
-			m_texture.Bind(0);
+			m_textureAtlas->Bind(0);
 		}
 		uint32_t GUI::BufferID(void)
 		{
 			return m_buffer.BufferID();
 		}
-		Texture* GUI::Tex(void)
+		TextureAtlas* GUI::Tex(void)
 		{
-			return &m_texture;
+			return m_textureAtlas;
 		}
 		void* GUI::IndexOffset(void)
 		{

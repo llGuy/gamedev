@@ -13,7 +13,7 @@ namespace minecraft
 		{
 			glGenBuffers(1, &m_bufferID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Quad) * size + sizeof(uint16_t) * 6, 0, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Quad) * size + sizeof(uint16_t) * 6 * size, 0, GL_STATIC_DRAW);
 			
 
 			std::vector<uint16_t> indices;
@@ -48,7 +48,7 @@ namespace minecraft
 				indices.insert(indices.end(), is.begin(), is.end());
 			}
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Quad) * size, q);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Quad), sizeof(uint16_t) * 6, &indices[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Quad), sizeof(uint16_t) * 6 * size, &indices[0]);
 		}
 		void GUIBuffer::Bind(void)
 		{

@@ -26,8 +26,16 @@ namespace minecraft
 			{
 			public:
 				explicit CGPUBuffer(void)
-					: m_createdVAO(false)
+					: m_createdVAO(false), m_vao(nullptr)
 				{
+				}
+				~CGPUBuffer(void)
+				{
+					//if (m_vao != nullptr)
+					//{
+					//	std::cout << "deleted VAO" << std::endl;
+					//	delete m_vao;
+					//}
 				}
 				void Load(std::size_t components, BData* data);
 				VAO* Vao(void);

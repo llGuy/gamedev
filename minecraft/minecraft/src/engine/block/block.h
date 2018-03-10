@@ -36,9 +36,12 @@ public:
 public:
 	/* getter */
 	glm::vec3 WPos(const WVec2 chunkCoordinate, int32_t y, const WVec2 negativeCornerWPos) const;
+	// from the character that stores the block coordinate in chunk
+	// extract the coordinates
 	CVec2 ExtrCPos(void) const;
 	const block_t BlockType(void) const;
 	const TextureData& TextureD(void);
+	// index in the 
 	uint16_t& VIndex(void);
 	bool& Valid(void);
 private:

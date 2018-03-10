@@ -3,6 +3,7 @@
 
 #include "../../../../../block/block.h"
 #include "../../../../gui.h"
+#include "../../../../../texture_atlas/texture_atlas.h"
 #include <glm/gtx/transform.hpp>
 
 // TESTING
@@ -16,7 +17,7 @@ namespace minecraft
 		{
 		public:
 			explicit SlotGUI(const float& stride, const glm::vec2&,
-				const glm::vec2&, const Texture& t);
+				const glm::vec2&, TextureAtlas* t);
 		private:
 			void CreateBlockImage(void);
 		private:

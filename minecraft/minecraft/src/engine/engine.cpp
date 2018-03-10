@@ -8,18 +8,19 @@
 namespace minecraft
 {
 	Engine::Engine(void)
-		: m_camera(), m_textureAtlas("res\\textures\\texture_atlas.png")
+		: m_camera(), m_textureAtlas("res\\textures\\texture_atlas.png"), m_player(nullptr), 
+		m_blockTextureAtlas(16.0f, 16.0f, "res\\textures\\texture_atlas.png"),
+		m_guihandler(&m_blockTextureAtlas)
 	{
 		Init();
 	}
 	Engine::~Engine(void)
 	{
+		if (m_player != nullptr)
+			delete m_player;
 	}
 	void Engine::HEAPDelete(void)
 	{
-		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
-			for (auto& jt : *it)
-				jt.DestroyHEAPMemoryForBlocksWPos();
 	}
 	void Engine::Render(void)
 	{
@@ -47,7 +48,8 @@ namespace minecraft
 	}
 	void Engine::RenderChunks(void)
 	{
-		m_textureAtlas.Bind(0);
+		//m_textureAtlas.Bind(0);
+		m_blockTextureAtlas.Bind(0);
 		m_chunkHandler->UseSHProgram();
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
@@ -116,7 +118,8 @@ namespace minecraft
 	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight,
 		glm::vec2 cursorPosition, GLFWwindow* window)
 	{
-		m_textureAtlas.Init();
+		//m_textureAtlas.Init();
+		m_blockTextureAtlas.Init();
 		m_chunkHandler->AfterGLEWInit();
 		m_chunkHandler->LaunchChunkLoader(m_player, window);
 		UDataInit(wwidth, wheight);

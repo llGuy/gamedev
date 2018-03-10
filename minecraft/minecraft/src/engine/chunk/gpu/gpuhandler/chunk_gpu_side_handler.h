@@ -18,6 +18,7 @@ namespace minecraft
 			{
 			public:
 				explicit CGPUHandler(void);
+				~CGPUHandler(void);
 			public:
 				void PrepareVector(void);
 				void DestroyVector(void);

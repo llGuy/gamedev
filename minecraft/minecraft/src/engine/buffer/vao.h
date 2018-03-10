@@ -6,6 +6,9 @@
 class VAO
 {
 public:
+	virtual ~VAO(void)
+	{
+	}
 	virtual void Init(void* d) = 0;
 	virtual void Bind(void) const = 0;
 	virtual void UnBind(void) const = 0;

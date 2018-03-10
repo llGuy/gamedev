@@ -50,6 +50,7 @@ namespace minecraft
 				
 				chunk::Chunk::WCoordChunk m_playerCurrentChunkCoordinates;
 				int32_t m_seed;
+				bool m_ended;
 			};
 		}
 	}

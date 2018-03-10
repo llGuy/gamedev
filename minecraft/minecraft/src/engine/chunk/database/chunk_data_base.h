@@ -100,6 +100,13 @@ namespace minecraft
 						}
 					}
 				}
+				//for (auto i : structs)
+				//{
+				//	if (i != nullptr)
+				//	{
+						//delete i;
+				//	}
+				//}
 			}
 			void LoadTop(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 			{
