@@ -29,7 +29,7 @@ namespace minecraft
 
 		void Chunk::PlaceBlock(CVec2 c, float y, const Block::block_t& b)
 		{
-			m_gpubufferloaded = false;
+			m_gpubufferloaded = false;			
 			m_dataBase.PlaceBlock(c, y, NegativeCornerWPos(), { ChunkCoordinate().wpos }, b);
 		}
 
@@ -128,6 +128,12 @@ namespace minecraft
 		ChunkDB::CCorners Chunk::ChunkCorners(void)
 		{
 			return m_dataBase.ChunkCorners();
+		}
+		void Chunk::DestroyGPUBuffer(void)
+		{
+			m_loaded = false;
+			m_gpubufferloaded = false;
+			m_dataBase.DestroyChunkData();
 		}
 	}
 }

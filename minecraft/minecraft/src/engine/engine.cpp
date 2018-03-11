@@ -199,7 +199,6 @@ namespace minecraft
 		{
 			blockUnderPlayerPresent = false;
 		}
-		//float blockUnderPlayer = m_chunkHandler->BlockUnderPoint(*m_player->EntityWorldPosition());
 		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayerPresent, static_cast<float>(m_time.deltaT));
 	}
 	void Engine::EnableDebugger(void)
@@ -252,8 +251,9 @@ namespace minecraft
 			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::DIG, 
 				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection()); return;
 		case mbutton_t::MOUSER:
+			Block::block_t selectedBlock = m_guihandler.HotbarSelectedBlock();
 			m_chunkHandler->RecieveChunkEvent(chunk::ChunkEventHandler::event_t::PLACE,
-				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection(), m_guihandler.HotbarSelectedBlock()); return;
+				*m_player->EntityWorldPosition(), *m_player->EntityViewDirection(), selectedBlock); return;
 		}
 	}
 }

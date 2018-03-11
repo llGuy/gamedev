@@ -16,6 +16,7 @@ namespace minecraft
 			void Init(void* d) override;
 			void Bind(void) const override;
 			void UnBind(void) const override;
+			void Destroy(void) const override;
 		};
 	}
 }

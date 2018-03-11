@@ -26,5 +26,9 @@ namespace minecraft
 		{
 			glBindVertexArray(0);
 		}
+		void GUIVAO::Destroy(void) const
+		{
+			glDeleteVertexArrays(1, &m_vaoID);
+		}
 	}
 }

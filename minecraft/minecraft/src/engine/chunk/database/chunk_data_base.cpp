@@ -632,5 +632,11 @@ namespace minecraft
 		{
 			m_gradientVectors = t.GVectors(m_corners, terrain::Terrain::choice_t::HM);
 		}
+
+
+		void ChunkDB::DestroyChunkData(void)
+		{
+			m_gpuh.DestroyBuffer();
+		}
 	}
 }

@@ -33,6 +33,11 @@ namespace minecraft
 				glBindVertexArray(0);
 			}
 
+			void CGPUVAO::Destroy(void) const
+			{
+				glDeleteVertexArrays(1, &m_vaoID);
+			}
+
 			/* class CGPUBuffer: */
 
 			void CGPUBuffer::Load(::std::size_t components, BData* bd)
@@ -69,6 +74,14 @@ namespace minecraft
 			const uint32_t& CGPUBuffer::BufferID(void)
 			{
 				return m_bufferID;
+			}
+
+			void CGPUBuffer::DeleteBuffer(void)
+			{
+				m_createdVAO = false;
+				glDeleteBuffers(1, &m_bufferID);
+				if(m_vao != nullptr)
+					m_vao->Destroy();
 			}
 		}
 	}

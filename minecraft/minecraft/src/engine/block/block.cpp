@@ -17,10 +17,6 @@ const TextureData Block::BLOCK_TEXTURE_DATA[block_t::INV]
 	{glm::vec3(16.0f, 16.0f, 16.0f)}
 };
 
-const Block::block_t Block::TRANSPARENT_BLOCKS[Block::NUM_TRANSPARENT_BLOCKS]
-{
-	block_t::GLASS
-};
 
 Block::Block(const CCoord& cc, const block_t& bt)
 	: m_cc(cc), m_bt(bt), m_valid(true)

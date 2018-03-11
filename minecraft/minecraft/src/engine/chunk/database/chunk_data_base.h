@@ -93,6 +93,9 @@ namespace minecraft
 			VAO* Vao(void);
 			const bool CreatedVAO(void);
 			CCorners& ChunkCorners(void);
+			
+			void DestroyChunkData(void);
+
 		private:
 			bool Destroyed(CVec2 c, int32_t y);
 			void UpdateIndices(std::array<uint32_t, 16>& indices);

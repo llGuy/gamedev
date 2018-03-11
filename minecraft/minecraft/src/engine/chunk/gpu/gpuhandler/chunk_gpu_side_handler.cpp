@@ -85,6 +85,11 @@ namespace minecraft
 			{
 				return 16;
 			}
+
+			void CGPUHandler::DestroyBuffer(void)
+			{
+				m_buff.DeleteBuffer();
+			}
 		}
 	}
 }

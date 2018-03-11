@@ -12,6 +12,7 @@ public:
 	virtual void Init(void* d) = 0;
 	virtual void Bind(void) const = 0;
 	virtual void UnBind(void) const = 0;
+	virtual void Destroy(void) const = 0;
 protected:
 	uint32_t m_vaoID;
 };

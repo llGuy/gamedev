@@ -20,6 +20,7 @@ namespace minecraft
 				void Init(void* bd) override;
 				void Bind(void) const override;
 				void UnBind(void) const override;
+				void Destroy(void) const override;
 			};
 
 			class CGPUBuffer
@@ -36,6 +37,7 @@ namespace minecraft
 				void Load(std::size_t components, BData* data);
 				VAO* Vao(void);
 				const bool CreatedVAO(void) const;
+				void DeleteBuffer(void);
 			private:
 				void LoadBuffer(std::size_t components, BData* data);
 				void UnBind(void) const;

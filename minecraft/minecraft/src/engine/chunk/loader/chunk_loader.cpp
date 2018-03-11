@@ -76,10 +76,53 @@ namespace minecraft
 							}
 						}
 					}
+					m_beginDestroyChunkThread = true;
+				}
+			}
+			void CLoader::DestroyDistantChunks(void)
+			{
+				for (;;)
+				{
+					if (m_ended) break;
+
+					while (!m_beginDestroyChunkThread) 
+					{
+					}
+
+					chunk::Chunk::WCoordChunk wc = PlayerWPosInChunkCoordinates();
+					glm::vec2 vec2CastWCPlayerPos = glm::vec2(static_cast<float>(wc.wpos.x), static_cast<float>(wc.wpos.z));
+
+					for (auto list = m_currentMap->Begin(); list != m_currentMap->End(); ++list)
+					{
+						for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+						{
+						}
+
+						for (auto c = list->begin(); c != list->end();)
+						{
+							for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+							{
+							}
+
+							chunk::Chunk::WCoordChunk chunkWC = c->ChunkCoordinate();
+							//std::cout << chunkWC.wpos.x << " " << chunkWC.wpos.z << std::endl;
+							glm::vec2 vec2CastCWCChuPos = glm::vec2(static_cast<float>(chunkWC.wpos.x), static_cast<float>(chunkWC.wpos.z));
+
+							if (glm::abs(glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos)) > 12.0f)
+							{
+								std::cout << glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos) << std::endl;
+								std::cout << "deleted" << std::endl;
+								c->DestroyGPUBuffer();
+								m_currentMap->Erase(chunkWC);
+							}
+							else ++c;
+						}
+					}
 				}
 			}
 			CLoader::CLoader(cmap::CMap* cm, ent::Entity* player, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
-				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh), m_ended(false)
+				: m_currentMap(cm), m_player(player), m_currentTerrain(&t), m_currentStructuresHandler(&sh), m_ended(false),
+				m_beginDestroyChunkThread(false)
 			{
 			}
 			// spawn thread
@@ -87,14 +130,17 @@ namespace minecraft
 			{
 				m_playerCurrentChunkCoordinates = { { -0x551, -0x914} };
 				// loads all the chunks under the player
-				m_clthread[0] = std::thread(&CLoader::UpdateChunksUnder, this,
-					[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& x) { ++x; },/* incremental lambda */
-					[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& z) { ++z; },/* incremental lambda */ -4, -4);
+
+				//m_clthread[0] = std::thread(&CLoader::UpdateChunksUnder, this,
+				//	[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& x) { ++x; },/* incremental lambda */
+				//	[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& z) { ++z; },/* incremental lambda */ -4, -4);
+
 				// loads the chunks in the direction of the player
-				m_clthread[1] = std::thread(&CLoader::UpdateChunksDistant, this);
+				m_clthread[0] = std::thread(&CLoader::UpdateChunksDistant, this);
+				//m_clthread[1] = std::thread(&CLoader::DestroyDistantChunks, this);
 
 				m_clthread[0].detach();
-				m_clthread[1].detach();
+				//m_clthread[1].detach();
 			}
 			chunk::Chunk::WCoordChunk CLoader::PlayerWPosInChunkCoordinates(void)
 			{

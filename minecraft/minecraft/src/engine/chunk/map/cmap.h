@@ -40,6 +40,7 @@ namespace minecraft
 				void Load(Chunk::WCoordChunk& v);
 				Chunk& operator[](Chunk::WCoordChunk& v);
 				const bool Exists(Chunk::WCoordChunk& v);
+				void Erase(Chunk::WCoordChunk& v);
 				void AfterGLEWInit(void);
 				iterator Begin(void);
 				iterator End(void);

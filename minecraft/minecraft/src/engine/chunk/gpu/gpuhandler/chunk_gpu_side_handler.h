@@ -17,6 +17,14 @@ namespace minecraft
 			class CGPUHandler
 			{
 			public:
+				enum blockqualifier_t
+					: uint32_t
+				{
+					BLOCKS = true,
+
+					TRANSPARENT_BLOCKS = false
+				};
+
 				explicit CGPUHandler(void);
 				~CGPUHandler(void);
 			public:
@@ -28,6 +36,8 @@ namespace minecraft
 					WVec2 chunkCoords, WVec2 negCorner);
 				void PushBack(const glm::vec3& position, const TextureData& t);
 				::std::size_t NumBlocks(void);
+
+				void DestroyBuffer(void);
 			public:
 				/* gets called in Init to initialize the texture maps	*/
 				/* for the buffers to map   the blocks properly			*/
@@ -39,11 +49,9 @@ namespace minecraft
 				std::array<uint32_t, 16>& DeletedBlocksIndices(void);
 				uint32_t& DBPointer(void);
 				uint32_t MaxDBPointer(void);
-				//void Resize(uint32_t s);
 			private:
 				CGPUBuffer m_buff;
 				std::vector<BData> m_blocks;
-				//uint32_t m_deletedBlocks[16];
 				uint32_t m_deletedBlocksPointer;
 				std::array<uint32_t, 16> m_dBlocks;
 			};

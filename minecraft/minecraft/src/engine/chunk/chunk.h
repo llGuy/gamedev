@@ -55,6 +55,7 @@ namespace minecraft
 			void LoadBlockFromGen(CVec2 c, int32_t y, terrain::Terrain& t);
 			ChunkDB::DBNeighbourChunkData DestroyBlock(CVec2 c, float y, terrain::Terrain& t);
 			void PlaceBlock(CVec2 c, float y, const Block::block_t& b);
+			void DestroyGPUBuffer(void);
 		public:
 			/* getters */
 			glm::vec3 BlockWorldCoord(const CVec2 cc, int32_t elevation);

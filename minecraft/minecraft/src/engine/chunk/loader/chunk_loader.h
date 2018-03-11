@@ -37,6 +37,7 @@ namespace minecraft
 					std::function<bool(int32_t, int32_t)> z, std::function<void(int32_t&)> zi,
 					int32_t startx, int32_t startz);
 				void UpdateChunksDistant(void);
+				void DestroyDistantChunks(void);
 				// spawn thread
 				void Spawn(GLFWwindow* window);
 				chunk::Chunk::WCoordChunk PlayerWPosInChunkCoordinates(void);
@@ -51,6 +52,7 @@ namespace minecraft
 				chunk::Chunk::WCoordChunk m_playerCurrentChunkCoordinates;
 				int32_t m_seed;
 				bool m_ended;
+				bool m_beginDestroyChunkThread;
 			};
 		}
 	}

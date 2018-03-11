@@ -98,6 +98,26 @@ namespace minecraft
 				++m_size;
 				return newChunk;
 			}
+			void CMap::Erase(Chunk::WCoordChunk& v)
+			{
+				int32_t h = CHash()(v) % m_llists->size();
+				std::list<Chunk> l = m_llists->operator[](h);
+				/*for (auto& i : l)
+					if (i.ChunkCoordinate() == v)
+					{
+						m_llists->operator[](h).erase(l.begin());
+					}*/
+				for (auto c = l.begin(); c != l.end();)
+				{
+					if (c->ChunkCoordinate() == v)
+					{
+						c->DestroyGPUBuffer();
+						l.erase(c);
+						return;
+					}
+					else ++c;
+				}
+			}
 		}
 	}
 }
