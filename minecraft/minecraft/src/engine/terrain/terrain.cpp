@@ -16,7 +16,7 @@ namespace minecraft
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
 			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType)
 		{
-			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv, 30);
+			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv, 30) + 30;
 		}
 		const biome::biome_t Terrain::Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, 
 			pnoise::PNoise::GradientVectors& gv)
