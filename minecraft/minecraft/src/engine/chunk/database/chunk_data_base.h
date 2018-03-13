@@ -106,7 +106,7 @@ namespace minecraft
 			CCoord CompressChunkCoord(CVec2 cc) const;
 			void GenerateCorners(WVec2 negCorner);
 			int32_t Height(const WVec2& negCorner, const uint8_t& x, const uint8_t& z,
-				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t);
+				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t, biome::biome_t b);
 
 			// for the LoadTop() for the neighbouring biomes
 			biome::biome_t DetermineNeighbouringBiome(terrain::Terrain& t,

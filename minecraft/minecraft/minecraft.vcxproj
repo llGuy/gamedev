@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="src\engine\block\block.cpp" />
     <ClCompile Include="src\engine\chunk\chunk.cpp" />
+    <ClCompile Include="src\engine\chunk\database\chunk_data_base.cpp" />
     <ClCompile Include="src\engine\chunk\event\cevent.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="src\engine\terrain\biome\biome_handler.cpp" />
     <ClCompile Include="src\engine\terrain\heightmap\heightmap.cpp" />
     <ClCompile Include="src\engine\terrain\terrain.cpp" />
+    <ClCompile Include="src\engine\texture_atlas\texture_atlas.cpp" />
     <ClCompile Include="src\engine\utility\glm_vecio.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\texture\texture.cpp" />
@@ -211,6 +213,8 @@
     <ClInclude Include="src\engine\terrain\biome\plains\plains.h" />
     <ClInclude Include="src\engine\terrain\heightmap\heightmap.h" />
     <ClInclude Include="src\engine\terrain\terrain.h" />
+    <ClInclude Include="src\engine\texture_atlas\texture_atlas.h" />
+    <ClInclude Include="src\engine\texture_atlas\tile.h" />
     <ClInclude Include="src\engine\utility\glm_vecio.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\shader\shader.h" />

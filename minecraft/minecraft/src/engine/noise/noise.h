@@ -45,7 +45,7 @@ namespace minecraft
 
 				float av = Lerp(glm::vec2(cc.np.y, px), glm::vec2(cc.nn.y, nx), blockCoord.y);
 
-				return av;
+				return (av + 1.0f) / 2.0f;
 			}
 			const DifferenceVectors DVectors(const glm::vec2& blockCoord, const CellCorners& cc) 
 			{

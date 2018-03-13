@@ -5,7 +5,7 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
-			: m_noiseGenerator(seed, 16 * 23), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed)
+			: m_noiseGenerator(seed, 37), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed)
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -26,16 +26,17 @@ namespace minecraft
 			float noise = m_noiseGenerator.Noise(v, bcc, dv, COEFF);
 			noise *= 100.0f;
 			// av is between -10.0f, and 10.0f
-			if (noise >= 85.0f)			return biome_t::EXTREME_MOUNTAINS;
-			else if (noise >= 80.0f)	return biome_t::MEGA_TAIGA;
-			else if (noise >= 70.0f)	return biome_t::MOUNTAINS;
-			else if (noise >= 20.0f)	return biome_t::PLAINS;
-			else if(noise >= -10.0f)	return biome_t::DESERT; 
-			else return biome_t::OCEAN;
+			//if (noise >= 85.0f)			return biome_t::EXTREME_MOUNTAINS;
+			//else if (noise >= 80.0f)	return biome_t::MEGA_TAIGA;
+			//else if (noise >= 70.0f)	return biome_t::MOUNTAINS;
+			if (noise >= 50.0f)	return biome_t::PLAINS;
+			//else if(noise >= -10.0f)	return biome_t::DESERT; 
+			//else return biome_t::OCEAN;
+			else return biome_t::DESERT;
 		}
 		const Bio BiomeHandler::DetBiome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv)
 		{
-			float noise = m_noiseGenerator.Noise(v, bcc, gv, COEFF);
+			/*float noise = m_noiseGenerator.Noise(v, bcc, gv, COEFF);
 			noise *= 100.0f;
 			Bio b;
 			if (noise >= 70.0f)
@@ -64,18 +65,19 @@ namespace minecraft
 				b.b = biome_t::OCEAN;
 				b.lerp = 1.0f;
 			}
-			return b;
+			return b;*/
+			return Bio();
 		}
 		const Block::block_t BiomeHandler::BlockType(const biome_t& b, int32_t maxH, int32_t y)
 		{
 			switch (b)
 			{
-			case biome_t::OCEAN: return OceanBlockType(maxH, y);
+			//case biome_t::OCEAN: return OceanBlockType(maxH, y);
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y);
 			case biome_t::DESERT: return DesertBlockType(maxH, y); 
-			case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); 
-			case biome_t::MEGA_TAIGA: return MegaTaigaBlockType(maxH, y);
-			case biome_t::EXTREME_MOUNTAINS: return EMountainsBlockType(maxH, y);
+			//case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); 
+			//case biome_t::MEGA_TAIGA: return MegaTaigaBlockType(maxH, y);
+			//case biome_t::EXTREME_MOUNTAINS: return EMountainsBlockType(maxH, y);
 			default: return Block::block_t::INV;
 			}
 		}
@@ -83,12 +85,12 @@ namespace minecraft
 		{
 			switch (b)
 			{
-			case biome_t::OCEAN: return m_oceanData.MAX_HEIGHT;
+			//case biome_t::OCEAN: return m_oceanData.MAX_HEIGHT;
 			case biome_t::PLAINS: return m_plainsData.MAX_HEIGHT; 
 			case biome_t::DESERT: return m_desertData.MAX_HEIGHT; 
-			case biome_t::MOUNTAINS: return m_mountains.MAX_HEIGHT;
-			case biome_t::EXTREME_MOUNTAINS: return m_emountainsData.MAX_HEIGHT;
-			case biome_t::MEGA_TAIGA: return m_megaTaigaData.MAX_HEIGHT; 
+			//case biome_t::MOUNTAINS: return m_mountains.MAX_HEIGHT;
+			//case biome_t::EXTREME_MOUNTAINS: return m_emountainsData.MAX_HEIGHT;
+			//case biome_t::MEGA_TAIGA: return m_megaTaigaData.MAX_HEIGHT; 
 			default: return 0;
 			}
 		}
@@ -96,12 +98,12 @@ namespace minecraft
 		{
 			switch (b)
 			{
-			case biome_t::OCEAN: return m_oceanData.MAX_HEIGHT;
+			//case biome_t::OCEAN: return m_oceanData.MAX_HEIGHT;
 			case biome_t::PLAINS: return m_plainsData.OFFSET; 
 			case biome_t::DESERT: return m_desertData.OFFSET; 
-			case biome_t::MOUNTAINS: return m_mountains.OFFSET; 
-			case biome_t::MEGA_TAIGA: return m_megaTaigaData.OFFSET;
-			case biome_t::EXTREME_MOUNTAINS: return m_emountainsData.OFFSET;
+			//case biome_t::MOUNTAINS: return m_mountains.OFFSET; 
+			//case biome_t::MEGA_TAIGA: return m_megaTaigaData.OFFSET;
+			//case biome_t::EXTREME_MOUNTAINS: return m_emountainsData.OFFSET;
 			default: return 0;
 			}
 		}

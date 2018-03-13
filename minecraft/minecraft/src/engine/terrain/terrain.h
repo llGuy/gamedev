@@ -24,12 +24,14 @@ namespace minecraft
 			explicit Terrain(const int32_t seed);
 
 			const int32_t Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
-				pnoise::PNoise::GradientVectors& gv, int32_t biomeMapHeight);
+				pnoise::PNoise::GradientVectors& gv, biome::biome_t b);
 			const biome::biome_t Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& dv);
 
-			const pnoise::PNoise::DifferenceVectors DVectors(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc, choice_t c);
-			const pnoise::PNoise::GradientVectors GVectors(pnoise::PNoise::CellCorners& cc, choice_t c);
-			const pnoise::PNoise::CellCorners CellCorners(const WVec2& chunkCoord, choice_t c);        
+			const pnoise::PNoise::DifferenceVectors DVectors(const glm::vec2& blockCoord, 
+				const pnoise::PNoise::CellCorners& cc, choice_t c, biome::biome_t b = biome::biome_t::INV);
+			const pnoise::PNoise::GradientVectors GVectors(pnoise::PNoise::CellCorners& cc, 
+				choice_t c, biome::biome_t b = biome::biome_t::INV);
+			const pnoise::PNoise::CellCorners CellCorners(const WVec2& chunkCoord, choice_t c);
 
 			const int32_t BiomeMaxHeight(const biome::biome_t b);
 			const int32_t BiomeOffset(const biome::biome_t b);
@@ -37,7 +39,11 @@ namespace minecraft
 			const Block::block_t BlockType(const biome::biome_t& b, int32_t maxH, int32_t y);
 		private:
 			biome::BiomeHandler m_biomeHandler;
-			Heightmap m_heightMap;
+			//Heightmap m_heightMap;
+
+			// testing
+			Heightmap m_heightmaps[static_cast<uint32_t>(biome::biome_t::INV)];
+
 		};
 	}
 }

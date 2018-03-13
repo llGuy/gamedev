@@ -63,7 +63,7 @@ namespace minecraft
 				pnoise::PNoise::GradientVectors gv = t.GVectors(cc, terrain::Terrain::choice_t::BM);
 
 				pnoise::PNoise::CellCorners hcc = t.CellCorners(wcc.wpos, terrain::Terrain::choice_t::HM);
-				pnoise::PNoise::GradientVectors hgv = t.GVectors(hcc, terrain::Terrain::choice_t::HM);
+				pnoise::PNoise::GradientVectors hgv;// = t.GVectors(hcc, terrain::Terrain::choice_t::HM);
 
 				for (uint32_t i = 0; i < size; ++i)
 				{
@@ -71,9 +71,10 @@ namespace minecraft
 					uint8_t z = abs(rand() % 16);
 
 					biome::biome_t bio = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z), cc, gv);
+					if (i == 0) hgv = t.GVectors(hcc, terrain::Terrain::choice_t::HM, bio);
 
-					int32_t height = t.Height(glm::vec2(negCorner.x + x, negCorner.z + z), hcc, hgv, t.BiomeMaxHeight(bio)) +
-						t.BiomeOffset(bio);
+					int32_t height = t.Height(glm::vec2(negCorner.x + x, negCorner.z + z), hcc, hgv, bio);// +
+						//t.BiomeOffset(bio);
 
 					// for now there are only trees
 					if (bio != biome::biome_t::DESERT && bio != biome::biome_t::OCEAN)

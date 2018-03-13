@@ -5,13 +5,18 @@ namespace minecraft
 	namespace terrain
 	{
 		Terrain::Terrain(const int32_t seed)
-			: m_heightMap(seed), m_biomeHandler(seed)
+			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed), // multiply by different numbers so that each biome gets different generation
+													Heightmap(seed * 23) }
+													//Heightmap(seed * 91), 
+													//Heightmap(seed * 11), 
+													//Heightmap(seed * 54), 
+													//Heightmap(seed * 40) }
 		{
 		}
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
-			pnoise::PNoise::GradientVectors& gv, int32_t biomeMapHeight)
+			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType)
 		{
-			return m_heightMap.Height(blockCoord, cc, gv, biomeMapHeight);
+			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv, 30);
 		}
 		const biome::biome_t Terrain::Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, 
 			pnoise::PNoise::GradientVectors& gv)
@@ -20,20 +25,20 @@ namespace minecraft
 		}
 
 		const pnoise::PNoise::DifferenceVectors Terrain::DVectors(const glm::vec2& blockCoord, 
-			const pnoise::PNoise::CellCorners& cc, Terrain::choice_t c)
+			const pnoise::PNoise::CellCorners& cc, Terrain::choice_t c, biome::biome_t b)
 		{
 			switch (c)
 			{
-			case Terrain::choice_t::HM: return m_heightMap.DVectors(blockCoord, cc);
+			case Terrain::choice_t::HM: return m_heightmaps[static_cast<uint32_t>(b)].DVectors(blockCoord, cc);
 			case Terrain::choice_t::BM: return m_biomeHandler.DVectors(blockCoord, cc);
 			default: return pnoise::PNoise::DifferenceVectors();
 			}
 		}
-		const pnoise::PNoise::GradientVectors Terrain::GVectors(pnoise::PNoise::CellCorners& cc, Terrain::choice_t c)
+		const pnoise::PNoise::GradientVectors Terrain::GVectors(pnoise::PNoise::CellCorners& cc, Terrain::choice_t c, biome::biome_t b)
 		{
 			switch (c)
 			{
-			case Terrain::choice_t::HM: return m_heightMap.GVectors(cc);
+			case Terrain::choice_t::HM: return m_heightmaps[static_cast<uint32_t>(b)].GVectors(cc);
 			case Terrain::choice_t::BM: return m_biomeHandler.GVectors(cc);
 			default: return pnoise::PNoise::GradientVectors();
 			}
@@ -42,7 +47,8 @@ namespace minecraft
 		{
 			switch (c)
 			{
-			case Terrain::choice_t::HM: return m_heightMap.HeightmapCellCorners(chunkCoord);
+				// all the heightmap cell corners are the same.
+			case Terrain::choice_t::HM: return m_heightmaps[0].HeightmapCellCorners(chunkCoord);
 			case Terrain::choice_t::BM: return m_biomeHandler.BiomeMapCellCorners(chunkCoord);
 			default: return pnoise::PNoise::CellCorners();
 			}
