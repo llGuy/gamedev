@@ -45,6 +45,14 @@ namespace minecraft
 				NEG_Z = 3
 			};
 			void LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner, terrain::Terrain& t);
+			// for load visible, the gradient vectors of each biome need to be calculated
+			// however, to avoid having to recalculate it over and over, this struct
+			// saves the gradient vectors that have been calculated
+			struct GVectorStructUtility
+			{
+				pnoise::PNoise::GradientVectors gv;
+				bool computed = false;
+			};
 			void LoadTop(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t);
 			// data for checking if neighbouring chunks need to load blocks
 			struct DBNeighbourChunkData 
@@ -120,12 +128,13 @@ namespace minecraft
 				const uint8_t x, const uint8_t z, pnoise::PNoise::CellCorners& bcc,
 				pnoise::PNoise::GradientVectors& gv);
 			pnoise::PNoise::CellCorners NeighbouringHeightmapCellCorners(terrain::Terrain& t, WVec2& neighbouringchunkcoord);
-			pnoise::PNoise::GradientVectors NeighbouringHeightmapCellGVectors(pnoise::PNoise::CellCorners c, terrain::Terrain& t);
+			pnoise::PNoise::GradientVectors NeighbouringHeightmapCellGVectors(pnoise::PNoise::CellCorners c,
+				terrain::Terrain& t);
 			
-			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t,
+			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, GVectorStructUtility* gvs,
 				const chunkExtr_t ce, const WVec2& negCorner, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord);
 			void NeighbouringHeights(biome::biome_t* nb, terrain::Terrain& t, const WVec2& negCorner,
-				int32_t* nh, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord);
+				int32_t* nh, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord, GVectorStructUtility*);
 			int32_t SmallestNeighbour(int32_t* nh);
 			void AppendBlock(uint8_t x, uint8_t z, int32_t y,
 				terrain::Terrain& t, biome::biome_t b, int32_t bysH, BlockYStrip& bys);
