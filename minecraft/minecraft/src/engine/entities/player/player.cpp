@@ -10,7 +10,7 @@ namespace minecraft
 	{
 		Player::Player(void)
 			: m_playerViewDirection(1.0f, 0.0f, 0.0f), 
-			m_playerPosition(0.23f, 80.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(2.5f),
+			m_playerPosition(0.23f, 130.0f, 0.23f), UP(0.0f, 1.0f, 0.0f), m_speed(2.5f),
 			m_playerData({1.0f}), m_jumping(false), m_speedCoeff(1.5f), m_flying(false)
 		{
 		}

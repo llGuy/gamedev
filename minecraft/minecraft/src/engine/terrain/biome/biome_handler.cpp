@@ -5,7 +5,7 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
-			: m_noiseGenerator(seed, 37), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed)
+			: m_noiseGenerator(seed, 37 * 7), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed)
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -29,7 +29,9 @@ namespace minecraft
 			//if (noise >= 85.0f)			return biome_t::EXTREME_MOUNTAINS;
 			//else if (noise >= 80.0f)	return biome_t::MEGA_TAIGA;
 			//else if (noise >= 70.0f)	return biome_t::MOUNTAINS;
-			if (noise >= 50.0f)	return biome_t::PLAINS;
+		//	if (noise >= 90.0f) return biome_t::EXTREME_MOUNTAINS;
+			if (noise >= 70.0f) return biome_t::MOUNTAINS;
+			else if (noise >= 40.0f)	return biome_t::PLAINS;
 			//else if(noise >= -10.0f)	return biome_t::DESERT; 
 			//else return biome_t::OCEAN;
 			else return biome_t::DESERT;
@@ -75,9 +77,9 @@ namespace minecraft
 			//case biome_t::OCEAN: return OceanBlockType(maxH, y);
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y);
 			case biome_t::DESERT: return DesertBlockType(maxH, y); 
-			//case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); 
+			case biome_t::MOUNTAINS: return MountainsBlockType(maxH, y); 
 			//case biome_t::MEGA_TAIGA: return MegaTaigaBlockType(maxH, y);
-			//case biome_t::EXTREME_MOUNTAINS: return EMountainsBlockType(maxH, y);
+			case biome_t::EXTREME_MOUNTAINS: return EMountainsBlockType(maxH, y);
 			default: return Block::block_t::INV;
 			}
 		}
@@ -124,8 +126,8 @@ namespace minecraft
 		const Block::block_t BiomeHandler::MountainsBlockType(int32_t maxH, int32_t y)
 		{
 			/* at the top there is stone */
-			if (y == maxH && maxH > m_mountains.STONE_TOP * (m_mountains.OFFSET + m_mountains.MAX_HEIGHT)) return Block::block_t::STONE;
-			else if (y == maxH) return Block::block_t::GRASS;
+			//if (y == maxH && maxH > m_mountains.STONE_TOP * (m_mountains.OFFSET + m_mountains.MAX_HEIGHT)) return Block::block_t::STONE;
+			if (y == maxH) return Block::block_t::GRASS;
 			else if (y >= maxH * m_mountains.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_mountains.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;
@@ -149,8 +151,8 @@ namespace minecraft
 		}
 		const Block::block_t BiomeHandler::EMountainsBlockType(int32_t maxH, int32_t y)
 		{
-			if (y == maxH && maxH > m_emountainsData.STONE_TOP * (m_emountainsData.OFFSET + m_emountainsData.MAX_HEIGHT)) return Block::block_t::STONE;
-			else if (y == maxH) return Block::block_t::GRASS;
+			//if (y == maxH && maxH > m_emountainsData.STONE_TOP * (m_emountainsData.OFFSET + m_emountainsData.MAX_HEIGHT)) return Block::block_t::STONE;
+			if (y == maxH) return Block::block_t::GRASS;
 			else if (y >= maxH * m_emountainsData.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_emountainsData.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;

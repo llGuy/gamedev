@@ -5,10 +5,11 @@ namespace minecraft
 	namespace terrain
 	{
 		Terrain::Terrain(const int32_t seed)
-			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed), // multiply by different numbers so that each biome gets different generation
-													Heightmap(seed * 23) }
-													//Heightmap(seed * 91), 
-													//Heightmap(seed * 11), 
+			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed, 55, 15), // multiply by different numbers so that each biome gets different generation
+													Heightmap(seed * 23, 70, 30),
+													Heightmap(seed * 91, 100, 70) } 
+													//Heightmap(seed * 11, 140, 60) }
+
 													//Heightmap(seed * 54), 
 													//Heightmap(seed * 40) }
 		{
@@ -16,7 +17,7 @@ namespace minecraft
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
 			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType)
 		{
-			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv, 30) + 30;
+			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv);
 		}
 		const biome::biome_t Terrain::Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, 
 			pnoise::PNoise::GradientVectors& gv)
