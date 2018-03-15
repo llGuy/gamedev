@@ -30,7 +30,7 @@ float Specular(vec3 light_vector)
 
 vec4 Grass(void)
 {
-	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 198.0f / 255.0f, 0.0f, 1.0f) * 0.4f;
+	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 110.0f / 255.0f, 0.02f, 1.0f);// *0.7f;
 }
 
 vec4 Leaves(void)
@@ -60,6 +60,7 @@ void main()
 	vec4 diffuse = vec4(diffuse_brightness, diffuse_brightness, diffuse_brightness, 1.0f);
 	vec4 specular = vec4(specular_brightness, specular_brightness, specular_brightness, 1.0f);
 
+	//fragment_color = FragmentColor();
 	fragment_color = clamp(diffuse, 0, 1) * 0.4f + FragmentColor() + clamp(specular, 0, 1) * 0.2f;
 	//fragment_color = mix(vec4(sky_color, 1.0), fragment_color, visibility);
 }

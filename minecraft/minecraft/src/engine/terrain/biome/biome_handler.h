@@ -31,6 +31,7 @@ namespace minecraft
 			const int32_t BiomeOffset(const biome_t& b);
 
 			const Block::block_t BlockType(const biome_t& b, int32_t maxH, int32_t y);
+			const float& BiomeNoiseValue(const uint32_t index);
 		private:
 			const Block::block_t PlainsBlockType(int32_t maxH, int32_t y);
 			const Block::block_t DesertBlockType(int32_t maxH, int32_t y);
@@ -48,6 +49,8 @@ namespace minecraft
 			MTaigaData m_megaTaigaData;
 			ExtrMountainsData m_emountainsData;
 			int32_t m_seed;
+
+			float m_biomeNoiseValues[2];
 		};
 	}
 }

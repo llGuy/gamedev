@@ -19,7 +19,7 @@ namespace minecraft
 
 			OCEAN = 4,
 
-			INV = 3
+			INV = 2
 		};
 
 		// test
