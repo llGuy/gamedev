@@ -70,10 +70,11 @@ namespace minecraft
 					uint8_t x = abs(rand() % 16);
 					uint8_t z = abs(rand() % 16);
 
-					biome::biome_t bio = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z), cc, gv);
+					float noise;
+					biome::biome_t bio = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z), cc, gv, &noise);
 					if (i == 0) hgv = t.GVectors(hcc, terrain::Terrain::choice_t::HM, bio);
 
-					int32_t height = t.Height(glm::vec2(negCorner.x + x, negCorner.z + z), hcc, hgv, bio);// +
+					int32_t height = t.Height(glm::vec2(negCorner.x + x, negCorner.z + z), hcc, hgv, bio, noise);// +
 						//t.BiomeOffset(bio);
 
 					// for now there are only trees

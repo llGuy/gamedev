@@ -28,6 +28,12 @@ namespace minecraft
 			biome_t b;
 			float lerp;	// coefficient that applies to the height
 		};
+
+		struct BiomeData
+		{
+			biome_t b;
+			float noise;
+		};
 	}
 }
 

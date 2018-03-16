@@ -25,13 +25,14 @@ namespace minecraft
 			const pnoise::PNoise::CellCorners BiomeMapCellCorners(const WVec2& c);
 			const pnoise::PNoise::GradientVectors GVectors(pnoise::PNoise::CellCorners& bcc);
 			const pnoise::PNoise::DifferenceVectors DVectors(const glm::vec2& v, const pnoise::PNoise::CellCorners& bcc);
-			const biome_t Biome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv);
+			const biome_t Biome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv, float* noise);
 			const Bio DetBiome(glm::vec2& v, pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& gv);
 			const int32_t MaxBiomeHeight(const biome_t& b);
 			const int32_t BiomeOffset(const biome_t& b);
 
 			const Block::block_t BlockType(const biome_t& b, int32_t maxH, int32_t y);
 			const float& BiomeNoiseValue(const uint32_t index);
+			const uint32_t BiomeNoiseValuesArrSize(void);
 		private:
 			const Block::block_t PlainsBlockType(int32_t maxH, int32_t y);
 			const Block::block_t DesertBlockType(int32_t maxH, int32_t y);
@@ -50,7 +51,7 @@ namespace minecraft
 			ExtrMountainsData m_emountainsData;
 			int32_t m_seed;
 
-			float m_biomeNoiseValues[2];
+			float m_biomeNoiseValues[static_cast<uint32_t>(biome::biome_t::INV)];
 		};
 	}
 }

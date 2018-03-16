@@ -15,14 +15,32 @@ namespace minecraft
 		{
 		}
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
-			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType)
+			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType, float biomeNoise)
 		{
+			// range that will be used to determine the interpolated
+			// height in between the biomes
+			Range range = InRange(biomeNoise);
+			if (range.diff != -0xff)
+			{
+				// is in range of a biome
+				
+				// calculate height of the terrain with the other biome
+				// noise generator
+				// apply the heights through a function which will return an interpolated value
+			}
+
 			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv);
 		}
 		const biome::biome_t Terrain::Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, 
-			pnoise::PNoise::GradientVectors& gv)
+			pnoise::PNoise::GradientVectors& gv, float* noise)
 		{
-			return m_biomeHandler.Biome(v, bcc, gv);
+			return m_biomeHandler.Biome(v, bcc, gv, noise);
+		}
+
+		const int32_t Terrain::Height(const glm::vec2& blockCoords, const pnoise::PNoise::CellCorners& cc, biome::biome_t b)
+		{
+			pnoise::PNoise::GradientVectors gv = m_heightmaps[static_cast<uint32_t>(b)].GVectors(cc);
+			return m_heightmaps[static_cast<uint32_t>(b)].Height(blockCoords, cc, gv);
 		}
 
 		const pnoise::PNoise::DifferenceVectors Terrain::DVectors(const glm::vec2& blockCoord, 

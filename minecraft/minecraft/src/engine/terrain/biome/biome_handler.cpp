@@ -22,11 +22,11 @@ namespace minecraft
 			return m_noiseGenerator.DVectors(v, bcc);
 		}
 		const biome_t BiomeHandler::Biome(glm::vec2& v,
-			pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& dv)
+			pnoise::PNoise::CellCorners& bcc, pnoise::PNoise::GradientVectors& dv, float* n)
 		{
 			float noise = m_noiseGenerator.Noise(v, bcc, dv, COEFF);
-			std::cout << noise << std::endl;
 			noise *= 100.0f;
+			*n = noise;
 			// av is between -10.0f, and 10.0f
 			//if (noise >= 85.0f)			return biome_t::EXTREME_MOUNTAINS;
 			//else if (noise >= 80.0f)	return biome_t::MEGA_TAIGA;
@@ -163,6 +163,10 @@ namespace minecraft
 			else if (y >= maxH * m_emountainsData.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_emountainsData.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;
+		}
+		const uint32_t BiomeHandler::BiomeNoiseValuesArrSize(void)
+		{
+			return static_cast<uint32_t>(biome::biome_t::INV);
 		}
 	}
 }

@@ -128,16 +128,16 @@ namespace minecraft
 			CCoord CompressChunkCoord(CVec2 cc) const;
 			void GenerateCorners(WVec2 negCorner);
 			int32_t Height(const WVec2& negCorner, const uint8_t& x, const uint8_t& z,
-				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t, biome::biome_t b);
+				int32_t mh, pnoise::PNoise::CellCorners& cc, pnoise::PNoise::GradientVectors& gv, terrain::Terrain& t, biome::BiomeData b);
 
 			// for the LoadTop() for the neighbouring biomes
-			biome::biome_t DetermineNeighbouringBiome(terrain::Terrain& t,
+			biome::BiomeData DetermineNeighbouringBiome(terrain::Terrain& t,
 				const chunkExtr_t chunkExtr, const WVec2& chunkCoords, const WVec2& negCorner, uint8_t x, uint8_t z);
 			const bool AtExtr0(uint8_t xzInChunk);
 			const bool AtExtr15(uint8_t xzInChunk);
 			const bool AtHeightmapExtrN(const int32_t xzWorld);
 			const bool AtHeightmapExtrP(const int32_t xzWorld);
-			void NeighbouringBiomes(biome::biome_t* nb, const WVec2& chunkCoords,
+			void NeighbouringBiomes(biome::BiomeData* nb, const WVec2& chunkCoords,
 				terrain::Terrain& t, const WVec2& negCorner,
 				const uint8_t x, const uint8_t z, pnoise::PNoise::CellCorners& bcc,
 				pnoise::PNoise::GradientVectors& gv);
@@ -145,9 +145,9 @@ namespace minecraft
 			pnoise::PNoise::GradientVectors NeighbouringHeightmapCellGVectors(pnoise::PNoise::CellCorners c,
 				terrain::Terrain& t);
 			
-			signed int DetermineNeighbouringHeight(biome::biome_t* nb, terrain::Terrain& t, GVectorStructUtility gvs,
+			signed int DetermineNeighbouringHeight(biome::BiomeData* nb, terrain::Terrain& t, GVectorStructUtility gvs,
 				const chunkExtr_t ce, const WVec2& negCorner, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord);
-			void NeighbouringHeights(biome::biome_t* nb, terrain::Terrain& t, const WVec2& negCorner,
+			void NeighbouringHeights(biome::BiomeData* nb, terrain::Terrain& t, const WVec2& negCorner,
 				int32_t* nh, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord, GVectorStructUtility);
 			int32_t SmallestNeighbour(int32_t* nh);
 			void AppendBlock(uint8_t x, uint8_t z, int32_t y,
