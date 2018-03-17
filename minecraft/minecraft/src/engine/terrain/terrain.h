@@ -46,6 +46,7 @@ namespace minecraft
 				int32_t biome;
 			};
 
+			static constexpr float RANGE = 5.0f;
 			__forceinline const Range InRange(const float noise)
 			{
 				Range ret;
@@ -53,7 +54,7 @@ namespace minecraft
 				{
 					const float& bnoiseValue = m_biomeHandler.BiomeNoiseValue(i);
 					float diff = fabs(noise - bnoiseValue);
-					if (diff < 2.0f)
+					if (diff < RANGE)
 					{
 						ret.diff = (noise > bnoiseValue) ? +diff : -diff;
 						ret.biome = (ret.diff < 0.0f) ? i : i - 1;
@@ -62,11 +63,17 @@ namespace minecraft
 				}
 				return { -99.99f, -0xff};
 			}
+			// indicator function
+			__forceinline const float I(const float& diff, const float& center)
+			{
+				float c = RANGE;
+				float max = 2 * RANGE;
+				// interpolate
+				//float upordown = diff > 0.0f ? 1.0f : -1.0f;
+				return -1.0f * (1.0f / (2.0f * RANGE)) * (diff + RANGE) + 1.0f;
+			}
 		private:
 			biome::BiomeHandler m_biomeHandler;
-			//Heightmap m_heightMap;
-
-			// testing
 			Heightmap m_heightmaps[static_cast<uint32_t>(biome::biome_t::INV)];
 
 		};

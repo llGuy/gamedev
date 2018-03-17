@@ -6,7 +6,8 @@ namespace minecraft
 	{
 		Terrain::Terrain(const int32_t seed)
 			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed, 55, 30), // multiply by different numbers so that each biome gets different generation
-													Heightmap(seed * 23, 70, 30) }
+													Heightmap(seed * 23, 70, 30),
+													Heightmap(seed * 41, 110, 35)}
 													//Heightmap(seed * 91, 80, 70) } 
 													//Heightmap(seed * 11, 140, 60) }
 
@@ -17,19 +18,26 @@ namespace minecraft
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,
 			pnoise::PNoise::GradientVectors& gv, biome::biome_t biomeType, float biomeNoise)
 		{
+			int32_t height;
 			// range that will be used to determine the interpolated
 			// height in between the biomes
 			Range range = InRange(biomeNoise);
-			if (range.diff != -0xff)
+			if (range.biome != -0xff)
 			{
-				// is in range of a biome
-				
-				// calculate height of the terrain with the other biome
-				// noise generator
-				// apply the heights through a function which will return an interpolated value
-			}
+				// height in current biome
+				height = m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv);
+				// height in other biome
+				pnoise::PNoise::GradientVectors otherGV = m_heightmaps[range.biome].GVectors(cc);
+				int32_t otherHeight = m_heightmaps[range.biome].Height(blockCoord, cc, otherGV);
 
-			return m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv);
+				float indicator = I(range.diff, m_biomeHandler.BiomeNoiseValue(range.biome));
+
+				if(range.diff > 0.0f) height = static_cast<float>(otherHeight) * (indicator) + height * (1.0f - indicator);
+				else height = static_cast<float>(otherHeight) * (1.0f - indicator) + height * (indicator);
+			}
+			else height = m_heightmaps[static_cast<uint32_t>(biomeType)].Height(blockCoord, cc, gv);
+
+			return height;
 		}
 		const biome::biome_t Terrain::Biome(glm::vec2 v, pnoise::PNoise::CellCorners& bcc, 
 			pnoise::PNoise::GradientVectors& gv, float* noise)
