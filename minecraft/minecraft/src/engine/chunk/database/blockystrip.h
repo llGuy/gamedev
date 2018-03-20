@@ -14,7 +14,7 @@ namespace minecraft
 		struct BlockYStrip
 		{
 			BlockYStrip(void)
-				: smallest(0), top(0), bio(biome::biome_t::INV)
+				: smallest(-0xff), top(-0xff), bio(biome::biome_t::INV)
 			{
 			}
 			ysmap_t ystrip;

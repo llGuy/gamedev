@@ -124,6 +124,8 @@ namespace minecraft
 			VAO* LiquidMeshVAO(void);
 			const uint32_t NumTilesLMesh(void);
 		private:
+			void ExistingHeights(int32_t* nh, uint8_t x, uint8_t z);
+
 			bool Destroyed(CVec2 c, int32_t y);
 			void UpdateIndices(std::array<uint32_t, 16>& indices);
 			void LoadGPUData(WVec2 chunkCoords, WVec2 negCorner);
@@ -145,7 +147,7 @@ namespace minecraft
 			void NeighbouringBiomes(biome::BiomeData* nb, const WVec2& chunkCoords,
 				terrain::Terrain& t, const WVec2& negCorner,
 				const uint8_t x, const uint8_t z, pnoise::PNoise::CellCorners& bcc,
-				pnoise::PNoise::GradientVectors& gv);
+				pnoise::PNoise::GradientVectors& gv, int32_t* nh);
 			pnoise::PNoise::CellCorners NeighbouringHeightmapCellCorners(terrain::Terrain& t, WVec2& neighbouringchunkcoord);
 			pnoise::PNoise::GradientVectors NeighbouringHeightmapCellGVectors(pnoise::PNoise::CellCorners c,
 				terrain::Terrain& t);

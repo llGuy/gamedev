@@ -52,11 +52,11 @@ namespace minecraft
 					int32_t x = static_cast<int32_t>(playerViewDirection.x * 8.0f) + wc.wpos.x;
 					int32_t z = static_cast<int32_t>(playerViewDirection.z * 8.0f) + wc.wpos.z;
 
-					int32_t diffx = (x == 0 ? -2 : (abs(x) / x) * 2);
-					int32_t diffz = (z == 0 ? -2 : (abs(z) / z) * 2);
+					int32_t diffx = (x == 0 ? -3 : (abs(x) / x) * 3);
+					int32_t diffz = (z == 0 ? -3 : (abs(z) / z) * 3);
 
-					x = (x == 0 ? -2 : x + (abs(x) / x) * 2);
-					z = (z == 0 ? -2 : z + (abs(z) / z) * 2);
+					x = (x == 0 ? -3 : x + (abs(x) / x) * 3);
+					z = (z == 0 ? -3 : z + (abs(z) / z) * 3);
 
 					for (int32_t zi = wc.wpos.z - diffz; zi != z + diffz; (zi > z + diffz ? --zi : ++zi))
 					{
@@ -70,10 +70,13 @@ namespace minecraft
 							chunk::Chunk& ch = m_currentMap->operator[](wcc);
 							if (!(ch.Loaded()) && !ch.BufferLoaded())
 							{
+								Chunk& c = m_currentMap->operator[](wcc);
 								std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-								m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
+
+								c = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
+
 								std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-								std::cout << d.count() / 1000000.0 << std::endl;
+								std::cout << d.count() / 1000000.0 << std::endl << std::endl;
 							}
 						}
 					}

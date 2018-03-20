@@ -1,4 +1,5 @@
 #include "chunk_data_base.h"
+#include <chrono>
 
 namespace minecraft
 {
@@ -24,6 +25,8 @@ namespace minecraft
 		void ChunkDB::LoadStructures(WVec2 chunkCoords, structures::StructuresHandler& sh, WVec2 negCorner, terrain::Terrain& t)
 		{
 			auto discardSCBYS = []() {};
+
+			std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
 
 			WCoordChunk wcc = { chunkCoords };
 			std::vector<structures::Structure*> structs = sh.AllStructuresOfChunk(wcc, negCorner, t);
@@ -61,6 +64,8 @@ namespace minecraft
 					}
 				}
 			}
+			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
+			std::cout << "structures " << d.count() / 1000000.0 << std::endl << std::endl;
 			//for (auto i : structs)
 			//{
 			//	if (i != nullptr)
@@ -69,8 +74,31 @@ namespace minecraft
 			//	}
 			//}
 		}
+		void ChunkDB::ExistingHeights(int32_t* nh, uint8_t x, uint8_t z)
+		{
+			auto exsistingHeight = [&](int8_t ox, int8_t oz, uint32_t i)->void 
+			{
+				int8_t newX = x + ox; int8_t newZ = z + oz;
+				if ((newX < 0 || newX > 15) || (newZ < 0 || newZ > 15))
+				{
+					uint8_t index = Index({ static_cast<uint8_t>(x + ox), static_cast<uint8_t>(z + oz) });
+					// check if the top is calculated
+					if (m_blocks[index].top != -0xff)
+					{
+						nh[i] = m_blocks[index].top;
+					}
+				}
+			};
+			// -x +x +z -z
+			exsistingHeight(-1, 0, 0);
+			exsistingHeight(+1, 0, 1);
+			exsistingHeight(0, +1, 2);
+			exsistingHeight(0, -1, 3);
+		}
 		void ChunkDB::LoadTop(WVec2 chunkCoords, WVec2 negCorner, terrain::Terrain& t)
 		{
+			std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+
 			GenerateCorners(negCorner);
 
 			pnoise::PNoise::CellCorners bcc = t.CellCorners(chunkCoords, terrain::Terrain::choice_t::BM);
@@ -86,29 +114,40 @@ namespace minecraft
 				{
 					// biome of the current block
 					glm::vec2 blockWCoord = glm::vec2(negCorner.x + x, negCorner.z + z);
-					biome::BiomeData biomeData;
-					biomeData.b = t.Biome(blockWCoord, bcc, gv, &biomeData.noise);
-					uint32_t biomeGradientVectorIndex = static_cast<uint32_t>(biomeData.b);
 
 					// calculating neibouring biomes
-					//biome::biome_t neighbouringBiomes[4];
+					int32_t neighbouringHeights[4]{ -0xff, -0xff, -0xff, -0xff };
+
+					// add the already calculated heights
+					ExistingHeights(neighbouringHeights, x, z);
+
 					biome::BiomeData neighbouringBiomeData[4];
-					NeighbouringBiomes(neighbouringBiomeData, chunkCoords, t, negCorner, x, z, bcc, gv);
-
-					// calculate gvector for biome
-					gvs.GV(biomeData.b, m_corners, t);
-
-					int32_t neighbouringHeights[4];
+					NeighbouringBiomes(neighbouringBiomeData, chunkCoords, t, negCorner, x, z, bcc, gv, neighbouringHeights);
 					NeighbouringHeights(neighbouringBiomeData, t, negCorner, neighbouringHeights, x, z, chunkCoords, gvs);
 
-					// height of current block
-					int32_t h = Height(negCorner, x, z, t.BiomeMaxHeight(biomeData.b), m_corners, gvs.GV(biomeData.b, m_corners, t).gv, t, biomeData);
+					BlockYStrip& bys = m_blocks[(Index({ x, z }))];
+					biome::BiomeData biomeData;
+					int32_t h;
+					if (bys.top == -0xff)
+					{
+						biomeData.b = t.Biome(blockWCoord, bcc, gv, &biomeData.noise);
+						uint32_t biomeGradientVectorIndex = static_cast<uint32_t>(biomeData.b);
+						// calculate gvector for biome
+						gvs.GV(biomeData.b, m_corners, t);
+
+						// height of current block
+						h = Height(negCorner, x, z, t.BiomeMaxHeight(biomeData.b), m_corners, gvs.GV(biomeData.b, m_corners, t).gv, t, biomeData);
+						bys.bio = biomeData.b;
+					}
+					else  // already calculated
+					{
+						h = bys.top;
+						biomeData.b = bys.bio;
+					}
 
 					// calculating smallest height
 					int32_t smallestNeighbour = SmallestNeighbour(neighbouringHeights);
 
-					BlockYStrip& bys = m_blocks[(Index({ x, z }))];
-					bys.bio = biomeData.b;
 					// regardless of whether at corner of chunk
 
 					for (int32_t y = h; y >= smallestNeighbour; --y)
@@ -117,13 +156,13 @@ namespace minecraft
 						GradLoadGPUData(chunkCoords, negCorner, x, z, bys, y);
 					}
 					bys.smallest = smallestNeighbour;
-					bys.top = h;
+					if (bys.top == -0xff) bys.top = h;
 					if (h < smallestNeighbour)
 					{
 						AppendBlock(x, z, h, t, biomeData.b, h, bys);
 						GradLoadGPUData(chunkCoords, negCorner, x, z, bys, h);
 						bys.smallest = h;
-						bys.top = h;
+						if(bys.top == -0xff) bys.top = h;
 					}
 					if (biomeData.b == biome::biome_t::OCEAN)
 					{
@@ -132,6 +171,8 @@ namespace minecraft
 					}
 				}
 			}
+			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
+			std::cout << "chunk " << d.count() / 1000000.0 << std::endl;
 		}
 		ChunkDB::DBNeighbourChunkData ChunkDB::DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk wcc)
 		{
@@ -493,36 +534,45 @@ namespace minecraft
 		void ChunkDB::NeighbouringBiomes(biome::BiomeData* nb, const WVec2& chunkCoords,
 			terrain::Terrain& t, const WVec2& negCorner,
 			const uint8_t x, const uint8_t z, pnoise::PNoise::CellCorners& bcc,
-			pnoise::PNoise::GradientVectors& gv)
+			pnoise::PNoise::GradientVectors& gv, int32_t* nh)
 		{
-			if (AtExtr0(x)) nb[0] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
-			else
-				nb[0].b = t.Biome(glm::vec2(negCorner.x + x - 1, negCorner.z + z), bcc, gv, &nb[0].noise);
-
-			if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
-			else nb[1].b = t.Biome(glm::vec2(negCorner.x + x + 1, negCorner.z + z), bcc, gv, &nb[1].noise);
-
-			if (AtExtr15(z)) nb[2] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_Z, chunkCoords, negCorner, x, z);
-			else nb[2].b = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z + 1), bcc, gv, &nb[2].noise);
-
-			if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
-			else nb[3].b = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z - 1), bcc, gv, &nb[3].noise);
-
-			/*
-			//new
-			auto biomeWithinChunk = [&](int8_t ox,  int8_t oz, uint32_t i)->biome::biome_t
+			auto biomeWithinChunk = [&](int8_t ox, int8_t oz, int32_t index)->void
 			{
-			uint8_t index = Index({ static_cast<uint8_t>(x + ox), static_cast<uint8_t>(z + oz) });
-			BlockYStrip& bys = m_blocks[index];
-			if (bys.bio != biome::biome_t::INV)
-				return bys.bio;
-			else
-				return t.Biome(glm::vec2(negCorner.x + x + ox, negCorner.z + z + oz), bcc, gv, &nb[i].noise);
+				BlockYStrip& bys = m_blocks[Index({ static_cast<uint8_t>(x + ox), static_cast<uint8_t>(z + oz) })];
+
+				if (nh[index] == -0xff)
+					nb[index].b = t.Biome(glm::vec2(negCorner.x + x + ox, negCorner.z + z + oz), bcc, gv, &nb[index].noise);
+
+				if (bys.bio == biome::biome_t::INV) 
+					bys.bio = nb[index].b;
 			};
 
 			if (AtExtr0(x)) nb[0] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
-			else
-				nb[0].b = biomeWithinChunk(-1, 0, 0);
+			else biomeWithinChunk(-1, 0, 0);
+
+			if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
+			else biomeWithinChunk(+1, 0, 1);
+
+			if (AtExtr15(z)) nb[2] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_Z, chunkCoords, negCorner, x, z);
+			else biomeWithinChunk(0, +1, 2);
+
+			if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
+			else biomeWithinChunk(0, -1, 3);
+
+			
+			//new
+			/*auto biomeWithinChunk = [&](int8_t ox,  int8_t oz, uint32_t i)->biome::biome_t
+			{
+				uint8_t index = Index({ static_cast<uint8_t>(x + ox), static_cast<uint8_t>(z + oz) });
+				BlockYStrip& bys = m_blocks[index];
+				if (bys.bio != biome::biome_t::INV)
+					return bys.bio;
+				else
+					return t.Biome(glm::vec2(negCorner.x + x + ox, negCorner.z + z + oz), bcc, gv, &nb[i].noise);
+			};
+
+			if (AtExtr0(x)) nb[0] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
+			else nb[0].b = biomeWithinChunk(-1, 0, 0);
 
 			if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
 			else nb[1].b = biomeWithinChunk(1, 0, 1);
@@ -531,9 +581,9 @@ namespace minecraft
 			else nb[2].b = biomeWithinChunk(0, 1, 2);
 
 			if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
-			else nb[3].b = biomeWithinChunk(0, -1, 3);
+			else nb[3].b = biomeWithinChunk(0, -1, 3);*/
 			
-			*/
+			
 		}
 		pnoise::PNoise::CellCorners ChunkDB::NeighbouringHeightmapCellCorners(terrain::Terrain& t, WVec2& neighbouringchunkcoord)
 		{
@@ -599,17 +649,28 @@ namespace minecraft
 		void ChunkDB::NeighbouringHeights(biome::BiomeData* nb, terrain::Terrain& t, const WVec2& negCorner,
 			int32_t* nh, uint8_t xInChunk, uint8_t zInChunk, WVec2& chunkCoord, GVectorStructUtility gvs)
 		{
+			auto heightWithinChunk = [&](int8_t ox, int8_t oz, uint32_t index)->void
+			{
+				if(nh[index] == -0xff)
+					nh[index] = Height(negCorner, xInChunk + ox, zInChunk + oz, 
+						t.BiomeMaxHeight(nb[index].b), m_corners, gvs.GV(nb[index].b, m_corners, t).gv, t, nb[index]);
+
+				BlockYStrip& bys = m_blocks[Index({ static_cast<uint8_t>(xInChunk + ox), static_cast<uint8_t>(zInChunk + oz) })];
+				if (bys.top == -0xff) 
+					bys.top = nh[index];
+			};
+
 			if (AtExtr0(xInChunk)) nh[0] = DetermineNeighbouringHeight(nb, t, gvs, chunkExtr_t::NEG_X, negCorner, xInChunk, zInChunk, chunkCoord);
-			else nh[0] = Height(negCorner, xInChunk - 1, zInChunk, t.BiomeMaxHeight(nb[0].b), m_corners, gvs.GV(nb[0].b, m_corners, t).gv, t, nb[0]);
+			else heightWithinChunk(-1, 0, 0);
 
 			if (AtExtr15(xInChunk)) nh[1] = DetermineNeighbouringHeight(nb, t, gvs, chunkExtr_t::POS_X, negCorner, xInChunk, zInChunk, chunkCoord);
-			else nh[1] = Height(negCorner, xInChunk + 1, zInChunk, t.BiomeMaxHeight(nb[1].b), m_corners, gvs.GV(nb[1].b, m_corners, t).gv, t, nb[1]);
+			else heightWithinChunk(+1, 0, 1);
 			
 			if (AtExtr15(zInChunk)) nh[2] = DetermineNeighbouringHeight(nb, t, gvs, chunkExtr_t::POS_Z, negCorner, xInChunk, zInChunk, chunkCoord);
-			else nh[2] = Height(negCorner, xInChunk, zInChunk + 1, t.BiomeMaxHeight(nb[2].b), m_corners, gvs.GV(nb[2].b, m_corners, t).gv, t, nb[2]);
+			else heightWithinChunk(0, +1, 2);
 
 			if (AtExtr0(zInChunk)) nh[3] = DetermineNeighbouringHeight(nb, t, gvs, chunkExtr_t::NEG_Z, negCorner, xInChunk, zInChunk, chunkCoord);
-			else nh[3] = Height(negCorner, xInChunk, zInChunk - 1, t.BiomeMaxHeight(nb[3].b), m_corners, gvs.GV(nb[3].b, m_corners, t).gv, t, nb[3]);
+			else heightWithinChunk(0, -1, 3);
 		}
 		int32_t ChunkDB::SmallestNeighbour(int32_t* nh)
 		{

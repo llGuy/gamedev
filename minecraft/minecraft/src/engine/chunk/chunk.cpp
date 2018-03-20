@@ -1,4 +1,5 @@
 #include "chunk.h"
+#include <chrono>
 
 namespace minecraft
 {
@@ -11,8 +12,13 @@ namespace minecraft
 		Chunk::Chunk(const WCoordChunk& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
+			std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+
 			LoadTop(t, sh);
 			LoadStructures(t, sh);
+
+			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
+			std::cout << d.count() / 1000000.0 << std::endl << std::endl;
 		}
 
 		Chunk::Chunk(const WCoordChunk&& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
