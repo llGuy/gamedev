@@ -120,6 +120,12 @@
     <ClCompile Include="src\engine\chunk\database\chunk_data_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\liquidmesh\buffer\liquidmeshbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\liquidmesh\liquidmesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\block\block.h">
@@ -314,6 +320,12 @@
     <ClInclude Include="src\engine\texture_atlas\tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\liquidmesh\liquidmesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\liquidmesh\buffer\liquidmeshbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\block\fsh.shader" />
@@ -321,6 +333,9 @@
     <None Include="res\shaders\block\gsh.shader" />
     <None Include="res\shaders\ui\vsh.shader" />
     <None Include="res\shaders\ui\fsh.shader" />
+    <None Include="res\shaders\liquid\vsh.shader" />
+    <None Include="res\shaders\liquid\gsh.shader" />
+    <None Include="res\shaders\liquid\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_atlas.png">

@@ -25,6 +25,7 @@ namespace minecraft
 			// initializations
 			void Init(void);
 			void UseSHProgram(void);
+			void UseSHProgramLMesh(void);
 			void AfterGLEWInit(void);
 			void GetUniform(void);
 		public:
@@ -34,6 +35,7 @@ namespace minecraft
 			float HighestBlock(glm::vec3 wpos);
 			glm::vec3 BlockWPos(glm::vec3 wpos);
 			data::CUDataLocs& Locations(void);
+			data::CUDataLocs& LMeshLocations(void);
 			cmap::CMap::iterator Begin(void);
 			cmap::CMap::iterator End(void);
 			void LaunchChunkLoader(ent::Entity* player, GLFWwindow* window);
@@ -51,7 +53,9 @@ namespace minecraft
 			void SHInit(void);
 		private:
 			::sh::SHProgram m_chunkshprogram;
+			::sh::SHProgram m_liquidMeshProgram;
 			data::CUDataLocs m_udataloc;
+			data::CUDataLocs m_udatalocLMesh;
 			loader::CLoader* m_chunkloader;
 			terrain::Terrain m_terrain;
 			structures::StructuresHandler m_structHandler;

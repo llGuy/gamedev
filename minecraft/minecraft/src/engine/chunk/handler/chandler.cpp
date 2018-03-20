@@ -105,11 +105,19 @@ namespace minecraft
 		}
 		void CHandler::SHInit(void)
 		{
-			std::vector<const char*> attribs({ "vertex_position", "texture_data" });
+			// liquid
+			std::vector<const char*> lattribs({"vertex_position"});
+			m_liquidMeshProgram.Init("res\\shaders\\liquid\\vsh.shader", "res\\shaders\\liquid\\fsh.shader",
+				"res\\shaders\\liquid\\gsh.shader");
+			m_liquidMeshProgram.Compile();
+			m_liquidMeshProgram.Link(lattribs);
+
+			// blocks
+			std::vector<const char*> battribs({ "vertex_position", "texture_data" });
 			m_chunkshprogram.Init("res\\shaders\\block\\vsh.shader", "res\\shaders\\block\\fsh.shader",
 				"res\\shaders\\block\\gsh.shader");
 			m_chunkshprogram.Compile();
-			m_chunkshprogram.Link(attribs);
+			m_chunkshprogram.Link(battribs);
 		}
 		void CHandler::ChunkMapInit(void)
 		{
@@ -165,6 +173,14 @@ namespace minecraft
 			m_udataloc.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
 			m_udataloc.skyColorLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "sky_color");
 			m_udataloc.modelMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "model_matrix");
+
+			m_udatalocLMesh.projectionMatrixLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "projection_matrix");
+			m_udatalocLMesh.viewMatrixLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "view_matrix");
+			m_udatalocLMesh.lightPositionLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "light_position");
+			m_udatalocLMesh.eyePositionLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "eye_position");
+			m_udatalocLMesh.skyColorLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "sky_color");
+			m_udatalocLMesh.modelMatrixLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "model_matrix");
+			m_udatalocLMesh.liquidBlockTypeLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "texture_data");
 		}
 		cmap::CMap::update_t CHandler::MapUpdateState(void)
 		{
@@ -181,6 +197,14 @@ namespace minecraft
 		ChunkDB::CCorners CHandler::ChunkCorners(Chunk::WCoordChunk wcc)
 		{
 			return m_chunkMap[wcc].ChunkCorners();
+		}
+		void CHandler::UseSHProgramLMesh(void)
+		{
+			m_liquidMeshProgram.UseProgram();
+		}
+		data::CUDataLocs& CHandler::LMeshLocations(void)
+		{
+			return m_udatalocLMesh;
 		}
 	}
 }

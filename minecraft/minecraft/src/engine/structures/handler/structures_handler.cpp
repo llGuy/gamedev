@@ -64,7 +64,7 @@ namespace minecraft
 
 				pnoise::PNoise::CellCorners hcc = t.CellCorners(wcc.wpos, terrain::Terrain::choice_t::HM);
 				pnoise::PNoise::GradientVectors hgv;// = t.GVectors(hcc, terrain::Terrain::choice_t::HM);
-
+				
 				for (uint32_t i = 0; i < size; ++i)
 				{
 					uint8_t x = abs(rand() % 16);

@@ -13,6 +13,8 @@ namespace minecraft
 			glUniform3fv(cudl.lightPositionLocation, 1, &cud.lightPosition[0]);
 			glUniform3fv(cudl.eyePositionLocation, 1, &cud.eyePosition[0]);
 			glUniform3fv(cudl.skyColorLocation, 1, &cud.skyColor[0]);
+
+			if (cud.liquidMeshBlockType > -20.0f) glUniform1f(cudl.liquidBlockTypeLocation, cud.liquidMeshBlockType);
 		}
 
 		void Renderer::ARender(GLenum mode, const VAO* vao,

@@ -10,7 +10,7 @@ namespace minecraft
 			const int32_t OFFSET = 25;
 			const int32_t MAX_HEIGHT = 7;
 			// start of dirt level
-			const float DIRT_LEVEL = 0.8f;
+			const float DIRT_LEVEL = 0.95f;
 			// start of stone level
 			const float STONE_LEVEL = 0.3f;
 			// start of bedrock level

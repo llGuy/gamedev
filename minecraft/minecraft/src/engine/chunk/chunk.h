@@ -66,6 +66,11 @@ namespace minecraft
 			const bool Loaded(void);
 			const bool BufferLoaded(void);
 			const bool CreatedVAO(void);
+
+			VAO* LiquidMeshVAO(void);
+			bool EmptyLiquidMesh(void);
+			const uint32_t NumTilesLMesh(void);
+			bool LMeshLoaded(void);
 		private:
 			void LoadTop(terrain::Terrain& t, structures::StructuresHandler& sh);
 			void LoadStructures(terrain::Terrain& t, structures::StructuresHandler& sh);

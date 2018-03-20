@@ -8,7 +8,7 @@
 namespace minecraft
 {
 	Engine::Engine(void)
-		: m_camera(), m_textureAtlas("res\\textures\\texture_atlas.png"), m_player(nullptr), 
+		: m_camera(), m_player(nullptr), 
 		m_blockTextureAtlas(16.0f, 16.0f, "res\\textures\\texture_atlas.png"),
 		m_guihandler(&m_blockTextureAtlas)
 	{
@@ -69,6 +69,27 @@ namespace minecraft
 				}
 			}
 		}
+		m_chunkHandler->UseSHProgramLMesh();
+		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
+		{
+			for (auto& jt : *it)
+			{
+				// check if the chunk map deleted the lists to create new ones
+				if (m_chunkHandler->MapDeltedLLists())
+				{
+					m_chunkHandler->ResetMapDeletedLListsBool();
+					return;
+				}
+				chunk::Chunk& c = jt;
+				if (!c.EmptyLiquidMesh() && c.LMeshLoaded())
+				{
+					m_udata.liquidMeshBlockType = 207.0f; // water texture
+					m_renderer.UniformData(m_udata, m_chunkHandler->LMeshLocations());
+					m_renderer.AInstancedRender(GL_POINTS, c.LiquidMeshVAO(), 0, 1, c.NumTilesLMesh());
+				}
+			}
+		}
+		m_udata.liquidMeshBlockType = -255.0f;
 	}
 	void Engine::RenderDebug(void)
 	{
@@ -110,6 +131,7 @@ namespace minecraft
 	{
 		m_chunkHandler->GetUniform();
 
+		m_udata.liquidMeshBlockType = -255.0f;
 		m_udata.projectionMatrix = glm::perspective(m_variableConfigs.FOV, (float)wwidth / wheight, 0.1f, 1000.0f);
 		m_udata.modelMatrix = glm::mat4(1.0f);
 		m_udata.lightPosition = glm::vec3(0.0f, 100.0f, 0.0f);

@@ -15,6 +15,8 @@ namespace minecraft
 			glm::vec3 lightPosition;
 			glm::vec3 eyePosition;
 			glm::vec3 skyColor;
+
+			float liquidMeshBlockType;
 		};
 
 		struct CUDataLocs
@@ -25,6 +27,9 @@ namespace minecraft
 			uint32_t lightPositionLocation;
 			uint32_t eyePositionLocation;
 			uint32_t skyColorLocation;
+
+			// for liquid mesh
+			uint32_t liquidBlockTypeLocation;
 		};
 	}
 }

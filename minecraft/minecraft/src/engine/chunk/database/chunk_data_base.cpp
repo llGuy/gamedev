@@ -10,7 +10,7 @@ namespace minecraft
 			pnoise::PNoise::GradientVectors gv = t.GVectors(bcc, terrain::Terrain::choice_t::BM);
 
 			GenerateHeightmapCellCorners(chunkCoords, t);
-			GenerateHeightmapCellGVectors(t);
+			//GenerateHeightmapCellGVectors(t);
 
 			for (int32_t z = 0; z < 16; ++z)
 			{
@@ -125,13 +125,10 @@ namespace minecraft
 						bys.smallest = h;
 						bys.top = h;
 					}
-
-					// for oceans
 					if (biomeData.b == biome::biome_t::OCEAN)
 					{
-						int32_t height = t.BiomeOffset(biome::biome_t::DESERT) - 2;
-						AppendBlock(x, z, height, bys, Block::block_t::WATER);
-						GradLoadGPUData(chunkCoords, negCorner, x, z, bys, height);
+						glm::vec3 worldPos = glm::vec3(static_cast<float>(negCorner.x + x), 100.0f, static_cast<float>(negCorner.z + z));
+						m_liquidMesh.AddTile(worldPos);
 					}
 				}
 			}
@@ -160,6 +157,8 @@ namespace minecraft
 		void ChunkDB::LoadGPUBuffer(void)
 		{
 			m_gpuh.LoadGPUBuffer();
+			if(!m_liquidMesh.Empty())
+				m_liquidMesh.Load();
 		}
 		void ChunkDB::DestroyHEAPMemoryForBlocksWPos(void)
 		{
@@ -497,7 +496,8 @@ namespace minecraft
 			pnoise::PNoise::GradientVectors& gv)
 		{
 			if (AtExtr0(x)) nb[0] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
-			else nb[0].b = t.Biome(glm::vec2(negCorner.x + x - 1, negCorner.z + z), bcc, gv, &nb[0].noise);
+			else
+				nb[0].b = t.Biome(glm::vec2(negCorner.x + x - 1, negCorner.z + z), bcc, gv, &nb[0].noise);
 
 			if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
 			else nb[1].b = t.Biome(glm::vec2(negCorner.x + x + 1, negCorner.z + z), bcc, gv, &nb[1].noise);
@@ -507,6 +507,33 @@ namespace minecraft
 
 			if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
 			else nb[3].b = t.Biome(glm::vec2(negCorner.x + x, negCorner.z + z - 1), bcc, gv, &nb[3].noise);
+
+			/*
+			//new
+			auto biomeWithinChunk = [&](int8_t ox,  int8_t oz, uint32_t i)->biome::biome_t
+			{
+			uint8_t index = Index({ static_cast<uint8_t>(x + ox), static_cast<uint8_t>(z + oz) });
+			BlockYStrip& bys = m_blocks[index];
+			if (bys.bio != biome::biome_t::INV)
+				return bys.bio;
+			else
+				return t.Biome(glm::vec2(negCorner.x + x + ox, negCorner.z + z + oz), bcc, gv, &nb[i].noise);
+			};
+
+			if (AtExtr0(x)) nb[0] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_X, chunkCoords, negCorner, x, z);
+			else
+				nb[0].b = biomeWithinChunk(-1, 0, 0);
+
+			if (AtExtr15(x)) nb[1] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_X, chunkCoords, negCorner, x, z);
+			else nb[1].b = biomeWithinChunk(1, 0, 1);
+
+			if (AtExtr15(z)) nb[2] = DetermineNeighbouringBiome(t, chunkExtr_t::POS_Z, chunkCoords, negCorner, x, z);
+			else nb[2].b = biomeWithinChunk(0, 1, 2);
+
+			if (AtExtr0(z)) nb[3] = DetermineNeighbouringBiome(t, chunkExtr_t::NEG_Z, chunkCoords, negCorner, x, z);
+			else nb[3].b = biomeWithinChunk(0, -1, 3);
+			
+			*/
 		}
 		pnoise::PNoise::CellCorners ChunkDB::NeighbouringHeightmapCellCorners(terrain::Terrain& t, WVec2& neighbouringchunkcoord)
 		{
@@ -616,13 +643,30 @@ namespace minecraft
 		}
 		void ChunkDB::GenerateHeightmapCellGVectors(terrain::Terrain& t)
 		{
-			m_gradientVectors = t.GVectors(m_corners, terrain::Terrain::choice_t::HM);
+			//m_gradientVectors = t.GVectors(m_corners, terrain::Terrain::choice_t::HM);
 		}
 
 
 		void ChunkDB::DestroyChunkData(void)
 		{
 			m_gpuh.DestroyBuffer();
+		}
+
+		bool ChunkDB::EmptyLiquidMesh(void)
+		{
+			return m_liquidMesh.Empty();
+		}
+		VAO* ChunkDB::LiquidMeshVAO(void)
+		{
+			return m_liquidMesh.Vao();
+		}
+		const uint32_t ChunkDB::NumTilesLMesh(void)
+		{
+			return m_liquidMesh.Size();
+		}
+		bool ChunkDB::LMeshLoaded(void)
+		{
+			return m_liquidMesh.Loaded();
 		}
 	}
 }

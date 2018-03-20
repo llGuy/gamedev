@@ -10,6 +10,7 @@
 #include "../../terrain/terrain.h"
 #include "../../terrain/terrain.h"
 #include "blockystrip.h"
+#include "../../liquidmesh/liquidmesh.h"
 #include "../../structures/handler/structures_handler.h"
 
 namespace minecraft
@@ -118,6 +119,10 @@ namespace minecraft
 			
 			void DestroyChunkData(void);
 
+			bool LMeshLoaded(void);
+			bool EmptyLiquidMesh(void);
+			VAO* LiquidMeshVAO(void);
+			const uint32_t NumTilesLMesh(void);
 		private:
 			bool Destroyed(CVec2 c, int32_t y);
 			void UpdateIndices(std::array<uint32_t, 16>& indices);
@@ -158,12 +163,11 @@ namespace minecraft
 			void GenerateHeightmapCellGVectors(terrain::Terrain& t);
 		private:
 			gpu::CGPUHandler m_gpuh;
+			lm::LiquidMesh m_liquidMesh;
 			// heightmap cell corners
 			pnoise::PNoise::CellCorners m_corners;
 			// chunk corners
 			CCorners m_ccorners;
-			// heightmap cell gradient vectors
-			pnoise::PNoise::GradientVectors m_gradientVectors;
 			BlockYStrip m_blocks[16 * 16];
 			uint32_t m_numBlocks;
 			uint32_t m_transparentBlocks;

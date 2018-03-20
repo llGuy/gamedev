@@ -76,7 +76,7 @@ namespace minecraft
 		void RenderDebug(void);
 		void RenderGUI(void);
 	private:
-		Texture m_textureAtlas;
+		//Texture m_textureAtlas;
 		TextureAtlas m_blockTextureAtlas;
 		ent::Camera m_camera;
 		ent::Entity* m_player;

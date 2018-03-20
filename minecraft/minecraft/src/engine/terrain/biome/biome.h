@@ -7,19 +7,15 @@ namespace minecraft
 	{
 		enum class biome_t
 		{
-			DESERT = 0,
+			OCEAN = 0,
 
-			PLAINS = 1,
+			DESERT = 1,
 
-			MOUNTAINS = 2,
+			PLAINS = 2,
 
-			EXTREME_MOUNTAINS = 3,
+			MOUNTAINS = 3,
 
-			//MEGA_TAIGA = 4,
-
-			OCEAN = 4,
-
-			INV = 3
+			INV = 4
 		};
 
 		// test

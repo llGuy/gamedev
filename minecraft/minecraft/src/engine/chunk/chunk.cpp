@@ -135,5 +135,21 @@ namespace minecraft
 			m_gpubufferloaded = false;
 			m_dataBase.DestroyChunkData();
 		}
+		VAO* Chunk::LiquidMeshVAO(void)
+		{
+			return m_dataBase.LiquidMeshVAO();
+		}
+		bool Chunk::EmptyLiquidMesh(void)
+		{
+			return m_dataBase.EmptyLiquidMesh();
+		}
+		const uint32_t Chunk::NumTilesLMesh(void)
+		{
+			return m_dataBase.NumTilesLMesh();
+		}
+		bool Chunk::LMeshLoaded(void)
+		{
+			return m_dataBase.LMeshLoaded();
+		}
 	}
 }

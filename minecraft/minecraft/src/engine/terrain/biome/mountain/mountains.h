@@ -11,9 +11,9 @@ namespace minecraft
 			const int32_t MAX_HEIGHT = 25;
 			const float STONE_TOP = 0.9f;
 			// start of dirt level
-			const float DIRT_LEVEL = 0.8f;
+			const float DIRT_LEVEL = 0.975f;
 			// start of stone level
-			const float STONE_LEVEL = 0.3f;
+			const float STONE_LEVEL = 0.2f;
 			// start of bedrock level
 			const float BEDROCK_LEVEL = 0.0f;
 		};
