@@ -9,23 +9,23 @@ namespace minecraft
 			: m_dataBase(0), m_loaded(false), m_gpubufferloaded(false)
 		{
 		}
-		Chunk::Chunk(const WCoordChunk& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+		Chunk::Chunk(const WCoordChunk& wcoordChunk, int32_t seed)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
 			std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
 
-			LoadTop(t, sh);
-			LoadStructures(t, sh);
+			//LoadTop(t, sh);
+			//LoadStructures(t, sh);
 
 			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-			std::cout << d.count() / 1000000.0 << std::endl << std::endl;
+			//std::cout << d.count() / 1000000.0 << std::endl << std::endl;
 		}
 
-		Chunk::Chunk(const WCoordChunk&& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh)
+		Chunk::Chunk(const WCoordChunk&& wcoordChunk, int32_t seed)
 			: m_wcoordChunk(wcoordChunk), m_dataBase(seed), m_loaded(false), m_gpubufferloaded(false)
 		{
-			LoadTop(t, sh);
-			LoadStructures(t, sh);
+			//LoadTop(t, sh);
+			//LoadStructures(t, sh);
 		}
 		ChunkDB::DBNeighbourChunkData Chunk::DestroyBlock(CVec2 c, float y, terrain::Terrain& t)
 		{

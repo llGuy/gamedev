@@ -4,11 +4,11 @@ namespace minecraft
 {
 	namespace terrain
 	{
-		Terrain::Terrain(const int32_t seed)
-			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed * 73, 90, 20),
-													Heightmap(seed * 23, 110, 15),
-													Heightmap(seed * 41, 130, 35),
-													Heightmap(seed, 85, 30) }
+		Terrain::Terrain(const int32_t seed)	
+			: m_biomeHandler(seed), m_heightmaps{ Heightmap(seed, 85, 30),
+													Heightmap(seed * 73, 110, 15),
+													Heightmap(seed * 23, 90, 20),
+													Heightmap(seed * 41, 130, 35) }
 		{
 		}
 		const int32_t Terrain::Height(const glm::vec2& blockCoord, const pnoise::PNoise::CellCorners& cc,

@@ -65,7 +65,13 @@ namespace minecraft
 				if (c.Loaded() && c.BufferLoaded() && c.Vao() != nullptr && c.CreatedVAO())
 				{
 					m_renderer.UniformData(m_udata, m_chunkHandler->Locations());
+
+					//std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+
 					m_renderer.AInstancedRender(GL_POINTS, c.Vao(), 0, 1, c.NumBlocks());
+
+					//std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
+					//std::cout << "render time" << d.count() / 1000000.0 << std::endl << std::endl;
 				}
 			}
 		}
@@ -83,7 +89,7 @@ namespace minecraft
 				chunk::Chunk& c = jt;
 				if (!c.EmptyLiquidMesh() && c.LMeshLoaded())
 				{
-					m_udata.liquidMeshBlockType = 207.0f; // water texture
+					m_udata.liquidMeshBlockType = 14.0f; // water texture
 					m_renderer.UniformData(m_udata, m_chunkHandler->LMeshLocations());
 					m_renderer.AInstancedRender(GL_POINTS, c.LiquidMeshVAO(), 0, 1, c.NumTilesLMesh());
 				}

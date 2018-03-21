@@ -65,14 +65,15 @@ namespace minecraft
 				}
 			}
 			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-			std::cout << "structures " << d.count() / 1000000.0 << std::endl << std::endl;
+			//std::cout << "structures " << d.count() / 1000000.0 << std::endl << std::endl;
 			//for (auto i : structs)
 			//{
 			//	if (i != nullptr)
 			//	{
-			//delete i;
+			//		delete i;
 			//	}
 			//}
+
 		}
 		void ChunkDB::ExistingHeights(int32_t* nh, uint8_t x, uint8_t z)
 		{
@@ -172,7 +173,7 @@ namespace minecraft
 				}
 			}
 			std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-			std::cout << "chunk " << d.count() / 1000000.0 << std::endl;
+			//std::cout << "chunk " << d.count() / 1000000.0 << std::endl;
 		}
 		ChunkDB::DBNeighbourChunkData ChunkDB::DestroyBlock(CVec2 bcoord, float y, terrain::Terrain& t, WVec2 negCorner, WCoordChunk wcc)
 		{

@@ -33,7 +33,9 @@ namespace minecraft
 								if (!(ch.Loaded()) && !ch.BufferLoaded())
 								{
 									std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-									m_currentMap->operator[](wcc) = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
+									//ch = Chunk(wcc, m_seed);
+									ch.LoadTop(*m_currentTerrain, *m_currentStructuresHandler);
+									ch.LoadStructures(*m_currentTerrain, *m_currentStructuresHandler);
 									std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 								}
 							}
@@ -70,13 +72,14 @@ namespace minecraft
 							chunk::Chunk& ch = m_currentMap->operator[](wcc);
 							if (!(ch.Loaded()) && !ch.BufferLoaded())
 							{
-								Chunk& c = m_currentMap->operator[](wcc);
 								std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
 
-								c = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
+								ch.LoadTop(*m_currentTerrain, *m_currentStructuresHandler);
+								ch.LoadStructures(*m_currentTerrain, *m_currentStructuresHandler);
+								//ch = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
 
 								std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-								std::cout << d.count() / 1000000.0 << std::endl << std::endl;
+								//std::cout << d.count() / 1000000.0 << std::endl << std::endl;
 							}
 						}
 					}

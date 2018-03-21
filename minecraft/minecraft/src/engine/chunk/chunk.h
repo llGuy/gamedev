@@ -42,8 +42,8 @@ namespace minecraft
 			explicit Chunk(void);
 			explicit Chunk(int32_t seed) : m_wcoordChunk({ {0, 0} }), m_dataBase(seed), 
 				m_loaded(false), m_gpubufferloaded(false) {}
-			explicit Chunk(const WCoordChunk& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
-			explicit Chunk(const WCoordChunk&& wcoordChunk, int32_t seed, terrain::Terrain& t, structures::StructuresHandler& sh);
+			explicit Chunk(const WCoordChunk& wcoordChunk, int32_t seed);
+			explicit Chunk(const WCoordChunk&& wcoordChunk, int32_t seed);
 			void LoadGPUBuffer(void);
 			void DestroyHEAPMemoryForBlocksWPos(void);
 			void LoadAll(terrain::Terrain& t, structures::StructuresHandler& sh);
@@ -71,9 +71,9 @@ namespace minecraft
 			bool EmptyLiquidMesh(void);
 			const uint32_t NumTilesLMesh(void);
 			bool LMeshLoaded(void);
-		private:
 			void LoadTop(terrain::Terrain& t, structures::StructuresHandler& sh);
 			void LoadStructures(terrain::Terrain& t, structures::StructuresHandler& sh);
+		private:
 		private:
 			WCoordChunk m_wcoordChunk;
 			ChunkDB m_dataBase;

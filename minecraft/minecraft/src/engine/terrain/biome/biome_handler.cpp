@@ -5,8 +5,8 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
-			: m_noiseGenerator(seed, 37 * 3), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed),
-			m_biomeNoiseValues{0.0f, 30.0f, 60.0f, 90.0f}
+			: m_noiseGenerator(seed, 37 * 9), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed),
+			m_biomeNoiseValues{0.0f, 50.0f, 75.0f, 90.0f}
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -35,8 +35,8 @@ namespace minecraft
 
 			//if (noise >= 70.0f) return biome_t::MOUNTAINS;
 			if (noise >= m_biomeNoiseValues[3])  return biome_t::MOUNTAINS;
-			else if (noise >= m_biomeNoiseValues[2]) return biome_t::PLAINS;
-			else if (noise >= m_biomeNoiseValues[1])	return biome_t::DESERT;
+			else if (noise >= m_biomeNoiseValues[2])	return biome_t::DESERT;
+			else if (noise >= m_biomeNoiseValues[1]) return biome_t::PLAINS;
 			else return biome_t::OCEAN;
 			//else if(noise >= -10.0f)	return biome_t::DESERT; 
 			//else return biome_t::OCEAN;

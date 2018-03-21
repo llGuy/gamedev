@@ -50,7 +50,7 @@ namespace minecraft
 				void ResetDeltedLListsBool(void);
 			private:
 				/* append */
-				Chunk & App(const Chunk::WCoordChunk& v);
+				Chunk & App(const Chunk::WCoordChunk& v, int32_t seed);
 			private:
 				std::vector<std::list<Chunk>>* m_llists;
 				/* number of linked lists */

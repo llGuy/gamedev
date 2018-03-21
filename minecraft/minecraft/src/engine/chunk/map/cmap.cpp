@@ -17,7 +17,7 @@ namespace minecraft
 				int32_t h = CHash()(v) % m_llists->size();
 				for (auto& i : m_llists->operator[](h))
 					if (i.ChunkCoordinate() == v) return;
-				App(v);
+				App(v, m_seed);
 			}
 			Chunk& CMap::operator[](Chunk::WCoordChunk& v)
 			{
@@ -26,8 +26,17 @@ namespace minecraft
 				for (auto& i : l)
 					if (i.ChunkCoordinate() == v)
 						return i;
-				return App(v);
+				return App(v, m_seed);
 			}
+			//Chunk& CMap::At(Chunk::WCoordChunk& v, int32_t seed)
+			//{
+			//	int32_t h = CHash()(v) % m_llists->size();
+			//	auto& l = m_llists->operator[](h);
+			//	for (auto& i : l)
+			//		if (i.ChunkCoordinate() == v)
+			//			return i;
+			//	return App(v, seed);
+			//}
 			const bool CMap::Exists(Chunk::WCoordChunk& v)
 			{
 				int32_t h = CHash()(v) % m_llists->size();
@@ -69,7 +78,7 @@ namespace minecraft
 				m_deletedCurrentLLists = false;
 			}
 			/* append */
-			Chunk & CMap::App(const Chunk::WCoordChunk& v)
+			Chunk & CMap::App(const Chunk::WCoordChunk& v, int32_t seed)
 			{
 				if (m_size == m_nll)
 				{
@@ -93,7 +102,7 @@ namespace minecraft
 					delete current;
 				}
 				int32_t h = CHash()(v) % m_llists->size();
-				m_llists->operator[](h).push_back(Chunk(m_seed));
+				m_llists->operator[](h).push_back(Chunk(v, seed));
 				Chunk& newChunk = m_llists->operator[](h).back();
 				++m_size;
 				return newChunk;

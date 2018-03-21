@@ -11,7 +11,7 @@ const TextureData Block::BLOCK_TEXTURE_DATA[block_t::INV]
 	{glm::vec3(18.0f, 18.0f, 18.0f)},
 	{glm::vec3(21.0f, 20.0f, 21.0f)},
 	{glm::vec3(53.0f, 53.0f, 53.0f)},
-	{glm::vec3(207.0f, 207.0f, 207.0f)},
+	{glm::vec3(14.0f, 14.0f, 14.0f)},
 	{glm::vec3(4.0f, 4.0f, 4.0f)},	
 	{glm::vec3(49.0f, 49.0f, 49.0f)},
 	{glm::vec3(16.0f, 16.0f, 16.0f)}

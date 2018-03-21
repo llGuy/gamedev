@@ -9,9 +9,9 @@ namespace minecraft
 		{
 			OCEAN = 0,
 
-			DESERT = 1,
+			PLAINS = 1,
 
-			PLAINS = 2,
+			DESERT = 2,
 
 			MOUNTAINS = 3,
 
