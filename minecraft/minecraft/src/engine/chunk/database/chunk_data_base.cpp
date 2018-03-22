@@ -167,7 +167,7 @@ namespace minecraft
 					}
 					if (biomeData.b == biome::biome_t::OCEAN)
 					{
-						glm::vec3 worldPos = glm::vec3(static_cast<float>(negCorner.x + x), 100.0f, static_cast<float>(negCorner.z + z));
+						glm::vec3 worldPos = glm::vec3(static_cast<float>(negCorner.x + x), 88.0f, static_cast<float>(negCorner.z + z));
 						m_liquidMesh.AddTile(worldPos);
 					}
 				}

@@ -50,6 +50,7 @@ namespace minecraft
 	{
 		m_blockTextureAtlas.Bind(0);
 		m_chunkHandler->UseSHProgram();
+		std::lock_guard<std::mutex> guard(chunk::cmap::mutex);
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -65,13 +66,7 @@ namespace minecraft
 				if (c.Loaded() && c.BufferLoaded() && c.Vao() != nullptr && c.CreatedVAO())
 				{
 					m_renderer.UniformData(m_udata, m_chunkHandler->Locations());
-
-					//std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-
 					m_renderer.AInstancedRender(GL_POINTS, c.Vao(), 0, 1, c.NumBlocks());
-
-					//std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
-					//std::cout << "render time" << d.count() / 1000000.0 << std::endl << std::endl;
 				}
 			}
 		}

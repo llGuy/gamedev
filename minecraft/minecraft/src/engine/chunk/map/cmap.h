@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../chunk.h"
+#include "mutex/render_update_mutex.h"
 //#include "../loader/chunk_loader.h"
 
 namespace minecraft

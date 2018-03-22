@@ -5,8 +5,8 @@ namespace minecraft
 	namespace biome
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
-			: m_noiseGenerator(seed, 37 * 9), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed),
-			m_biomeNoiseValues{0.0f, 50.0f, 75.0f, 90.0f}
+			: m_noiseGenerator(seed, 37 * 17), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed),
+			m_biomeNoiseValues{0.0f, 70.0f, 80.0f, 95.0f}
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)

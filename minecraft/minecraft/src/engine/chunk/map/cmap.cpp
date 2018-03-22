@@ -1,5 +1,7 @@
 #include "cmap.h"
 
+#include "../../debugging/memory/manager.h"
+
 namespace minecraft
 {
 	namespace chunk
@@ -7,7 +9,8 @@ namespace minecraft
 		namespace cmap
 		{
 			CMap::CMap(int32_t seed)
-				: m_nll(4), m_size(0), m_seed(seed), m_llists(new std::vector<std::list<Chunk>>), m_updateState(update_t::UPDATE_INACTIVE)
+				: m_nll(4), m_size(0), m_seed(seed), m_llists(dbg::MemoryManager::Shared().Allocate<std::vector<std::list<Chunk>>>()),
+				m_updateState(update_t::UPDATE_INACTIVE)
 			{
 				for (uint32_t i = 0; i < m_nll; ++i)
 					m_llists->push_back(std::list<Chunk>());
@@ -82,7 +85,7 @@ namespace minecraft
 			{
 				if (m_size == m_nll)
 				{
-					std::vector<std::list<Chunk>>* newl = new std::vector<std::list<Chunk>>;
+					std::vector<std::list<Chunk>>* newl = dbg::MemoryManager::Shared().Allocate<std::vector<std::list<Chunk>>>();
 					m_updateState = update_t::UPDATE_ACTIVE;
 					m_nll *= 2;
 					newl->resize(m_nll);
@@ -96,10 +99,14 @@ namespace minecraft
 						}
 					}
 					std::vector<std::list<Chunk>>* current = m_llists;
-					m_llists = newl;
+					{
+						std::lock_guard<std::mutex> guard(mutex);
+						m_llists = newl;
+					}
 					m_updateState = update_t::UPDATE_INACTIVE;
 					m_deletedCurrentLLists = true;
-					delete current;
+
+					dbg::MemoryManager::Shared().Deallocate<std::vector<std::list<Chunk>>>(current);
 				}
 				int32_t h = CHash()(v) % m_llists->size();
 				m_llists->operator[](h).push_back(Chunk(v, seed));

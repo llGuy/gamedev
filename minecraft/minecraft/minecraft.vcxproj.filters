@@ -126,6 +126,12 @@
     <ClCompile Include="src\engine\liquidmesh\liquidmesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\debugging\memory\manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\chunk\map\mutex\render_update_mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\block\block.h">
@@ -324,6 +330,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\liquidmesh\buffer\liquidmeshbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\debugging\memory\manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\map\mutex\render_update_mutex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
