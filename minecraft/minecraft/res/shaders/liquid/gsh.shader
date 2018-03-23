@@ -8,11 +8,15 @@ in vec3 pass_world_position[];
 out vec3 normal;
 out vec2 texture_coords;
 out vec3 vertex_position;
+out float visibility;
 
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform float texture_data;
+
+const float DENSITY = 0.007f;
+const float GRADIENT = 1.5f;
 
 vec3 CalculateNormal(vec3 v[3])
 {
@@ -57,13 +61,13 @@ FaceTextureMap GenerateFaceTextureMap(vec3 flags)
 	//return pass_texture_data[0][f];
 //}
 
-/*float CalculateFog(vec4 relativeToCameraPosition)
+float CalculateFog(vec4 relativeToCameraPosition)
 {
 	float distance = length(relativeToCameraPosition.xyz);
 	float vis = exp(-pow((distance * DENSITY), GRADIENT));
 	vis = clamp(vis, 0.0, 1.0);
 	return vis;
-}*/
+}
 
 void CreateVertex(vec3 offset, vec3 n, vec2 tcoords, int f)
 {
@@ -77,7 +81,7 @@ void CreateVertex(vec3 offset, vec3 n, vec2 tcoords, int f)
 	texture_coords = tcoords;
 	// fog calculations
 	vec4 relativeToCameraPosition = view_position;
-	//visibility = CalculateFog(relativeToCameraPosition);
+	visibility = CalculateFog(relativeToCameraPosition);
 	// normal
 	normal = n;
 	vertex_position = world_position;

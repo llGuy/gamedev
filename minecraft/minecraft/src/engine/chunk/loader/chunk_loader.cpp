@@ -1,5 +1,6 @@
 #include "chunk_loader.h"
 #include "../../../log.h"
+#include "../map/mutex/render_update_mutex.h"
 
 #include <chrono> 
 
@@ -29,7 +30,10 @@ namespace minecraft
 								for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
 								{
 								}
-								chunk::Chunk& ch = m_currentMap->operator[](wcc);
+								bool newC = false;
+								//chunk::Chunk& ch = m_currentMap->operator[](wcc);
+								chunk::Chunk& ch = m_currentMap->At(wcc, &newC);
+								if (newC) std::lock_guard<std::mutex> guard(cmap::rumutex);
 								if (!(ch.Loaded()) && !ch.BufferLoaded())
 								{
 									std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
@@ -42,6 +46,36 @@ namespace minecraft
 						}
 					}
 					m_playerCurrentChunkCoordinates = wc;
+					//m_beginDestroyChunkThread = true;
+					chunk::Chunk::WCoordChunk wcc = PlayerWPosInChunkCoordinates();
+					glm::vec2 vec2CastWCPlayerPos = glm::vec2(static_cast<float>(wcc.wpos.x), static_cast<float>(wcc.wpos.z));
+
+					std::lock_guard<std::mutex> guard(cmap::dumutex);
+					for (auto list = m_currentMap->Begin(); list != m_currentMap->End(); ++list)
+					{
+						for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+						{
+						}
+
+						for (auto c = list->begin(); c != list->end();)
+						{
+							for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+							{
+							}
+
+							chunk::Chunk::WCoordChunk chunkWC = c->ChunkCoordinate();
+							glm::vec2 vec2CastCWCChuPos = glm::vec2(static_cast<float>(chunkWC.wpos.x), static_cast<float>(chunkWC.wpos.z));
+
+							if (glm::abs(glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos)) > 13.0f)
+							{
+								std::lock_guard<std::mutex> guard(cmap::rumutex);
+								//std::cout << glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos) << std::endl;
+								c->DestroyGPUBuffer();
+								list->erase(c++);
+							}
+							else ++c;
+						}
+					}
 				}
 			}
 			void CLoader::UpdateChunksDistant(void)
@@ -54,11 +88,11 @@ namespace minecraft
 					int32_t x = static_cast<int32_t>(playerViewDirection.x * 8.0f) + wc.wpos.x;
 					int32_t z = static_cast<int32_t>(playerViewDirection.z * 8.0f) + wc.wpos.z;
 
-					int32_t diffx = (x == 0 ? -3 : (abs(x) / x) * 3);
-					int32_t diffz = (z == 0 ? -3 : (abs(z) / z) * 3);
+					int32_t diffx = (x == 0 ? -5 : (abs(x) / x) * 5);
+					int32_t diffz = (z == 0 ? -5 : (abs(z) / z) * 5);
 
-					x = (x == 0 ? -3 : x + (abs(x) / x) * 3);
-					z = (z == 0 ? -3 : z + (abs(z) / z) * 3);
+					x = (x == 0 ? -5 : x + (abs(x) / x) * 5);
+					z = (z == 0 ? -5 : z + (abs(z) / z) * 5);
 
 					for (int32_t zi = wc.wpos.z - diffz; zi != z + diffz; (zi > z + diffz ? --zi : ++zi))
 					{
@@ -77,28 +111,17 @@ namespace minecraft
 								ch.LoadTop(*m_currentTerrain, *m_currentStructuresHandler);
 								ch.LoadStructures(*m_currentTerrain, *m_currentStructuresHandler);
 								//ch = Chunk(wcc, m_seed, *m_currentTerrain, *m_currentStructuresHandler);
-
+								
 								std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 								//std::cout << d.count() / 1000000.0 << std::endl << std::endl;
 							}
 						}
 					}
-					m_beginDestroyChunkThread = true;
-				}
-			}
-			void CLoader::DestroyDistantChunks(void)
-			{
-				for (;;)
-				{
-					if (m_ended) break;
+					//m_beginDestroyChunkThread = true;
+					chunk::Chunk::WCoordChunk wcc = PlayerWPosInChunkCoordinates();
+					glm::vec2 vec2CastWCPlayerPos = glm::vec2(static_cast<float>(wcc.wpos.x), static_cast<float>(wcc.wpos.z));
 
-					while (!m_beginDestroyChunkThread) 
-					{
-					}
-
-					chunk::Chunk::WCoordChunk wc = PlayerWPosInChunkCoordinates();
-					glm::vec2 vec2CastWCPlayerPos = glm::vec2(static_cast<float>(wc.wpos.x), static_cast<float>(wc.wpos.z));
-
+					std::lock_guard<std::mutex> guard(cmap::dumutex);
 					for (auto list = m_currentMap->Begin(); list != m_currentMap->End(); ++list)
 					{
 						for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
@@ -112,15 +135,52 @@ namespace minecraft
 							}
 
 							chunk::Chunk::WCoordChunk chunkWC = c->ChunkCoordinate();
-							//std::cout << chunkWC.wpos.x << " " << chunkWC.wpos.z << std::endl;
 							glm::vec2 vec2CastCWCChuPos = glm::vec2(static_cast<float>(chunkWC.wpos.x), static_cast<float>(chunkWC.wpos.z));
 
-							if (glm::abs(glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos)) > 12.0f)
+							if (glm::abs(glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos)) > 18.0f)
 							{
-								std::cout << glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos) << std::endl;
-								std::cout << "deleted" << std::endl;
+								std::lock_guard<std::mutex> guard(cmap::rumutex);
+								//std::cout << glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos) << std::endl;
 								c->DestroyGPUBuffer();
-								m_currentMap->Erase(chunkWC);
+								list->erase(c++);
+							}
+							else ++c;
+						}
+					}
+				}
+			}
+			void CLoader::DestroyDistantChunks(void)
+			{
+				while (!m_beginDestroyChunkThread);
+				for (;;)
+				{
+					if (m_ended) break;
+
+					chunk::Chunk::WCoordChunk wcc = PlayerWPosInChunkCoordinates();
+					glm::vec2 vec2CastWCPlayerPos = glm::vec2(static_cast<float>(wcc.wpos.x), static_cast<float>(wcc.wpos.z));
+
+					std::lock_guard<std::mutex> guard(cmap::dumutex);
+					for (auto list = m_currentMap->Begin(); list != m_currentMap->End(); ++list)
+					{
+						for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+						{
+						}
+
+						for (auto c = list->begin(); c != list->end();)
+						{
+							for (; m_currentMap->UpdateState() == cmap::CMap::update_t::UPDATE_ACTIVE; )
+							{
+							}
+
+							chunk::Chunk::WCoordChunk chunkWC = c->ChunkCoordinate();
+							glm::vec2 vec2CastCWCChuPos = glm::vec2(static_cast<float>(chunkWC.wpos.x), static_cast<float>(chunkWC.wpos.z));
+
+							if (glm::abs(glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos)) > 13.0f)
+							{
+								std::lock_guard<std::mutex> guard(cmap::rumutex);
+								std::cout << glm::distance(vec2CastWCPlayerPos, vec2CastCWCChuPos) << std::endl;
+								c->DestroyGPUBuffer();
+								list->erase(c++);
 							}
 							else ++c;
 						}
@@ -139,11 +199,14 @@ namespace minecraft
 				// loads all the chunks under the player
 
 				//m_clthread[0] = std::thread(&CLoader::UpdateChunksUnder, this,
-				//	[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& x) { ++x; },/* incremental lambda */
-				//	[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& z) { ++z; },/* incremental lambda */ -4, -4);
+					//[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& x) { ++x; },/* incremental lambda */
+					//[=](int32_t a, int32_t b) {return a < b; } /* conditional lambda */, [&](int32_t& z) { ++z; },/* incremental lambda */ -10, -10);
 
 				// loads the chunks in the direction of the player
 				m_clthread[0] = std::thread(&CLoader::UpdateChunksDistant, this);
+				//
+				
+			//	m_clthread[1] = std::thread(&CLoader::DestroyDistantChunks, this);
 				//m_clthread[1] = std::thread(&CLoader::DestroyDistantChunks, this);
 
 				m_clthread[0].detach();

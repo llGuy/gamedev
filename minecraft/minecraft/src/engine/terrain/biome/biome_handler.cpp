@@ -6,7 +6,7 @@ namespace minecraft
 	{
 		BiomeHandler::BiomeHandler(int32_t seed)
 			: m_noiseGenerator(seed, 37 * 17), m_plainsData(), m_desertData(), COEFF(2048.0f * 2.0f), m_seed(seed),
-			m_biomeNoiseValues{0.0f, 70.0f, 80.0f, 95.0f}
+			m_biomeNoiseValues{0.0f, 8.0f, 70.0f, 80.0f, 95.0f}
 		{
 		}
 		const pnoise::PNoise::CellCorners BiomeHandler::BiomeMapCellCorners(const WVec2& c)
@@ -34,10 +34,11 @@ namespace minecraft
 		//	if (noise >= 90.0f) return biome_t::EXTREME_MOUNTAINS;
 
 			//if (noise >= 70.0f) return biome_t::MOUNTAINS;
-			if (noise >= m_biomeNoiseValues[3])  return biome_t::MOUNTAINS;
-			else if (noise >= m_biomeNoiseValues[2])	return biome_t::DESERT;
-			else if (noise >= m_biomeNoiseValues[1]) return biome_t::PLAINS;
-			else return biome_t::OCEAN;
+			if (noise >= m_biomeNoiseValues[4])  return biome_t::MOUNTAINS;
+			else if (noise >= m_biomeNoiseValues[3])	return biome_t::DESERT;
+			else if (noise >= m_biomeNoiseValues[2]) return biome_t::PLAINS;
+			else if (noise >= m_biomeNoiseValues[1]) return biome_t::OCEAN;
+			else return biome_t::ISLANDS;
 			//else if(noise >= -10.0f)	return biome_t::DESERT; 
 			//else return biome_t::OCEAN;
 		}
@@ -83,6 +84,7 @@ namespace minecraft
 		{
 			switch (b)
 			{
+			case biome_t::ISLANDS: return IslandBlockType(maxH, y);
 			case biome_t::OCEAN: return OceanBlockType(maxH, y);
 			case biome_t::PLAINS: return PlainsBlockType(maxH, y);
 			case biome_t::DESERT: return DesertBlockType(maxH, y); 
@@ -165,6 +167,13 @@ namespace minecraft
 			if (y == maxH) return Block::block_t::GRASS;
 			else if (y >= maxH * m_emountainsData.DIRT_LEVEL) return Block::block_t::DIRT;
 			else if (y >= maxH * m_emountainsData.STONE_LEVEL) return Block::block_t::STONE;
+			else return Block::block_t::BEDROCK;
+		}
+		const Block::block_t BiomeHandler::IslandBlockType(int32_t maxH, int32_t y)
+		{
+			if (y == maxH) return Block::block_t::GRASS;
+			else if (y >= maxH * m_islandsData.DIRT_LEVEL) return Block::block_t::DIRT;
+			else if (y >= maxH * m_islandsData.STONE_LEVEL) return Block::block_t::STONE;
 			else return Block::block_t::BEDROCK;
 		}
 		const uint32_t BiomeHandler::BiomeNoiseValuesArrSize(void)

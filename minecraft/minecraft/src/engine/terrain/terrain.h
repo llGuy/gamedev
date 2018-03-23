@@ -46,7 +46,7 @@ namespace minecraft
 				int32_t biome;
 			};
 
-			static constexpr float RANGE = 2.0f;
+			static constexpr float RANGE = 1.5f;
 			__forceinline const Range InRange(const float noise)
 			{
 				Range ret;

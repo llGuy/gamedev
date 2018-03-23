@@ -132,6 +132,9 @@
     <ClCompile Include="src\engine\chunk\map\mutex\render_update_mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\chunk\handler\block_pointer\block_outline\gpubuffer\block_outline_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\block\block.h">
@@ -336,6 +339,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\chunk\map\mutex\render_update_mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\biome\islands\islands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_pointer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_outline\block_outline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_outline\gpubuffer\block_outline_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

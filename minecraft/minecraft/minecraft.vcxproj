@@ -127,6 +127,7 @@
     <ClCompile Include="src\engine\chunk\event\cevent.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.cpp" />
     <ClCompile Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.cpp" />
+    <ClCompile Include="src\engine\chunk\handler\block_pointer\block_outline\gpubuffer\block_outline_buffer.cpp" />
     <ClCompile Include="src\engine\chunk\handler\chandler.cpp" />
     <ClCompile Include="src\engine\chunk\loader\chunk_loader.cpp" />
     <ClCompile Include="src\engine\chunk\map\cmap.cpp" />
@@ -173,6 +174,9 @@
     <ClInclude Include="src\engine\chunk\gpu\cgpubuffer\cgpubuffer.h" />
     <ClInclude Include="src\engine\chunk\gpu\gpublockdata.h" />
     <ClInclude Include="src\engine\chunk\gpu\gpuhandler\chunk_gpu_side_handler.h" />
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_outline\block_outline.h" />
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_outline\gpubuffer\block_outline_buffer.h" />
+    <ClInclude Include="src\engine\chunk\handler\block_pointer\block_pointer.h" />
     <ClInclude Include="src\engine\chunk\handler\chandler.h" />
     <ClInclude Include="src\engine\chunk\loader\chunk_loader.h" />
     <ClInclude Include="src\engine\chunk\map\cmap.h" />
@@ -215,6 +219,7 @@
     <ClInclude Include="src\engine\terrain\biome\biome_handler.h" />
     <ClInclude Include="src\engine\terrain\biome\desert\desert.h" />
     <ClInclude Include="src\engine\terrain\biome\extreme_mountains\extrmountains.h" />
+    <ClInclude Include="src\engine\terrain\biome\islands\islands.h" />
     <ClInclude Include="src\engine\terrain\biome\mega_taiga\mega_taiga.h" />
     <ClInclude Include="src\engine\terrain\biome\mountain\mountains.h" />
     <ClInclude Include="src\engine\terrain\biome\ocean\ocean.h" />

@@ -31,6 +31,16 @@ namespace minecraft
 						return i;
 				return App(v, m_seed);
 			}
+			Chunk& CMap::At(Chunk::WCoordChunk& v, bool* newC)
+			{
+				int32_t h = CHash()(v) % m_llists->size();
+				auto& l = m_llists->operator[](h);
+				for (auto& i : l)
+					if (i.ChunkCoordinate() == v)
+						return i;
+				*newC = true;
+				return App(v, m_seed);
+			}
 			//Chunk& CMap::At(Chunk::WCoordChunk& v, int32_t seed)
 			//{
 			//	int32_t h = CHash()(v) % m_llists->size();
@@ -100,7 +110,8 @@ namespace minecraft
 					}
 					std::vector<std::list<Chunk>>* current = m_llists;
 					{
-						std::lock_guard<std::mutex> guard(mutex);
+						std::lock_guard<std::mutex> dguard(dumutex);
+						std::lock_guard<std::mutex> rguard(rumutex);
 						m_llists = newl;
 					}
 					m_updateState = update_t::UPDATE_INACTIVE;
@@ -118,11 +129,11 @@ namespace minecraft
 			{
 				int32_t h = CHash()(v) % m_llists->size();
 				std::list<Chunk> l = m_llists->operator[](h);
-				/*for (auto& i : l)
+				for (auto& i : l)
 					if (i.ChunkCoordinate() == v)
 					{
 						m_llists->operator[](h).erase(l.begin());
-					}*/
+					}
 				for (auto c = l.begin(); c != l.end();)
 				{
 					if (c->ChunkCoordinate() == v)

@@ -10,6 +10,7 @@
 #include "ocean/ocean.h"
 #include "mega_taiga/mega_taiga.h"
 #include "extreme_mountains/extrmountains.h"
+#include "islands/islands.h"
 
 namespace minecraft
 {
@@ -35,6 +36,7 @@ namespace minecraft
 			const uint32_t BiomeNoiseValuesArrSize(void);
 		private:
 			const Block::block_t PlainsBlockType(int32_t maxH, int32_t y);
+			const Block::block_t IslandBlockType(int32_t maxH, int32_t y);
 			const Block::block_t DesertBlockType(int32_t maxH, int32_t y);
 			const Block::block_t MountainsBlockType(int32_t maxH, int32_t y);
 			const Block::block_t EMountainsBlockType(int32_t maxH, int32_t y);
@@ -49,6 +51,7 @@ namespace minecraft
 			OceanData m_oceanData;
 			MTaigaData m_megaTaigaData;
 			ExtrMountainsData m_emountainsData;
+			IslandsData m_islandsData;
 			int32_t m_seed;
 
 			float m_biomeNoiseValues[static_cast<uint32_t>(biome::biome_t::INV)];

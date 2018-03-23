@@ -51,8 +51,6 @@ vec4 FragmentColor(void)
 
 void main()
 {
-
-
 	vec3 light_vector = normalize(light_position - vertex_position);
 	float diffuse_brightness = Diffuse(light_vector);
 	float specular_brightness = Specular(light_vector);

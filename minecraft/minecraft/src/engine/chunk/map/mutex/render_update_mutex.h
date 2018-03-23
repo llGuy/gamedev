@@ -9,7 +9,10 @@ namespace minecraft
 	{
 		namespace cmap
 		{
-			extern std::mutex mutex;
+			// render / update mutex
+			extern std::mutex rumutex;
+			// delete / update mutex
+			extern std::mutex dumutex;
 		}
 	}
 }

@@ -40,6 +40,7 @@ namespace minecraft
 				CMap(int32_t seed);
 				void Load(Chunk::WCoordChunk& v);
 				Chunk& operator[](Chunk::WCoordChunk& v);
+				Chunk& At(Chunk::WCoordChunk& v, bool* newC);
 				const bool Exists(Chunk::WCoordChunk& v);
 				void Erase(Chunk::WCoordChunk& v);
 				void AfterGLEWInit(void);

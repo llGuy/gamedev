@@ -7,15 +7,17 @@ namespace minecraft
 	{
 		enum class biome_t
 		{
-			OCEAN = 0,
+			ISLANDS,
 
-			PLAINS = 1,
+			OCEAN,
 
-			DESERT = 2,
+			PLAINS,
 
-			MOUNTAINS = 3,
+			DESERT,
 
-			INV = 4
+			MOUNTAINS,
+
+			INV
 		};
 
 		// test

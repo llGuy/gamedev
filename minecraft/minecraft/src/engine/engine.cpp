@@ -18,6 +18,8 @@ namespace minecraft
 	{
 		if (m_player != nullptr)
 			delete m_player;
+
+		std::cout << m_fps << std::endl;
 	}
 	void Engine::HEAPDelete(void)
 	{
@@ -48,9 +50,11 @@ namespace minecraft
 	}
 	void Engine::RenderChunks(void)
 	{
+		std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+		
 		m_blockTextureAtlas.Bind(0);
 		m_chunkHandler->UseSHProgram();
-		std::lock_guard<std::mutex> guard(chunk::cmap::mutex);
+		std::lock_guard<std::mutex> guard(chunk::cmap::rumutex);
 		for (auto it = m_chunkHandler->Begin(); it != m_chunkHandler->End(); ++it)
 		{
 			for (auto& jt : *it)
@@ -91,6 +95,9 @@ namespace minecraft
 			}
 		}
 		m_udata.liquidMeshBlockType = -255.0f;
+
+		std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
+		m_fps = 1.0f / static_cast<float>((d.count() / 1000000000.0));
 	}
 	void Engine::RenderDebug(void)
 	{

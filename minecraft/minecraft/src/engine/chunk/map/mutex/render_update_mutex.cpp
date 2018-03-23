@@ -6,7 +6,8 @@ namespace minecraft
 	{
 		namespace cmap
 		{
-			std::mutex mutex;
+			std::mutex rumutex;
+			std::mutex dumutex;
 		}
 	}
 }
