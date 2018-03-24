@@ -43,6 +43,24 @@ namespace minecraft
 				}
 			}
 		}
+		const glm::vec3 ChunkEventHandler::PointingAt(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map)
+		{
+			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
+			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
+			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.05f))
+			{
+				glm::vec3 rayPos = glm::round(r.EndPosition());
+				Chunk::WCoordChunk wcc = ChunkCoordOfPoint(rayPos);
+				CVec2 coordInChunk = PointCoordInChunk(wcc, rayPos);
+				Chunk& c = map[wcc];
+				bool exists = c.BlockExists(wcc.wpos, coordInChunk, rayPos);
+				if (exists)
+				{
+					return c.BlockWorldCoord(coordInChunk, static_cast<int32_t>(rayPos.y));
+				}
+			}
+			return glm::vec3(0.0f, -512.0f, 0.0f);
+		}
 		void ChunkEventHandler::BlockFaceRayIntersection(FaceIntersectionData* fid, uint32_t& ptr,
 			ent::Ray& r, glm::vec3 face, uint32_t xyorz, float val, glm::vec3 round)
 		{

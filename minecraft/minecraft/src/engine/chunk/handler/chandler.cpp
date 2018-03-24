@@ -40,6 +40,15 @@ namespace minecraft
 			if (!m_chunkMap.Exists(wcc)) return 0.0f;
 			return m_chunkMap[wcc].HighestBlock(wcc.wpos, blockChunkCoordinate, wpos, m_chunkMap[wcc].NegativeCornerWPos()) + 0.5f;
 		}
+		void CHandler::UpdateBlockPointer(const glm::vec3& pdirection, const glm::vec3& pposition)
+		{
+			glm::vec3 p = m_eventHandler.PointingAt(pposition, pdirection, m_chunkMap);
+			if (p.y < -511.0f)
+			{
+				m_blockPointer.NoBlocks();
+			}
+			else m_blockPointer.RecieveBlockPosition(p);
+		}
 		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d, const Block::block_t& b)
 		{
 			m_eventHandler.Event(e, m_chunkMap, m_terrain, p, d, b);
@@ -92,6 +101,7 @@ namespace minecraft
 		void CHandler::AfterGLEWInit(void)
 		{
 			m_chunkMap.AfterGLEWInit();
+			m_blockPointer.CreateBuffer();
 			SHInit();
 		}
 		void CHandler::LaunchChunkLoader(ent::Entity* player, GLFWwindow* window)
@@ -118,6 +128,11 @@ namespace minecraft
 				"res\\shaders\\block\\gsh.shader");
 			m_chunkshprogram.Compile();
 			m_chunkshprogram.Link(battribs);
+
+			m_blockPointerSHP.Init("res\\shaders\\reg\\vsh.shader", "res\\shaders\\reg\\fsh.shader", "INV");
+			std::vector<const char*> pattribs({ "vertex_position", "vertex_color" });
+			m_blockPointerSHP.Compile();
+			m_blockPointerSHP.Link(pattribs);
 		}
 		void CHandler::ChunkMapInit(void)
 		{
@@ -181,6 +196,13 @@ namespace minecraft
 			m_udatalocLMesh.skyColorLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "sky_color");
 			m_udatalocLMesh.modelMatrixLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "model_matrix");
 			m_udatalocLMesh.liquidBlockTypeLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "texture_data");
+
+			m_udatalocBlockPointer.projectionMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "projection_matrix");
+			m_udatalocBlockPointer.viewMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "view_matrix");
+			m_udatalocBlockPointer.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
+			m_udatalocBlockPointer.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
+			m_udatalocBlockPointer.skyColorLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "sky_color");
+			m_udatalocBlockPointer.modelMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "model_matrix");
 		}
 		cmap::CMap::update_t CHandler::MapUpdateState(void)
 		{
@@ -201,6 +223,10 @@ namespace minecraft
 		void CHandler::UseSHProgramLMesh(void)
 		{
 			m_liquidMeshProgram.UseProgram();
+		}
+		void CHandler::UseBlockPointerProgram(void)
+		{
+			m_blockPointerSHP.UseProgram();
 		}
 		data::CUDataLocs& CHandler::LMeshLocations(void)
 		{

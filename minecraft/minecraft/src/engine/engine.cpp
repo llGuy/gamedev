@@ -96,6 +96,9 @@ namespace minecraft
 		}
 		m_udata.liquidMeshBlockType = -255.0f;
 
+		m_chunkHandler->UseBlockPointerProgram();
+		
+
 		std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 		m_fps = 1.0f / static_cast<float>((d.count() / 1000000000.0));
 	}
@@ -133,7 +136,7 @@ namespace minecraft
 		m_variableConfigs.renderDistance = 50.0f;
 		m_variableConfigs.mouseSensitivity = 0.02f;
 
-		m_constantConfigs.gravity = glm::vec3(0.0f, -12.5f, 0.0f);
+		m_constantConfigs.gravity = glm::vec3(0.0f, -13.9f, 0.0f);
 	}
 	void Engine::UDataInit(uint32_t wwidth, uint32_t wheight)
 	{
@@ -212,6 +215,7 @@ namespace minecraft
 	void Engine::RecieveMouseMovement(glm::vec2 newMousePosition)
 	{
 		m_camera.Look(newMousePosition, m_variableConfigs.mouseSensitivity);
+		m_chunkHandler->UpdateBlockPointer(*m_player->EntityViewDirection(), *m_player->EntityWorldPosition());
 	}
 	void Engine::UpdateUniformData(void)
 	{

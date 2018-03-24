@@ -11,6 +11,7 @@
 #include "../../../shader/shprogram.h"
 #include "../../terrain/terrain.h"
 #include "../../block/block.h"
+#include "block_pointer/block_pointer.h"
 
 namespace minecraft
 {
@@ -26,6 +27,7 @@ namespace minecraft
 			void Init(void);
 			void UseSHProgram(void);
 			void UseSHProgramLMesh(void);
+			void UseBlockPointerProgram(void);
 			void AfterGLEWInit(void);
 			void GetUniform(void);
 		public:
@@ -45,6 +47,7 @@ namespace minecraft
 			void ResetMapDeletedLListsBool(void);
 			WVec2 CalculateCoordsInChunks(const glm::vec2& worldxz);
 			bool Obstruction(glm::vec3 flags, glm::vec3 wpos);
+			void UpdateBlockPointer(const glm::vec3& pdirection, const glm::vec3& pposition);
 		private:
 			void ChunkMapInit(void);
 			void ChunkLoaderInit(ent::Entity* player, GLFWwindow* window);
@@ -54,13 +57,16 @@ namespace minecraft
 		private:
 			::sh::SHProgram m_chunkshprogram;
 			::sh::SHProgram m_liquidMeshProgram;
+			::sh::SHProgram m_blockPointerSHP;
 			data::CUDataLocs m_udataloc;
 			data::CUDataLocs m_udatalocLMesh;
+			data::CUDataLocs m_udatalocBlockPointer;
 			loader::CLoader* m_chunkloader;
 			terrain::Terrain m_terrain;
 			structures::StructuresHandler m_structHandler;
-			ChunkEventHandler m_eventHandler;
 			cmap::CMap m_chunkMap;
+			ChunkEventHandler m_eventHandler;
+			BlockPointer m_blockPointer;
 			int32_t m_seed;
 		};
 	}
