@@ -7,18 +7,18 @@ namespace minecraft
 		ChunkEventHandler::ChunkEventHandler(void)
 		{
 		}
-		void ChunkEventHandler::Event(const event_t ev, cmap::CMap& map, terrain::Terrain& t, 
+		void ChunkEventHandler::Event(const event_t ev, cmap::CMap& map, terrain::Terrain& t, BlockPointer& bp,
 			const glm::vec3& p, const glm::vec3& d, const Block::block_t& b)
 		{
 			switch (ev)
 			{
-			case event_t::DIG: Dig(p, d, map, t); return;
-			case event_t::PLACE: Place(p, d, map, b); return;
+			case event_t::DIG: Dig(p, d, map, t, bp); return;
+			case event_t::PLACE: Place(p, d, map, b, bp); return;
 			}
 		}
-		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t)
+		void ChunkEventHandler::Dig(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, terrain::Terrain& t, BlockPointer& bp)
 		{
-			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
+			/*glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
 			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
 			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.05f))
 			{
@@ -30,6 +30,27 @@ namespace minecraft
 				if (exists)
 				{
 					auto data = c.DestroyBlock(coordInChunk, rayPos.y, t);
+					if (data.quant > 0)
+					{
+						for (uint32_t i = 0; i < data.quant; ++i)
+						{
+							Chunk::WCoordChunk cwcc = { { data.offsets[i].wcc.wpos.x, data.offsets[i].wcc.wpos.z } };
+							Chunk& n = map[cwcc];
+							n.LoadBlockFromGen(data.offsets[i].cv, data.offsets[i].y, t);
+						}
+					}
+					return;
+				}
+			}*/
+			if (bp.PointingAtBlock())
+			{
+				Chunk::WCoordChunk wcc = { bp.ChunkCoord() };
+				CVec2 coordInChunk = bp.BlockCoord();
+				Chunk& c = map[wcc];
+				bool exists = c.BlockExists(wcc.wpos, coordInChunk, bp.BlockPosition());
+				if (exists)
+				{
+					auto data = c.DestroyBlock(coordInChunk, bp.BlockPosition().y, t);
 					if (data.quant > 0)
 					{
 						for (uint32_t i = 0; i < data.quant; ++i)
@@ -83,11 +104,11 @@ namespace minecraft
 				++ptr;
 			}
 		}
-		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, const Block::block_t& b)
+		void ChunkEventHandler::Place(const glm::vec3& p, const glm::vec3& d, cmap::CMap& map, const Block::block_t& b, BlockPointer& bp)
 		{
 			glm::vec3 worldP = p + glm::vec3(0.0f, 0.25f, 0.0f);
 			glm::vec3 worldD = d + glm::vec3(0.0f, 0.25f, 0.0f);
-			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.05f))
+			for (ent::Ray r(worldD, worldP); r.Distance() < r.MaxDistance(); r.Extend(0.025f))
 			{
 				glm::vec3 rayPos = r.EndPosition();
 				// block position is the position of the ray rounded

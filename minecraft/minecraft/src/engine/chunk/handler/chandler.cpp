@@ -43,15 +43,17 @@ namespace minecraft
 		void CHandler::UpdateBlockPointer(const glm::vec3& pdirection, const glm::vec3& pposition)
 		{
 			glm::vec3 p = m_eventHandler.PointingAt(pposition, pdirection, m_chunkMap);
+			WVec2 chunkCoord = CalculateChunkCoordinateOfWPos(p).wpos;
+			CVec2 blockCoord = CalculateBlockCoordInChunk({chunkCoord}, p);
 			if (p.y < -511.0f)
 			{
 				m_blockPointer.NoBlocks();
 			}
-			else m_blockPointer.RecieveBlockPosition(p);
+			else m_blockPointer.RecieveBlockPosition(p, blockCoord, chunkCoord);
 		}
 		void CHandler::RecieveChunkEvent(ChunkEventHandler::event_t e, const glm::vec3& p, const glm::vec3& d, const Block::block_t& b)
 		{
-			m_eventHandler.Event(e, m_chunkMap, m_terrain, p, d, b);
+			m_eventHandler.Event(e, m_chunkMap, m_terrain, m_blockPointer, p, d, b);
 		}
 		bool CHandler::Obstruction(glm::vec3 flags, glm::vec3 wpos)
 		{

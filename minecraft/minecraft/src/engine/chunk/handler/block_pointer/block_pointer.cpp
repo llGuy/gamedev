@@ -9,8 +9,10 @@ namespace minecraft
 		{
 			m_pointingAtBlock = false;
 		}
-		void BlockPointer::RecieveBlockPosition(const glm::vec3& pos)
+		void BlockPointer::RecieveBlockPosition(const glm::vec3& pos, CVec2 bc, WVec2 chunkCoord)
 		{
+			m_blockCoordInChunk = bc;
+			m_chunkCoord = chunkCoord;
 			m_translation = pos;
 			m_translateMatrix = glm::translate(m_translation);
 			m_pointingAtBlock = true;
@@ -42,6 +44,14 @@ namespace minecraft
 		const glm::mat4& BlockPointer::TranslateMatrix(void)
 		{
 			return m_translateMatrix;
+		}
+		const CVec2& BlockPointer::BlockCoord(void)
+		{
+			return m_blockCoordInChunk;
+		}
+		const WVec2& BlockPointer::ChunkCoord(void)
+		{
+			return m_chunkCoord;
 		}
 	}
 }
