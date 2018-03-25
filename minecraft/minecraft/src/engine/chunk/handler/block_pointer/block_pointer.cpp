@@ -1,4 +1,5 @@
 #include "block_pointer.h"
+#include <glm/gtx/transform.hpp>
 
 namespace minecraft
 {
@@ -10,8 +11,9 @@ namespace minecraft
 		}
 		void BlockPointer::RecieveBlockPosition(const glm::vec3& pos)
 		{
-			m_blockPosition = pos;
-			m_gpubuffer.LoadBuffer(m_blockPosition);
+			m_translation = pos;
+			m_translateMatrix = glm::translate(m_translation);
+			m_pointingAtBlock = true;
 		}
 		void BlockPointer::CreateBuffer(void)
 		{
@@ -19,11 +21,27 @@ namespace minecraft
 		}
 		const glm::vec3& BlockPointer::BlockPosition(void)
 		{
-			return m_blockPosition;
+			return m_translation;
 		}
 		const bool BlockPointer::PointingAtBlock(void)
 		{
 			return m_pointingAtBlock;
+		}
+		void* BlockPointer::Offset(void)
+		{
+			return m_gpubuffer.Offset();
+		}
+		const uint32_t& BlockPointer::BufferID(void)
+		{
+			return m_gpubuffer.BufferID();
+		}
+		VAO* BlockPointer::Vao(void)
+		{
+			return m_gpubuffer.Vao();
+		}
+		const glm::mat4& BlockPointer::TranslateMatrix(void)
+		{
+			return m_translateMatrix;
 		}
 	}
 }

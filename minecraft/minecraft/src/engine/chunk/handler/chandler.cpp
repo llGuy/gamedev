@@ -197,12 +197,12 @@ namespace minecraft
 			m_udatalocLMesh.modelMatrixLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "model_matrix");
 			m_udatalocLMesh.liquidBlockTypeLocation = glGetUniformLocation(m_liquidMeshProgram.ProgramID(), "texture_data");
 
-			m_udatalocBlockPointer.projectionMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "projection_matrix");
-			m_udatalocBlockPointer.viewMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "view_matrix");
-			m_udatalocBlockPointer.lightPositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "light_position");
-			m_udatalocBlockPointer.eyePositionLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "eye_position");
-			m_udatalocBlockPointer.skyColorLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "sky_color");
-			m_udatalocBlockPointer.modelMatrixLocation = glGetUniformLocation(m_chunkshprogram.ProgramID(), "model_matrix");
+			m_udatalocBlockPointer.projectionMatrixLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "projection_matrix");
+			m_udatalocBlockPointer.viewMatrixLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "view_matrix");
+			m_udatalocBlockPointer.lightPositionLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "light_position");
+			m_udatalocBlockPointer.eyePositionLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "eye_position");
+			m_udatalocBlockPointer.skyColorLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "sky_color");
+			m_udatalocBlockPointer.modelMatrixLocation = glGetUniformLocation(m_blockPointerSHP.ProgramID(), "model_matrix");
 		}
 		cmap::CMap::update_t CHandler::MapUpdateState(void)
 		{
@@ -232,5 +232,18 @@ namespace minecraft
 		{
 			return m_udatalocLMesh;
 		}
+		data::CUDataLocs& CHandler::BlockPointerLocations(void)
+		{
+			return m_udatalocBlockPointer;
+		}
+		void* CHandler::BlockPointerOffset(void)
+		{
+			return m_blockPointer.Offset();
+		}
+		BlockPointer& CHandler::BPointer(void)
+		{
+			return m_blockPointer;
+		}
+		
 	}
 }

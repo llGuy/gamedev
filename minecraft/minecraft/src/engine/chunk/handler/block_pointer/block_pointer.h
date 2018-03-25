@@ -19,9 +19,14 @@ namespace minecraft
 			void RecieveBlockPosition(const glm::vec3& pos);
 			const glm::vec3& BlockPosition(void);
 			const bool PointingAtBlock(void);
+			void* Offset(void);
+			const uint32_t& BufferID(void);
+			VAO* Vao(void);
+			const glm::mat4& TranslateMatrix(void);
 		private:
 			bool m_pointingAtBlock;
-			glm::vec3 m_blockPosition;
+			glm::vec3 m_translation;
+			glm::mat4 m_translateMatrix;
 			BlockOutlineGPUBuffer m_gpubuffer;
 		};
 	}

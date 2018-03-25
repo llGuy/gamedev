@@ -53,5 +53,13 @@ namespace minecraft
 			glDrawElements(mode, d.count, GL_UNSIGNED_SHORT, d.offsetIndices);
 			d.vao->UnBind();
 		}
+
+		void Renderer::ERender(GLenum mode, uint32_t count, void* offset, VAO* vao, uint32_t buffer)
+		{
+			vao->Bind();
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+			glDrawElements(mode, count, GL_UNSIGNED_SHORT, offset);
+			vao->UnBind();
+		}
 	}
 }

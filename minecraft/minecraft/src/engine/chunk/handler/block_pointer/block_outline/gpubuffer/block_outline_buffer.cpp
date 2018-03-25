@@ -13,9 +13,9 @@ namespace minecraft
 
 			// 3 * sizoef(float) => vec3
 			// position
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
 			// color
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 		}
 		void BlockOutlineVAO::Bind(void) const
 		{
@@ -29,37 +29,49 @@ namespace minecraft
 		{
 			glDeleteVertexArrays(1, &m_vaoID);
 		}
-
 		void BlockOutlineGPUBuffer::CreateBuffer(void)
 		{
 			glGenBuffers(1, &m_bufferID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 8 + sizeof(uint16_t) * 24, 0, GL_DYNAMIC_DRAW);
-			glBufferSubData(GL_ARRAY_BUFFER, sizeof(Vertex) * 8, sizeof(uint16_t) * 24, m_indices);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 8 + sizeof(uint16_t) * 24, 0, GL_STATIC_DRAW);
+			LoadVertices();
+			//glGenBuffers(1, &m_indexBufferID);
+			LoadIndices();
+			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
 			m_vao->Init(nullptr);
 		}
-		void BlockOutlineGPUBuffer::LoadBuffer(glm::vec3 blockPosition)
+		void BlockOutlineGPUBuffer::LoadVertices(void)
 		{
 			Vertex verts[8];
-			Vertices(verts, blockPosition);
+			Vertices(verts);
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(Vertex) * 8, verts);
+		}
+		void BlockOutlineGPUBuffer::LoadIndices(void)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferID);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Vertex) * 8, sizeof(uint16_t) * 24, m_indices);
 		}
 		VAO* BlockOutlineGPUBuffer::Vao(void)
 		{
 			return m_vao;
 		}
-		void BlockOutlineGPUBuffer::Vertices(Vertex* arr, glm::vec3 center)
+		void* BlockOutlineGPUBuffer::Offset(void)
 		{
-			arr[0].pos = center + glm::vec3(+0.55f, +0.55f, +0.55f);
-			arr[1].pos = center + glm::vec3(-0.55f, +0.55f, +0.55f);
-			arr[2].pos = center + glm::vec3(-0.55f, +0.55f, -0.55f);
-			arr[3].pos = center + glm::vec3(+0.55f, +0.55f, -0.55f);
+			return (void*)(sizeof(Vertex) * 8);
+		}
+		void BlockOutlineGPUBuffer::Vertices(Vertex* arr)
+		{
+			static constexpr float RADIUS = 0.52f;
+			arr[0].pos = glm::vec3(+RADIUS, +RADIUS, +RADIUS);
+			arr[1].pos = glm::vec3(-RADIUS, +RADIUS, +RADIUS);
+			arr[2].pos = glm::vec3(-RADIUS, +RADIUS, -RADIUS);
+			arr[3].pos = glm::vec3(+RADIUS, +RADIUS, -RADIUS);
 				  
-			arr[4].pos = center + glm::vec3(+0.55f, -0.55f, +0.55f);
-			arr[5].pos = center + glm::vec3(-0.55f, -0.55f, +0.55f);
-			arr[6].pos = center + glm::vec3(-0.55f, -0.55f, -0.55f);
-			arr[7].pos = center + glm::vec3(+0.55f, -0.55f, -0.55f);
+			arr[4].pos = glm::vec3(+RADIUS, -RADIUS, +RADIUS);
+			arr[5].pos = glm::vec3(-RADIUS, -RADIUS, +RADIUS);
+			arr[6].pos = glm::vec3(-RADIUS, -RADIUS, -RADIUS);
+			arr[7].pos = glm::vec3(+RADIUS, -RADIUS, -RADIUS);
 
 			for (uint32_t i = 0; i < 8; ++i) arr[i].color = glm::vec3(0.0f, 0.0f, 0.0f);
 		}
@@ -75,20 +87,24 @@ namespace minecraft
 			m_indices[8] = 0;
 			m_indices[9] = 1;
 			m_indices[10] = 0;
-			m_indices[11] = 2;
+			m_indices[11] = 3;
 			m_indices[12] = 2;
 			m_indices[13] = 1;
 			m_indices[14] = 2;
 			m_indices[15] = 3;
 
-			m_indices[16] = 0;
-			m_indices[17] = 1;
-			m_indices[18] = 0;
-			m_indices[19] = 2;
-			m_indices[20] = 2;
-			m_indices[21] = 1;
-			m_indices[22] = 2;
-			m_indices[23] = 3;
+			m_indices[16] = 4;
+			m_indices[17] = 5;
+			m_indices[18] = 4;
+			m_indices[19] = 7;
+			m_indices[20] = 6;
+			m_indices[21] = 5;
+			m_indices[22] = 6;
+			m_indices[23] = 7;
+		}
+		const uint32_t BlockOutlineGPUBuffer::BufferID(void)
+		{
+			return m_bufferID;
 		}
 	}
 }

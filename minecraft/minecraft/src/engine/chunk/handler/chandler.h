@@ -38,6 +38,9 @@ namespace minecraft
 			glm::vec3 BlockWPos(glm::vec3 wpos);
 			data::CUDataLocs& Locations(void);
 			data::CUDataLocs& LMeshLocations(void);
+			data::CUDataLocs& BlockPointerLocations(void);
+			void* BlockPointerOffset(void);
+			BlockPointer& BPointer(void);
 			cmap::CMap::iterator Begin(void);
 			cmap::CMap::iterator End(void);
 			void LaunchChunkLoader(ent::Entity* player, GLFWwindow* window);
