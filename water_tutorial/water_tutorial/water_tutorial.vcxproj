@@ -125,9 +125,11 @@
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\3DObj.h" />
     <ClInclude Include="src\engine\data.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\framebuffer\framebuffer.h" />
+    <ClInclude Include="src\engine\gui.h" />
     <ClInclude Include="src\engine\player.h" />
     <ClInclude Include="src\engine\quad.h" />
     <ClInclude Include="src\shader\shader.h" />
