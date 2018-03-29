@@ -60,5 +60,9 @@
   <ItemGroup>
     <None Include="res\vsh.shader" />
     <None Include="res\fsh.shader" />
+    <None Include="res\guivsh.shader" />
+    <None Include="res\guifsh.shader" />
+    <None Include="res\watervsh.shader" />
+    <None Include="res\waterfsh.shader" />
   </ItemGroup>
 </Project>

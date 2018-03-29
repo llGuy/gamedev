@@ -13,22 +13,22 @@ private:
 	static constexpr int REFLECTIONHEIGHT = 180;
 	static constexpr int REFRACTIONHEIGHT = 720;
 public:
-	Framebuffers(void) {}
+	Framebuffers(void) = default;
 	void Init(void) 
 	{
 		m_refractionframeBufferID = CreateFrameBuffer();
-		m_refractiontextureID = CreateTextureAttachment(REFLECTIONWIDTH, REFLECTIONHEIGHT);
-		m_refractiondepthTextureID = CreateDepthTextureAttachment(REFLECTIONWIDTH, REFLECTIONHEIGHT);
+		m_refractiontextureID = CreateTextureAttachment(REFRACTIONWIDTH, REFRACTIONHEIGHT);
+		m_refractiondepthTextureID = CreateDepthTextureAttachment(REFRACTIONWIDTH, REFRACTIONHEIGHT);
 
 		m_reflectionframeBufferID = CreateFrameBuffer();
-		m_reflectiontextureID = CreateTextureAttachment(REFRACTIONWIDTH, REFRACTIONHEIGHT);
-		m_reflectiondepthBufferID = CreateDepthBufferAttachment(REFRACTIONWIDTH, REFRACTIONHEIGHT);
+		m_reflectiontextureID = CreateTextureAttachment(REFLECTIONWIDTH, REFLECTIONHEIGHT);
+		m_reflectiondepthBufferID = CreateDepthBufferAttachment(REFLECTIONWIDTH, REFLECTIONHEIGHT);
 	}
 
 	// binding fbos
-	void BindFrameBuffer(uint32_t framebuffer, int width, int height)
+	void BindFrameBuffer(uint32_t framebuffer, int width, int height, uint32_t texture)
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);		// to make sure that the texture is not bound
+		glBindTexture(GL_TEXTURE_2D, texture);		// to make sure that the texture is not bound
 		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		glViewport(0, 0, width, height);
 	}
@@ -40,11 +40,19 @@ public:
 	}
 	void BindReflection(void)
 	{
-		BindFrameBuffer(m_reflectionframeBufferID, REFLECTIONWIDTH, REFLECTIONHEIGHT);
+		BindFrameBuffer(m_reflectionframeBufferID, REFLECTIONWIDTH, REFLECTIONHEIGHT, m_reflectiontextureID);
 	}
 	void BindRefraction(void)
 	{
-		BindFrameBuffer(m_refractionframeBufferID, REFRACTIONWIDTH, REFRACTIONHEIGHT);
+		BindFrameBuffer(m_refractionframeBufferID, REFRACTIONWIDTH, REFRACTIONHEIGHT, m_refractiontextureID);
+	}
+	uint32_t TextureIDReflection(void)
+	{
+		return m_reflectiontextureID;
+	}
+	uint32_t TextureIDRefraction(void)
+	{
+		return m_refractiontextureID;
 	}
 private:
 	uint32_t CreateFrameBuffer(void)

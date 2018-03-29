@@ -8,19 +8,19 @@ class GUI
 {
 public:
 	explicit GUI(void) = default;
-	void Init(void)
+	void Init(glm::vec2 translation)
 	{
 		glm::vec2 verts[]
 		{
-			glm::vec2(-1.0f, 0.2f), glm::vec2(1.0f, 0.0f),
-			glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f),
-			glm::vec2(-0.2f, 1.0f), glm::vec2(0.0f, 1.0f),
-			glm::vec2(-0.2f, 0.2f), glm::vec2(1.0f, 1.0f)
+			translation + glm::vec2(-1.0f, 0.0f), glm::vec2(1.0f, 0.0f),
+			translation + glm::vec2(-1.0f, 1.0f), glm::vec2(0.0f, 0.0f),
+			translation + glm::vec2(+0.0f, 0.0f), glm::vec2(1.0f, 1.0f),
+			translation + glm::vec2(+0.0f, +1.0f), glm::vec2(0.0f, 1.0f)
 		};
 
 		uint16_t indices[]
 		{
-			0, 1, 2, 2, 0, 3
+			0, 1, 2, 1, 2, 3
 		};
 
 		glGenBuffers(1, &m_bufferID);
@@ -35,10 +35,23 @@ public:
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec2), 0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec2), (void*)(sizeof(glm::vec2)));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(sizeof(glm::vec2)));
 
 		glBindVertexArray(0);
+	}
+
+	const uint32_t& VAO(void)
+	{
+		return m_vaoID;
+	}
+	const uint32_t& BufferID(void)
+	{
+		return m_bufferID;
+	}
+	void* Offset(void)
+	{
+		return (void*)(sizeof(glm::vec2) * 8);
 	}
 private:
 	uint32_t m_bufferID;

@@ -139,7 +139,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\fsh.shader" />
+    <None Include="res\guifsh.shader" />
+    <None Include="res\guivsh.shader" />
     <None Include="res\vsh.shader" />
+    <None Include="res\waterfsh.shader" />
+    <None Include="res\watervsh.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
