@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[])
 {
-	Window window(1700, 1000, "minecraft");
+	Window window(3000, 1900, "minecraft");
 	while (window.WindowOpen())
 	{
 		window.Draw();
