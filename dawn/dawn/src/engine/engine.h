@@ -1,7 +1,7 @@
 #ifndef ENGINE_HEADER
 #define ENGINE_HEADER
 #include <iostream>
-#include "window/window.h"
+#include <GL/glew.h>
 
 namespace dawn
 {
@@ -9,15 +9,13 @@ namespace dawn
 	{
 	public:
 		// version number
-		DawnEngine(const char* vs, const int32_t& width, const int32_t& height) noexcept;
+		DawnEngine(const int32_t& width, const int32_t& height) noexcept;
 		DawnEngine(const DawnEngine&) = delete;
 		const DawnEngine& operator=(const DawnEngine&) = delete;
 
-		void Run(void);
-	private:
+		void Init(void);
+	public:
 		void Render(void);
-	private:
-		window::Window m_display;
 	};
 }
 

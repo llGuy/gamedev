@@ -5,65 +5,64 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-namespace dawn { namespace window {
+namespace dawn {
 
-		class GLFWInitError
-			: std::exception
+	class GLFWInitError
+		: std::exception
+	{
+	public:
+		GLFWInitError(void) = default;
+
+		const char* what(void) const throw() override
 		{
-		public:
-			GLFWInitError(void) = default;
+			return "Failed to initialize GLFW";
+		}
+	};
 
-			const char* what(void) const throw() override
-			{
-				return "Failed to initialize GLFW";
-			}
-		};
+	class GLEWInitError
+		: std::exception
+	{
+	public:
+		GLEWInitError(void) = default;
 
-		class GLEWInitError
-			: std::exception
+		const char* what(void) const throw() override
 		{
-		public:
-			GLEWInitError(void) = default;
+			return "Failed to initialize GLEW";
+		}
+	};
 
-			const char* what(void) const throw() override
-			{
-				return "Failed to initialize GLEW";
-			}
-		};
+	class WindowInitError
+		: std::exception
+	{
+	public:
+		WindowInitError(void) = default;
 
-		class WindowInitError
-			: std::exception 
+		const char* what(void) const throw() override
 		{
-		public:
-			WindowInitError(void) = default;
+			return "Failed to initialize window";
+		}
+	};
 
-			const char* what(void) const throw() override
-			{
-				return "Failed to initialize window";
-			}
-		};
-
-		inline
+	inline
 		void GLEWInit(void)
+	{
+		GLenum err = glewInit();
+		if (err != GLEW_OK)
 		{
-			GLenum err = glewInit();
-			if (err != GLEW_OK)
-			{
-				glfwTerminate();
-				throw GLEWInitError{};
-			}
+			glfwTerminate();
+			throw GLEWInitError{};
 		}
-		inline
+	}
+	inline
 		void GLFWInit(void)
+	{
+		if (!glfwInit())
 		{
-			if (!glfwInit())
-			{
-				glfwTerminate();
-				throw GLFWInitError{};
-			}
+			glfwTerminate();
+			throw GLFWInitError{};
 		}
+	}
 
-	} 
 }
 
 #endif

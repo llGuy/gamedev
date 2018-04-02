@@ -2,19 +2,13 @@
 
 namespace dawn
 {
-	DawnEngine::DawnEngine(const char* vs, const int32_t& width, const int32_t& height) noexcept
-		: m_display(vs, width, height)
+	DawnEngine::DawnEngine(const int32_t& width, const int32_t& height) noexcept
 	{
-		m_display.Init();
 	}
 
-	void DawnEngine::Run(void)
+	void DawnEngine::Init(void)
 	{
-		while (m_display.Open())
-		{
-			Render();
-		}
-		m_display.Destroy();
+
 	}
 
 	void DawnEngine::Render(void)
@@ -28,7 +22,6 @@ namespace dawn
 		glVertex2f(+0.5f, +0.5f);
 		glVertex2f(-0.5f, +0.5f);
 		glEnd();
-
-		m_display.Update();
 	}
+
 }
