@@ -129,12 +129,21 @@
     <ClCompile Include="src\utils\memory\memory_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\buffer\buffer.h" />
+    <ClInclude Include="src\engine\buffer\vao.h" />
     <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\mesh\mesh.h" />
+    <ClInclude Include="src\engine\shader\program.h" />
+    <ClInclude Include="src\engine\shader\shader.h" />
     <ClInclude Include="src\engine\window\window.h" />
     <ClInclude Include="src\utils\logger\error.h" />
     <ClInclude Include="src\utils\logger\log.h" />
     <ClInclude Include="src\utils\memory\memory_manager.h" />
     <ClInclude Include="src\utils\vecout\vecout.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\mesh\fsh.shader" />
+    <None Include="res\shaders\mesh\vsh.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

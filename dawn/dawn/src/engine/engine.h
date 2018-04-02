@@ -2,9 +2,11 @@
 #define ENGINE_HEADER
 #include <iostream>
 #include <GL/glew.h>
+#include "mesh/mesh.h"
+#include "shader/program.h"
 
-namespace dawn
-{
+namespace dawn {
+
 	class DawnEngine
 	{
 	public:
@@ -16,7 +18,13 @@ namespace dawn
 		void Init(void);
 	public:
 		void Render(void);
+
+	private:
+		// testing
+		DawnMesh m_mesh;
+		SHProgram m_program;
 	};
+
 }
 
 #endif

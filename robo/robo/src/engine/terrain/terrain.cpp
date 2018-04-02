@@ -56,7 +56,7 @@ void Terrain::Draw(Entity::UniData& ud, UniformLocations* locations, Time* time)
 	SendUniformData(ud, modelMat, locations, time);
 
 	std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-	glDrawElements(GL_TRIANGLES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_LINES, m_meshData.indices.numIndices, GL_UNSIGNED_SHORT, 0);
 
 	std::chrono::high_resolution_clock::duration d = std::chrono::high_resolution_clock::now() - tp;
 	//std::cout << d.count() / 1000000.0 << std::endl << std::endl;

@@ -1,14 +1,15 @@
 #include "engine.h"
 
-namespace dawn
-{
+namespace dawn {
+
 	DawnEngine::DawnEngine(const int32_t& width, const int32_t& height) noexcept
+		: m_mesh(glm::vec2(0.0f))
 	{
 	}
 
 	void DawnEngine::Init(void)
 	{
-
+		m_mesh.GenerateData();
 	}
 
 	void DawnEngine::Render(void)
