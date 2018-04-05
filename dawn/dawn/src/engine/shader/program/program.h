@@ -36,7 +36,7 @@ namespace dawn {
 			for (auto& sh : m_shaders) 
 				success &= CheckShaderStatus(sh.ShaderID());
 			if (success)
-			{
+			{	
 				m_programID = glCreateProgram();
 				AttachShadersToProgram();
 				BindAttribLocations(attribs...);
@@ -62,7 +62,11 @@ namespace dawn {
 				funcs[m_locations.at(i).location](ptrs[i + 1], m_locations.at(i).location);
 		}
 		void UseProgram(void);
-		const uint32_t& ProgramID(void);
+		inline
+		const uint32_t& ProgramID(void) const
+		{
+			return m_programID;
+		}
 	private:
 		inline
 		uint32_t GetUniformLocation(const char* name) const

@@ -17,10 +17,6 @@ namespace dawn {
 		for (auto& sh : m_shaders)
 			sh.Init();
 	}
-	const uint32_t& SHProgram::ProgramID(void)
-	{
-		return m_programID;
-	}
 	void SHProgram::AttachShadersToProgram(void)
 	{
 		for (auto& sh : m_shaders)
