@@ -17,8 +17,7 @@ namespace dawn {
 
 	void DawnEngine::ShadersInit(void)
 	{
-		m_program.Init(ShaderBase{ "res\\shaders\\vsh.shader", GL_VERTEX_SHADER },
-			ShaderBase{ "res\\shaders\\fsh.shader", GL_FRAGMENT_SHADER });
+		m_program.Init(ShaderBase{ "res\\shaders\\vsh.shader", GL_VERTEX_SHADER },ShaderBase{ "res\\shaders\\fsh.shader", GL_FRAGMENT_SHADER });
 		m_program.Compile();
 		m_program.Link("vertex_position", "vertex_color");
 		m_program.UseProgram();
@@ -26,9 +25,9 @@ namespace dawn {
 
 	void DawnEngine::UdataInit(void)
 	{
-		m_uniformDataLocs.projectionLoc = m_program.GetUniformLocation("projection_matrix");
-		m_uniformDataLocs.modelLoc = m_program.GetUniformLocation("model_matrix");
-		m_uniformDataLocs.viewLoc = m_program.GetUniformLocation("view_matrix");
+		m_program.GetUniformLocations(UDataLoc( UDType::MAT4, "projection_matrix" ), 
+			UDataLoc( UDType::MAT4, "model_matrix" ), 
+			UDataLoc( UDType::MAT4, "view_matrix" ));
 	}
 
 	void DawnEngine::Render(void)
@@ -36,6 +35,9 @@ namespace dawn {
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		float a = 0.0f;
+		//m_renderer.UniformData(m_program, m_uniformData, m_uniformDataLocs)
+		m_program.UniformData(&a);
 		m_renderer.DrawElements(m_mesh.RenderParams(), GL_TRIANGLES);
 	}
 

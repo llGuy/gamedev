@@ -30,9 +30,6 @@ namespace dawn {
 		DawnMesh m_mesh;
 		SHProgram m_program;
 		Renderer m_renderer;
-
-		UniformData m_uniformData;
-		UniformDataLoc m_uniformDataLocs;
 	};
 
 }

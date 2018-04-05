@@ -1,9 +1,11 @@
 #ifndef PROGRAM_HEADER
 #define PROGRAM_HEADER
 #include <vector>
+#include <functional>
 #include <utility>
 #include <glm/glm.hpp>
 #include "shader_base.h"
+#include "udata.h"
 #include "../shader.h"
 
 namespace dawn {
@@ -18,13 +20,13 @@ namespace dawn {
 		{
 		}
 		~SHProgram(void) = default;
-
 	public:
+		void Compile(void);
 		template<typename... _Sh>
 		void Init(_Sh&&... bases)
 		{
-			std::initializer_list<ShaderBase> initlist {bases...};
-			for (auto& it : initlist) m_shaders.emplace_back(it);
+			std::initializer_list<ShaderBase> list {bases...};
+			for (auto& it : list) m_shaders.emplace_back(it);
 		}
 		template<typename... _Attribs>
 		void Link(_Attribs&&... attribs)
@@ -45,27 +47,30 @@ namespace dawn {
 			if (CheckProgramStatus(m_programID))
 				glUseProgram(m_programID);
 		}
-
-
+		template<typename... _Locs>
+		void GetUniformLocations(_Locs&&... locations /*name of the locations*/)
+		{
+			std::initializer_list<UDataLoc> list{ locations... };
+			for (auto& loc : list) m_locations.emplace_back(loc.type, loc.name, GetUniformLocation(loc.name));
+		}
+		template<typename... _Ptr>
+		void UniformData(_Ptr&&... ptrs)
+		{
+			static const std::function<void(float*, const uint32_t&)> funcs[UDType::INV] { uniform3f, uniformMat4f };
+			float* ptrs[sizeof...(ptrs) + 1]{0, ptrs...};
+			for (uint32_t i = 0; i < m_locations.size(); ++i)
+				funcs[m_locations.at(i).location](ptrs[i + 1], m_locations.at(i).location);
+		}
 		void UseProgram(void);
-		void Compile(void);
 		const uint32_t& ProgramID(void);
-	public:
+	private:
 		inline
-		uint32_t GetUniformLocation(const std::string& name) const
+		uint32_t GetUniformLocation(const char* name) const
 		{
-			return glGetUniformLocation(m_programID, name.c_str());
+			return glGetUniformLocation(m_programID, name);
 		}
-		inline
-		void UniformMat4(const glm::mat4& m, const uint32_t& loc) const
-		{
-			glUniformMatrix4fv(loc, 1, GL_FALSE, &m[0][0]);
-		}
-		inline
-		void Uniform3f(const glm::vec3& v, const uint32_t& loc) const
-		{
-			glUniform3fv(loc, 1, &v[0]);
-		}
+		static const std::function<void(float*, const uint32_t&)> uniform3f;
+		static const std::function<void(float*, const uint32_t&)> uniformMat4f;
 	private:
 		void AttachShadersToProgram(void);
 		template<typename... _Attribs>		// const char*
@@ -82,6 +87,7 @@ namespace dawn {
 	private:
 		uint32_t m_programID;
 		std::vector<Shader> m_shaders;
+		std::vector<UDataLoc> m_locations;
 	};
 
 }

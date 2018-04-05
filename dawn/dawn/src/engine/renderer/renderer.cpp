@@ -9,5 +9,11 @@ namespace dawn {
 		glDrawElements(mode, params.indexCount, type, params.offset);
 		params.vao->UnBind();
 	}
+	/*void Renderer::UniformData(const SHProgram& program, UData& data, const UDataLoc& loc) const
+	{
+		program.UniformMat4(data.projection, loc.projectionLoc);
+		program.UniformMat4(data.model, loc.modelLoc);
+		program.UniformMat4(data.view, loc.viewLoc);
+	}*/
 
 }

@@ -2,21 +2,33 @@
 #define UDATA_HEADER
 
 #include <glm/glm.hpp>
+#include <string>
 
 namespace dawn {
 
-	struct UniformData
+	enum UDType
+		: uint32_t
 	{
-		glm::mat4 projection;
-		glm::mat4 model;
-		glm::mat4 view;
+		MAT4,
+
+		VEC3,
+
+		INV
 	};
 
-	struct UniformDataLoc
+	struct UDataLoc
 	{
-		uint32_t projectionLoc;
-		uint32_t modelLoc;
-		uint32_t viewLoc;
+		UDataLoc(const UDType& t, const char* n)
+			: type(t), name(n)
+		{
+		}
+		UDataLoc(const UDType& t, const char* n, const uint32_t& loc)
+			: type(t), name(n), location(loc)
+		{
+		}
+		UDType type;
+		const char* name;
+		uint32_t location;
 	};
 
 }
