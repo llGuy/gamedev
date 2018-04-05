@@ -4,6 +4,7 @@
 #include <fstream>
 #include "../../utils/logger/log.h"
 #include "../../utils/logger/error.h"
+#include "program/shader_base.h"
 
 namespace dawn {
 
@@ -11,10 +12,10 @@ namespace dawn {
 	{
 	public:
 		Shader(void) = default;
-		Shader(GLenum shader, const std::string& directory)
-			: m_shaderType(shader)
+		Shader(const ShaderBase& base)
+			: m_shaderType(base.type)
 		{
-			switch (shader)
+			switch (base.type)
 			{
 			case GL_VERTEX_SHADER:
 				m_strShaderType = "vertex shader";
@@ -26,11 +27,9 @@ namespace dawn {
 				m_strShaderType = "geometry shader";
 				break;
 			}
-			ExtractSrc(directory);
+			ExtractSrc(base.dir);
 		}
-		~Shader(void)
-		{
-		}
+		~Shader(void) = default;
 	public:
 		void Init(void)
 		{

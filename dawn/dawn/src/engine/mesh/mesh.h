@@ -2,18 +2,20 @@
 #define MESH_HEADER
 #include "../buffer/buffer.h"
 #include "../buffer/vao.h"
+#include "../renderer/render_params.h"
 #include <glm/glm.hpp>
 
 namespace dawn {
 
 	// meshes won't go on the stack
-	template<uint32_t _Dmx, uint32_t _Dmz, float _Tess>
+	template<uint32_t _Dmx, uint32_t _Dmz, uint32_t _Tess>
 	class Mesh
 	{
 	public:
 		Mesh(void) = default;
 		Mesh(const glm::vec2& t) noexcept
-			: m_translation(t), m_precision(1.0f / _Tess)
+			: m_translation(t), m_precision(1.0f / static_cast<float>(_Tess)),
+			m_renderParams{&m_vao, &m_vibuffer, IndexCount(), Offset()}
 		{
 		}
 		~Mesh(void) = default;
@@ -23,19 +25,27 @@ namespace dawn {
 			GenerateColors();
 			GenerateIndices();
 		}
-
-		__forceinline
-		const Buffer& GLBuffer(void) const noexcept
+		void CreateOpenGLObjs(void)
 		{
-			return m_vibuffer;
+			CreateVertexIndexBuffer();
+			CreateVertexVAO();
 		}
-
 		__forceinline
-		const VAO& GLVAO(void) const noexcept
+		const RenderParametersElements& RenderParams(void) const
 		{
-			return m_vao;
+			return m_renderParams;
 		}
 	private:
+		__forceinline
+		constexpr uint32_t IndexCount(void) const noexcept
+		{
+			return (_Dmx - 1) * (_Dmz - 1) * 6;
+		}
+		__forceinline
+		constexpr void* Offset(void) const noexcept
+		{
+			return (void*)(sizeof(m_vertices));
+		}
 		__forceinline
 		uint32_t VertIndex(const uint32_t& x, const uint32_t& z)
 		{
@@ -69,13 +79,13 @@ namespace dawn {
 			{
 				for (uint32_t gridsquareZ = 0; gridsquareZ < _Dmx - 1; ++gridsquareZ)
 				{
-					m_indices[index++] = Index(gridsquareX, gridsquareZ);	
-					m_indices[index++] = Index(gridsquareX + 1, gridsquareZ);
-					m_indices[index++] = Index(gridsquareX, gridsquareZ + 1);
+					m_indices[index++] = VertIndex(gridsquareX, gridsquareZ);	
+					m_indices[index++] = VertIndex(gridsquareX + 1, gridsquareZ);
+					m_indices[index++] = VertIndex(gridsquareX, gridsquareZ + 1);
 
-					m_indices[index++] = Index(gridsquareX, gridsquareZ + 1);
-					m_indices[index++] = Index(gridsquareX + 1, gridsquareZ);
-					m_indices[index++] = Index(gridsquareX + 1, gridsquareZ + 1);
+					m_indices[index++] = VertIndex(gridsquareX, gridsquareZ + 1);
+					m_indices[index++] = VertIndex(gridsquareX + 1, gridsquareZ);
+					m_indices[index++] = VertIndex(gridsquareX + 1, gridsquareZ + 1);
 				}
 			}
 		}
@@ -83,7 +93,7 @@ namespace dawn {
 		// opengl
 		void CreateVertexIndexBuffer(void)
 		{
-			m_vibuffer.Init(sizeof(m_vertices) + sizeof(m_indices), nullptr, GL_DYNAMIC_DRAW);
+			m_vibuffer.Init<void>(sizeof(m_vertices) + sizeof(m_indices), nullptr, GL_DYNAMIC_DRAW);
 			m_vibuffer.SubData(0, sizeof(m_vertices), m_vertices);
 			m_vibuffer.SubData(sizeof(m_vertices), sizeof(m_indices), m_indices);
 		}
@@ -112,9 +122,10 @@ namespace dawn {
 		Buffer m_vibuffer;			// vertex + index buffer
 		Buffer m_colorBuffer;		// buffer for the color
 		VAO m_vao;					// vertex vao
+		RenderParametersElements m_renderParams;
 	};
 
-	using DawnMesh = Mesh<32, 32, 2.0f>;
+	using DawnMesh = Mesh<32, 32, 2>;
 }
 
 #endif

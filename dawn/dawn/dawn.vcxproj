@@ -123,6 +123,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\renderer\renderer.cpp" />
+    <ClCompile Include="src\engine\shader\program\program.cpp" />
     <ClCompile Include="src\engine\window\init\glinit.h" />
     <ClCompile Include="src\engine\window\window.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -133,7 +135,11 @@
     <ClInclude Include="src\engine\buffer\vao.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\mesh\mesh.h" />
-    <ClInclude Include="src\engine\shader\program.h" />
+    <ClInclude Include="src\engine\renderer\renderer.h" />
+    <ClInclude Include="src\engine\renderer\render_params.h" />
+    <ClInclude Include="src\engine\shader\program\program.h" />
+    <ClInclude Include="src\engine\shader\program\shader_base.h" />
+    <ClInclude Include="src\engine\shader\program\udata.h" />
     <ClInclude Include="src\engine\shader\shader.h" />
     <ClInclude Include="src\engine\window\window.h" />
     <ClInclude Include="src\utils\logger\error.h" />

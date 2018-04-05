@@ -9,5 +9,9 @@ uniform mat4 view_matrix;
 
 void main(void)
 {
-	
+	vec4 world_position = vec4(vertex_position, 1.0f);
+	vec4 view_position = view_matrix * world_position;
+	gl_Position = projection_matrix * view_position;
+
+	pass_color = vertex_color;
 }
