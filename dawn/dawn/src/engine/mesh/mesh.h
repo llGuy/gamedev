@@ -14,7 +14,7 @@ namespace dawn {
 	public:
 		Mesh(void) = default;
 		Mesh(const glm::vec2& t) noexcept
-			: m_translation(t), m_precision(1.0f / static_cast<float>(_Tess)),
+			: m_translation(t), PRECISION(1.0f / static_cast<float>(_Tess)),
 			m_renderParams{&m_vao, &m_vibuffer, IndexCount(), Offset()}
 		{
 		}
@@ -54,13 +54,13 @@ namespace dawn {
 
 		void GenerateVertices(void)
 		{
-			for (uint32_t x = 0; x < _Dmx; ++x)
+			for (uint32_t z = 0; z < _Dmz; ++z)
 			{
-				for (uint32_t z = 0; z < _Dmz; ++z)
+				for (uint32_t x = 0; z < _Dmx; ++x)
 				{
 					float worldX = static_cast<float>(x) + m_translation.x * static_cast<float>(_Dmx);
 					float worldZ = static_cast<float>(z) + m_translation.y * static_cast<float>(_Dmz);
-					uint32_t arrIndex = x + _Dmx * z;
+					uint32_t arrIndex = VertIndex(x, z);
 
 					// calculate height with some generator
 					new(m_vertices + arrIndex) glm::vec3(worldX, 0.0f, worldZ);
@@ -75,9 +75,9 @@ namespace dawn {
 		void GenerateIndices(void)
 		{
 			uint32_t index = 0;
-			for (uint32_t gridsquareX = 0; gridsquareX < _Dmx - 1; ++gridsquareX)
+			for (uint32_t gridsquareZ = 0; gridsquareZ < _Dmz - 1; ++gridsquareZ)
 			{
-				for (uint32_t gridsquareZ = 0; gridsquareZ < _Dmx - 1; ++gridsquareZ)
+				for (uint32_t gridsquareX = 0; gridsquareX < _Dmx - 1; ++gridsquareX)
 				{
 					m_indices[index++] = VertIndex(gridsquareX, gridsquareZ);	
 					m_indices[index++] = VertIndex(gridsquareX + 1, gridsquareZ);
@@ -112,7 +112,7 @@ namespace dawn {
 			m_vao.Divisor(1, 1);
 		}
 	private:
-		const float m_precision;
+		const float PRECISION;
 		glm::vec2 m_translation;
 		glm::vec3 m_vertices[_Dmx * _Dmz];
 		glm::vec3 m_colors[(_Dmx - 1) * (_Dmz - 1) * 2];

@@ -18,7 +18,7 @@ namespace dawn {
 		const Window& operator=(const Window& w) = delete;
 		Window(const char* title, const int32_t& width, const int32_t& height);
 
-		void Init(void);
+		void Init(DawnEngine* ptr);
 		
 		void Destroy(void);
 		void Update(void) const;

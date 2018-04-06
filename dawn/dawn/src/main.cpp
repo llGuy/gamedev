@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 {
 	dawn::Window display("version 0.1", 1900, 1100);
 	dawn::DawnEngine engine(display.Width(), display.Height());
-	display.Init();
+	display.Init(&engine);
 	engine.Init();
 
 	while (display.Open())

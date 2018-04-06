@@ -5,17 +5,27 @@
 
 namespace dawn { namespace ent {
 
-		enum movement_t
-			: uint32_t
+		enum class movement_t
 		{
 			FORWARD,
 
 			BACKWARD,
 
+			INV
+		};
+
+		enum class strafe_t
+		{
 			LEFT,
 
 			RIGHT,
 
+			INV
+		};
+
+		// vertical movement
+		enum class vmovement_t
+		{
 			UP,
 
 			DOWN,

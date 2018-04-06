@@ -13,7 +13,7 @@ namespace dawn {
 	}
 	void SHProgram::Compile(void)
 	{
-		utils::Log("compiling shaders");
+		utils::NewLog("compiling shaders");
 		for (auto& sh : m_shaders)
 			sh.Init();
 	}

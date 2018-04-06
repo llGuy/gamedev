@@ -8,8 +8,10 @@ namespace dawn {
 	{
 	}
 
-	void Window::Init(void)
+	void Window::Init(DawnEngine* ptr)
 	{
+		m_engineptr = ptr;
+
 		try
 		{
 			utils::NewLog("initializing window...");
@@ -91,11 +93,18 @@ namespace dawn {
 	}
 	void Window::PollKeys(void) const
 	{
-
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_W)) m_engineptr->RecieveAction(action_t::W);
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_A)) m_engineptr->RecieveAction(action_t::A);
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_S)) m_engineptr->RecieveAction(action_t::S);
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_D)) m_engineptr->RecieveAction(action_t::D);
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE)) m_engineptr->RecieveAction(action_t::SPACE);
+		if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT)) m_engineptr->RecieveAction(action_t::LSHIFT);
 	}
 	void Window::PollMouseMovement(void) const
 	{
-
+		double x, y;
+		glfwGetCursorPos(m_glfwWindow, &x, &y);
+		m_engineptr->MouseCursor(glm::vec2(static_cast<float>(x), static_cast<float>(y)));
 	}
 	void Window::PollMouseInput(void) const
 	{

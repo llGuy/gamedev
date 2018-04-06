@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\entities\camera\camera.cpp" />
     <ClCompile Include="src\engine\entities\player\player.cpp" />
     <ClCompile Include="src\engine\renderer\renderer.cpp" />
     <ClCompile Include="src\engine\shader\program\program.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="src\engine\buffer\buffer.h" />
     <ClInclude Include="src\engine\buffer\vao.h" />
     <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\entities\camera\camera.h" />
     <ClInclude Include="src\engine\entities\entity.h" />
     <ClInclude Include="src\engine\entities\entity_movement.h" />
     <ClInclude Include="src\engine\entities\player\player.h" />

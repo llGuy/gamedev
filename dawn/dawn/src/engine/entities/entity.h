@@ -1,5 +1,5 @@
 #ifndef ENTITY_HEADER
-#define ENITTY_HEADER
+#define ENTITY_HEADER
 
 #include <glm/glm.hpp>
 #include "entity_movement.h"
@@ -10,6 +10,7 @@ namespace dawn { namespace ent {
 		class Entity
 		{
 		public:
+			Entity(void) = default;
 			Entity(const glm::vec3& p, const glm::vec3& d)
 				: m_position(d), m_direction(d), m_states{true /* for testing, enable flying */, false}
 			{
@@ -17,12 +18,12 @@ namespace dawn { namespace ent {
 			virtual ~Entity(void) = default;
 
 			inline
-			const glm::vec3& Position(void) const
+			glm::vec3& Position(void) 
 			{
 				return m_position;
 			}
 			inline
-			const glm::vec3& Direction(void) const
+			glm::vec3& Direction(void)
 			{
 				return m_direction;
 			}
@@ -34,6 +35,8 @@ namespace dawn { namespace ent {
 			}
 		public:
 			virtual void Move(const movement_t&, float time) = 0;
+			virtual void VMove(const vmovement_t&, float time) = 0;
+			virtual void Strafe(const strafe_t&, float time) = 0;
 		protected:
 			glm::vec3 m_position;
 			glm::vec3 m_direction;
