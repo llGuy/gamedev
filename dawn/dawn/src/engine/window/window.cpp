@@ -3,7 +3,7 @@
 
 namespace dawn {
 	
-	Window::Window(const char* title, const int32_t& width, const int32_t& height)
+	Window::Window(const char* title, int32_t width, int32_t height)
 		: m_title(title), m_width(width), m_height(height)
 	{
 	}
@@ -52,11 +52,11 @@ namespace dawn {
 		//glfwSetMouseButtonCallback(m_glfwWindow, CursorEnterCallback);
 		//glfwSetKeyCallback(m_glfwWindow, KeyboardEnterCallback);
 	}
-	const int32_t& Window::Width(void) noexcept
+	int32_t Window::Width(void) const noexcept
 	{
 		return m_width;
 	}
-	const int32_t& Window::Height(void) noexcept
+	int32_t Window::Height(void) const noexcept
 	{
 		return m_height;
 	}

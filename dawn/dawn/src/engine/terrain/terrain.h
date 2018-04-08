@@ -11,7 +11,7 @@ namespace dawn { namespace terrain {
 			const Terrain& operator=(const Terrain&) = delete;
 
 			Terrain(void) noexcept;
-			~Terrain(void) = default;;
+			~Terrain(void) = default;
 		};
 
 	} 

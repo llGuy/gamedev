@@ -2,11 +2,12 @@
 
 namespace dawn {
 
-	DawnEngine::DawnEngine(const int32_t& width, const int32_t& height) 
+	DawnEngine::DawnEngine(int32_t width, int32_t height) 
 		: m_mesh(glm::vec2(0.0f)), 
 		m_player(new ent::Player(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, -0.25f, 1.0f))), 
 		m_camera(),
-		m_projectionMatrix(glm::perspective(glm::radians(70.0f), (float)width / height, 0.1f, 100.0f))
+		m_projectionMatrix(glm::perspective(glm::radians(70.0f), (float)width / height, 0.1f, 100.0f)),
+		m_chandler(0, m_player)
 	{
 	}
 
@@ -20,12 +21,13 @@ namespace dawn {
 		m_camera.Bind(m_player);
 	}
 
-	void DawnEngine::RecieveAction(const action_t& a)
+	void DawnEngine::RecieveAction(action_t a)
 	{
 		static constexpr float TEST_TIME = 10.0f;
 
 		switch (a)
 		{
+		// all types of player movement
 		case action_t::W: m_player->Move(ent::movement_t::FORWARD, TEST_TIME); return;
 		case action_t::A: m_player->Strafe(ent::strafe_t::LEFT, TEST_TIME); return;
 		case action_t::S: m_player->Move(ent::movement_t::BACKWARD, TEST_TIME); return;
@@ -62,10 +64,15 @@ namespace dawn {
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		m_chandler.LoadNewChunk();
 		glm::mat4 viewMatrix = m_camera.ViewMatrix();
 
 		m_program.UniformData(&m_projectionMatrix[0][0], &viewMatrix[0][0]);
-		m_renderer.DrawElements(m_mesh.RenderParams(), GL_TRIANGLES);
+
+		for (auto chunk = m_chandler.MapBegin(); chunk != m_chandler.MapEnd(); ++chunk)
+		{
+			m_renderer.DrawElements(chunk->second.RenderParams(), GL_TRIANGLES);
+		}
 	}
 
 }

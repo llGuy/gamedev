@@ -29,14 +29,14 @@ namespace dawn { namespace ent {
 			}
 
 			inline
-			void ToggleState(const entitystate_t& s)
+			void ToggleState(entitystate_t s)
 			{
 				m_states[s] ^= true;
 			}
 		public:
-			virtual void Move(const movement_t&, float time) = 0;
-			virtual void VMove(const vmovement_t&, float time) = 0;
-			virtual void Strafe(const strafe_t&, float time) = 0;
+			virtual void Move(movement_t, float time) = 0;
+			virtual void VMove(vmovement_t, float time) = 0;
+			virtual void Strafe(strafe_t, float time) = 0;
 		protected:
 			glm::vec3 m_position;
 			glm::vec3 m_direction;

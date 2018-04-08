@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include "mesh/mesh.h"
+#include "terrain/chunk/chunk_handler.h"
 #include "shader/program/udata.h"
 #include "shader/program/program.h"
 #include "renderer/renderer.h"
@@ -25,14 +26,14 @@ namespace dawn {
 	class DawnEngine
 	{
 	public:
-		DawnEngine(const int32_t& width, const int32_t& height);
+		DawnEngine(int32_t width, int32_t height);
 		DawnEngine(const DawnEngine&) = delete;
 		const DawnEngine& operator=(const DawnEngine&) = delete;
 
 		void Init(const glm::vec2& cursorPos);
 	public:
 		void Render(void);
-		void RecieveAction(const action_t& a);
+		void RecieveAction(action_t a);
 		void MouseCursor(const glm::vec2&);
 	private:
 		void ShadersInit(void);
@@ -43,6 +44,7 @@ namespace dawn {
 		ChunkMesh m_mesh;
 		SHProgram m_program;
 		Renderer m_renderer;
+		terrain::chunk::ChunkHandler m_chandler;
 
 		ent::Entity* m_player;
 		ent::Camera m_camera;

@@ -2,7 +2,7 @@
 
 namespace dawn {
 
-	void Renderer::DrawElements(const RenderParametersElements& params, const GLenum& mode, const GLenum& type) const
+	void Renderer::DrawElements(const RenderParametersElements& params, GLenum mode, GLenum type) const
 	{
 		params.vao->Bind();
 		params.ibuffer->Bind(GL_ELEMENT_ARRAY_BUFFER);

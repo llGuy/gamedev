@@ -4,7 +4,10 @@
 
 namespace dawn { namespace terrain { namespace chunk {
 
-			using ChunkSpaceCoord = glm::vec<2, int32_t, glm::highp>;
+			/*	the chunks will be stored in a chunkmap (unordered_map)
+				in chunk space coordinates : e.g. chunk at (0, 1) or (1, 2) etc...	
+			*/
+			using ChunkSpaceCoord = glm::ivec2;
 
 		}
 	}

@@ -2,9 +2,9 @@
 
 namespace dawn {
 
-	const std::function<void(float*, const uint32_t&)> SHProgram::uniform3f =
+	const std::function<void(float*, uint32_t)> SHProgram::uniform3f =
 		[&](float* v, const uint32_t& loc) { glUniform3fv(loc, 1, v); };
-	const std::function<void(float*, const uint32_t&)> SHProgram::uniformMat4f =
+	const std::function<void(float*, uint32_t)> SHProgram::uniformMat4f =
 		[&](float* m, const uint32_t& loc) { glUniformMatrix4fv(loc, 1, GL_FALSE, m); };
 
 	void SHProgram::UseProgram(void)

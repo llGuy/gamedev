@@ -16,7 +16,7 @@ namespace dawn {
 		Window(void) = default;
 		Window(const Window& w) = delete;
 		const Window& operator=(const Window& w) = delete;
-		Window(const char* title, const int32_t& width, const int32_t& height);
+		Window(const char* title, int32_t width, int32_t height);
 
 		void Init(DawnEngine* ptr);
 		
@@ -25,8 +25,8 @@ namespace dawn {
 		const bool Open(void) const noexcept;
 		const bool ValidWindow(void) const noexcept;
 
-		const int32_t& Width(void) noexcept;
-		const int32_t& Height(void) noexcept;
+		int32_t Width(void) const noexcept;
+		int32_t Height(void) const noexcept;
 
 		glm::vec2 CursorPosition(void) const;
 	private:

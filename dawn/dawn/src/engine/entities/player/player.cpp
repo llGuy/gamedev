@@ -7,7 +7,7 @@ namespace dawn { namespace ent {
 		{
 		}
 
-		void Player::Move(const movement_t& type, float time)
+		void Player::Move(movement_t type, float time)
 		{
 			glm::vec3 move = glm::normalize(glm::vec3(m_direction.x, 0.0f, m_direction.z));
 			switch (type)
@@ -19,7 +19,7 @@ namespace dawn { namespace ent {
 			m_position += move / time;
 		}
 
-		void Player::VMove(const vmovement_t& type, float time)
+		void Player::VMove(vmovement_t type, float time)
 		{
 			glm::vec3 vmove = glm::vec3(0.0f, 1.0f, 0.0f);
 			switch (type)
@@ -30,7 +30,7 @@ namespace dawn { namespace ent {
 			}
 			m_position += vmove / time;
 		}
-		void Player::Strafe(const strafe_t& type, float time)
+		void Player::Strafe(strafe_t type, float time)
 		{
 			glm::vec3 strafe = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
 			switch (type)

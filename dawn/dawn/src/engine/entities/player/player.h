@@ -11,9 +11,9 @@ namespace dawn { namespace ent {
 		public:
 			Player(void) = default;
 			Player(const glm::vec3& pos, const glm::vec3& direction);
-			void Move(const movement_t&, float time) override;
-			void VMove(const vmovement_t&, float time) override;
-			void Strafe(const strafe_t&, float time) override;
+			void Move(movement_t, float time) override;
+			void VMove(vmovement_t, float time) override;
+			void Strafe(strafe_t, float time) override;
 		private:
 			
 		};

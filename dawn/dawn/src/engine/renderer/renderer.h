@@ -17,7 +17,7 @@ namespace dawn {
 		const Renderer& operator=(const Renderer&) = delete;
 	public:
 		void DrawElements(const RenderParametersElements& params, 
-			const GLenum& mode, const GLenum& type = GL_UNSIGNED_SHORT) const;
+			GLenum mode, GLenum type = GL_UNSIGNED_SHORT) const;
 		//void UniformData(const SHProgram& program) const;
 	};
 

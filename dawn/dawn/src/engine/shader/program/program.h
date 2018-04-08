@@ -73,8 +73,8 @@ namespace dawn {
 		{
 			return glGetUniformLocation(m_programID, name);
 		}
-		static const std::function<void(float*, const uint32_t&)> uniform3f;
-		static const std::function<void(float*, const uint32_t&)> uniformMat4f;
+		static const std::function<void(float*, uint32_t)> uniform3f;
+		static const std::function<void(float*, uint32_t)> uniformMat4f;
 	private:
 		void AttachShadersToProgram(void);
 		template<typename... _Attribs>		// const char*

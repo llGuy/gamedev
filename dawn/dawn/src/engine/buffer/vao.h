@@ -18,15 +18,15 @@ namespace dawn {
 			glGenVertexArrays(1, &m_vaoID);
 			Bind();
 		}
-		void EnableArray(const uint32_t& loc)
+		void EnableArray(uint32_t loc)
 		{
 			glEnableVertexAttribArray(loc);
 		}
-		void VertexAttribPtr(const uint32_t& index, const uint32_t& size, const GLenum& type, const uint32_t& stride, void* ptr)
+		void VertexAttribPtr(uint32_t index, uint32_t size, GLenum type, uint32_t stride, void* ptr)
 		{
 			glVertexAttribPointer(index, size, type, /*never normalized*/ GL_FALSE, stride, ptr);
 		}
-		void Divisor(const uint32_t& index, const uint32_t& divisor)
+		void Divisor(uint32_t index, uint32_t divisor)
 		{
 			glVertexAttribDivisor(index, divisor);
 		}
@@ -41,7 +41,7 @@ namespace dawn {
 			glBindVertexArray(0);
 		}
 		__forceinline
-		const uint32_t& VAOID(void) const
+		const uint32_t VAOID(void) const
 		{
 			return m_vaoID;
 		}

@@ -14,24 +14,24 @@ namespace dawn {
 			glDeleteBuffers(1, &m_bufferID);
 		}
 		template<typename _Ty>
-		void Init(const uint32_t& size, _Ty* data, const GLenum& usage)
+		void Init(uint32_t size, _Ty* data, GLenum usage)
 		{
 			glGenBuffers(1, &m_bufferID);
 			Bind(GL_ARRAY_BUFFER);
 			glBufferData(GL_ARRAY_BUFFER, size, data, usage);
 		}
 		template<typename _Ty>
-		void SubData(const uint32_t& offset, const uint32_t& size, _Ty* data)
+		void SubData(uint32_t offset, uint32_t size, _Ty* data)
 		{
 			glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 		}
 		__forceinline
-		const uint32_t& BufferID(void) const noexcept
+		const uint32_t BufferID(void) const noexcept
 		{
 			return m_bufferID;
 		}
 		__forceinline
-		void Bind(const GLenum& point) const
+		void Bind(GLenum point) const
 		{
 			glBindBuffer(point, m_bufferID);
 		}
