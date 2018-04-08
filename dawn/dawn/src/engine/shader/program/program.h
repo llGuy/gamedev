@@ -56,10 +56,10 @@ namespace dawn {
 		template<typename... _Ptr>
 		void UniformData(_Ptr&&... ptrs)
 		{
-			static const std::function<void(float*, const uint32_t&)> funcs[UDType::INV] { uniform3f, uniformMat4f };
+			static const std::function<void(float*, const uint32_t&)> funcs[UDType::INV] { uniformMat4f, uniform3f };
 			float* ptrs[sizeof...(ptrs) + 1]{0, ptrs...};
 			for (uint32_t i = 0; i < m_locations.size(); ++i)
-				funcs[m_locations.at(i).location](ptrs[i + 1], m_locations.at(i).location);
+				funcs[m_locations.at(i).type](ptrs[i + 1], m_locations.at(i).location);
 		}
 		void UseProgram(void);
 		inline

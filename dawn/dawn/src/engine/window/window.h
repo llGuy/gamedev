@@ -27,6 +27,8 @@ namespace dawn {
 
 		const int32_t& Width(void) noexcept;
 		const int32_t& Height(void) noexcept;
+
+		glm::vec2 CursorPosition(void) const;
 	private:
 		void WindowInit(void);
 		void MouseCallback(uint32_t button);

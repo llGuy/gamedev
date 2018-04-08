@@ -7,10 +7,10 @@
 
 int main(int argc, char* argv[])
 {
-	dawn::Window display("version 0.1", 1900, 1100);
+	dawn::Window display("version 0.1", 2560, 1440);
 	dawn::DawnEngine engine(display.Width(), display.Height());
 	display.Init(&engine);
-	engine.Init();
+	engine.Init(display.CursorPosition());
 
 	while (display.Open())
 	{

@@ -47,7 +47,7 @@ namespace dawn {
 			glfwTerminate();
 			throw WindowInitError{};
 		}
-		//glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetWindowUserPointer(m_glfwWindow, this);
 		//glfwSetMouseButtonCallback(m_glfwWindow, CursorEnterCallback);
 		//glfwSetKeyCallback(m_glfwWindow, KeyboardEnterCallback);
@@ -100,11 +100,16 @@ namespace dawn {
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE)) m_engineptr->RecieveAction(action_t::SPACE);
 		if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT)) m_engineptr->RecieveAction(action_t::LSHIFT);
 	}
-	void Window::PollMouseMovement(void) const
+	glm::vec2 Window::CursorPosition(void) const
 	{
 		double x, y;
 		glfwGetCursorPos(m_glfwWindow, &x, &y);
-		m_engineptr->MouseCursor(glm::vec2(static_cast<float>(x), static_cast<float>(y)));
+		glm::vec2 pos = glm::vec2(static_cast<float>(x), static_cast<float>(y));
+		return pos;
+	}
+	void Window::PollMouseMovement(void) const
+	{
+		m_engineptr->MouseCursor(CursorPosition());
 	}
 	void Window::PollMouseInput(void) const
 	{

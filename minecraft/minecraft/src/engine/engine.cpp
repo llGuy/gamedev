@@ -182,7 +182,7 @@ namespace minecraft
 		bool obstz[2];
 		obstz[0] = m_chunkHandler->Obstruction(glm::vec3(0.0f, 0.0f, 1.0f), *m_player->EntityWorldPosition());
 		obstz[1] = m_chunkHandler->Obstruction(glm::vec3(0.0f, 0.0, -1.0f), *m_player->EntityWorldPosition());
-
+		
 		switch (key)
 		{
 		case key_t::R:

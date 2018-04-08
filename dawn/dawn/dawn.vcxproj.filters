@@ -42,6 +42,9 @@
     <ClCompile Include="src\engine\entities\camera\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\terrain\chunk\chunk\chunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\memory\memory_manager.h">
@@ -102,6 +105,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\entities\camera\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\chunk\chunk_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\chunk\chunk\chunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\chunk\chunk\chunk_space_coord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

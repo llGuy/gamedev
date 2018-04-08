@@ -12,6 +12,11 @@ namespace dawn { namespace ent {
 			m_bound = e;
 		}
 
+		void Camera::CursorPosition(const glm::vec2& cursorPos)
+		{
+			m_cursorPosition = cursorPos;
+		}
+
 		void Camera::Look(const glm::vec2& newCursorPosition, float sensitivity)
 		{
 			static constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -26,9 +31,6 @@ namespace dawn { namespace ent {
 			glm::vec3 rotateAround = glm::cross(direction, UP);
 			float yAngle = glm::radians(-cursorPosDiff.y) * sensitivity;
 			direction = glm::mat3(glm::rotate(yAngle, rotateAround)) * direction;
-
-			const glm::vec3& position = m_bound->Position();
-			m_viewMatrix = glm::lookAt(position, position + direction, UP);
 		}
 
 	}

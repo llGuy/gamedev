@@ -127,6 +127,7 @@
     <ClCompile Include="src\engine\entities\player\player.cpp" />
     <ClCompile Include="src\engine\renderer\renderer.cpp" />
     <ClCompile Include="src\engine\shader\program\program.cpp" />
+    <ClCompile Include="src\engine\terrain\chunk\chunk\chunk.cpp" />
     <ClCompile Include="src\engine\window\init\glinit.h" />
     <ClCompile Include="src\engine\window\window.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -148,6 +149,10 @@
     <ClInclude Include="src\engine\shader\program\shader_base.h" />
     <ClInclude Include="src\engine\shader\program\udata.h" />
     <ClInclude Include="src\engine\shader\shader.h" />
+    <ClInclude Include="src\engine\terrain\chunk\chunk\chunk.h" />
+    <ClInclude Include="src\engine\terrain\chunk\chunk\chunk_space_coord.h" />
+    <ClInclude Include="src\engine\terrain\chunk\chunk_handler.h" />
+    <ClInclude Include="src\engine\terrain\terrain.h" />
     <ClInclude Include="src\engine\window\window.h" />
     <ClInclude Include="src\utils\logger\error.h" />
     <ClInclude Include="src\utils\logger\log.h" />

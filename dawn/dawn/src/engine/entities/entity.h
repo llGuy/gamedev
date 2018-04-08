@@ -12,7 +12,7 @@ namespace dawn { namespace ent {
 		public:
 			Entity(void) = default;
 			Entity(const glm::vec3& p, const glm::vec3& d)
-				: m_position(d), m_direction(d), m_states{true /* for testing, enable flying */, false}
+				: m_position(p), m_direction(d), m_states{true /* for testing, enable flying */, false}
 			{
 			}
 			virtual ~Entity(void) = default;

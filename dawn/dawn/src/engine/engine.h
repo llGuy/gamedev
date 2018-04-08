@@ -29,7 +29,7 @@ namespace dawn {
 		DawnEngine(const DawnEngine&) = delete;
 		const DawnEngine& operator=(const DawnEngine&) = delete;
 
-		void Init(void);
+		void Init(const glm::vec2& cursorPos);
 	public:
 		void Render(void);
 		void RecieveAction(const action_t& a);
@@ -40,7 +40,7 @@ namespace dawn {
 	private:
 		glm::mat4 m_projectionMatrix;
 
-		DawnMesh m_mesh;
+		ChunkMesh m_mesh;
 		SHProgram m_program;
 		Renderer m_renderer;
 
