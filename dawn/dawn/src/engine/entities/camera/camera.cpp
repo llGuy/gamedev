@@ -25,11 +25,11 @@ namespace dawn { namespace ent {
 			m_cursorPosition = newCursorPosition;
 
 			glm::vec3& direction = m_bound->Direction();
-			float xAngle = glm::radians(-cursorPosDiff.x) * sensitivity;
+			float xAngle = glm::radians(-cursorPosDiff.x) / sensitivity;
 			direction = glm::mat3(glm::rotate(xAngle, UP)) * direction;
 
 			glm::vec3 rotateAround = glm::cross(direction, UP);
-			float yAngle = glm::radians(-cursorPosDiff.y) * sensitivity;
+			float yAngle = glm::radians(-cursorPosDiff.y) / sensitivity;
 			direction = glm::mat3(glm::rotate(yAngle, rotateAround)) * direction;
 		}
 

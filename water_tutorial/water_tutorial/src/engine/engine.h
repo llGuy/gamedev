@@ -20,7 +20,7 @@ public:
 	{
 		m_projectionMatrix = glm::perspective(glm::radians(60.0f), (float)width / height, 0.1f, 50.0f);
 	}
-	void Init(void)
+	void Init(void) 
 	{
 		m_quad.Init();
 		m_above.Init(glm::vec3(3.0f, -0.5f, 3.0f));
@@ -35,6 +35,11 @@ public:
 		m_programGUI.Compile();
 		std::vector<const char*> attribs2({ "vertex_position", "texture_coordinate" });
 		m_programGUI.Link(attribs2);
+
+		m_waterShader.Init("res\\watervsh.shader", "res\\waterfsh.shader", "INV");
+		m_waterShader.Compile();
+		std::vector<const char*> attribs3({"vertex_position", "texture_coordinate"});
+		m_waterShader.Link(attribs3);
 		GetUniformLocations();
 
 		m_fbos.Init();
@@ -43,6 +48,11 @@ public:
 		m_planeDefault = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 		m_plane = glm::vec4(0.0f, 1.0f, 0.0f, 0.05f);
 		m_plane2 = glm::vec4(0.0f, -1.0f, 0.0f, 0.05f);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_fbos.TextureIDReflection());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_fbos.TextureIDRefraction());
 	}
 	Player& Pl(void) { return m_player; }
 	void MouseUpdate(float x, float y) { m_player.Look(glm::vec2(x, y), 0.02f); };
@@ -57,6 +67,10 @@ public:
 		glUniform4fv(m_locations.planeLocation, 1, &m_planeDefault[0]);
 
 		DrawModels(true);
+		m_program.UseProgram();
+		glUniformMatrix4fv(m_locations.projLocation, 1, GL_FALSE, &m_projectionMatrix[0][0]);
+		glUniformMatrix4fv(m_locations.viewLocation, 1, GL_FALSE, &m_viewMatrix[0][0]);
+		glUniform4fv(m_locations.planeLocation, 1, &m_planeDefault[0]);
 
 		glUniform4fv(m_locations.planeLocation, 1, &m_plane[0]);
 		float distance = 2.0f * (m_player.Position().y - 0.0f/*water height*/);
@@ -77,36 +91,44 @@ public:
 		DrawModels(false);
 		m_fbos.Unbind();
 
-		m_programGUI.UseProgram();
+		/*m_programGUI.UseProgram();
 		glUniformMatrix4fv(m_guiProjMatLoc, 1, GL_FALSE, &m_projectionMatrix[0][0]);
 		glBindTexture(GL_TEXTURE_2D, m_fbos.TextureIDReflection());
 		glBindVertexArray(m_gui.VAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_gui.BufferID());
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, m_gui.Offset());
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, m_gui.Offset());*/
 
-		glBindTexture(GL_TEXTURE_2D, m_fbos.TextureIDRefraction());
+		/*glBindTexture(GL_TEXTURE_2D, m_fbos.TextureIDRefraction());
 		glBindVertexArray(m_gui2.VAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_gui2.BufferID());
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, m_gui2.Offset());
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, m_gui2.Offset());*/
 
 		//m_program.UseProgram();
 	}
 	void DrawModels(bool b)
 	{
-		glClearColor(0.0f, 0.7f, 0.2f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (b)
-		{
-			glBindVertexArray(m_quad.VAO());
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quad.BufferID());
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)(sizeof(float) * 3 * 4 * 2));
-		}
+		
 		glBindVertexArray(m_above.VAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_above.BufferID());
 		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, m_above.Offset());
 		glBindVertexArray(m_below.VAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_below.BufferID());
 		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, m_below.Offset());
+
+		if (b)
+		{
+			/*m_waterShader.UseProgram();
+			glUniformMatrix4fv(m_locationsWSH.projLocation, 1, GL_FALSE, &m_projectionMatrix[0][0]);
+			glUniformMatrix4fv(m_locationsWSH.viewLocation, 1, GL_FALSE, &m_viewMatrix[0][0]);
+			//glUniform4fv(m_locations.planeLocation, 1, &m_planeDefault[0]);
+			glBindTexture(GL_TEXTURE0, m_fbos.TextureIDReflection());
+			glBindTexture(GL_TEXTURE1, m_fbos.TextureIDRefraction());
+			glBindVertexArray(m_quad.VAO());
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_quad.BufferID());
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)(sizeof(float) * 3 * 4 + sizeof(float) * 2 * 4));*/
+		}
 	}
 
 	void GetUniformLocations(void)
@@ -116,6 +138,13 @@ public:
 
 		m_locations.planeLocation = glGetUniformLocation(m_program.ProgramID(), "plane");
 		m_guiProjMatLoc = glGetUniformLocation(m_programGUI.ProgramID(), "projection_matrix");
+
+
+		m_locations.projLocation = glGetUniformLocation(m_waterShader.ProgramID(), "projection_matrix");
+		m_locations.viewLocation = glGetUniformLocation(m_waterShader.ProgramID(), "view_matrix");
+
+		m_reflecLoc = glGetUniformLocation(m_waterShader.ProgramID(), "reflection_texture");
+		m_refracLoc = glGetUniformLocation(m_waterShader.ProgramID(), "refraction_texture");
 	}
 private:
 	glm::mat4 m_projectionMatrix;
@@ -127,16 +156,20 @@ private:
 
 	Framebuffers m_fbos;
 	SHProgram m_program;
+	SHProgram m_waterShader;
 	SHProgram m_programGUI;
 	Player m_player;
 	glm::mat4 m_viewMatrix;
 
 	Locs m_locations;
+	Locs m_locationsWSH;
 	uint32_t m_guiProjMatLoc;
 
 	glm::vec4 m_planeDefault;
 	glm::vec4 m_plane;
 	glm::vec4 m_plane2;
+
+	uint32_t m_reflecLoc, m_refracLoc;
 };
 
 #endif

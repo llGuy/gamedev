@@ -38,10 +38,11 @@ namespace dawn {
 	private:
 		void ShadersInit(void);
 		void UdataInit(void);
+		void CameraInit(const glm::vec2& cursor);
+		void TerrainInit(void);
 	private:
 		glm::mat4 m_projectionMatrix;
 
-		ChunkMesh m_mesh;
 		SHProgram m_program;
 		Renderer m_renderer;
 		terrain::chunk::ChunkHandler m_chandler;

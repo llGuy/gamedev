@@ -1,0 +1,1 @@
+lucro@DESKTOP-PPE4MAG.localdomain.1838

@@ -3,7 +3,7 @@
 
 int main(void)
 {
-	Window window(1200, 700, "water tutorial");
+	Window window(3000, 2100, "water tutorial");
 
 	while (window.WindowOpen())
 	{

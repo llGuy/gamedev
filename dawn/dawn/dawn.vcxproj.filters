@@ -131,6 +131,15 @@
     <ClInclude Include="src\engine\terrain\chunk\chunk_map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\configs\configs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\noise\perlin_noisee.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\terrain\noise\perlin_noise_cell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\mesh\vsh.shader" />

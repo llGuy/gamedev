@@ -15,11 +15,17 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_bufferID);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * 4 * 2 + sizeof(uint16_t) * 6, 0, GL_STATIC_DRAW);
 
+		struct Vert
+		{
+			glm::vec3 v;
+			glm::vec2 t;
+		};
+
 		static constexpr float RADIUS = 5.0f;
-		glm::vec3 verts[] { glm::vec3(RADIUS, 0.0f, RADIUS), glm::vec3(0.0f, 0.0f, 1.0f),
-			glm::vec3(-RADIUS, 0.0f, RADIUS), glm::vec3(0.0f, 0.0f, 1.0f),
-			glm::vec3(RADIUS, 0.0f, -RADIUS), glm::vec3(0.0f, 0.0f, 1.0f),
-			glm::vec3(-RADIUS, 0.0f, -RADIUS), glm::vec3(0.0f, 0.0f, 1.0f) };
+		Vert verts[]{ glm::vec3(RADIUS, 0.0f, RADIUS), glm::vec2(1.0f, 0.0f),
+			glm::vec3(-RADIUS, 0.0f, RADIUS), glm::vec2(0.0f, 0.0f) ,
+			glm::vec3(RADIUS, 0.0f, -RADIUS), glm::vec2(1.0f, 1.0f),
+			glm::vec3(-RADIUS, 0.0f, -RADIUS), glm::vec2(0.0f, 1.0f) };
 
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 3 * 4 * 2, verts);
 		
@@ -32,8 +38,8 @@ public:
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 		glBindVertexArray(0);
 	}

@@ -1,12 +1,11 @@
 #include "engine.h"
+#include "configs/configs.h"
 
 namespace dawn {
 
 	DawnEngine::DawnEngine(int32_t width, int32_t height) 
-		: m_mesh(glm::vec2(0.0f)), 
-		m_player(new ent::Player(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, -0.25f, 1.0f))), 
-		m_camera(),
-		m_projectionMatrix(glm::perspective(glm::radians(70.0f), (float)width / height, 0.1f, 100.0f)),
+		: m_player(new ent::Player(configs::DEFAULT_PLAYER_POSITION, configs::DEFAULT_PLAYER_DIRECTION)), 
+		m_projectionMatrix(glm::perspective(glm::radians(configs::FOV_DEGREES), (float)width / height, 0.1f, configs::RENDER_DISTANCE)),
 		m_chandler(0, m_player)
 	{
 	}
@@ -14,11 +13,9 @@ namespace dawn {
 	void DawnEngine::Init(const glm::vec2& cursorPos)
 	{
 		glEnable(GL_DEPTH_TEST);
-		m_mesh.GenerateData();
-		m_mesh.CreateOpenGLObjs();
 		ShadersInit();
-		m_camera.CursorPosition(cursorPos);
-		m_camera.Bind(m_player);
+		CameraInit(cursorPos);
+		TerrainInit();
 	}
 
 	void DawnEngine::RecieveAction(action_t a)
@@ -39,8 +36,7 @@ namespace dawn {
 
 	void DawnEngine::MouseCursor(const glm::vec2& pos)
 	{
-		static constexpr float TEST_SENSITIVITY = 0.02f;
-		m_camera.Look(pos, TEST_SENSITIVITY);
+		m_camera.Look(pos, configs::MOUSE_SENSITIVITY);
 	}
 
 	void DawnEngine::ShadersInit(void)
@@ -59,19 +55,28 @@ namespace dawn {
 			UDataLoc( UDType::MAT4, "view_matrix" ));
 	}
 
+	void DawnEngine::CameraInit(const glm::vec2& cursor)
+	{
+		m_camera.CursorPosition(cursor);
+		m_camera.Bind(m_player);
+	}
+
+	void DawnEngine::TerrainInit(void)
+	{
+		m_chandler.LoadChunks(8, 8);
+	}
+
 	void DawnEngine::Render(void)
 	{
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		m_chandler.LoadNewChunk();
 		glm::mat4 viewMatrix = m_camera.ViewMatrix();
 
 		m_program.UniformData(&m_projectionMatrix[0][0], &viewMatrix[0][0]);
 
 		for (auto chunk = m_chandler.MapBegin(); chunk != m_chandler.MapEnd(); ++chunk)
 		{
-			m_renderer.DrawElements(chunk->second.RenderParams(), GL_TRIANGLES);
+			m_renderer.DrawElements(chunk->second.RenderParams(), GL_LINE_STRIP);
 		}
 	}
 

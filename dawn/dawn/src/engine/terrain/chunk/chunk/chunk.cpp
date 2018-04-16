@@ -12,9 +12,9 @@ namespace dawn { namespace terrain { namespace chunk {
 
 			void Chunk::Init(void)
 			{
-				m_mesh.GenerateData();
+				/*m_mesh.GenerateData();
 				m_mesh.CreateOpenGLObjs();
-				m_mesh.RenderParams();
+				m_mesh.RenderParams();*/
 			}
 
 		}

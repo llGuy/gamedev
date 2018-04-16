@@ -26,6 +26,8 @@ namespace dawn {
 		{
 		}
 		~Mesh(void) = default;
+		
+
 		void GenerateData(void)
 		{
 			GenerateVertices();
@@ -38,6 +40,8 @@ namespace dawn {
 			CreateColorBuffer();
 			CreateVertexVAO();
 		}
+
+
 		__forceinline
 		const RenderParametersElements& RenderParams(void) const
 		{
@@ -62,18 +66,18 @@ namespace dawn {
 
 		void GenerateVertices(void)
 		{
-			for (float z = 0.0f; z < VERTSZ; z += PRECISION)
-			{
-				for (float x = 0.0f; x < VERTSX; x += PRECISION)
+				for (float z = 0.0f; z < VERTSZ; z += PRECISION)
 				{
-					float worldX = x + m_translation.x * static_cast<float>(_Dmx * PRECISION);
-					float worldZ = z + m_translation.y * static_cast<float>(_Dmz * PRECISION);
-					uint32_t arrIndex = VertIndex(static_cast<uint32_t>(x), static_cast<uint32_t>(z));
+					for (float x = 0.0f; x < VERTSX; x += PRECISION)
+					{
+						float worldX = x + m_translation.x * static_cast<float>(_Dmx * PRECISION);
+						float worldZ = z + m_translation.y * static_cast<float>(_Dmz * PRECISION);
+						uint32_t arrIndex = VertIndex(static_cast<uint32_t>(x), static_cast<uint32_t>(z));
 
-					// calculate height with some generator
-					new(m_vertices + arrIndex) glm::vec3(worldX, 0.0f, worldZ);
+						// calculate height with some generator
+						new(m_vertices + arrIndex) glm::vec3(worldX, 0.0f, worldZ);
+					}
 				}
-			}
 		}
 		void GenerateColors(void)
 		{

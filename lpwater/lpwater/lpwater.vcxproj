@@ -123,23 +123,31 @@
   <ItemGroup>
     <None Include="res\fsh.shader" />
     <None Include="res\vsh.shader" />
+    <None Include="src\guifsh.shader" />
+    <None Include="src\guivsh.shader" />
+    <None Include="src\terrainfsh.shader" />
+    <None Include="src\terrainvsh.shader" />
+    <None Include="src\waterfsh.shader" />
+    <None Include="src\watervsh.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\buffer\buffer.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\window\window.cpp" />
+    <ClCompile Include="src\program.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\buffer\buffer.h" />
-    <ClInclude Include="src\camera\camera.h" />
-    <ClInclude Include="src\data\index_data.h" />
-    <ClInclude Include="src\data\vertex_data.h" />
-    <ClInclude Include="src\log.h" />
-    <ClInclude Include="src\lpwater\lpwater.h" />
-    <ClInclude Include="src\primitives\vertex.h" />
-    <ClInclude Include="src\shader\shader.h" />
-    <ClInclude Include="src\shader\shprogram.h" />
-    <ClInclude Include="src\window\window.h" />
+    <ClInclude Include="src\buffer.h" />
+    <ClInclude Include="src\camerae.h" />
+    <ClInclude Include="src\engine.h" />
+    <ClInclude Include="src\framebuffer.h" />
+    <ClInclude Include="src\gui.h" />
+    <ClInclude Include="src\program.h" />
+    <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\shader_base.h" />
+    <ClInclude Include="src\terrain.h" />
+    <ClInclude Include="src\udata.h" />
+    <ClInclude Include="src\vao.h" />
+    <ClInclude Include="src\water_quad.h" />
+    <ClInclude Include="src\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,18 +15,7 @@ namespace dawn { namespace terrain { namespace chunk {
 				const ChunkHandler& operator=(const ChunkHandler&) = delete;
 				ChunkHandler(int32_t seed, ent::Entity* player);
 
-				// testing
-				void LoadNewChunk(void)
-				{
-					static int32_t times = 0;
-
-
-					if (times > -10)
-					{
-						m_loader.LoadChunk({ 0, times });
-						--times;
-					}
-				}
+				void LoadChunks(int32_t xrange, int32_t zrange);
 
 				inline
 				auto MapBegin(void)

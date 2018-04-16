@@ -1,15 +1,16 @@
 #include <iostream>
-#include "window/window.h"
-#include <GL/glew.h>
+#include "window.h"
+#include "engine.h"
 
 int main(int argc, char* argv[])
 {
-	Window window(1920, 1080, "terrain");
-	while (window.WindowOpen())
+	Window window(1700, 1200, "water");
+
+	Engine engine(1700, 1200);
+	window.m_camera = engine.Cam();
+	while (window.Open())
 	{
-		window.Draw();
+		engine.Render();
 		window.Update();
 	}
-
-	return 0;
 }
