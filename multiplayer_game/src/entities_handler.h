@@ -15,7 +15,7 @@ namespace mulgame {
     public:
 	EntitiesHandler(void) = default;
 
-	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction);
+	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction, const std::string& name);
 	void BindCamera(Entity* entity);
 
 	void Update(void);

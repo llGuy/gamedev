@@ -4,11 +4,14 @@
 
 namespace mulgame {
 
-    Entity::Entity(const glm::vec3& position, const glm::vec3& direction)
-	: m_position(position), m_direction(direction)
+    Entity::Entity(void)
+	: m_name("untitled")
     {
-	std::cout << m_position[0] << m_position[1] << m_position[2] << std::endl;
-	std::cout << m_direction[0] << m_direction[1] << m_direction[2] << std::endl;
+    }
+    
+    Entity::Entity(const glm::vec3& position, const glm::vec3& direction, const std::string& name)
+	: m_position(position), m_direction(direction), m_name(name)
+    {
     }
 
     void Entity::Move(movement_t mtype, float timeDelta)
@@ -25,7 +28,6 @@ namespace mulgame {
 	case movement_t::LEFT:     moveDirection = -glm::cross(m_direction, UP); break;
 	}
 	m_position += moveDirection * 0.02f;
-	std::cout << m_position[0] << ' ' << m_position[1] << ' ' << m_position[2] << std::endl;
     }
 
     void Entity::ModifyDirection(const glm::vec3& direction)

@@ -1,5 +1,4 @@
 #define GLM_ENABLE_EXPERIMENTAL
-
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include "engine.h"
@@ -59,7 +58,6 @@ namespace mulgame {
 		glm::mat4 translation = glm::translate(entity.Position());
 		glm::mat4& view = camera.ViewMatrix();
 		glm::mat4& projection = m_data.matProjection;
-
 		m_genericProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
 		m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
 	    }
@@ -88,12 +86,12 @@ namespace mulgame {
 
     void MULGEngine::InitEntities(void)
     {
-	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
+	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f), "luc");
 	// binding the camera to the player (first entity)
 	Camera& camera = m_ehandler.Cam();
 	camera.BoundEntity() = &m_ehandler[0];
 
-	m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
+	m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f), "poop");
     }
     
 }
