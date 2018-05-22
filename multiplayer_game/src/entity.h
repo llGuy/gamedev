@@ -24,7 +24,7 @@ namespace mulgame {
 	Entity(void) = default;
 	Entity(const glm::vec3& position, const glm::vec3& direction);
 
-	void Move(movement_t mtype);
+	void Move(movement_t mtype, float timeDelta);
 	void ModifyDirection(const glm::vec3& direction);
     public:
 	inline

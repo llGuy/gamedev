@@ -12,11 +12,11 @@ namespace mulgame {
     void EntityModel::CreateVertices(void)
     {
 	// test rectangle
-	glm::vec2 verts[3]
+	glm::vec3 verts[3]
 	{
-	    glm::vec2(-1.0f, -1.0f),
-	    glm::vec2(0.0f, 1.0f),
-	    glm::vec2(1.0f, -1.0f)
+	    glm::vec3(-1.0f, -1.0f, 0.0f),
+	    glm::vec3(0.0f, 1.0f, 0.0f),
+	    glm::vec3(1.0f, -1.0f, 0.0f)
 	};
 	m_buffer.Fill(sizeof(verts), verts, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
     }
@@ -36,7 +36,7 @@ namespace mulgame {
 	
 	m_vao.Bind();
 	m_vao.Enable(0);
-	m_vao.VAPtr(0, 2, GL_FLOAT, 2 * sizeof(float), nullptr);
+	m_vao.VAPtr(0, 3, GL_FLOAT, 3 * sizeof(float), nullptr);
 	m_ibuffer.Bind(GL_ELEMENT_ARRAY_BUFFER);
 	m_vao.Unbind();
     }

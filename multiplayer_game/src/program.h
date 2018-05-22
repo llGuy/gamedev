@@ -60,15 +60,12 @@ namespace mulgame {
 	template<typename... _L>
 	void GetUniformLocations(_L&&... locs)
 	{
-	    std::cout << "uniform locations : ";
 	    std::array<UDataLoc, sizeof...(locs)> locations { locs... };
 	    for(uint32_t i = 0; i < sizeof...(locs); ++i)
 	    {
 		m_udataLocations[i] = locations[i];
 		m_udataLocations[i].location = GetUniformLocation(m_udataLocations[i].name);
-		std::cout << m_udataLocations[i].location << " ; ";
 	    }
-	    std::cout << std::endl;
 	}
 
 	template<typename... _Ptr>
@@ -83,11 +80,13 @@ namespace mulgame {
 	    };
 
 	    std::array<float*, sizeof...(ptrs)> ptrarr { ptrs... };
-	    for(uint32_t i = 0; i < _Locs; ++i)
+	    for(uint32_t i = 0; i < 1; ++i)
 	    {
 		// call function depending on the type of uniform data
-		UDFunc f = ufuncs[m_udataLocations[i].type];
-		(*this.*f)(ptrarr[i], m_udataLocations[i].location);
+/*		UDFunc f = ufuncs[m_udataLocations[i].type];
+		(*this.*f)(ptrarr[i], m_udataLocations[i].location);*/
+
+		(*this.*ufuncs[m_udataLocations[i].type])(ptrarr[i], m_udataLocations[i].location);
 	    }
 	}
     private:

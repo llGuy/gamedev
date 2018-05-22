@@ -12,6 +12,7 @@ namespace mulgame {
 	Configure();
 	InitData(width, height);
 	InitShaders();
+	InitEntities();
     }
 
     void MULGEngine::Configure(void)
@@ -27,16 +28,42 @@ namespace mulgame {
 	glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
 
 	m_genericProgram.UseProgram();
-
-	// testing rectangle
-/*	glm::vec3 color{ 0.0f, 1.0f, 0.0f };
-	glm::mat4 m(1.0f);
-	glm::mat4 v(1.0f);
-	glm::mat4 p(1.0f);*/
 	
+/*	EntityModel& model = m_ehandler.Model();
+	glm::vec3 color { 1.0f, 0.0f, 0.0f };
+	glm::mat4 translation = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4& projection = m_data.matProjection;
+	m_genericProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
+	
+	m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);*/
+	RenderEntities();
+    }
+
+    void MULGEngine::Update(void)
+    {
+	m_ehandler.Update();
+    }
+    
+    void MULGEngine::RenderEntities(void)
+    {
+	Camera& camera = m_ehandler.Cam();
 	EntityModel& model = m_ehandler.Model();
-	m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
-//	m_renderer.ADraw(model.VertexBuffer(), 3, model.VertexArray());
+	for(auto entity : m_ehandler)
+	{
+	    // don't draw the entity that the camera is bound to
+	    if(&entity != camera.BoundEntity())
+	    {
+		// test color
+		glm::vec3 color { 1.0f, 0.0f, 0.0f };
+		glm::mat4 translation = glm::translate(entity.Position());
+		glm::mat4& view = camera.ViewMatrix();
+		glm::mat4& projection = m_data.matProjection;
+
+		m_genericProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
+		m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
+	    }
+	}
     }
 
     void MULGEngine::InitData(int32_t width, int32_t height)
@@ -61,7 +88,12 @@ namespace mulgame {
 
     void MULGEngine::InitEntities(void)
     {
-//	m_ehandler.PushEntity(glm::vec3());
+	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
+	// binding the camera to the player (first entity)
+	Camera& camera = m_ehandler.Cam();
+	camera.BoundEntity() = &m_ehandler[0];
+
+	m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
     }
     
 }

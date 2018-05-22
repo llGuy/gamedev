@@ -1,6 +1,6 @@
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include "window.h"
+#include <GLFW/glfw3.h>
 
 Window::Window(const char* title, int32_t width, int32_t height)
     : m_title(title), m_width(width), m_height(height)
@@ -30,4 +30,34 @@ void Window::Update(void)
 {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
+    PollKeys();
 }
+
+void Window::EForwarder(const mulgame::MULGEventForwarder& ef)
+{
+    m_eventForwarder = ef;
+}
+
+void Window::PollKeys(void)
+{
+    using mulgame::movement_t;
+    using mulgame::EntitiesHandler;
+    
+    if(glfwGetKey(m_window, GLFW_KEY_W)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::FORWARD);
+    else if(glfwGetKey(m_window, GLFW_KEY_S)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::BACKWARD);
+
+    if(glfwGetKey(m_window, GLFW_KEY_D)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::RIGHT);
+    else if(glfwGetKey(m_window, GLFW_KEY_A)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::LEFT);
+}
+
+void Window::PollMouse(void)
+{
+    using mulgame::EntitiesHandler;
+    
+    double x, y;
+    glfwGetCursorPos(m_window, &x, &y);
+
+    m_eventForwarder.Handle<EntitiesHandler>(glm::vec2(x, y));
+}
+
+

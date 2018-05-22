@@ -5,9 +5,9 @@ namespace mulgame {
 
     enum udata_t
     {
-	MAT4,
-
 	VEC3,
+
+	MAT4,
 
 	INV
     };

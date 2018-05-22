@@ -19,8 +19,6 @@ namespace mulgame {
 	    std::array<const char*, 1> srcs{ src.value().c_str() };
 	    glShaderSource(m_shaderID, 1, srcs.data(), 0);
 	    glCompileShader(m_shaderID);
-
-	    std::cout << "shader id : " << m_shaderID << std::endl;
 	}
     }
 

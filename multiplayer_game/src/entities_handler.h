@@ -2,6 +2,8 @@
 #define _ENTITIES_HANDLER_H_
 
 #include <vector>
+#include "time.h"
+#include "event.h"
 #include "entity.h"
 #include "camera.h"
 #include "entity_model.h"
@@ -15,6 +17,13 @@ namespace mulgame {
 
 	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction);
 	void BindCamera(Entity* entity);
+
+	void Update(void);
+
+	// for entity movement
+	void Handle(movement_t);
+	// for cursor movement (looking around the world)
+	void Handle(const glm::vec2& cursorDiff);
 	
 	inline
 	Entity& operator[](uint32_t i)
@@ -22,10 +31,10 @@ namespace mulgame {
 	    return m_entities[i];
 	}
 	inline
-	Entity* CameraBoundEntity(void)
+	Camera& Cam(void)
 	{
-	    return m_camera.BoundEntity();
-	}	
+	    return m_camera;
+	}
 	inline
 	EntityModel& Model(void)
 	{
@@ -46,6 +55,8 @@ namespace mulgame {
 	// user takes control of whichever entity is bound by the camera
 	Camera m_camera;
 	EntityModel m_model;
+
+	Time m_timer;
     };
 
 }

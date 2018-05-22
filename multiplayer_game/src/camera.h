@@ -16,13 +16,19 @@ namespace mulgame {
 	void Look(const glm::vec2& ncpos, float sensitivity);
 
 	inline
-	Entity* BoundEntity(void)
+	Entity*& BoundEntity(void)
 	{
 	    return m_boundEntity;
-	}	
+	}
+	inline
+	glm::mat4& ViewMatrix(void)
+	{
+	    return m_viewMatrix;
+	}
     private:
 	Entity* m_boundEntity;
 	glm::vec2 m_cursorPosition;
+	glm::mat4 m_viewMatrix;
     };
 
 }

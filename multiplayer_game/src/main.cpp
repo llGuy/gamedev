@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 
     using mulgame::MULGEngine;
     MULGEngine engine(1200, 800);
+    window.EForwarder(engine.EForwarder());
 
     while(window.Open())
     {

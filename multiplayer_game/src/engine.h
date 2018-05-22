@@ -4,13 +4,14 @@
 #include <glm/glm.hpp>
 
 #include "entities_handler.h"
+#include "event_handler.h"
 #include "program.h"
 #include "configs.h"
 #include "renderer.h"
 #include "data.h"
 
 namespace mulgame {
-
+    
     class MULGEngine
     {
     public:
@@ -20,6 +21,15 @@ namespace mulgame {
 	MULGEngine(int32_t width, int32_t height);
     public:
 	void Render(void);
+	void Update(void);
+
+	inline
+	MULGEventForwarder EForwarder(void)
+	{
+	    return MULGEventForwarder(&m_ehandler);
+	}
+    private:
+	void RenderEntities(void);
     private:
 	void Configure(void);
 	void InitData(int32_t width, int32_t height);

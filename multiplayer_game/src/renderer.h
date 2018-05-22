@@ -16,7 +16,7 @@ namespace mulgame {
 	    vao.Bind();
 	    
 	    data.buffer->Bind(GL_ELEMENT_ARRAY_BUFFER);
-	    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+	    glDrawElements(mode, data.count, GL_UNSIGNED_SHORT, data.offset);
 	    
 	    vao.Unbind();
 	}
