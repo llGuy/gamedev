@@ -53,9 +53,9 @@ namespace mulgame {
 
     struct DElementsData
     {
-	Buffer* buffer;
-	void* offset;
-	uint32_t count;
+		Buffer* buffer;
+		void* offset;
+		uint32_t count;
     };
 
 }

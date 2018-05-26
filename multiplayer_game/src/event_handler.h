@@ -4,6 +4,7 @@
 #include <tuple>
 
 #include "event.h"
+#include "terrain.h"
 #include "entities_handler.h"
 
 namespace mulgame {
@@ -27,6 +28,12 @@ namespace mulgame {
 	    auto element = std::get<_Elem*>(m_elements);
 	    element->Handle(std::forward<_Data>(data)...);
 	}
+
+	template<typename _Elem>
+	_Elem& Get(void)
+	{
+		return *std::get<_Elem*>(m_elements);
+	}
     private:
 	// tuple stores all the elements that the
 	// event handler can forward events to
@@ -34,7 +41,7 @@ namespace mulgame {
     };
 
     // event forward can forward events to the entities handler
-    using MULGEventForwarder = EventForwarder<EntitiesHandler>;
+    using MULGEventForwarder = EventForwarder<EntitiesHandler, Terrain>;
     
 }
 

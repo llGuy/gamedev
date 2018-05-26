@@ -1,3 +1,2 @@
-game: $(wildcard *.cpp)
-	g++ -std=c++1z -o game $^ -lglfw -lGL -lGLEW
-
+output: $(wildcard *.cpp)
+	g++ $^ -lGLEW -lGL -lglfw -std=c++1z

@@ -22,14 +22,21 @@ namespace mulgame {
 	{
 	    return m_shaderID;
 	}
+
+	// temporary
+	inline
+	GLenum Type(void) const
+	{
+		return m_shadertype;
+	}
     private:
 	std::optional<std::string> ExtractSource(const std::string& directory);
     private:
-	union
-	{
+	//union
+	//{
 	    uint32_t m_shaderID;
 	    GLenum m_shadertype;
-	};
+	//};
     };
 
 }

@@ -12,34 +12,42 @@ namespace mulgame {
     class EntityModel
     {
     public:
-	EntityModel(void);
+		EntityModel(float radius);
 
-	inline
-	const VAO& VertexArray(void) const
-	{
-	    return m_vao;
-	}
-	inline
-	DElementsData OGLBuffer(void) 
-	{
-	    return { &m_ibuffer, 0, 3 };
-	}
-	inline
-	Buffer& VertexBuffer(void)
-	{
-	    return m_buffer;
-	}
+		inline
+		const VAO& VertexArray(void) const
+		{
+		    return m_vao;
+		}
+		inline
+		DElementsData OGLBuffer(void) 
+		{
+		    return { &m_ibuffer, 0, NUM_INDICES };
+		}
+		inline
+		Buffer& VertexBuffer(void)
+		{
+		    return m_buffer;
+		}
+
+		inline
+		float Radius(void)
+		{
+			return m_radius;
+		}
     private:
-	void CreateVertices(void);
-	void CreateIndices(void);
-	void VAOInit(void);
+		void CreateVertices(float radius);
+		void CreateIndices(void);
+		void VAOInit(void);
     private:
-	static constexpr uint32_t NUM_VERTICES = 3;
-	static constexpr uint32_t NUM_INDICES = 3;
-	
-	Buffer m_buffer;
-	Buffer m_ibuffer;
-	VAO m_vao;
+		static constexpr uint32_t NUM_VERTICES = 8;
+		static constexpr uint32_t NUM_INDICES = 36;
+		
+		Buffer m_buffer;
+		Buffer m_ibuffer;
+		VAO m_vao;
+
+		float m_radius;
     };
 
 }

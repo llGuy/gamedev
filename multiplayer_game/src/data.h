@@ -7,8 +7,9 @@ namespace mulgame {
 
     struct MULGEngineData
     {
-	glm::mat4 matProjection;
-	float frameTime;
+		glm::mat4 matProjection;
+		glm::vec3 lightPosition;
+		float frameTime;
     };
 
 }
