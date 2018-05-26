@@ -12,6 +12,7 @@ void GLFWInit(void)
 
 void GLEWInit(void)
 {
+	glewExperimental = GL_TRUE;
     auto err = glewInit();
     if(err != GLEW_OK)
     {
