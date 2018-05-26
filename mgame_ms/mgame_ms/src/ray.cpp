@@ -2,34 +2,30 @@
 
 namespace mulgame {
 
-	Ray::Ray(const glm::vec3& direction, const glm::vec3& position, float scale)
-		: m_position(position), m_d(6.0f), m_endPosition(position), m_scale(scale)
+	Ray::Ray(const glm::vec3& direction, const glm::vec3& position, float scale, float maxDistance)
+		: m_currentPosition(position), m_direction(glm::normalize(direction) * scale), m_maxDistance(maxDistance), m_interval(0)
 	{
-		m_directionScaled = glm::normalize(direction) * m_d;
-		m_endPosition = m_endPosition + m_directionScaled * scale;
-		m_difference = glm::distance(m_endPosition, m_position);
+		glm::vec3 start = m_currentPosition;
+		m_currentPosition += m_direction;
+		m_distanceBetweenInterval = glm::distance(start, m_currentPosition);
 		++m_interval;
-	}
-	const glm::vec3& Ray::StartPosition(void)
-	{
-		return m_position;
 	}
 	void Ray::Extend(void)
 	{
-		m_endPosition = m_endPosition + m_directionScaled * m_scale;
+		m_currentPosition += m_direction;
 		++m_interval;
 	}
 	const glm::vec3& Ray::CurrentPosition(void)
 	{
-		return m_endPosition;
+		return m_currentPosition;
 	}
 	const float Ray::DistanceCovered(void)
 	{
-		return m_difference * m_interval;
+		return m_interval * m_distanceBetweenInterval;
 	}
 	const float Ray::DistancetoEnd(void)
 	{
-		return m_d;
+		return m_maxDistance;
 	}
 
 }

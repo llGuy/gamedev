@@ -2,6 +2,7 @@
 #define _CAMERA_H_
 
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 #include "entity.h"
 
