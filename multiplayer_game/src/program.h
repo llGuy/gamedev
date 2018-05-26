@@ -18,7 +18,7 @@ namespace mulgame {
     public:
 	template<typename... _Sh>
 	Program(_Sh... types)
-	    : m_shaders{ types... }
+	    : m_shaders{ Shader(types)... }
 	{
 	}
 
@@ -26,13 +26,17 @@ namespace mulgame {
 	void Compile(_Dir&&... directories)
 	{
 	    std::array<std::string, sizeof...(directories)> dirs{ std::forward<_Dir>(directories)... };
-	    for(uint32_t i = 0; i < _Size; ++i) m_shaders[i].Compile(dirs[i]);
+		for (uint32_t i = 0; i < _Size; ++i)
+		{
+			std::cout << "compiling : " << dirs[i] << std::endl;
+			m_shaders[i].Compile(dirs[i]);
+		}
 	}
 	template<typename... _Attribs>
 	void Link(_Attribs... attributes)
 	{
 	    bool success = true;
-	    for(auto& shader : m_shaders) success &= this->CheckShaderStatus(shader.ShaderID());
+	    for(auto& shader : m_shaders) success &= this->CheckShaderStatus(shader.ShaderID(), shader.Type());
 	    if(success)
 	    {
 		m_programID = glCreateProgram();
@@ -80,24 +84,27 @@ namespace mulgame {
 	    };
 
 	    std::array<float*, sizeof...(ptrs)> ptrarr { ptrs... };
-	    for(uint32_t i = 0; i < 1; ++i)
+	    for(uint32_t i = 0; i < _Locs; ++i)
 	    {
-		// call function depending on the type of uniform data
-/*		UDFunc f = ufuncs[m_udataLocations[i].type];
-		(*this.*f)(ptrarr[i], m_udataLocations[i].location);*/
+			// call function depending on the type of uniform data
+/*			UDFunc f = ufuncs[m_udataLocations[i].type];
+			(*this.*f)(ptrarr[i], m_udataLocations[i].location);*/
 
-		(*this.*ufuncs[m_udataLocations[i].type])(ptrarr[i], m_udataLocations[i].location);
+			(*this.*ufuncs[m_udataLocations[i].type])(ptrarr[i], m_udataLocations[i].location);
 	    }
 	}
     private:
 	// checking status
-	bool CheckShaderStatus(uint32_t shaderID)
+	bool CheckShaderStatus(uint32_t shaderID, GLenum type)
 	{
 	    int32_t status;
 	    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &status);
 	    if(status != GL_TRUE)
 	    {
-		std::cerr << "failed to create shader\n";
+		std::cerr << "failed to create shader : ";
+		if (type == GL_VERTEX_SHADER) std::cout << "vertex shader" << std::endl;
+		if (type == GL_FRAGMENT_SHADER) std::cout << "fragment shader" << std::endl;
+		if (type == GL_GEOMETRY_SHADER) std::cout << "geometry shader" << std::endl;
 		int32_t infoLogLength = 0;
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char* buffer = (char*)alloca(infoLogLength * sizeof(char));

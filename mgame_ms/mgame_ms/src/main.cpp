@@ -1,3 +1,5 @@
+#define GLM_ENABLE_EXPERMINENTAL
+
 #include <iostream>
 #include <GL/glew.h>
 #include "window.h"
@@ -7,12 +9,12 @@
 int main(int argc, char* argv[])
 {
     GLFWInit();
-    Window window("multiplayer game", 2900, 1500);
+    Window window("multiplayer game", 1200, 800);
     window.Init();
     GLEWInit();
 
     using mulgame::MULGEngine;
-    MULGEngine engine(2900, 1500);
+    MULGEngine engine(1200, 800);
     window.EForwarder(engine.EForwarder());
 
     while(window.Open())

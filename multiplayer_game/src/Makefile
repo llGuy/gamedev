@@ -7,7 +7,7 @@
 
 OS=$(shell uname)
 ifeq ($(OS),Darwin)
-	CFLAGS=-std=c++14  -stdlib=libc++
+	CFLAGS=-std=c++14  -stdlib=libc++ -g
 	LFLAGS=-L/usr/local/lib -framework OpenGL -lglfw -lGLEW
 	IPATH=-I/usr/local/include
 

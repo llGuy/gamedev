@@ -16,7 +16,7 @@ namespace mulgame {
 	// needs the terrain to know whether or not the player is at ground level
     void Entity::Move(movement_t mtype, float timeDelta)
     {
-		static constexpr float GRAVITY = -5.0f;
+		static constexpr float GRAVITY = -4.0f;
 		static constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
 		
 		glm::vec3 xzDirection = glm::normalize(glm::vec3(m_direction.x, 0.0f, m_direction.z));
@@ -39,18 +39,20 @@ namespace mulgame {
 
 	void Entity::UpdateData(float groundHeight, float timedelta)
 	{
-		static constexpr float GRAVITY = -5.0f;
+		static constexpr float GRAVITY = -4.0f;
 		// y value of player position 
 		// is treated differently from other components
 		m_groundLevel = groundHeight;
 
-		if (m_position.y < m_groundLevel)
-			m_position.y = m_groundLevel;
-
 		m_dataJump.Update(timedelta, GRAVITY, (m_groundLevel > m_position.y || Equf(m_position.y, m_groundLevel)));
 		// balance the forces
 		//m_position.y += GRAVITY;
-		m_position.y += /*-GRAVITY + */m_dataJump.upforce;
+		glm::vec3 newp = m_position;
+		newp.y += m_dataJump.upforce;
+		if (newp.y < m_groundLevel)
+		    newp.y = m_groundLevel;
+		
+		m_position = newp;
 	}
 
     void Entity::ModifyDirection(const glm::vec3& direction)

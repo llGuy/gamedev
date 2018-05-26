@@ -1,4 +1,4 @@
-#define GLEW_STATIC
+#define GLM_ENABLE_EXPERMINENTAL
 
 #include <iostream>
 #include <GL/glew.h>
@@ -19,10 +19,11 @@ int main(int argc, char* argv[])
 
     while(window.Open())
     {
-	// draw calls
-	engine.Render();
-	window.Update();
+		// draw calls
+		engine.Update();
+		engine.Render();
+		window.Update();
     }
-    
+
     return 0;
 }

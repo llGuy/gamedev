@@ -1,6 +1,4 @@
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/transform.hpp>
-
 #include "camera.h"
 
 namespace mulgame {

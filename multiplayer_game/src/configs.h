@@ -5,9 +5,9 @@ namespace mulgame {
 
     struct MULGEngineConfigs
     {
-	float fov;
-	float near;
-	float far;
+		float fov;
+		float near;
+		float far;
     };
     
 }

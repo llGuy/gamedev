@@ -1,6 +1,7 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include "event_handler.h"
 
 struct GLFWwindow;
@@ -15,6 +16,7 @@ public:
     void Update(void);
     const bool Open(void) const;
 
+	void MBCallback(int32_t button, int32_t action);
     void EForwarder(const mulgame::MULGEventForwarder& ef);
 private:
     void PollKeys(void);

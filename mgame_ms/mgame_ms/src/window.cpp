@@ -1,3 +1,5 @@
+#define GLM_ENABLE_EXPERMINENTAL
+
 #include <iostream>
 #include "window.h"
 #include <GLFW/glfw3.h>
@@ -69,10 +71,20 @@ void Window::PollKeys(void)
 void Window::PollMouse(void)
 {
     using mulgame::EntitiesHandler;
-	using mulgame::ability_t;
+    using mulgame::Terrain;
+    using mulgame::action_t;
     double x, y;
     glfwGetCursorPos(m_window, &x, &y);
     m_eventForwarder.Handle<EntitiesHandler>(glm::vec2(x, y));
+
+    if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2))
+    {
+	auto& ehandler = m_eventForwarder.Get<EntitiesHandler>();
+	auto& camera = ehandler.Cam();
+	auto& entity = ehandler[camera.BoundEntity()];
+
+	m_eventForwarder.Handle<Terrain>(action_t::START_TERRAFORM, entity);
+    }
 }
 
 void Window::MBCallback(int32_t button, int32_t action)
