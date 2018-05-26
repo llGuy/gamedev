@@ -8,7 +8,7 @@ namespace mulgame {
 	class Ray
 	{
 	public:
-		explicit Ray(const glm::vec3& vdirection, const glm::vec3& position, float scale);
+		explicit Ray(const glm::vec3& vdirection, const glm::vec3& position, float scale, float maxdistance);
 		// current position
 		const glm::vec3& CurrentPosition(void);
 		// total distance covered
@@ -19,13 +19,11 @@ namespace mulgame {
 		const float DistancetoEnd(void);
 		void Extend(void);
 	private:
-		glm::vec3 m_directionScaled;
-		glm::vec3 m_position;
-		glm::vec3 m_endPosition;
-		float m_d;
-		float m_scale;
-		float m_difference;
 		uint32_t m_interval;
+		float m_maxDistance;
+		float m_distanceBetweenInterval;
+		glm::vec3 m_currentPosition;
+		glm::vec3 m_direction;
 	};
 
 }

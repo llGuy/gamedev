@@ -75,6 +75,11 @@ namespace mulgame {
 
 		return 0.0f;
 	    }
+	glm::ivec2 WorldtoMeshSpace(const glm::vec2& pos)
+	{
+		glm::vec2 fpos = pos + glm::vec2(static_cast<float>(VERTX) / 2.0f, static_cast<float>(VERTZ) / 2.0f);
+		return glm::ivec2(static_cast<uint32_t>(fpos.x), static_cast<uint32_t>(fpos.y));
+	}
     private:
 	uint32_t VIndex(uint32_t x, uint32_t z)
 	    {
