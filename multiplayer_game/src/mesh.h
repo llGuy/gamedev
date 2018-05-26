@@ -77,9 +77,21 @@ namespace mulgame {
 	    }
 	glm::ivec2 WorldtoMeshSpace(const glm::vec2& pos)
 	{
-		glm::vec2 fpos = pos + glm::vec2(static_cast<float>(VERTX) / 2.0f, static_cast<float>(VERTZ) / 2.0f);
+		glm::vec2 fpos = pos + glm::vec2(static_cast<float>(VERTX) / 2.0f, static_cast<float>(VERTZ) / 2.0f); 
 		return glm::ivec2(static_cast<uint32_t>(fpos.x), static_cast<uint32_t>(fpos.y));
 	}
+
+	glm::vec3& At(uint32_t x, uint32_t z)
+	    {
+		uint32_t index = VIndex(x, z);
+		return m_vertices[index];
+	    }
+
+	void UpdateVertexBuffer(void)
+	    {
+		const uint32_t VERTICES_SIZE_BYTES = sizeof(glm::vec3) * m_vertices.size();
+		m_vibuffer.PartialFill(0, VERTICES_SIZE_BYTES, m_vertices.data(), GL_ARRAY_BUFFER);
+	    }
     private:
 	uint32_t VIndex(uint32_t x, uint32_t z)
 	    {

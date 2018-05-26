@@ -39,6 +39,7 @@ namespace mulgame {
     void MULGEngine::Update(void)
     {
 	m_ehandler.Update(m_terrain);
+	m_terrain.UpdateForcePoints(m_ehandler.Timedelta());
     }
     
     void MULGEngine::RenderEntities(void)

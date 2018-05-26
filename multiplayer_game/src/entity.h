@@ -107,7 +107,7 @@ namespace mulgame {
 		return m_entityID;
 	    }
 	inline
-	bool& Terraforming(void)
+	int32_t& Terraforming(void)
 	    {
 		return m_terraforming;
 	    }
@@ -120,8 +120,8 @@ namespace mulgame {
 	float m_height;
 	float m_groundLevel;
 
-	// is terraforming
-	bool m_terraforming;
+	// -1 means that entity is not terraforming
+	int32_t m_terraforming;
     };
 
 }

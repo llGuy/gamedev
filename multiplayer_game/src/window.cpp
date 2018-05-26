@@ -46,7 +46,7 @@ void Window::Update(void)
     glfwSwapBuffers(m_window);
     glfwPollEvents();
     PollKeys();
-	PollMouse();
+    PollMouse();
 }
 
 void Window::EForwarder(const mulgame::MULGEventForwarder& ef)

@@ -28,6 +28,8 @@ namespace mulgame {
 	Terrain(void) = default;
 
 	void Handle(action_t, Entity& entity);
+	// plural
+	void UpdateForcePoints(float timedelta);
     public:
 	inline
 	void Init(void)
@@ -49,6 +51,8 @@ namespace mulgame {
 	    {
 		return m_mesh.HeightAtPoint(position.x, position.z);
 	    }
+	// singular
+	void UpdateFP(uint32_t fp, float timedelta);
     private:
 	static constexpr int32_t MESH_DIM = 64;
 	Mesh<MESH_DIM, MESH_DIM> m_mesh;
