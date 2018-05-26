@@ -1,11 +1,15 @@
 # Compile on Ubuntu:
 #    apt-get install libglfw3-dev libglew-dev libglm-dev
 
+# Compile on MacoS
+#    brew install glm glew glfw3
+
+
 OS=$(shell uname)
 ifeq ($(OS),Darwin)
-	CFLAGS=-std=c++14 =L/usr/local/lib
-	LFLAGS=-lglfw -lGL -lGLEW
-	IPATH=
+	CFLAGS=-std=c++14  -stdlib=libc++
+	LFLAGS=-L/usr/local/lib -framework OpenGL -lglfw -lGLEW
+	IPATH=-I/usr/local/include
 else
 	IPATH=
 	LFLAGS=-lglfw -lGL -lGLEW

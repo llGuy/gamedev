@@ -1,5 +1,5 @@
-#ifndef _TIME_H_
-#define _TIME_H_
+#ifndef _MTIME_H_
+#define _MTIME_H_
 
 #include <chrono>
 
@@ -38,4 +38,4 @@ namespace mulgame {
 
 }
 
-#endif /* _TIME_H_ */
+#endif /* _MTIME_H_ */
