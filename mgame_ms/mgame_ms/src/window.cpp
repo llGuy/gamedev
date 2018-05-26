@@ -7,7 +7,7 @@ static void MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 	Window* p = (Window*)(glfwGetWindowUserPointer(window));
 	if (action == GLFW_PRESS)
 	{
-		p->MBCallback(GLFW_MOUSE_BUTTON_1);
+		p->MBCallback(button, action);
 	}
 }
 
@@ -75,7 +75,7 @@ void Window::PollMouse(void)
     m_eventForwarder.Handle<EntitiesHandler>(glm::vec2(x, y));
 }
 
-void Window::MBCallback(int32_t button)
+void Window::MBCallback(int32_t button, int32_t action)
 {
 	using mulgame::EntitiesHandler;
 	using mulgame::ability_t;

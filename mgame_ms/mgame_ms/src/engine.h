@@ -48,7 +48,7 @@ namespace mulgame {
 		MULGEngineData m_data;
 		MULGEngineConfigs m_configs;
 		Program<2, 4> m_entityProgram;
-		Program<3, 3> m_terrainProgram;
+		Program<2, 3> m_terrainProgram;
 		EntitiesHandler m_ehandler;
     };
 

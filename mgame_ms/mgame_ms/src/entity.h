@@ -35,11 +35,14 @@ namespace mulgame {
 		{
 			Balance();
 		}
-		void Jump(float timedelta, float gravity)
+		void Jump(float timedelta, float gravity, bool atGroundHeight)
 		{
-			upforce = 0.0f;
-			velocity = 2.0f;
-			Move(timedelta, gravity);
+			if (atGroundHeight)
+			{
+				upforce = 0.0f;
+				velocity = 1.0f;
+				Move(timedelta, gravity);
+			}
 		}
 		void Update(float timedelta, float gravity, bool atGroundHeight)
 		{
@@ -59,6 +62,7 @@ namespace mulgame {
 		{
 			upforce = 0.0f;
 			velocity = 0.0f;
+			jumping = false;
 		}
 		float upforce;
 		float velocity;
@@ -106,6 +110,7 @@ namespace mulgame {
 		uint32_t m_entityID;
 
 		float m_height;
+		float m_groundLevel;
     };
 
 }

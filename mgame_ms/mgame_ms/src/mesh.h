@@ -27,10 +27,10 @@ namespace mulgame {
 		{
 			GenerateVertices();
 			GenerateIndices();
-			GenerateColors();
+			//GenerateColors();
 
 			CreateVIBuffer();
-			CreateColorBuffer();
+			//CreateColorBuffer();
 			CreateVAO();
 		}
 
@@ -120,7 +120,7 @@ namespace mulgame {
 		}
 		void GenerateColors(void)
 		{
-			std::fill(m_colors.begin(), m_colors.end(), glm::vec3(0.6f, 0.6f, 0.6f));
+			std::fill(m_colors.begin(), m_colors.end(), glm::vec3(0.3f, 0.3f, 0.3f));
 		}
 	private:
 		void CreateVIBuffer(void)
@@ -144,10 +144,10 @@ namespace mulgame {
 			m_vao.VAPtr(0, 3, GL_FLOAT, 3 * sizeof(float), nullptr);
 
 			// divisor for each triangle
-			m_colorBuffer.Bind(GL_ARRAY_BUFFER);
+			/*m_colorBuffer.Bind(GL_ARRAY_BUFFER);
 			m_vao.Enable(1);
 			m_vao.VAPtr(1, 3, GL_FLOAT, 3 * sizeof(float), 0);
-			m_vao.Divisor(1, 1);
+			m_vao.Divisor(1, 1);*/
 		}
 	private:
 		std::array<glm::vec3, VERTX * VERTZ> m_vertices;

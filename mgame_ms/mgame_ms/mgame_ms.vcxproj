@@ -137,6 +137,7 @@
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\program.h" />
+    <ClInclude Include="src\ray.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\terrain.h" />
@@ -153,7 +154,9 @@
     <ClCompile Include="src\entity_model.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\math.cpp" />
+    <ClCompile Include="src\ray.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\terrain.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -17,15 +17,9 @@ namespace dawn {
 		{
 			switch (base.type)
 			{
-			case GL_VERTEX_SHADER:
-				m_strShaderType = "vertex shader";
-				break;
-			case GL_FRAGMENT_SHADER:
-				m_strShaderType = "fragment shader";
-				break;
-			case GL_GEOMETRY_SHADER:
-				m_strShaderType = "geometry shader";
-				break;
+			case GL_VERTEX_SHADER: m_strShaderType = "vertex shader"; break;			     
+			case GL_FRAGMENT_SHADER: m_strShaderType = "fragment shader"; break;
+			case GL_GEOMETRY_SHADER: m_strShaderType = "geometry shader"; break;
 			}
 			ExtractSrc(base.dir);
 		}

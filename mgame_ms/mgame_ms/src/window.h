@@ -15,7 +15,7 @@ public:
     void Update(void);
     const bool Open(void) const;
 
-	void MBCallback(int32_t button);
+	void MBCallback(int32_t button, int32_t action);
     void EForwarder(const mulgame::MULGEventForwarder& ef);
 private:
     void PollKeys(void);

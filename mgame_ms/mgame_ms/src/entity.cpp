@@ -16,7 +16,7 @@ namespace mulgame {
 	// needs the terrain to know whether or not the player is at ground level
     void Entity::Move(movement_t mtype, float timeDelta)
     {
-		static constexpr float GRAVITY = -9.5f;
+		static constexpr float GRAVITY = -5.0f;
 		static constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
 		
 		glm::vec3 xzDirection = glm::normalize(glm::vec3(m_direction.x, 0.0f, m_direction.z));
@@ -29,24 +29,25 @@ namespace mulgame {
 		case movement_t::RIGHT:    moveDirection = glm::cross(xzDirection, UP); break;
 		case movement_t::LEFT:     moveDirection = -glm::cross(xzDirection, UP); break;
 		case movement_t::JUMP:	   
-			
-			m_dataJump.Jump(timeDelta, GRAVITY); 
+			bool atGroundHeight = (m_groundLevel > m_position.y || Equf(m_position.y, m_groundLevel));
+			m_dataJump.Jump(timeDelta, GRAVITY, atGroundHeight); 
 			m_position.y += m_dataJump.upforce; 
 			return;
 		}
-		m_position += moveDirection * timeDelta * 3.0f;
+		m_position += moveDirection * timeDelta * 6.0f;
     }
 
 	void Entity::UpdateData(float groundHeight, float timedelta)
 	{
-		static constexpr float GRAVITY = -9.5f;
+		static constexpr float GRAVITY = -5.0f;
 		// y value of player position 
 		// is treated differently from other components
+		m_groundLevel = groundHeight;
 
-		if (m_position.y < groundHeight) 
-			m_position.y = groundHeight;
+		if (m_position.y < m_groundLevel)
+			m_position.y = m_groundLevel;
 
-		m_dataJump.Update(timedelta, GRAVITY, (groundHeight > m_position.y || Equf(m_position.y, groundHeight)));
+		m_dataJump.Update(timedelta, GRAVITY, (m_groundLevel > m_position.y || Equf(m_position.y, m_groundLevel)));
 		// balance the forces
 		//m_position.y += GRAVITY;
 		m_position.y += /*-GRAVITY + */m_dataJump.upforce;

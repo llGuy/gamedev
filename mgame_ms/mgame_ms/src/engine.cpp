@@ -21,13 +21,13 @@ namespace mulgame {
     {
 		m_configs.fov = glm::radians(60.0f);
 		m_configs.near = 0.1f;
-		m_configs.far = 100.0f;
+		m_configs.far = 1000.0f;
     }
 
     void MULGEngine::Render(void)
     {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		m_entityProgram.UseProgram();
 		
@@ -74,7 +74,7 @@ namespace mulgame {
     void MULGEngine::InitShaders(void)
     {
 		InitEntityShaders();
-		InitTerrainShaders();
+		//InitTerrainShaders();
     }
 
 	void MULGEngine::InitEntityShaders(void)
@@ -93,7 +93,7 @@ namespace mulgame {
 
 	void MULGEngine::InitTerrainShaders(void)
 	{
-		m_terrainProgram.Compile("res\\terrain\\vsh.shader", "res\\terrain\\gsh.shader", "res\\terrain\\fsh.shader");
+		m_terrainProgram.Compile("res\\terrain\\vsh.shader", "res\\terrain\\fsh.shader");
 		m_terrainProgram.Link("vertex_position", "vertex_color");
 
 		m_terrainProgram.GetUniformLocations
@@ -125,13 +125,13 @@ namespace mulgame {
 
 	void MULGEngine::RenderTerrain(void)
 	{
-		m_terrainProgram.UseProgram();
-
 		Camera& camera = m_ehandler.Cam();
 		glm::mat4 view = camera.ViewMatrix(m_ehandler[camera.BoundEntity()]);
 		glm::mat4& projection = m_data.matProjection;
+		glm::vec3 color(0.2f, 0.2f, 0.2f);
+		glm::mat4 translation(1.0f);
 
-		m_terrainProgram.UniformData(&view[0][0], &projection[0][0], &m_data.lightPosition[0]);
+		m_entityProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
 		
 		DElementsData data = m_terrain.OGLBuffer();
 		m_renderer.EDraw(data, m_terrain.VertexArray(), GL_TRIANGLES);

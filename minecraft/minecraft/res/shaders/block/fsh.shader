@@ -1,4 +1,4 @@
-#version 330 core
+f#version 330 core
 
 uniform sampler2D diffuse_texture;
 uniform vec3 light_position;

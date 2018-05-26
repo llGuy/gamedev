@@ -4,11 +4,9 @@ precision highp float;
 
 out vec4 final_color;
 
-in vec3 color;
-in vec3 vertex_normal;
-in vec4 diffuse_light;
+in vec3 pass_vertex_color;
 
 void main(void)
 {
-	final_color = vec4(color, 1.0f);// + diffuse_light;
+	final_color = vec4(pass_vertex_color, 1.0f);// + diffuse_light;
 }

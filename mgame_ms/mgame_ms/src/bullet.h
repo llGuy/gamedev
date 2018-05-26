@@ -17,7 +17,7 @@ namespace mulgame {
 			pos += dir * timeDelta * BULLET_SPEED;
 		}
 		
-		static constexpr float BULLET_SPEED = 20.0f;
+		static constexpr float BULLET_SPEED = 30.0f;
 		glm::vec3 pos;
 		glm::vec3 dir;
 		uint32_t shooterID;

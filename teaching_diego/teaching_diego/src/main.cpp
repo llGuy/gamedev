@@ -12,12 +12,18 @@ uint32_t CreateTriangle(void)
 		glm::vec3 color;
 	};
 
+	/* 
+		openGL "interpolates" between the colors that are specified
+		in the attributes which means that it will create an equal blend of
+		colors
+	*/
+
 	Vertex vertices[]
 	{
 		// attribute 0 position				attribute 1 color
 		Vertex{ glm::vec2(-1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-		Vertex{ glm::vec2(+0.0f, +1.0f), glm::vec3(0.0f, 0.0f, 1.0f) },
-		Vertex{ glm::vec2(+1.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f) }
+		Vertex{ glm::vec2(+0.0f, +1.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec2(+1.0f, -1.0f), glm::vec3(1.0f, 0.0f, 0.0f) }
 	};
 
 	uint32_t bufferID;
@@ -88,7 +94,7 @@ int main(int argc, char* argv[])
 	}
 
 	GLFWwindow* window;
-	window = glfwCreateWindow(1700, 1200, "fuck machine", 0, 0);
+	window = glfwCreateWindow(1000, 500, "fuck machine", 0, 0);
 	glfwMakeContextCurrent(window);
 	
 	// initializing glew
@@ -107,7 +113,7 @@ int main(int argc, char* argv[])
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		// i am drawing triangles which means that 
 		// when i specify the 3 vertices, openGL will fill

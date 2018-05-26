@@ -26,6 +26,7 @@ void Window::Draw(void)
 }
 void Window::Update(void)
 {
+	glViewport(0, 0, m_width, m_height);
 	glfwSwapBuffers(m_glfwWindow);
 	glfwPollEvents();
 	PollKeys();
@@ -96,7 +97,7 @@ void Window::PollKeys(void)
 {
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_W))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::W); 
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_A))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::A);
-	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::S);
+	if (glfwGetKey(m_glfwWindow, GLFW_KEY_S))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::S); 
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_D))			m_engine.RecieveKeyInput(minecraft::Engine::key_t::D);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_SPACE))		m_engine.RecieveKeyInput(minecraft::Engine::key_t::SPACE);
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_LEFT_SHIFT))	m_engine.RecieveKeyInput(minecraft::Engine::key_t::LSHIFT);

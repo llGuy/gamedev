@@ -37,7 +37,7 @@ namespace minecraft
 			if (noise >= m_biomeNoiseValues[4])  return biome_t::MOUNTAINS;
 			else if (noise >= m_biomeNoiseValues[3])	return biome_t::DESERT;
 			else if (noise >= m_biomeNoiseValues[2]) return biome_t::PLAINS;
-			else if (noise >= m_biomeNoiseValues[1]) return biome_t::OCEAN;
+			//else if (noise >= m_biomeNoiseValues[1]) return biome_t::OCEAN;
 			else return biome_t::ISLANDS;
 			//else if(noise >= -10.0f)	return biome_t::DESERT; 
 			//else return biome_t::OCEAN;
@@ -50,7 +50,7 @@ namespace minecraft
 			if (noise >= 70.0f)
 			{
 				b.b = biome_t::MOUNTAINS;
-				float temp = noise - 70.0f;
+				float temp = noise - 70.0f;5yt9  
 				if (temp <= 10.0f) b.lerp = temp / 10.0f;
 				else b.lerp = 1.0f;
 			}
