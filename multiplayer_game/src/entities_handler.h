@@ -5,10 +5,10 @@
 #include <array>
 #include <vector>
 #include "mtime.h"
-#if (defined __cplusplus) && (__cplusplus >= 201700L)
-#include <optional>
-#else
+#if (defined cpp_no_optional)
 #include "optional.hpp"
+#else
+#include <optional>
 #endif
 #include <tuple>
 #include "event.h"
