@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "mesh.h"
 #include "vao.h"
+#include "terrain_mound.h"
 
 namespace mulgame {
 
@@ -58,6 +59,8 @@ namespace mulgame {
 	Mesh<MESH_DIM, MESH_DIM> m_mesh;
 	
 	std::vector<ForcePoint> m_forcePoints;
+
+	Mound<5> m_mound;
     };
 
 }

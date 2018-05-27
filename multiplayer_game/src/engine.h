@@ -11,6 +11,7 @@
 #include "configs.h"
 #include "renderer.h"
 #include "data.h"
+#include "lighting.h"
 
 namespace mulgame {
     
@@ -46,10 +47,11 @@ namespace mulgame {
     private:
 		Terrain m_terrain;
 		Renderer m_renderer;
+		Lighting m_lighting;
 		MULGEngineData m_data;
 		MULGEngineConfigs m_configs;
 		Program<2, 4> m_entityProgram;
-		Program<2, 4> m_terrainProgram;
+		Program<3, 4> m_terrainProgram;
 		EntitiesHandler m_ehandler;
     };
 

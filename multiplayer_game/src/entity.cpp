@@ -4,19 +4,20 @@
 
 namespace mulgame {
 
-    Entity::Entity(void)
+	Entity::Entity(void)
+		: m_terraforming(-1)
     {
     }
     
     Entity::Entity(const glm::vec3& position, const glm::vec3& direction, uint32_t id)
-	: m_position(position), m_direction(direction), m_entityID(id), m_height(3.0f)
+	: m_position(position), m_direction(direction), m_entityID(id), m_height(3.0f), m_terraforming(-1), m_speed(DEFAULT_SPEED)
     {
     }
 
 	// needs the terrain to know whether or not the player is at ground level
     void Entity::Move(movement_t mtype, float timeDelta)
     {
-		static constexpr float GRAVITY = -4.0f;
+		static constexpr float GRAVITY = -1.0f;
 		static constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
 		
 		glm::vec3 xzDirection = glm::normalize(glm::vec3(m_direction.x, 0.0f, m_direction.z));
@@ -24,6 +25,7 @@ namespace mulgame {
 
 		switch(mtype)
 		{
+		case movement_t::RUN:	   m_speed = DEFAULT_SPEED * 2.0f; return;
 		case movement_t::FORWARD:  moveDirection = xzDirection; break;
 		case movement_t::BACKWARD: moveDirection = -xzDirection; break;
 		case movement_t::RIGHT:    moveDirection = glm::cross(xzDirection, UP); break;
@@ -34,12 +36,12 @@ namespace mulgame {
 			m_position.y += m_dataJump.upforce; 
 			return;
 		}
-		m_position += moveDirection * timeDelta * 6.0f;
+		m_position += moveDirection * timeDelta * m_speed;
     }
 
 	void Entity::UpdateData(float groundHeight, float timedelta)
 	{
-		static constexpr float GRAVITY = -4.0f;
+		static constexpr float GRAVITY = -1.0f;
 		// y value of player position 
 		// is treated differently from other components
 		m_groundLevel = groundHeight;

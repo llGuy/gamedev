@@ -1,4 +1,4 @@
-#version 320 es
+#version 330 core
 
 in layout(location = 0) vec3 vertex_position;
 
