@@ -1,6 +1,6 @@
-#version 320 es
+#version 330
 
-in layout(location = 0) vec3 vertex_position;
+layout(location = 0) in vec3 vertex_position;
 
 out vec3 pass_vertex_color;
 out vec3 pass_vertex_world_position;
