@@ -77,9 +77,18 @@ namespace mulgame {
 	InitTerrainShaders();
     }
 
+	std::string MULGEngine::shaderPath(const std::string & shaderName) const
+	{
+#ifdef _WIN32
+		return "res/" + shaderName;
+#else
+		return "../res/" + shaderName;
+#endif
+	}
+
     void MULGEngine::InitEntityShaders(void)
     {
-	m_entityProgram.Compile("../res/entity/vsh.shader", "../res/entity/fsh.shader");
+	m_entityProgram.Compile(shaderPath("entity/vsh.shader"), shaderPath("entity/fsh.shader"));
 	m_entityProgram.Link("vertex_position");
 
 	m_entityProgram.GetUniformLocations
@@ -93,7 +102,7 @@ namespace mulgame {
 
     void MULGEngine::InitTerrainShaders(void)
     {
-	m_terrainProgram.Compile("../res/terrain/vsh.shader", "../res/terrain/fsh.shader");
+	m_terrainProgram.Compile(shaderPath("terrain/vsh.shader"), shaderPath("terrain/fsh.shader"));
 	m_terrainProgram.Link("vertex_color");
 
 	m_terrainProgram.GetUniformLocations
