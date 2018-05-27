@@ -43,6 +43,7 @@ namespace mulgame {
 		void InitEntities(void);
 		void InitTerrain(void);
 		void InitOpenglGLStates(void) const;
+		std::string shaderPath(const std::string & shaderName) const;
     private:
 		Terrain m_terrain;
 		Renderer m_renderer;

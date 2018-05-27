@@ -4,10 +4,10 @@
 #include "math.h"
 #include "bullet.h"
 #include <string>
-#if (defined __cplusplus) && (__cplusplus >= 201700L)
-#include <optional>
-#else
+#if (defined cpp_no_optional)
 #include "optional.hpp"
+#else
+#include <optional>
 #endif
 #include <glm/glm.hpp>
 
