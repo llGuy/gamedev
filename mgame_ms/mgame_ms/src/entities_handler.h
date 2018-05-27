@@ -4,9 +4,14 @@
 #include <glm/glm.hpp>
 #include <array>
 #include <vector>
+#include "mtime.h"
+#if (defined __cplusplus) && (__cplusplus >= 201700L)
 #include <optional>
+#else
+#include <optional>
+//#include "optional.hpp"
+#endif
 #include <tuple>
-#include "time.h"
 #include "event.h"
 #include "entity.h"
 #include "camera.h"
@@ -15,73 +20,78 @@
 
 namespace mulgame {
 
-    class EntitiesHandler
-    {
-		public:
+	class EntitiesHandler
+	{
+	public:
 		EntitiesHandler(void);
-		
+
 		Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction);
 		void BindCamera(uint32_t index);
-		
+
 		void Update(Terrain& terrain);
-		
+
 		// for entity movement
 		void Handle(movement_t);
 		// for cursor movement (looking around the world)
 		void Handle(const glm::vec2& cursorDiff);
 
 		void Handle(ability_t);
-		
+
 		inline
-		void StartTimer(void)
+			float Timedelta(void)
+		{
+			return static_cast<float>(m_timer.TimeDelta());
+		}
+		inline
+			void StartTimer(void)
 		{
 			m_timer.StartTimer();
 		}
 		inline
-		Entity& operator[](uint32_t i)
+			Entity& operator[](uint32_t i)
 		{
-		    return m_entities[i];
+			return m_entities[i];
 		}
 		inline
-		Camera& Cam(void)
+			Camera& Cam(void)
 		{
-		    return m_camera;
+			return m_camera;
 		}
 		inline
-		EntityModel& EModel(void)
+			EntityModel& EModel(void)
 		{
-		    return m_entityModel;
+			return m_entityModel;
 		}
 		inline
-		EntityModel& BModel(void)
+			EntityModel& BModel(void)
 		{
 			return m_bulletModel;
 		}
 		inline
-		std::vector<Entity>::iterator ebegin(void)
+			std::vector<Entity>::iterator ebegin(void)
 		{
 			return m_entities.begin();
 		}
 		inline
-		std::vector<Entity>::iterator eend(void)
+			std::vector<Entity>::iterator eend(void)
 		{
 			return m_entities.end();
 		}
 
 		inline
-		std::vector<Bullet>::iterator bbegin(void)
+			std::vector<Bullet>::iterator bbegin(void)
 		{
 			return m_airingBullets.begin();
 		}
 		inline
-		std::vector<Bullet>::iterator bend(void)
+			std::vector<Bullet>::iterator bend(void)
 		{
 			return m_airingBullets.end();
 		}
 	private:
 		void UpdateBullets(Terrain& terrain);
 		void UpdateEntities(Terrain& terrain);
-	
+
 		// query bullet collision may return an entity collision or may not
 		using BulletCollisionRV = std::tuple<bool, std::optional<uint32_t>>;
 		BulletCollisionRV QueryBulletCollision(Terrain& terrain, Bullet& bullet);
@@ -94,7 +104,7 @@ namespace mulgame {
 		EntityModel m_entityModel;
 		EntityModel m_bulletModel;
 		Time m_timer;
-    };
+	};
 
 }
 

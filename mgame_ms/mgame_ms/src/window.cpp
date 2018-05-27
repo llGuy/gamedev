@@ -46,7 +46,7 @@ void Window::Update(void)
     glfwSwapBuffers(m_window);
     glfwPollEvents();
     PollKeys();
-	PollMouse();
+    PollMouse();
 }
 
 void Window::EForwarder(const mulgame::MULGEventForwarder& ef)
@@ -58,6 +58,7 @@ void Window::PollKeys(void)
 {
     using mulgame::movement_t;
     using mulgame::EntitiesHandler;
+	if (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::RUN);
 
     if(glfwGetKey(m_window, GLFW_KEY_W)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::FORWARD);
     else if(glfwGetKey(m_window, GLFW_KEY_S)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::BACKWARD);
@@ -77,14 +78,11 @@ void Window::PollMouse(void)
     glfwGetCursorPos(m_window, &x, &y);
     m_eventForwarder.Handle<EntitiesHandler>(glm::vec2(x, y));
 
-    if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2))
-    {
 	auto& ehandler = m_eventForwarder.Get<EntitiesHandler>();
 	auto& camera = ehandler.Cam();
 	auto& entity = ehandler[camera.BoundEntity()];
-
-	m_eventForwarder.Handle<Terrain>(action_t::START_TERRAFORM, entity);
-    }
+    if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_2))  m_eventForwarder.Handle<Terrain>(action_t::START_TERRAFORM, entity);
+	else  m_eventForwarder.Handle<Terrain>(action_t::END_TERRAFORMING, entity);
 }
 
 void Window::MBCallback(int32_t button, int32_t action)
