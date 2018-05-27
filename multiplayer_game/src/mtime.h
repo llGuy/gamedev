@@ -37,9 +37,9 @@ namespace mulgame {
 		}
 
 		inline
-		double TimeDelta(void) const
+		float TimeDelta(void) const
 		{
-		    return m_timeDelta;
+		    return static_cast<float>(m_timeDelta);
 		}
     private:
 		std::chrono::high_resolution_clock::time_point m_currentFrame;

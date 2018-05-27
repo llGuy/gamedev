@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
+
 #if (defined cpp_no_optional)
 #include "optional.hpp"
 #else

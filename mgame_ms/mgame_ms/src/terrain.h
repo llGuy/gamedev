@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "mesh.h"
 #include "vao.h"
+#include "terrain_mound.h"
 
 namespace mulgame {
 
@@ -28,6 +29,8 @@ namespace mulgame {
 	Terrain(void) = default;
 
 	void Handle(action_t, Entity& entity);
+	// plural
+	void UpdateForcePoints(float timedelta);
     public:
 	inline
 	void Init(void)
@@ -49,11 +52,15 @@ namespace mulgame {
 	    {
 		return m_mesh.HeightAtPoint(position.x, position.z);
 	    }
+	// singular
+	void UpdateFP(uint32_t fp, float timedelta);
     private:
 	static constexpr int32_t MESH_DIM = 64;
 	Mesh<MESH_DIM, MESH_DIM> m_mesh;
 	
 	std::vector<ForcePoint> m_forcePoints;
+
+	Mound<5> m_mound;
     };
 
 }

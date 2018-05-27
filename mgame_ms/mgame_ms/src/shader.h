@@ -4,7 +4,12 @@
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
+#if (defined __cplusplus) && (__cplusplus >= 201700L)
 #include <optional>
+#else
+#include <optional>
+//#include "optional.hpp"
+#endif
 
 namespace mulgame {
 	    
