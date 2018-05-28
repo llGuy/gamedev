@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "data.h"
 #include "lighting.h"
+#include "lflare_handler.h"
 
 namespace mulgame {
     
@@ -35,16 +36,18 @@ namespace mulgame {
 		void RenderEntities(void);
 		void RenderBullets(void);
 		void RenderTerrain(void);
+		void RenderLFlare(void);
 	private:
 		void Configure(void);
 		void InitData(int32_t width, int32_t height);
 		void InitShaders(void);
 		void InitEntityShaders(void);
 		void InitTerrainShaders(void);
+		void InitLFlareShaders(void);
 		void InitEntities(void);
 		void InitTerrain(void);
 		void InitOpenglGLStates(void) const;
-		std::string shaderPath(const std::string & shaderName) const;
+		std::string ShaderPath(const std::string & shaderName) const;
     private:
 		Terrain m_terrain;
 		Renderer m_renderer;
@@ -53,7 +56,9 @@ namespace mulgame {
 		MULGEngineConfigs m_configs;
 		Program<2, 4> m_entityProgram;
 		Program<3, 4> m_terrainProgram;
+		Program<2, 4> m_lflareProgram;
 		EntitiesHandler m_ehandler;
+		LFlareHandler m_lensFlareHandler;
     };
 
 }

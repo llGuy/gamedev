@@ -11,6 +11,7 @@ namespace mulgame {
 	MULGEngine::MULGEngine(int32_t width, int32_t height)
 		: m_entityProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 		m_terrainProgram{ GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER },
+		m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 		m_lighting(glm::vec3(100.0f, 100.0f, 100.0f))
 	{
 		Configure();
@@ -38,6 +39,7 @@ namespace mulgame {
 		RenderEntities();
 		RenderTerrain();
 		RenderBullets();
+		//RenderLFlare();
 	}
 
 	void MULGEngine::Update(void)
@@ -80,6 +82,7 @@ namespace mulgame {
 	{
 		InitEntityShaders();
 		InitTerrainShaders();
+		InitLFlareShaders();
 	}
 
 
@@ -94,7 +97,7 @@ namespace mulgame {
 
 
 
-	std::string MULGEngine::shaderPath(const std::string & shaderName) const
+	std::string MULGEngine::ShaderPath(const std::string & shaderName) const
 	{
 #ifdef _WIN32
 		return "res/" + shaderName;
@@ -105,7 +108,7 @@ namespace mulgame {
 
     void MULGEngine::InitEntityShaders(void)
     {
-	m_entityProgram.Compile(shaderPath("entity/vsh.shader"), shaderPath("entity/fsh.shader"));
+	m_entityProgram.Compile(ShaderPath("entity/vsh.shader"), ShaderPath("entity/fsh.shader"));
 	m_entityProgram.Link("vertex_position");
 
 	m_entityProgram.GetUniformLocations
@@ -119,7 +122,7 @@ namespace mulgame {
 
     void MULGEngine::InitTerrainShaders(void)
     {
-	m_terrainProgram.Compile(shaderPath("terrain/vsh.shader"), shaderPath("terrain/gsh.shader"), shaderPath("terrain/fsh.shader"));
+	m_terrainProgram.Compile(ShaderPath("terrain/vsh.shader"), ShaderPath("terrain/gsh.shader"), ShaderPath("terrain/fsh.shader"));
 	m_terrainProgram.Link("vertex_position");
 
 	m_terrainProgram.GetUniformLocations
@@ -131,6 +134,19 @@ namespace mulgame {
 	    );
     }
 
+	void MULGEngine::InitLFlareShaders(void)
+	{
+		m_lflareProgram.Compile(ShaderPath("lensflare/shader/vsh.shader"), ShaderPath("lensflare/shader/fsh.shader"));
+		m_lflareProgram.Link("vertex_position", "texture_coordinate");
+
+		m_lflareProgram.GetUniformLocations
+		(
+			UDataLoc(udata_t::MAT4, "matrix_projection"),
+			UDataLoc(udata_t::VEC2, "translation"),
+			UDataLoc(udata_t::F1, "scale"),
+			UDataLoc(udata_t::F1, "brightness")
+		);
+	}
 
     void MULGEngine::InitTerrain(void)
     {
@@ -140,6 +156,8 @@ namespace mulgame {
     void MULGEngine::InitOpenglGLStates(void) const
     {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 	void MULGEngine::RenderTerrain(void)
 	{
@@ -148,7 +166,7 @@ namespace mulgame {
 		glm::mat4 view = camera.ViewMatrix(m_ehandler[camera.BoundEntity()]);
 		glm::mat4& projection = m_data.matProjection;
 		glm::vec3 color(0.8f, 0.4f, 0.0f);
-		glm::vec3 lightPosition(0.0f, 10.0f, 0.0f);
+		glm::vec3& lightPosition = m_lighting.LightPosition();
 
 		m_terrainProgram.UniformData(&color[0], &view[0][0], &projection[0][0], &lightPosition[0]);
 
@@ -171,5 +189,32 @@ namespace mulgame {
 	    m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
 	}
     }
+
+	void MULGEngine::RenderLFlare(void)
+	{
+		Camera& camera = m_ehandler.Cam();
+		Entity& bound = m_ehandler[camera.BoundEntity()];
+		m_lensFlareHandler.UpdatePositions(m_lighting.LightPosition(), camera.ViewMatrix(bound), m_data.matProjection);
+
+		if (m_lensFlareHandler.Visible())
+		{
+			glDisable(GL_DEPTH_TEST);
+			m_lflareProgram.UseProgram();
+			glm::mat4& projection = m_data.matProjection;
+			for (uint32_t i = 0; i < LFlareHandler::NUM_FLARE_TEXTURES; ++i)
+			{
+				Texture& tex = m_lensFlareHandler.Tex(i);
+				VAO& vao = m_lensFlareHandler.VertexArray();
+				glm::vec2& translation = m_lensFlareHandler.Position(i);
+				float scale = m_lensFlareHandler.Scale(i);
+				float brightness = m_lensFlareHandler.Brightness();
+
+				tex.Bind(0);
+				m_lflareProgram.UniformData(&projection[0][0], &translation[0], &scale, &brightness);
+				m_renderer.ADraw(m_lensFlareHandler.OGLBuffer(), 4, vao, GL_TRIANGLE_STRIP);
+			}
+		}
+		glEnable(GL_DEPTH_TEST);
+	}
 
 }

@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/GLFW/include;$(SolutionDir)Dependencies/GLEW/include;$(SolutionDir)Dependencies</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies/stb-master;$(SolutionDir)Dependencies/GLFW/include;$(SolutionDir)Dependencies/GLEW/include;$(SolutionDir)Dependencies</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -141,13 +141,18 @@
     <ClInclude Include="src\event.h" />
     <ClInclude Include="src\event_handler.h" />
     <ClInclude Include="src\init.h" />
+    <ClInclude Include="src\lflare_handler.h" />
+    <ClInclude Include="src\lighting.h" />
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\mtime.h" />
     <ClInclude Include="src\program.h" />
     <ClInclude Include="src\ray.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\terrain.h" />
+    <ClInclude Include="src\terrain_mound.h" />
+    <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\time.h" />
     <ClInclude Include="src\udata.h" />
     <ClInclude Include="src\vao.h" />
@@ -159,16 +164,20 @@
     <ClCompile Include="src\entities_handler.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\entity_model.cpp" />
+    <ClCompile Include="src\lflare_handler.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\math.cpp" />
     <ClCompile Include="src\ray.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\terrain.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\entity\fsh.shader" />
     <None Include="res\entity\vsh.shader" />
+    <None Include="res\lensflare\shader\fsh.shader" />
+    <None Include="res\lensflare\shader\vsh.shader" />
     <None Include="res\terrain\fsh.shader" />
     <None Include="res\terrain\gsh.shader" />
     <None Include="res\terrain\vsh.shader" />

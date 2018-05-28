@@ -9,12 +9,12 @@
 int main(int argc, char* argv[])
 {
     GLFWInit();
-    Window window("multiplayer game", 1200, 800);
+    Window window("multiplayer game", 2800, 1300);
     window.Init();
     GLEWInit();
 
     using mulgame::MULGEngine;
-    MULGEngine engine(1200, 800);
+    MULGEngine engine(2800, 1300);
     window.EForwarder(engine.EForwarder());
 
     while(window.Open())

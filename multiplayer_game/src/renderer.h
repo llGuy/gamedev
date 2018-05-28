@@ -21,11 +21,11 @@ namespace mulgame {
 	    vao.Unbind();
 	}
 
-	void ADraw(Buffer& buffer, uint32_t count, const VAO& vao)
+	void ADraw(Buffer& buffer, uint32_t count, const VAO& vao, GLenum mode)
 	{
 	    buffer.Bind(GL_ARRAY_BUFFER);
 	    vao.Bind();
-	    glDrawArrays(GL_TRIANGLES, 0, 3);
+	    glDrawArrays(mode, 0, count);
 	    vao.Unbind();
 	    buffer.Unbind(GL_ARRAY_BUFFER);
 	}
