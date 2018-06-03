@@ -17,12 +17,12 @@ ifeq ($(OS),Darwin)
 	IPATH=-I$(HOME)/include -I/usr/local/include
 
 else
-	IPATH=
-	LFLAGS=-lglfw -lGL -lGLEW
+	IPATH=-I$(HOME)/include
+	LFLAGS=-lglfw -lGL -lGLEW -lpthread
 	ifeq ($(shell uname -r | cut -d"." -f2),15)
-		CFLAGS=-std=c++1z
+		CFLAGS=-std=c++1z -DGLM_ENABLE_EXPERIMENTAL=1 -D__forceinline="" -DSTB_IMAGE_IMPLEMENTATION=1
 	else
-		CFLAGS=-std=c++14
+		CFLAGS=-std=c++14 -DGLM_ENABLE_EXPERIMENTAL=1 -D__forceinline="" -DSTB_IMAGE_IMPLEMENTATION=1
 	endif
 endif
 
