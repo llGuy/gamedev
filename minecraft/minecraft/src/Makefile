@@ -33,6 +33,7 @@ IDIR:=$(dir $(SRC))
 OBJ_FILES=$(notdir $(SRC))
 #OBJ=$(addprefix $(BUILD_DIR)/,$(OBJ_FILES:.cpp=.o))
 OBJ=$(SRC:.cpp=.o)
+DEPS=$(SRC:.cpp=.d)
 
 .PHONY: all
 all: game
@@ -47,7 +48,7 @@ game: $(OBJ)
 
 .PHONY: clean
 clean:
-	/bin/rm -f game $(OBJ)
+	/bin/rm -f game $(OBJ) $(DEPS)
 
 .PHONY: depend
 depend: $(DEPS)
@@ -55,5 +56,5 @@ depend: $(DEPS)
 %.o: %.cpp
 	$(CXX) $(IPATH) $(CFLAGS) $(IPATH) -c -o $@ $<
 
-$(BUILD_DIR)/%.d: %.cpp
+%.d: %.cpp
 	$(CXX) $(CFLAGS) $(IPATH) -MM -MF $@ $<
