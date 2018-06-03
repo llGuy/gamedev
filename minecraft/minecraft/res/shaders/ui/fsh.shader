@@ -8,6 +8,7 @@ out vec4 fragment_color;
 
 void main()
 {
-	fragment_color = texture2D(diffuse_texture, tdata);
+	//fragment_color = texture2D(diffuse_texture, tdata);
+	fragment_color = texture(diffuse_texture, tdata);
 	//fragment_color = vec4(1.0f, 1.0f, 1.0f, 0.0f);
 }

@@ -28,7 +28,8 @@ float Specular(vec3 light_vector)
 
 vec4 FragmentColor(void)
 {
-	vec4 c = texture2D(diffuse_texture, texture_coords);
+	//BMRvec4 c = texture2D(diffuse_texture, texture_coords);
+	vec4 c = texture(diffuse_texture, texture_coords);
 	c.a = 0.1f;
 
 	return c;

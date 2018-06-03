@@ -1,4 +1,4 @@
-f#version 330 core
+#version 330 core
 
 uniform sampler2D diffuse_texture;
 uniform vec3 light_position;
@@ -30,12 +30,14 @@ float Specular(vec3 light_vector)
 
 vec4 Grass(void)
 {
-	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 90.0f / 255.0f, 0.02f, 1.0f);// *0.7f;
+	//BMR	return texture2D(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 90.0f / 255.0f, 0.02f, 1.0f);// *0.7f;
+	return texture(diffuse_texture, texture_coords) + vec4(0.0f / 255.0f, 90.0f / 255.0f, 0.02f, 1.0f);// *0.7f;
 }
 
 vec4 Leaves(void)
 {
-	vec4 v = texture2D(diffuse_texture, texture_coords);
+	//BMR vec4 v = texture2D(diffuse_texture, texture_coords);
+	vec4 v = texture(diffuse_texture, texture_coords);
 	vec4 a;
 	if (v.a == 0.0f) a = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	else a = vec4(0.0f / 255.0f, 210.0f / 255.0f, 0.0f / 255.0f, 1.0f) * 0.4f;
@@ -46,7 +48,8 @@ vec4 FragmentColor(void)
 {
 	if (abs(texture_data - 0.0f) < 0.0001f) return Grass();
 	if (abs(texture_data - 53.0f) < 0.0001f || abs(texture_data - 52.0f) < 0.0001f) return Leaves();
-	return texture2D(diffuse_texture, texture_coords);
+	//BMR return texture2D(diffuse_texture, texture_coords);
+	return texture(diffuse_texture, texture_coords);
 }
 
 void main()

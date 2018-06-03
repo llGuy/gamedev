@@ -1,7 +1,7 @@
 #version 330 core
 
-in layout(location = 0) vec2 vertex_position;
-in layout(location = 1) vec2 texture_data;
+layout(location = 0) in vec2 vertex_position;
+layout(location = 1) in vec2 texture_data;
 
 out vec2 tdata;
 

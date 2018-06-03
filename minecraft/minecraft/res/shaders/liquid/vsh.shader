@@ -1,6 +1,6 @@
 #version 330 core
 
-in layout(location = 0) vec3 vertex_position;
+layout(location = 0) in vec3 vertex_position;
 
 out vec3 pass_world_position;
 
