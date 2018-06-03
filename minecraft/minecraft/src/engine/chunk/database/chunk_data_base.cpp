@@ -1,5 +1,6 @@
 #include "chunk_data_base.h"
 #include <chrono>
+#include <algorithm>
 
 namespace minecraft
 {
