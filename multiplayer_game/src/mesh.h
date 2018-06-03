@@ -6,7 +6,11 @@
 #include <new>
 #include <array>
 #include <stdint.h>
+#if (defined cpp_no_optional)
+#include "optional.hpp"
+#else
 #include <optional>
+#endif
 #include <glm/glm.hpp>
 
 #include "vao.h"
