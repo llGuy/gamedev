@@ -8,13 +8,13 @@
 
 namespace mulgame {
 
-    MULGEngine::MULGEngine(int32_t width, int32_t height)
+    MULGEngine::MULGEngine(int32_t width, int32_t height, int8_t arg)
 	: m_entityProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 	  m_terrainProgram{ GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER },
 	  m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
-	  m_lighting(glm::vec3(100.0f, 100.0f, 100.0f))
+	  m_lighting(glm::vec3(100.0f, 100.0f, 100.0f)),
+	  m_networkHandler(arg == 's' ? mode_t::SERVER_MODE : mode_t::CLIENT_MODE, m_ehandler, m_terrain)
     {
-	m_networkHandler.Launch("192.168.1.230", "5000");
 	Configure();
 	InitData(width, height);
 	InitShaders();
@@ -40,11 +40,18 @@ namespace mulgame {
 	RenderEntities();
 	RenderTerrain();
 	RenderBullets();
-	//RenderLFlare();
     }
 
     void MULGEngine::Update(void)
     {
+	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
+	{
+	    MSGEncoder encoder;
+	    Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
+	    encoder.PushBytes(player.Username(), player.Position(), player.Direction());
+	    m_networkHandler.SendPlayerDatatoServer(encoder.Data(), encoder.Size());
+	}
+	
 	m_ehandler.Update(m_terrain);
 	m_terrain.UpdateForcePoints(m_ehandler.Timedelta());
     }

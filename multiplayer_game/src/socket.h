@@ -8,31 +8,45 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <string>
+#include "client_addr.h"
 
 namespace mulgame {
 
     using Byte = int8_t;
     
     // udp socket
-    class UDPSocket
+    class Socket
     {
     public:
 	// only need the ip family
-	UDPSocket(void);
-	void InitSocket(void);
-	void Connect(void);
+	Socket(void);
+	Socket(int32_t);
+//	Socket(int32_t handle, sockaddr*, int32_t);
 	
-	void Send(Byte* data, uint32_t dataSize);
-	void Receive(Byte* data, uint32_t maxSize);
+	void InitSocket(int32_t, int32_t, int32_t);
+	void Connect(void);
+	void Bind(void);
+	void Listen(int32_t max);
+	Socket Accept(void) const;
 
-	void Sendto(Byte* data, uint32_t dataSize, addrinfo* address = nullptr);
-	sockaddr_storage ReceiveFrom(Byte* data, uint32_t maxSize);
+	void Send(const Byte* data, uint32_t dataSize);
+	bool Receive(Byte* data, uint32_t maxSize);
+
+	void Sendto(const Byte* data, uint32_t dataSize, addrinfo* address = nullptr);
+	ClientAddress ReceiveFrom(Byte* data, uint32_t maxSize);
     public:
 	// new functions
 	addrinfo FillCriteria(int family, int flags, int socktype, int protocol);
-	void GetAddressInformation(int, int, int, int, const char* address, const char* port);
+	void Init(int family, int flags, int socktype, int protocol, const char* address, const char* port);
+	void Free(void);
     private:
-	addrinfo* m_address;
+	union
+	{
+	    sockaddr m_address;
+	    sockaddr_in m_addressin;
+	};
+	// may or may not have addrinfo
+	addrinfo* m_ainfo;
 	int32_t m_handle;
     };
     

@@ -1,0 +1,3 @@
+should the client address be stored in the entity class
+       	   	  	  OR
+should the client address be stored in a different structure

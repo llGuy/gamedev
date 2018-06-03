@@ -8,13 +8,21 @@
 
 int main(int argc, char* argv[])
 {
+    if(argc != 2)
+    {
+	std::cerr << "need to specify server of client mode : -s -c" << std::endl;
+	return 0;
+    }
+
+    int8_t arg = argv[1][1];
+    
     GLFWInit();
     Window window("multiplayer game", 1200, 800);
     window.Init();
     GLEWInit();
 
     using mulgame::MULGEngine;
-    MULGEngine engine(1200, 800);
+    MULGEngine engine(1200, 800, arg);
     window.EForwarder(engine.EForwarder());
 
     while(window.Open())

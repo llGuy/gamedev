@@ -16,7 +16,7 @@ ifeq ($(OS),Darwin)
 
 else
 	IPATH=-I../Dependencies/stb-master
-	LFLAGS=-lglfw -lGL -lGLEW
+	LFLAGS=-lglfw -lGL -lGLEW -lpthread
 	ifeq ($(shell uname -r | cut -d"." -f2),15)
 		CFLAGS=-std=c++1z -DSTB_IMAGE_IMPLEMENTATION -g
 	else

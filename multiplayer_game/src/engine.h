@@ -23,7 +23,7 @@ namespace mulgame {
 	MULGEngine(const MULGEngine&) = delete;
 	const MULGEngine& operator=(const MULGEngine&) = delete;
 		
-	MULGEngine(int32_t width, int32_t height);
+	MULGEngine(int32_t width, int32_t height, int8_t arg);
     public:
 	void Render(void);
 	void Update(void);

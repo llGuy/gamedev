@@ -24,8 +24,10 @@ namespace mulgame {
     public:
 	EntitiesHandler(void);
 
-	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction);
+	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal = false);
 	void BindCamera(uint32_t index);
+
+	std::optional<Entity*> EViaUsername(const std::string& username);
 
 	void Update(Terrain& terrain);
 
@@ -34,10 +36,7 @@ namespace mulgame {
 	// for cursor movement (looking around the world)
 	void Handle(const glm::vec2& cursorDiff);
 	// handle shooting, etc... for any entity
-	void Handle(ability_t, int32_t index = -1);
-	// handle new position and direction of remote users
-	void Handle(const glm::vec3& position, const glm::vec3& direction, int32_t index = -1);
-
+	void Handle(ability_t);
 	inline
 	float Timedelta(void)
 	    {
@@ -89,6 +88,8 @@ namespace mulgame {
 	    {
 		return m_airingBullets.end();
 	    }
+
+	uint32_t Size(void) { return m_entities.size(); }
     private:
 	void UpdateBullets(Terrain& terrain);
 	void UpdateEntities(Terrain& terrain);
@@ -108,5 +109,4 @@ namespace mulgame {
     };
 
 }
-
 #endif /* _ENTITIES_HANDLER_H_ */
