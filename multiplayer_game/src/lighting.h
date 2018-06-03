@@ -14,7 +14,7 @@ namespace mulgame {
 		}
 
 		inline
-		const glm::vec3& LightPosition(void)
+		glm::vec3& LightPosition(void)
 		{
 			return m_lightPosition;
 		}

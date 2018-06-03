@@ -1,7 +1,10 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
+#ifndef GLM_ENABLE_EXPERIMENTAL
 #define GLM_ENABLE_EXPERIMENTAL
+#endif
+
 #include "event_handler.h"
 
 struct GLFWwindow;

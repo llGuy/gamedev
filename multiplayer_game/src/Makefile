@@ -15,12 +15,12 @@ ifeq ($(OS),Darwin)
 	IPATH=-I$(HOME)/include -I/usr/local/include
 
 else
-	IPATH=
-	LFLAGS=-lglfw -lGL -lGLEW
+	IPATH=-I../Dependencies/stb-master
+	LFLAGS=-lglfw -lGL -lGLEW -lpthread
 	ifeq ($(shell uname -r | cut -d"." -f2),15)
-		CFLAGS=-std=c++1z
+		CFLAGS=-std=c++1z -DSTB_IMAGE_IMPLEMENTATION -g
 	else
-		CFLAGS=-std=c++14
+		CFLAGS=-std=c++14 -DSTB_IMAGE_IMPLEMENTATION -g
 	endif
 endif
 

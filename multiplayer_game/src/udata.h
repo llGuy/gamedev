@@ -3,26 +3,30 @@
 
 namespace mulgame {
 
-    enum udata_t
-    {
-	VEC3,
-
-	MAT4,
-
-	INV
-    };
-
-    struct UDataLoc
-    {
-	UDataLoc(void) = default;
-	UDataLoc(udata_t t, const char* n)
-	    : type(t), name(n)
+	enum udata_t
 	{
-	}
-	udata_t type;
-	const char* name;
-	uint32_t location;
-    };
+		VEC3,
+
+		VEC2,
+
+		MAT4,
+		
+		F1,
+
+		INV
+	};
+
+	struct UDataLoc
+	{
+		UDataLoc(void) = default;
+		UDataLoc(udata_t t, const char* n)
+			: type(t), name(n)
+		{
+		}
+		udata_t type;
+		const char* name;
+		uint32_t location;
+	};
 
 }
 

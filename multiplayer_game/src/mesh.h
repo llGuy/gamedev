@@ -6,7 +6,7 @@
 #include <new>
 #include <array>
 #include <stdint.h>
-#if (defined cpp_no_optional)
+#ifdef cpp_no_optional
 #include "optional.hpp"
 #else
 #include <optional>

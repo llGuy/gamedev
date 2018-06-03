@@ -53,8 +53,10 @@ namespace mulgame {
 	}
     private:
 	// uniform data functions
+	void Uniform2f  (float* p, uint32_t l) { glUniform2fv(l, 1, p); }
 	void Uniform3f  (float* p, uint32_t l) { glUniform3fv(l, 1, p); }
 	void UniformMat4(float* p, uint32_t l) { glUniformMatrix4fv(l, 1, GL_FALSE, p); }
+	void Uniform1f  (float* p, uint32_t l) { glUniform1f(l, *p); }
 
 	uint32_t GetUniformLocation(const char* name) const
 	{
@@ -80,7 +82,9 @@ namespace mulgame {
 	    static std::array<UDFunc, udata_t::INV> ufuncs
 	    {
 		&Program<_Size, _Locs>::Uniform3f,
-		&Program<_Size, _Locs>::UniformMat4
+		&Program<_Size, _Locs>::Uniform2f,
+		&Program<_Size, _Locs>::UniformMat4,
+		&Program<_Size, _Locs>::Uniform1f
 	    };
 
 	    std::array<float*, sizeof...(ptrs)> ptrarr { ptrs... };
