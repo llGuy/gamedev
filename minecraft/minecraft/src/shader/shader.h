@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <fstream>
-#include <GL\glew.h>
+#include <GL/glew.h>
 
-#include "..\log.h"
+#include "../log.h"
 
 namespace sh
 {
@@ -47,6 +47,7 @@ namespace sh
 		{
 			return m_shaderID;
 		}
+		const std::string & debugSrc() const { return m_src; }
 	private:
 		void ExtractSrc(const std::string& directory)
 		{
@@ -58,6 +59,7 @@ namespace sh
 			}
 			std::string log = m_strShaderType + " load success";
 			Log(m_strShaderType);
+			Log(directory);
 			ReadFromFile(fileStream);
 		}
 		void ReadFromFile(std::ifstream& fileStream)

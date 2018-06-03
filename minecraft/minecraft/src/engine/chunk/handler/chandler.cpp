@@ -119,19 +119,33 @@ namespace minecraft
 		{
 			// liquid
 			std::vector<const char*> lattribs({"vertex_position"});
+#ifdef _WIN32		   
 			m_liquidMeshProgram.Init("res\\shaders\\liquid\\vsh.shader", "res\\shaders\\liquid\\fsh.shader",
 				"res\\shaders\\liquid\\gsh.shader");
+#else
+			m_liquidMeshProgram.Init("../res/shaders/liquid/vsh.shader", "../res/shaders/liquid/fsh.shader",
+				"../res/shaders/liquid/gsh.shader");
+#endif			
 			m_liquidMeshProgram.Compile();
 			m_liquidMeshProgram.Link(lattribs);
 
 			// blocks
 			std::vector<const char*> battribs({ "vertex_position", "texture_data" });
+#ifdef _WIN32
 			m_chunkshprogram.Init("res\\shaders\\block\\vsh.shader", "res\\shaders\\block\\fsh.shader",
 				"res\\shaders\\block\\gsh.shader");
+#else
+			m_chunkshprogram.Init("../res/shaders/block/vsh.shader", "../res/shaders/block/fsh.shader",
+				"../res/shaders/block/gsh.shader");
+#endif
 			m_chunkshprogram.Compile();
 			m_chunkshprogram.Link(battribs);
 
+#ifdef _WIN32
 			m_blockPointerSHP.Init("res\\shaders\\reg\\vsh.shader", "res\\shaders\\reg\\fsh.shader", "INV");
+#else
+			m_blockPointerSHP.Init("../res/shaders/reg/vsh.shader", "../res/shaders/reg/fsh.shader", "INV");
+#endif
 			std::vector<const char*> pattribs({ "vertex_position", "vertex_color" });
 			m_blockPointerSHP.Compile();
 			m_blockPointerSHP.Link(pattribs);

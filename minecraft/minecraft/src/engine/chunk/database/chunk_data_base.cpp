@@ -241,7 +241,7 @@ namespace minecraft
 			LoadNeighbouringVisibleBlock(c, y + 1, byscenter, t, negCorner, wcc);
 			LoadNeighbouringVisibleBlock(c, y - 1, byscenter, t, negCorner, wcc);
 
-			CVec2 xp = { c.x + 1u, c.z };
+			CVec2 xp = { uint8_t(c.x + 1u), c.z };
 			if (xp.x == 16u)
 				d.App(wcc, c, y, { 1, 0 });
 			else
@@ -250,7 +250,7 @@ namespace minecraft
 				LoadNeighbouringVisibleBlock(xp, y, bysxp, t, negCorner, wcc);
 			}
 
-			CVec2 xn = { c.x - 1u, c.z };
+			CVec2 xn = { uint8_t(c.x - 1u), c.z };
 			if (xn.x == static_cast<uint8_t>(-1)) d.App(wcc, c, y, { -1, 0 });
 			else
 			{
@@ -258,7 +258,7 @@ namespace minecraft
 				LoadNeighbouringVisibleBlock(xn, y, bysxn, t, negCorner, wcc);
 			}
 
-			CVec2 zp = { c.x, c.z + 1u };
+			CVec2 zp = { c.x, uint8_t(c.z + 1u) };
 			if (zp.z == 16u) d.App(wcc, c, y, { 0, 1 });
 			else
 			{
@@ -266,7 +266,7 @@ namespace minecraft
 				LoadNeighbouringVisibleBlock(zp, y, byszp, t, negCorner, wcc);
 			}
 
-			CVec2 zn = { c.x, c.z - 1u };
+			CVec2 zn = { c.x, uint8_t(c.z - 1u) };
 			if (zn.z == static_cast<uint8_t>(-1)) d.App(wcc, c, y, { 0, -1 });
 			else
 			{
@@ -366,13 +366,13 @@ namespace minecraft
 			// bottom
 			if (BlockExists(WVec2(), c, glm::vec3(0.0f, yf - 1.0f, 0.0f))) return true;
 			// xp
-			if (BlockExists(WVec2(), { c.x + 1u, c.z }, glm::vec3(0.0f, yf, 0.0f))) return true;
+			if (BlockExists(WVec2(), { uint8_t(c.x + 1u), c.z }, glm::vec3(0.0f, yf, 0.0f))) return true;
 			// xn
-			if (BlockExists(WVec2(), { c.x - 1u, c.z }, glm::vec3(0.0f, yf, 0.0f))) return true;
+			if (BlockExists(WVec2(), { uint8_t(c.x - 1u), c.z }, glm::vec3(0.0f, yf, 0.0f))) return true;
 			// zp
-			if (BlockExists(WVec2(), { c.x, c.z + 1u }, glm::vec3(0.0f, yf, 0.0f))) return true;
+			if (BlockExists(WVec2(), { c.x, uint8_t(c.z + 1u) }, glm::vec3(0.0f, yf, 0.0f))) return true;
 			// zn
-			if (BlockExists(WVec2(), { c.x, c.z - 1u }, glm::vec3(0.0f, yf, 0.0f))) return true;
+			if (BlockExists(WVec2(), { c.x, uint8_t(c.z - 1u) }, glm::vec3(0.0f, yf, 0.0f))) return true;
 
 			return false;
 		}
@@ -439,14 +439,14 @@ namespace minecraft
 			// is at the edge of the chunk
 			if (x == 15 || z == 15 || x == 0 || z == 0) return true;
 			// check x axis
-			CVec2 cc = { x + 1u, z };
+			CVec2 cc = { uint8_t(x + 1u), z };
 			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
-			cc = { x - 1u, z };
+			cc = { uint8_t(x - 1u), z };
 			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
 
-			cc = { x, z + 1u };
+			cc = { x, uint8_t(z + 1u) };
 			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
-			cc = { x, z - 1u };
+			cc = { x, uint8_t(z - 1u) };
 			if (m_blocks[Index(cc)].ystrip.find(y) == m_blocks[Index(cc)].ystrip.end()) return true;
 
 			// check y axis

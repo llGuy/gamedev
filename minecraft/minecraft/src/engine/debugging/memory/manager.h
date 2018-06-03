@@ -2,6 +2,7 @@
 #define MEMORY_MANAGER_HEADER
 
 #include <vector>
+#include <iostream>
 
 namespace minecraft
 {

@@ -5,11 +5,17 @@
 
 #define DEBUG 
 
+#ifdef _WIN32
+#define TEXTURE_ATLAS "res\\textures\\texture_atlas.png"
+#else
+#define TEXTURE_ATLAS "../res/textures/texture_atlas.png"
+#endif
+
 namespace minecraft
 {
 	Engine::Engine(void)
 		: m_camera(), m_player(nullptr), 
-		m_blockTextureAtlas(16.0f, 16.0f, "res\\textures\\texture_atlas.png"),
+		  m_blockTextureAtlas(16.0f, 16.0f, TEXTURE_ATLAS),
 		m_guihandler(&m_blockTextureAtlas)
 	{
 		Init();
@@ -111,9 +117,11 @@ namespace minecraft
 	}
 	void Engine::RenderDebug(void)
 	{
+#ifdef ENABLE_DEBUG
 		UpdateDebugData();
 		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES), m_debug.Size(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES));
 		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_CHUNK_CORNER), m_debug.Size(debug::Debug::option_t::RENDER_CHUNK_CORNER));
+#endif
 	}
 	void Engine::UpdateData(void)
 	{
@@ -122,8 +130,10 @@ namespace minecraft
 	}
 	void Engine::InitDebugData(void)
 	{
+#ifdef ENABLE_DEBUG
 		m_debug.Resize(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES, 3);
 		m_debug.Resize(debug::Debug::option_t::RENDER_CHUNK_CORNER, 4);
+#endif
 	}
 	void Engine::Init(void)
 	{
@@ -242,15 +252,18 @@ namespace minecraft
 		m_player->UpdData(&m_constantConfigs.gravity, blockUnderPlayerPresent, static_cast<float>(m_time.deltaT));
 	}
 	void Engine::EnableDebugger(void)
-	{
+	{/*
 		m_debug.DebugMode(true);
 		m_debug.Enable(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES);
 		m_debug.Enable(debug::Debug::option_t::RENDER_CHUNK_CORNER);
+	 */
 	}
 
 	void Engine::UpdateDebugData(void)
 	{
 		/* for the axes next to the player */
+#ifdef ENABLE_DEBUG
+
 		auto YAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(0.0f, 3.0f, 0.0f),
 			*m_player->EntityWorldPosition() + glm::vec3(0.0f, 0.01f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) }; };
 		auto XAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(3.0f, 0.0f, 0.0f),
@@ -261,7 +274,7 @@ namespace minecraft
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[0] = YAxisLine();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = XAxisLine();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = ZAxisLine();
-
+		
 		/* for the chunk corners */
 		glm::vec3 playerPosition = *m_player->EntityWorldPosition();
 		//	chunk::ChunkDB::CCorners cc = m_chunkHandler->ChunkCorners(
@@ -282,6 +295,7 @@ namespace minecraft
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = np();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = pn();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[3] = pp();
+#endif
 	}
 	void Engine::RecieveMouseInput(mbutton_t&& button)
 	{

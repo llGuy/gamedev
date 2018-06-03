@@ -2,6 +2,7 @@
 #define CHUNK_GPU_SIDE_HANDLER_HEADER
 
 #include <array>
+#include <vector>
 
 #include "../../database/blockystrip.h"
 #include "../cgpubuffer/cgpubuffer.h"

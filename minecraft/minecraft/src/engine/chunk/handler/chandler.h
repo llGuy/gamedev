@@ -1,4 +1,4 @@
-#ifndef CUNK_HANDLER_HEADER
+#ifndef CHUNK_HANDLER_HEADER
 #define CHUNK_HANDLER_HEADER
 
 #include <GL/glew.h>

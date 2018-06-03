@@ -33,7 +33,7 @@ namespace minecraft
 			vao->UnBind();
 		}
 
-		void Renderer::VecIMMRender(const debug::Line* l, const uint32_t size)
+		/*		void Renderer::VecIMMRender(const debug::Line* l, const uint32_t size)
 		{
 			for (uint32_t i = 0; i < size; ++i)
 			{
@@ -44,7 +44,7 @@ namespace minecraft
 				//glColor3f(l[i].color.r, l[i].color.g, l[i].color.b);
 				glEnd();
 			}
-		}
+			}*/
 
 		void Renderer::ERender(GLenum mode, const GLDrawElementsRenderData& d)
 		{

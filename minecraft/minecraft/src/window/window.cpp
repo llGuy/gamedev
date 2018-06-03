@@ -50,6 +50,11 @@ const bool Window::WindowOpen(void)
 }
 void Window::WindowInit(void)
 {
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	
 	m_glfwWindow = glfwCreateWindow(m_width, m_height, m_title, NULL, NULL);
 	glfwMakeContextCurrent(m_glfwWindow);
 	if (!m_glfwWindow)

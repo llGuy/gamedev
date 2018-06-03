@@ -1,12 +1,21 @@
 #include "guihandler.h"
 
+#ifdef _WIN32
+#define TEXTURE_CROSSHAIR "res\\textures\\gui\\crosshair.png"
+#define TEXTURE_ATLAS "res\\textures\\gui\\menu\\menu_atlas.png"
+#else
+#define TEXTURE_CROSSHAIR "../res/textures/gui/crosshair.png"
+#define TEXTURE_ATLAS "../res/textures/gui/menu/menu_atlas.png"
+
+#endif
+
 namespace minecraft
 {
 	namespace gui
 	{
 		GUIHandler::GUIHandler(TextureAtlas* ptr)
-			: m_blockTextureAtlasPtr(ptr), m_crosshair(1.0f, 1.0f, "res\\textures\\gui\\crosshair.png"),
-			m_guiTextureAtlas(14.0f, 14.0f, "res\\textures\\gui\\menu\\menu_atlas.png")
+			: m_blockTextureAtlasPtr(ptr), m_crosshair(1.0f, 1.0f, TEXTURE_CROSSHAIR),
+			m_guiTextureAtlas(14.0f, 14.0f, TEXTURE_ATLAS)
 		{
 		}
 		GUIHandler::~GUIHandler(void)
@@ -18,7 +27,11 @@ namespace minecraft
 		}
 		void GUIHandler::Init(const glm::mat4& projection)
 		{
+#ifdef _WIN32
 			m_shp.Init("res\\shaders\\ui\\vsh.shader", "res\\shaders\\ui\\fsh.shader", "INV");
+#else
+			m_shp.Init("../res/shaders/ui/vsh.shader", "../res/shaders/ui/fsh.shader", "INV");
+#endif
 			m_shp.Compile();
 			m_shp.Link({"vertex_position", "texture_data"});
 
