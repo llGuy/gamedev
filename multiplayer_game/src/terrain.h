@@ -13,12 +13,22 @@ namespace mulgame {
     enum action_t
     {
 	START_TERRAFORM,
-
+	
 	END_TERRAFORMING
     };
 
     struct ForcePoint
     {
+	ForcePoint(void)
+	    : position(-0xff, -0xff), intensity(-64.0f)
+	{
+	}
+
+	ForcePoint(const glm::ivec2& pos, float i)
+	    : position(pos), intensity(i)
+	{
+	}
+
 	glm::ivec2 position;
 	float intensity;
     };
@@ -29,6 +39,7 @@ namespace mulgame {
 	Terrain(void) = default;
 
 	void Handle(action_t, Entity& entity);
+	void Handle(const ForcePoint& fp, Entity&, bool);
 	// plural
 	void UpdateForcePoints(float timedelta);
     public:
@@ -52,8 +63,14 @@ namespace mulgame {
 	    {
 		return m_mesh.HeightAtPoint(position.x, position.z);
 	    }
+
 	// singular
 	void UpdateFP(uint32_t fp, float timedelta);
+
+	const ForcePoint& FP(int32_t index)
+	{
+	    return m_forcePoints[index];
+	}
     private:
 	static constexpr int32_t MESH_DIM = 64;
 	Mesh<MESH_DIM, MESH_DIM> m_mesh;

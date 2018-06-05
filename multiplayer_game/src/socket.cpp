@@ -44,8 +44,8 @@ namespace mulgame {
     void Socket::Send(const Byte* data, uint32_t dataSize)
     {
 	int32_t bytes = send(m_handle, data, dataSize, 0);
-	if(bytes < 0) std::cerr << "send() failed\n";
-	else if(bytes != dataSize) std::cerr << "send() send unexpected number of bytes\n";
+//	if(bytes < 0) std::cerr << "send() failed\n";
+//	else if(bytes != dataSize) std::cerr << "send() send unexpected number of bytes\n";
     }
 
     bool Socket::Receive(Byte* data, uint32_t maxSize)

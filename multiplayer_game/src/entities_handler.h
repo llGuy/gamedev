@@ -37,7 +37,8 @@ namespace mulgame {
 	// for cursor movement (looking around the world)
 	void Handle(const glm::vec2& cursorDiff);
 	// handle shooting, etc... for any entity
-	void Handle(ability_t);
+	// bound entity is always going to be zero
+	void Handle(ability_t, int32_t index = 0);
 	inline
 	float Timedelta(void)
 	    {
@@ -91,6 +92,7 @@ namespace mulgame {
 	    }
 
 	uint32_t Size(void) { return m_entities.size(); }
+	bool BoundEntityShot(void) { return m_boundEntityShot; }
     private:
 	void UpdateBullets(Terrain& terrain);
 	void UpdateEntities(Terrain& terrain);
@@ -107,6 +109,9 @@ namespace mulgame {
 	EntityModel m_entityModel;
 	EntityModel m_bulletModel;
 	Time m_timer;
+
+	// is camera's bound entity shooting
+	bool m_boundEntityShot;
     };
 
 }

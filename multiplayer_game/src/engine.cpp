@@ -44,7 +44,7 @@ namespace mulgame {
     }
 
     void MULGEngine::Render(void)
-    {
+    {	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -63,6 +63,25 @@ namespace mulgame {
 	    Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
 	    encoder.PushString(player.Username());
 	    encoder.PushBytes(player.Position(), player.Direction());
+
+	    // push if player is shooting and terraforming
+	    bool boundEntityShot = m_ehandler.BoundEntityShot();
+
+	    bool boundEntityTerraformed = (player.Terraforming() != -1);
+
+	    // 0b0000 0000 <- shot
+	    //          ^ terraformed
+	    int8_t flags = boundEntityShot + (boundEntityTerraformed << 1);
+
+	    encoder.PushBytes(flags);
+	    if(boundEntityTerraformed)
+	    {
+		decltype(auto) fp = m_terrain.FP(player.Terraforming());
+		// push force point
+		encoder.PushBytes(fp);
+	    }
+	    else encoder.PushBytes(ForcePoint{});
+	    
 	    m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
 	}
 	
@@ -110,10 +129,10 @@ namespace mulgame {
 
     void MULGEngine::InitEntities(void)
     {
-	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.1f, 0.01f, 1.0f));
+	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, -0.01f), glm::vec3(1.0f, 0.0f, 0.01f));
 	// binding the camera to the player (first entity)
 	m_ehandler.BindCamera(0);
-	m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
+
 	m_ehandler.StartTimer();
     }
 

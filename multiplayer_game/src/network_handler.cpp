@@ -100,22 +100,38 @@ namespace mulgame {
 
     void NetworkHandler::ParseClientUDPMessages(Byte* bytes, int32_t size, EntitiesHandler& ehandler, Terrain& terrain)
     {
+	auto getBit = [] (int8_t byte, uint32_t rshift) -> bool
+	{
+	    return (byte >> rshift) & 0b00000001;
+	};
+	
 	MSGParser parser(bytes, size);
 	// type of message
 	std::string username;
 	parser.ReadNext(CHAR_DELIMITER, username);
 
-	std::cout << "received message from " << username << std::endl;
+//	std::cout << "received message from " << username << std::endl;
 	
 	// determine type of message and parse according to type
 	auto ent = ehandler.EViaUsername(username);
 	if(ent.has_value())
 	{
-	    std::cout << ent.value()->Username() << " is being edited" << std::endl;
+//	    std::cout << ent.value()->Username() << " is being edited" << std::endl;
 	    // updates the position and direction
 	    (ent.value())->Position() = parser.ReadNext<glm::vec3>(CHAR_DELIMITER);
-	    VOut((ent.value())->Position() );
+//	    VOut((ent.value())->Position() );
 	    (ent.value())->Direction() = parser.ReadNext<glm::vec3>(CHAR_DELIMITER);
+
+	    int8_t flags = parser.ReadNext<int8_t>(CHAR_DELIMITER);
+	    bool shot = getBit(flags, 0);
+	    bool tf = getBit(flags, 1);
+
+	    if(shot) ehandler.Handle(ability_t::SHOOT, ent.value()->ID());
+
+	    ForcePoint fp = parser.ReadNext<ForcePoint>(CHAR_DELIMITER);
+	    
+	    terrain.Handle(fp, *(ent.value()), tf);
+//	    std::cout << before << ' ' << after << std::endl;
 	}
     }
 
@@ -125,4 +141,5 @@ namespace mulgame {
 	m_udpSock.Send(&data[0], size);
     }
     
+
 }

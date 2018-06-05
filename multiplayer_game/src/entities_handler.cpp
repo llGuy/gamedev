@@ -12,7 +12,7 @@
 namespace mulgame {
 
     EntitiesHandler::EntitiesHandler(void)
-	: m_entityModel(1.0f), m_bulletModel(0.1f)
+	: m_entityModel(1.0f), m_bulletModel(0.1f), m_boundEntityShot(false)
     {
     }
 
@@ -51,22 +51,26 @@ namespace mulgame {
 	m_camera.Look(controlledEntity, cursorDiff, 0.02f);
     }
 
-    void EntitiesHandler::Handle(ability_t ability)
+    void EntitiesHandler::Handle(ability_t ability, int32_t index)
     {
-	Entity& controlledEntity = m_entities[m_camera.BoundEntity()];
-	auto abret = controlledEntity.PerformAbility(ability);
+	Entity& entity = m_entities[index];
+	auto abret = entity.PerformAbility(ability);
 
 	if (abret.has_value())
 	{
 	    // push bullet into data structure
 	    m_airingBullets.push_back(abret.value());
+	    if(index == 0) m_boundEntityShot = true;
 	}
     }
 
     void EntitiesHandler::UpdateEntities(Terrain& terrain)
     {
-	std::for_each(m_entities.begin(), m_entities.end(),
-		      [&](Entity& entity) -> void { entity.UpdateData(terrain.EntityHeight(entity.Position()), m_timer.TimeDelta()); });
+	// no need to update client players
+	m_entities[0].UpdateData(terrain.EntityHeight(m_entities[0].Position()), m_timer.TimeDelta());
+
+	// every frame reset bit
+	m_boundEntityShot = false;
     }
 
     void EntitiesHandler::UpdateBullets(Terrain& terrain)
@@ -111,7 +115,6 @@ namespace mulgame {
 
     std::optional<Entity*> EntitiesHandler::EViaUsername(const std::string& username)
     {
-	std::cout << m_camera.BoundEntity() << "  ";
 /*	for(auto& entity : m_entities)
 	{
 	    if(entity.Username() == username)
@@ -123,7 +126,6 @@ namespace mulgame {
 	{
 	    if(m_entities[i].Username() == username)
 	    {
-		std::cout << i << std::endl;
 		return &m_entities[i];
 	    }
 	}
