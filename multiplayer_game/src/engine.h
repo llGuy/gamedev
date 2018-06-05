@@ -46,6 +46,7 @@ namespace mulgame {
 	void InitTerrainShaders(void);
 	void InitLFlareShaders(void);
 	void InitEntities(void);
+	void InitNetworkHandler(void);
 	void InitTerrain(void);
 	void InitOpenglGLStates(void) const;
 	std::string ShaderPath(const std::string & shaderName) const;

@@ -33,7 +33,15 @@ namespace mulgame {
 	bool Receive(Byte* data, uint32_t maxSize);
 
 	void Sendto(const Byte* data, uint32_t dataSize, addrinfo* address = nullptr);
-	ClientAddress ReceiveFrom(Byte* data, uint32_t maxSize);
+
+	
+	struct ReceiveFromRet
+	{
+	    ClientAddress address;
+	    int32_t size;
+	};
+
+        ReceiveFromRet ReceiveFrom(Byte* data, uint32_t maxSize);
     public:
 	// new functions
 	addrinfo FillCriteria(int family, int flags, int socktype, int protocol);

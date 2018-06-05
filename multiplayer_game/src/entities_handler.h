@@ -2,6 +2,7 @@
 #define _ENTITIES_HANDLER_H_
 
 #include <glm/glm.hpp>
+#include <iterator>
 #include <array>
 #include <vector>
 #include "mtime.h"

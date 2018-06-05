@@ -32,7 +32,7 @@ namespace mulgame {
 	void Launch(const std::string& port, EntitiesHandler&, Terrain& terrain);
 	void Launch(const std::string& serverName, const std::string& port, EntitiesHandler&, Terrain& terrain);
 
-	void SendPlayerDatatoServer(Byte* data, uint32_t size);
+	void SendPlayerDatatoServer(std::vector<Byte>& data, uint32_t size);
 
 	mode_t Mode(void) { return m_mode; };
     private:
@@ -41,7 +41,7 @@ namespace mulgame {
 
 	void ServerUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
     private:
-	void ParseClientUDPMessages(const std::string& message, EntitiesHandler& ehandler, Terrain&);
+	void ParseClientUDPMessages(Byte* bytes, int32_t size, EntitiesHandler& ehandler, Terrain&);
     private:
 	static constexpr int32_t MAX_PENDING = 8;
 	

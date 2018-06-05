@@ -20,7 +20,20 @@ namespace mulgame {
 	InitShaders();
 	InitEntities();
 	InitTerrain();
+	InitNetworkHandler();
 	InitOpenglGLStates();
+    }
+
+    void MULGEngine::InitNetworkHandler(void)
+    {
+	if(m_networkHandler.Mode() == SERVER_MODE)
+	{
+	    m_networkHandler.Launch("5000", m_ehandler, m_terrain);
+	}
+	else
+	{
+	    m_networkHandler.Launch("192.168.1.230", "5000", m_ehandler, m_terrain);
+	}
     }
 
     void MULGEngine::Configure(void)
@@ -48,8 +61,9 @@ namespace mulgame {
 	{
 	    MSGEncoder encoder;
 	    Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
-	    encoder.PushBytes(player.Username(), player.Position(), player.Direction());
-	    m_networkHandler.SendPlayerDatatoServer(encoder.Data(), encoder.Size());
+	    encoder.PushString(player.Username());
+	    encoder.PushBytes(player.Position(), player.Direction());
+	    m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
 	}
 	
 	m_ehandler.Update(m_terrain);

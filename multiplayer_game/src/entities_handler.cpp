@@ -33,6 +33,8 @@ namespace mulgame {
     void EntitiesHandler::BindCamera(uint32_t index)
     {
 	m_camera.Bind(index);
+	// bound player will have "bound" username by default
+	m_entities[index].Username() = "bound";
     }
 
     void EntitiesHandler::Handle(movement_t movement)
@@ -109,9 +111,21 @@ namespace mulgame {
 
     std::optional<Entity*> EntitiesHandler::EViaUsername(const std::string& username)
     {
-	for(auto& entity : m_entities)
+	std::cout << m_camera.BoundEntity() << "  ";
+/*	for(auto& entity : m_entities)
 	{
-	    if(entity.Username() == username) return &entity;
+	    if(entity.Username() == username)
+	    {
+		return &entity;
+	    }
+	}*/
+	for(uint32_t i = 0; i < m_entities.size(); ++i)
+	{
+	    if(m_entities[i].Username() == username)
+	    {
+		std::cout << i << std::endl;
+		return &m_entities[i];
+	    }
 	}
 	return std::optional<Entity*> {};
     }

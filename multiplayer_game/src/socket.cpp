@@ -50,7 +50,7 @@ namespace mulgame {
 
     bool Socket::Receive(Byte* data, uint32_t maxSize)
     {
-	int32_t bytes = recv(m_handle, data, maxSize, MSG_DONTWAIT);
+	int32_t bytes = recv(m_handle, data, maxSize, 0);
 	return bytes > 0;
     }
 
@@ -84,14 +84,14 @@ namespace mulgame {
 	else if(bytes != dataSize) std::cerr << "sent unexpected number of bytes\n";
     }
     
-    ClientAddress Socket::ReceiveFrom(Byte* data, uint32_t maxSize)
+    Socket::ReceiveFromRet Socket::ReceiveFrom(Byte* data, uint32_t maxSize)
     {
 	ClientAddress client;
 	socklen_t clientSize = sizeof(client.address);
 	int32_t bytes = recvfrom(m_handle, data, maxSize, 0, (sockaddr*)&client.address, &clientSize);
 	
 	if(bytes < 0) std::cerr << "recvfrom() failed\n";
-	return client;
+	return { client, bytes };
     }
 
     void Socket::Bind(void)

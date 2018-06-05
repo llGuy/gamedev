@@ -7,6 +7,8 @@
 
 namespace mulgame {
 
+    using Byte = int8_t;
+
     enum
     : int8_t
     {
@@ -16,31 +18,35 @@ namespace mulgame {
     class MSGParser
     {
     public:
-	MSGParser(const std::string& msg)
-	    : m_msg(msg), m_index(0)
+	MSGParser(Byte* bytes, int32_t size)
+	    : m_bytes(bytes), m_index(0)
 	{
 	}
 
 	bool Max(void)
 	{
-	    return m_index >= (m_msg.size() - 1);
+	    return m_index >= m_size - 1;
 	}
 	
 	template<typename _Ty>
 	_Ty ReadNext(char delimiter)
 	{
-	    _Ty* ptr = (_Ty*)&m_msg[m_index];
+	    _Ty* ptr = (_Ty*)&m_bytes[m_index];
 	    m_index += sizeof(_Ty) + 1 /* delimiter of section */;
 	    return *ptr;
 	}
 	
 	void ReadNext(char delimiter, std::string& s)
 	{
-	    for(uint32_t i = m_index; m_msg[i] != delimiter; ++i) s.push_back(m_msg[i]);
+	    for(; m_bytes[m_index] != delimiter; ++m_index)
+	    {
+		s.push_back(m_bytes[m_index]);
+	    }
 	    ++m_index;
 	}
     private:
-	std::string m_msg;
+	Byte* m_bytes;
+	int32_t m_size;
 	uint32_t m_index;
     };
     
