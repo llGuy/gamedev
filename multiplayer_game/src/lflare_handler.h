@@ -2,7 +2,11 @@
 #define _LENS_FLARE_H_
 
 #include <glm/glm.hpp>
+#if (defined cpp_no_optional)
+#include "optional.hpp"
+#else
 #include <optional>
+#endif
 #include "texture.h"
 #include "buffer.h"
 #include "vao.h"

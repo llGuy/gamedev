@@ -37,14 +37,14 @@ namespace mulgame {
 	void RenderEntities(void);
 	void RenderBullets(void);
 	void RenderTerrain(void);
-	void RenderLFlare(void);
+	//	void RenderLFlare(void);
     private:
 	void Configure(void);
 	void InitData(int32_t width, int32_t height);
 	void InitShaders(void);
 	void InitEntityShaders(void);
 	void InitTerrainShaders(void);
-	void InitLFlareShaders(void);
+	//	void InitLFlareShaders(void);
 	void InitEntities(void);
 	void InitNetworkHandler(void);
 	void InitTerrain(void);
@@ -60,7 +60,7 @@ namespace mulgame {
 	Program<3, 4> m_terrainProgram;
 	Program<2, 4> m_lflareProgram;
 	EntitiesHandler m_ehandler;
-	LFlareHandler m_lensFlareHandler;
+	//	LFlareHandler m_lensFlareHandler;
 	NetworkHandler m_networkHandler;
     };
 
