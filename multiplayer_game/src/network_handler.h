@@ -33,15 +33,20 @@ namespace mulgame {
 	void Launch(const std::string& serverName, const std::string& port, EntitiesHandler&, Terrain& terrain);
 
 	void SendPlayerDatatoServer(std::vector<Byte>& data, uint32_t size);
+	uint32_t ParseUDPMessage(EntitiesHandler& ehandler, Terrain&, MSGParser&);
 
 	mode_t Mode(void) { return m_mode; };
+
+	std::optional<MSGParser> ReceiveFromServer(void);
+
+	bool& ServerReturnedWithMessage(void) { return m_received; }; 
     private:
 	void AcceptThread(EntitiesHandler& ehandler);
 	void TCPThread(Socket sock, EntitiesHandler& ehandler);
 
 	void ServerUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
     private:
-	void ParseClientUDPMessages(Byte* bytes, int32_t size, EntitiesHandler& ehandler, Terrain&);
+	void SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, const ClientAddress& address);
     private:
 	static constexpr int32_t MAX_PENDING = 8;
 	
@@ -55,6 +60,8 @@ namespace mulgame {
 	std::unique_ptr<std::thread> m_clientCommunicationThread;
 	std::unique_ptr<std::thread> m_udpThread;
 	std::vector<std::unique_ptr<std::thread>> m_connectionThreads;
+
+	bool m_received;
     };
 
 }

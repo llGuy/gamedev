@@ -21,7 +21,7 @@ namespace mulgame {
 			glm::ivec2 meshSpace = m_mesh.WorldtoMeshSpace(glm::vec2(x, z));
 
 			entity.Terraforming() = m_forcePoints.size();
-			m_forcePoints.push_back(ForcePoint( meshSpace, 10.0f ));
+			m_forcePoints.push_back({ ForcePoint( meshSpace, 10.0f ), entity.ID() });
 			break;
 		    }
 		}
@@ -43,7 +43,7 @@ namespace mulgame {
 	if (terraforming && entity.Terraforming() == -1)
 	{
 	    entity.Terraforming() = m_forcePoints.size();
-	    m_forcePoints.push_back(fp);
+	    m_forcePoints.push_back({ fp, entity.ID() });
 	}
 	
 	if (!terraforming)
@@ -58,7 +58,7 @@ namespace mulgame {
 
     void Terrain::UpdateFP(uint32_t fp, float timedelta)
     {
-	ForcePoint& fpStruct = m_forcePoints[fp];
+	ForcePoint& fpStruct = m_forcePoints[fp].fp;
 
 	auto updateQuarter = [&](int32_t quotx, int32_t quotz, bool updateCenter, bool updateRadius) -> void
 	    {

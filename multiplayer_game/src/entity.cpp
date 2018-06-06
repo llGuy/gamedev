@@ -5,12 +5,18 @@
 namespace mulgame {
 
     Entity::Entity(bool isLocal)
-	: m_terraforming(-1), m_address(isLocal), m_username("INV")
+	: m_terraforming(-1), m_address(isLocal), m_username("INV"), m_requestedTerraforming(false), m_shot(false), m_height(3.0f)
+    {
+    }
+
+    Entity::Entity(const std::string& username, uint32_t id)
+	: m_username(username), m_entityID(id), m_requestedTerraforming(false), m_shot(false), m_terraforming(-1), m_height(3.0f)
     {
     }
     
     Entity::Entity(const glm::vec3& position, const glm::vec3& direction, uint32_t id, bool isLocal)
-	: m_position(position), m_direction(direction), m_entityID(id), m_height(3.0f), m_terraforming(-1), m_speed(DEFAULT_SPEED), m_address(isLocal), m_username("INV")
+	: m_position(position), m_direction(direction), m_entityID(id), m_height(3.0f), m_terraforming(-1),
+	  m_speed(DEFAULT_SPEED), m_address(isLocal), m_username("INV"), m_requestedTerraforming(false), m_shot(false)
     {
 	std::cout << m_terraforming << std::endl;
     }

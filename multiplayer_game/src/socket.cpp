@@ -48,10 +48,10 @@ namespace mulgame {
 //	else if(bytes != dataSize) std::cerr << "send() send unexpected number of bytes\n";
     }
 
-    bool Socket::Receive(Byte* data, uint32_t maxSize)
+    int32_t Socket::Receive(Byte* data, uint32_t maxSize, int32_t flags)
     {
-	int32_t bytes = recv(m_handle, data, maxSize, 0);
-	return bytes > 0;
+	int32_t bytes = recv(m_handle, data, maxSize, flags);
+	return bytes;
     }
 
     addrinfo Socket::FillCriteria(int family, int flags, int socktype, int protocol)
@@ -80,6 +80,13 @@ namespace mulgame {
     {
 	socklen_t addressSize = m_ainfo->ai_addrlen;
         int32_t bytes = sendto(m_handle, data, dataSize, 0, m_ainfo->ai_addr, addressSize);
+	if(bytes < 0) std::cerr << "sendto() failed\n";
+	else if(bytes != dataSize) std::cerr << "sent unexpected number of bytes\n";
+    }
+
+    void Socket::Sendto(const Byte* data, uint32_t dataSize, const sockaddr_in& address)
+    {
+	int32_t bytes = sendto(m_handle, data, dataSize, 0, (sockaddr*)&address, sizeof(address));
 	if(bytes < 0) std::cerr << "sendto() failed\n";
 	else if(bytes != dataSize) std::cerr << "sent unexpected number of bytes\n";
     }

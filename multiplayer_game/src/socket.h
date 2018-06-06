@@ -30,10 +30,10 @@ namespace mulgame {
 	Socket Accept(void) const;
 
 	void Send(const Byte* data, uint32_t dataSize);
-	bool Receive(Byte* data, uint32_t maxSize);
+	int32_t Receive(Byte* data, uint32_t maxSize, int32_t flags = 0);
 
 	void Sendto(const Byte* data, uint32_t dataSize, addrinfo* address = nullptr);
-
+	void Sendto(const Byte* data, uint32_t dataSize, const sockaddr_in& address);
 	
 	struct ReceiveFromRet
 	{

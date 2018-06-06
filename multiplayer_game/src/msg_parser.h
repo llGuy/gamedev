@@ -19,7 +19,7 @@ namespace mulgame {
     {
     public:
 	MSGParser(Byte* bytes, int32_t size)
-	    : m_bytes(bytes), m_index(0)
+	    : m_bytes(bytes), m_index(0), m_size(size)
 	{
 	}
 

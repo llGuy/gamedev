@@ -12,13 +12,19 @@
 namespace mulgame {
 
     EntitiesHandler::EntitiesHandler(void)
-	: m_entityModel(1.0f), m_bulletModel(0.1f), m_boundEntityShot(false)
+	: m_entityModel(1.0f), m_bulletModel(0.1f)
     {
     }
 
     Entity& EntitiesHandler::PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal)
     {
 	m_entities.push_back(Entity(position, direction, m_entities.size(), isLocal));
+	return m_entities[m_entities.size() - 1];
+    }
+
+    Entity& EntitiesHandler::PushEntity(const std::string& username)
+    {
+	m_entities.push_back(Entity(username, m_entities.size()));
 	return m_entities[m_entities.size() - 1];
     }
 
@@ -33,8 +39,6 @@ namespace mulgame {
     void EntitiesHandler::BindCamera(uint32_t index)
     {
 	m_camera.Bind(index);
-	// bound player will have "bound" username by default
-	m_entities[index].Username() = "bound";
     }
 
     void EntitiesHandler::Handle(movement_t movement)
@@ -60,7 +64,7 @@ namespace mulgame {
 	{
 	    // push bullet into data structure
 	    m_airingBullets.push_back(abret.value());
-	    if(index == 0) m_boundEntityShot = true;
+	    entity.Shot() = true;
 	}
     }
 
@@ -70,7 +74,7 @@ namespace mulgame {
 	m_entities[0].UpdateData(terrain.EntityHeight(m_entities[0].Position()), m_timer.TimeDelta());
 
 	// every frame reset bit
-	m_boundEntityShot = false;
+	for(auto& entity : m_entities) entity.Shot() = false;
     }
 
     void EntitiesHandler::UpdateBullets(Terrain& terrain)

@@ -80,6 +80,7 @@ namespace mulgame {
     {
     public:
 	Entity(bool isLocal = false);
+	Entity(const std::string& username, uint32_t id);
 	Entity(const glm::vec3& position, const glm::vec3& direction, uint32_t id, bool isLocal = false);
 
 	void Move(movement_t mtype, float timeDelta);
@@ -87,6 +88,8 @@ namespace mulgame {
 	std::optional<Bullet> PerformAbility(ability_t ability);
 	void ModifyDirection(const glm::vec3& direction);
 	void UpdateData(float y, float timedelta);
+	// update (without gravity)
+	void UpdateData(void);
     public:
 	ClientAddress& Address(void)
 	    {
@@ -97,6 +100,9 @@ namespace mulgame {
 	uint32_t ID(void) { return m_entityID; }
 	std::string& Username(void) {return m_username; }
 	int32_t& Terraforming(void) { return m_terraforming; }
+	bool& RequestedTerraforming(void) { return m_requestedTerraforming; }
+	bool& Shot(void) { return m_shot; }
+	
 	
 	glm::vec3 Eye(void) 
 	    {
@@ -126,6 +132,9 @@ namespace mulgame {
 	// address may or not be initialized
 	// because the entity controled by the server won't have this
 	ClientAddress m_address;
+
+	bool m_shot;
+	bool m_requestedTerraforming;
     };
 
 }

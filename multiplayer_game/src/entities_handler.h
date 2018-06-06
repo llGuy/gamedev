@@ -26,6 +26,7 @@ namespace mulgame {
 	EntitiesHandler(void);
 
 	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal = false);
+	Entity& PushEntity(const std::string& username);
 	void BindCamera(uint32_t index);
 
 	std::optional<Entity*> EViaUsername(const std::string& username);
@@ -92,7 +93,7 @@ namespace mulgame {
 	    }
 
 	uint32_t Size(void) { return m_entities.size(); }
-	bool BoundEntityShot(void) { return m_boundEntityShot; }
+	bool& BoundEntityShot(void) { return m_entities[0].Shot(); }
     private:
 	void UpdateBullets(Terrain& terrain);
 	void UpdateEntities(Terrain& terrain);
@@ -109,9 +110,6 @@ namespace mulgame {
 	EntityModel m_entityModel;
 	EntityModel m_bulletModel;
 	Time m_timer;
-
-	// is camera's bound entity shooting
-	bool m_boundEntityShot;
     };
 
 }

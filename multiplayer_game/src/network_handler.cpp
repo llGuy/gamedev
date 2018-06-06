@@ -7,7 +7,7 @@
 namespace mulgame {
 
     NetworkHandler::NetworkHandler(mode_t mode, EntitiesHandler& ehandler, Terrain& terrain)
-	: m_mode(mode)
+	: m_mode(mode), m_received(true)
     {
     }
     
@@ -37,13 +37,23 @@ namespace mulgame {
 
 	// receive username sent by server
 	Byte message[512];
-	if(m_tcpSock.Receive(message, 512))
+	if(int32_t size = m_tcpSock.Receive(message, 512); size > 0)
 	{
-	    // print message
-	    std::string username ((const char*)message);
-	    std::cout << "my username : " << username << std::endl;
 	    uint32_t boundEntity = ehandler.Cam().BoundEntity();
-	    ehandler[boundEntity].Username() = username;
+	    MSGParser parser(message, size);
+
+	    ehandler[boundEntity].Username() = "";
+	    parser.ReadNext(CHAR_DELIMITER, ehandler[boundEntity].Username());
+	    
+	    std::cout << ehandler[boundEntity].Username() << std::endl;
+	    
+	    for(; !parser.Max();)
+	    {
+		std::string username;
+		parser.ReadNext(CHAR_DELIMITER, username);
+		std::cout << "pushed player : " << username << std::endl;
+		ehandler.PushEntity(username);
+	    }
 	}
 
 	m_clientCommunicationThread = std::make_unique<std::thread>([this, &ehandler] { TCPThread(m_tcpSock, ehandler); });
@@ -63,10 +73,12 @@ namespace mulgame {
 	    auto socket = m_tcpSock.Accept();
 	    std::cout << "handling client" << std::endl;
 	    // tell the client its username
+	    MSGEncoder mencoder;
 	    std::string username = std::string("player") + std::to_string(ehandler.Size());
-	    std::string message = username;
-//	    message.insert(0, 1, static_cast<int8_t>(serverreq_t::CONNECT));
-	    socket.Send((const Byte*)message.c_str(), message.size());
+	    mencoder.PushString(username);
+	    for(uint32_t i = 0; i < ehandler.Size(); ++i) mencoder.PushString(ehandler[i].Username());
+	    
+	    socket.Send(mencoder.Data(), mencoder.Size());
 
 	    auto& entity = ehandler.PushEntity(glm::vec3(5.0f), glm::vec3(1.0f));
 	    entity.Username() = username;
@@ -80,7 +92,7 @@ namespace mulgame {
 	if(m_mode == CLIENT_MODE)
 	{
 	    // receive username
-	 
+	    
 	}
     }
 
@@ -94,45 +106,85 @@ namespace mulgame {
 	    Byte messageBuffer[BUFFER_MAX_SIZE] { 0 };
 	    auto client = m_udpSock.ReceiveFrom(messageBuffer, BUFFER_MAX_SIZE);
 	    // parse message
-	    ParseClientUDPMessages(messageBuffer, client.size, ehandler, terrain);
+
+	    MSGParser parser(messageBuffer, client.size /* message size */);
+	    auto playerID = ParseUDPMessage(ehandler, terrain, parser);
+	    SendAllPlayersDatatoClient(ehandler, terrain, playerID, client.address);
 	}
     }
 
-    void NetworkHandler::ParseClientUDPMessages(Byte* bytes, int32_t size, EntitiesHandler& ehandler, Terrain& terrain)
+    void NetworkHandler::SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, const ClientAddress& addr)
+    {
+	MSGEncoder encoder;
+	for(uint32_t i = 0; i < ehandler.Size(); ++i)
+	{
+	    Entity& ent = ehandler[i];
+	    // only sned other people's data
+	    if(ent.ID() != playerID)
+	    {
+		encoder.PushString(ent.Username());
+		encoder.PushBytes(ent.Position(), ent.Direction());
+
+		bool shot = ent.Shot();
+		bool terraformed = ent.Terraforming() != -1;
+		int8_t flags = shot + (terraformed << 1);
+		encoder.PushBytes(flags);
+
+		if(terraformed) encoder.PushBytes(terrain.FP(ent.Terraforming()));
+		else encoder.PushBytes(ForcePoint {});
+
+		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
+	    }
+	}
+    }
+
+    std::optional<MSGParser> NetworkHandler::ReceiveFromServer(void)
+    {
+	Byte buffer[512];
+	auto bytes = m_udpSock.Receive(buffer, 512, MSG_DONTWAIT);
+
+	if(bytes > 0)
+	{
+	    m_received = true;
+	    return MSGParser(buffer, bytes);
+	}
+	else
+	{
+	    return std::optional<MSGParser>{};
+	}
+    }
+    
+    uint32_t NetworkHandler::ParseUDPMessage(EntitiesHandler& ehandler, Terrain& terrain, MSGParser& parser)
     {
 	auto getBit = [] (int8_t byte, uint32_t rshift) -> bool
 	{
 	    return (byte >> rshift) & 0b00000001;
 	};
 	
-	MSGParser parser(bytes, size);
-	// type of message
 	std::string username;
 	parser.ReadNext(CHAR_DELIMITER, username);
-
-//	std::cout << "received message from " << username << std::endl;
 	
 	// determine type of message and parse according to type
 	auto ent = ehandler.EViaUsername(username);
 	if(ent.has_value())
 	{
-//	    std::cout << ent.value()->Username() << " is being edited" << std::endl;
 	    // updates the position and direction
 	    (ent.value())->Position() = parser.ReadNext<glm::vec3>(CHAR_DELIMITER);
-//	    VOut((ent.value())->Position() );
 	    (ent.value())->Direction() = parser.ReadNext<glm::vec3>(CHAR_DELIMITER);
 
 	    int8_t flags = parser.ReadNext<int8_t>(CHAR_DELIMITER);
 	    bool shot = getBit(flags, 0);
 	    bool tf = getBit(flags, 1);
-
-	    if(shot) ehandler.Handle(ability_t::SHOOT, ent.value()->ID());
-
+	    if(shot)
+	    {
+		std::cout << "entity shot!!!" << std::endl;
+		ehandler.Handle(ability_t::SHOOT, ent.value()->ID());
+	    }
 	    ForcePoint fp = parser.ReadNext<ForcePoint>(CHAR_DELIMITER);
-	    
 	    terrain.Handle(fp, *(ent.value()), tf);
-//	    std::cout << before << ' ' << after << std::endl;
+	    return ent.value()->ID();
 	}
+	return -1;
     }
 
     void NetworkHandler::SendPlayerDatatoServer(std::vector<Byte>& data, uint32_t size)

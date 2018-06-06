@@ -59,30 +59,45 @@ namespace mulgame {
     {
 	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
 	{
-	    MSGEncoder encoder;
-	    Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
-	    encoder.PushString(player.Username());
-	    encoder.PushBytes(player.Position(), player.Direction());
-
-	    // push if player is shooting and terraforming
-	    bool boundEntityShot = m_ehandler.BoundEntityShot();
-
-	    bool boundEntityTerraformed = (player.Terraforming() != -1);
-
-	    // 0b0000 0000 <- shot
-	    //          ^ terraformed
-	    int8_t flags = boundEntityShot + (boundEntityTerraformed << 1);
-
-	    encoder.PushBytes(flags);
-	    if(boundEntityTerraformed)
-	    {
-		decltype(auto) fp = m_terrain.FP(player.Terraforming());
-		// push force point
-		encoder.PushBytes(fp);
-	    }
-	    else encoder.PushBytes(ForcePoint{});
+	    // receive
 	    
-	    m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
+	    auto received = m_networkHandler.ReceiveFromServer();
+	    if(received.has_value())
+	    {
+		MSGParser& parser = received.value();
+		for(; !parser.Max();)
+		{
+		    m_networkHandler.ParseUDPMessage(m_ehandler, m_terrain, parser);
+		}
+	    }
+	    if(m_networkHandler.ServerReturnedWithMessage())
+	    {
+		MSGEncoder encoder;
+		Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
+		encoder.PushString(player.Username());
+		encoder.PushBytes(player.Position(), player.Direction());
+
+		// push if player is shooting and terraforming
+		bool boundEntityShot = m_ehandler.BoundEntityShot();
+
+		bool boundEntityTerraformed = (player.Terraforming() != -1);
+
+		// 0b0000 0000 <- shot
+		//          ^ terraformed
+		int8_t flags = boundEntityShot + (boundEntityTerraformed << 1);
+
+		encoder.PushBytes(flags);
+		if(boundEntityTerraformed)
+		{
+		    decltype(auto) fp = m_terrain.FP(player.Terraforming());
+		    // push force point
+		    encoder.PushBytes(fp);
+		}
+		else encoder.PushBytes(ForcePoint{});
+	    
+		m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
+		m_networkHandler.ServerReturnedWithMessage() = false;
+	    }
 	}
 	
 	m_ehandler.Update(m_terrain);
@@ -104,6 +119,11 @@ namespace mulgame {
 	    {
 		glm::vec3 color{ 1.0f, 0.0f, 0.0f };
 		glm::mat4 translation = glm::translate(entity->Eye());
+
+//		glm::vec3& dir = entity->Direction();
+//		glm::vec3 axes = glm::vec3(0.0f, dir.x, 0.0f);
+		
+//		glm::mat4 rotation = glm::rotate(glm::radians(90.0f), axes);
 		glm::mat4 view = camera.ViewMatrix(m_ehandler[camera.BoundEntity()]);
 		glm::mat4& projection = m_data.matProjection;
 		m_entityProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
@@ -132,6 +152,7 @@ namespace mulgame {
 	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, -0.01f), glm::vec3(1.0f, 0.0f, 0.01f));
 	// binding the camera to the player (first entity)
 	m_ehandler.BindCamera(0);
+	if(m_networkHandler.Mode() == mode_t::SERVER_MODE) m_ehandler[0].Username() = "server";
 
 	m_ehandler.StartTimer();
     }
