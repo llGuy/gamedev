@@ -2,6 +2,7 @@
 #define _ENTITIES_HANDLER_H_
 
 #include <glm/glm.hpp>
+#include <iterator>
 #include <array>
 #include <vector>
 #include "mtime.h"
@@ -24,7 +25,8 @@ namespace mulgame {
     public:
 	EntitiesHandler(void);
 
-	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal = false);
+	Entity& PushEntity(const glm::vec3& position, const glm::vec3& direction);
+	Entity& PushEntity(const std::string& username);
 	void BindCamera(uint32_t index);
 
 	std::optional<Entity*> EViaUsername(const std::string& username);
@@ -36,7 +38,8 @@ namespace mulgame {
 	// for cursor movement (looking around the world)
 	void Handle(const glm::vec2& cursorDiff);
 	// handle shooting, etc... for any entity
-	void Handle(ability_t);
+	// bound entity is always going to be zero
+	void Handle(ability_t, int32_t index = 0);
 	inline
 	float Timedelta(void)
 	    {
@@ -90,6 +93,7 @@ namespace mulgame {
 	    }
 
 	uint32_t Size(void) { return m_entities.size(); }
+	bool& BoundEntityShot(void) { return m_entities[0].Shot(); }
     private:
 	void UpdateBullets(Terrain& terrain);
 	void UpdateEntities(Terrain& terrain);

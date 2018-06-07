@@ -1,6 +1,7 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
 
+#include <iostream>
 #include "math.h"
 #include "bullet.h"
 #include <string>
@@ -78,24 +79,26 @@ namespace mulgame {
     class Entity
     {
     public:
-	Entity(bool isLocal = false);
-	Entity(const glm::vec3& position, const glm::vec3& direction, uint32_t id, bool isLocal = false);
+	Entity(void);
+	Entity(const std::string& username, uint32_t id);
+	Entity(const glm::vec3& position, const glm::vec3& direction, uint32_t id);
 
 	void Move(movement_t mtype, float timeDelta);
 	// function may or may not return a bullet
 	std::optional<Bullet> PerformAbility(ability_t ability);
 	void ModifyDirection(const glm::vec3& direction);
 	void UpdateData(float y, float timedelta);
+	// update (without gravity)
+	void UpdateData(void);
     public:
-	ClientAddress& Address(void)
-	    {
-		return m_address;
-	    }
 	glm::vec3& Position(void) { return m_position; }
 	glm::vec3& Direction(void) { return m_direction; }
 	uint32_t ID(void) { return m_entityID; }
 	std::string& Username(void) {return m_username; }
 	int32_t& Terraforming(void) { return m_terraforming; }
+	bool& RequestedTerraforming(void) { return m_requestedTerraforming; }
+	bool& Shot(void) { return m_shot; }
+	
 	
 	glm::vec3 Eye(void) 
 	    {
@@ -122,9 +125,8 @@ namespace mulgame {
 	// -1 means that entity is not terraforming
 	int32_t m_terraforming;
 
-	// address may or not be initialized
-	// because the entity controled by the server won't have this
-	ClientAddress m_address;
+	bool m_shot;
+	bool m_requestedTerraforming;
     };
 
 }

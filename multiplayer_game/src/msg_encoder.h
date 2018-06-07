@@ -14,6 +14,11 @@ namespace mulgame {
     public:
 	MSGEncoder(void) = default;
 
+	std::vector<Byte>& Vector(void)
+        {
+	    return m_bytes;
+	}
+
 	uint32_t Size(void)
 	{
 	    return m_bytes.size();
@@ -22,6 +27,15 @@ namespace mulgame {
 	Byte* Data(void)
 	{
 	    return &m_bytes[0];
+	}
+
+	void PushString(const std::string& str)
+	{
+	    for(uint32_t i = 0; i < str.length(); ++i)
+	    {
+		m_bytes.push_back(str[i]);
+	    }
+	    m_bytes.push_back(CHAR_DELIMITER);
 	}
 	
 	template<typename _Ty>

@@ -44,14 +44,14 @@ namespace mulgame {
     void Socket::Send(const Byte* data, uint32_t dataSize)
     {
 	int32_t bytes = send(m_handle, data, dataSize, 0);
-	if(bytes < 0) std::cerr << "send() failed\n";
-	else if(bytes != dataSize) std::cerr << "send() send unexpected number of bytes\n";
+//	if(bytes < 0) std::cerr << "send() failed\n";
+//	else if(bytes != dataSize) std::cerr << "send() send unexpected number of bytes\n";
     }
 
-    bool Socket::Receive(Byte* data, uint32_t maxSize)
+    int32_t Socket::Receive(Byte* data, uint32_t maxSize, int32_t flags)
     {
-	int32_t bytes = recv(m_handle, data, maxSize, MSG_DONTWAIT);
-	return bytes > 0;
+	int32_t bytes = recv(m_handle, data, maxSize, flags);
+	return bytes;
     }
 
     addrinfo Socket::FillCriteria(int family, int flags, int socktype, int protocol)
@@ -83,15 +83,22 @@ namespace mulgame {
 	if(bytes < 0) std::cerr << "sendto() failed\n";
 	else if(bytes != dataSize) std::cerr << "sent unexpected number of bytes\n";
     }
+
+    void Socket::Sendto(const Byte* data, uint32_t dataSize, const sockaddr_in& address)
+    {
+	int32_t bytes = sendto(m_handle, data, dataSize, 0, (sockaddr*)&address, sizeof(address));
+	if(bytes < 0) std::cerr << "sendto() failed\n";
+	else if(bytes != dataSize) std::cerr << "sent unexpected number of bytes\n";
+    }
     
-    ClientAddress Socket::ReceiveFrom(Byte* data, uint32_t maxSize)
+    Socket::ReceiveFromRet Socket::ReceiveFrom(Byte* data, uint32_t maxSize)
     {
 	ClientAddress client;
 	socklen_t clientSize = sizeof(client.address);
 	int32_t bytes = recvfrom(m_handle, data, maxSize, 0, (sockaddr*)&client.address, &clientSize);
 	
 	if(bytes < 0) std::cerr << "recvfrom() failed\n";
-	return client;
+	return { client, bytes };
     }
 
     void Socket::Bind(void)

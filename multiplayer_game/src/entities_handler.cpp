@@ -16,9 +16,15 @@ namespace mulgame {
     {
     }
 
-    Entity& EntitiesHandler::PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal)
+    Entity& EntitiesHandler::PushEntity(const glm::vec3& position, const glm::vec3& direction)
     {
-	m_entities.push_back(Entity(position, direction, m_entities.size(), isLocal));
+	m_entities.push_back(Entity(position, direction, m_entities.size()));
+	return m_entities[m_entities.size() - 1];
+    }
+
+    Entity& EntitiesHandler::PushEntity(const std::string& username)
+    {
+	m_entities.push_back(Entity(username, m_entities.size()));
 	return m_entities[m_entities.size() - 1];
     }
 
@@ -49,22 +55,26 @@ namespace mulgame {
 	m_camera.Look(controlledEntity, cursorDiff, 0.02f);
     }
 
-    void EntitiesHandler::Handle(ability_t ability)
+    void EntitiesHandler::Handle(ability_t ability, int32_t index)
     {
-	Entity& controlledEntity = m_entities[m_camera.BoundEntity()];
-	auto abret = controlledEntity.PerformAbility(ability);
+	Entity& entity = m_entities[index];
+	auto abret = entity.PerformAbility(ability);
 
 	if (abret.has_value())
 	{
 	    // push bullet into data structure
 	    m_airingBullets.push_back(abret.value());
+	    entity.Shot() = true;
 	}
     }
 
     void EntitiesHandler::UpdateEntities(Terrain& terrain)
     {
-	std::for_each(m_entities.begin(), m_entities.end(),
-		      [&](Entity& entity) -> void { entity.UpdateData(terrain.EntityHeight(entity.Position()), m_timer.TimeDelta()); });
+	// no need to update client players
+	m_entities[0].UpdateData(terrain.EntityHeight(m_entities[0].Position()), m_timer.TimeDelta());
+
+	// every frame reset bit
+	for(auto& entity : m_entities) entity.Shot() = false;
     }
 
     void EntitiesHandler::UpdateBullets(Terrain& terrain)
@@ -109,9 +119,19 @@ namespace mulgame {
 
     std::optional<Entity*> EntitiesHandler::EViaUsername(const std::string& username)
     {
-	for(auto& entity : m_entities)
+/*	for(auto& entity : m_entities)
 	{
-	    if(entity.Username() == username) return &entity;
+	    if(entity.Username() == username)
+	    {
+		return &entity;
+	    }
+	}*/
+	for(uint32_t i = 0; i < m_entities.size(); ++i)
+	{
+	    if(m_entities[i].Username() == username)
+	    {
+		return &m_entities[i];
+	    }
 	}
 	return std::optional<Entity*> {};
     }

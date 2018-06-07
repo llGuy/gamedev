@@ -1,4 +1,5 @@
 #ifndef GLM_ENABLE_EXPERIMENTAL
+
 #define GLM_ENABLE_EXPERIMENTAL
 #endif
 #include <glm/gtx/transform.hpp>
@@ -11,7 +12,7 @@ namespace mulgame {
     MULGEngine::MULGEngine(int32_t width, int32_t height, int8_t arg)
 	: m_entityProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 	  m_terrainProgram{ GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER },
-	  m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
+	  //	  m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 	  m_lighting(glm::vec3(100.0f, 100.0f, 100.0f)),
 	  m_networkHandler(arg == 's' ? mode_t::SERVER_MODE : mode_t::CLIENT_MODE, m_ehandler, m_terrain)
     {
@@ -20,7 +21,20 @@ namespace mulgame {
 	InitShaders();
 	InitEntities();
 	InitTerrain();
+	InitNetworkHandler();
 	InitOpenglGLStates();
+    }
+
+    void MULGEngine::InitNetworkHandler(void)
+    {
+	if(m_networkHandler.Mode() == SERVER_MODE)
+	{
+	    m_networkHandler.Launch("5000", m_ehandler, m_terrain);
+	}
+	else
+	{
+	    m_networkHandler.Launch("192.168.1.230", "5000", m_ehandler, m_terrain);
+	}
     }
 
     void MULGEngine::Configure(void)
@@ -31,7 +45,7 @@ namespace mulgame {
     }
 
     void MULGEngine::Render(void)
-    {
+    {	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -44,14 +58,6 @@ namespace mulgame {
 
     void MULGEngine::Update(void)
     {
-	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
-	{
-	    MSGEncoder encoder;
-	    Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
-	    encoder.PushBytes(player.Username(), player.Position(), player.Direction());
-	    m_networkHandler.SendPlayerDatatoServer(encoder.Data(), encoder.Size());
-	}
-	
 	m_ehandler.Update(m_terrain);
 	m_terrain.UpdateForcePoints(m_ehandler.Timedelta());
     }
@@ -71,6 +77,11 @@ namespace mulgame {
 	    {
 		glm::vec3 color{ 1.0f, 0.0f, 0.0f };
 		glm::mat4 translation = glm::translate(entity->Eye());
+
+//		glm::vec3& dir = entity->Direction();
+//		glm::vec3 axes = glm::vec3(0.0f, dir.x, 0.0f);
+		
+//		glm::mat4 rotation = glm::rotate(glm::radians(90.0f), axes);
 		glm::mat4 view = camera.ViewMatrix(m_ehandler[camera.BoundEntity()]);
 		glm::mat4& projection = m_data.matProjection;
 		m_entityProgram.UniformData(&color[0], &translation[0][0], &view[0][0], &projection[0][0]);
@@ -90,16 +101,17 @@ namespace mulgame {
     {
 	InitEntityShaders();
 	InitTerrainShaders();
-	InitLFlareShaders();
+	//	InitLFlareShaders();
     }
 
 
     void MULGEngine::InitEntities(void)
     {
-	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.1f, 0.01f, 1.0f));
+	Entity& ent = m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, -0.01f), glm::vec3(1.0f, 0.0f, 0.01f));
 	// binding the camera to the player (first entity)
 	m_ehandler.BindCamera(0);
-	m_ehandler.PushEntity(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.01f, 0.01f));
+	if(m_networkHandler.Mode() == mode_t::SERVER_MODE) m_ehandler[0].Username() = "server";
+
 	m_ehandler.StartTimer();
     }
 
@@ -141,7 +153,7 @@ namespace mulgame {
 		UDataLoc(udata_t::VEC3, "light_position")
 		);
     }
-
+	/*
     void MULGEngine::InitLFlareShaders(void)
     {
 	m_lflareProgram.Compile(ShaderPath("lensflare/shader/vsh.shader"), ShaderPath("lensflare/shader/fsh.shader"));
@@ -154,7 +166,7 @@ namespace mulgame {
 		UDataLoc(udata_t::F1, "scale"),
 		UDataLoc(udata_t::F1, "brightness")
 		);
-    }
+    }*/
 
     void MULGEngine::InitTerrain(void)
     {
@@ -197,7 +209,7 @@ namespace mulgame {
 	    m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
 	}
     }
-
+	/*
     void MULGEngine::RenderLFlare(void)
     {
 	Camera& camera = m_ehandler.Cam();
@@ -223,6 +235,6 @@ namespace mulgame {
 	    }
 	}
 	glEnable(GL_DEPTH_TEST);
-    }
+    }*/
 
 }
