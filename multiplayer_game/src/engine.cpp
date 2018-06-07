@@ -12,7 +12,7 @@ namespace mulgame {
     MULGEngine::MULGEngine(int32_t width, int32_t height, int8_t arg)
 	: m_entityProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 	  m_terrainProgram{ GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER },
-	  m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
+	  //	  m_lflareProgram{ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER },
 	  m_lighting(glm::vec3(100.0f, 100.0f, 100.0f)),
 	  m_networkHandler(arg == 's' ? mode_t::SERVER_MODE : mode_t::CLIENT_MODE, m_ehandler, m_terrain)
     {
@@ -145,7 +145,7 @@ namespace mulgame {
     {
 	InitEntityShaders();
 	InitTerrainShaders();
-	InitLFlareShaders();
+	//	InitLFlareShaders();
     }
 
 
@@ -197,7 +197,7 @@ namespace mulgame {
 		UDataLoc(udata_t::VEC3, "light_position")
 		);
     }
-
+	/*
     void MULGEngine::InitLFlareShaders(void)
     {
 	m_lflareProgram.Compile(ShaderPath("lensflare/shader/vsh.shader"), ShaderPath("lensflare/shader/fsh.shader"));
@@ -210,7 +210,7 @@ namespace mulgame {
 		UDataLoc(udata_t::F1, "scale"),
 		UDataLoc(udata_t::F1, "brightness")
 		);
-    }
+    }*/
 
     void MULGEngine::InitTerrain(void)
     {
@@ -253,7 +253,7 @@ namespace mulgame {
 	    m_renderer.EDraw(model.OGLBuffer(), model.VertexArray(), GL_TRIANGLES);
 	}
     }
-
+	/*
     void MULGEngine::RenderLFlare(void)
     {
 	Camera& camera = m_ehandler.Cam();
@@ -279,6 +279,6 @@ namespace mulgame {
 	    }
 	}
 	glEnable(GL_DEPTH_TEST);
-    }
+    }*/
 
 }

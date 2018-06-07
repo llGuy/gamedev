@@ -1,7 +1,7 @@
 #include "texture.h"
 
 #include <GL/glew.h>
-#include <stb_image.h>
+//#include <stb_image.h>
 
 namespace mulgame {
 
@@ -14,8 +14,8 @@ namespace mulgame {
 	ImageData Texture::ExtractImage(const std::string& dir)
 	{
 		int32_t width, height, numComp;
-		uint8_t* data = stbi_load(dir.c_str(), &width, &height, &numComp, 4);
-		return { data, width, height };
+		//		uint8_t* data = stbi_load(dir.c_str(), &width, &height, &numComp, 4);
+		return { nullptr, width, height };
 	}
 
 	void Texture::Bind(int32_t unit)
@@ -36,3 +36,4 @@ namespace mulgame {
 	}
 
 }
+
