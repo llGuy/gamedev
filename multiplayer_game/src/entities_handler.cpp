@@ -16,9 +16,9 @@ namespace mulgame {
     {
     }
 
-    Entity& EntitiesHandler::PushEntity(const glm::vec3& position, const glm::vec3& direction, bool isLocal)
+    Entity& EntitiesHandler::PushEntity(const glm::vec3& position, const glm::vec3& direction)
     {
-	m_entities.push_back(Entity(position, direction, m_entities.size(), isLocal));
+	m_entities.push_back(Entity(position, direction, m_entities.size()));
 	return m_entities[m_entities.size() - 1];
     }
 

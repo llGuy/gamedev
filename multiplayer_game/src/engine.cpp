@@ -58,50 +58,6 @@ namespace mulgame {
 
     void MULGEngine::Update(void)
     {
-/*	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
-	{
-	    // receive
-	    
-	    auto received = m_networkHandler.ReceiveFromServer();
-	    if(received.has_value())
-	    {
-		MSGParser& parser = received.value();
-		for(; !parser.Max();)
-		{
-		    m_networkHandler.ParseUDPMessage(m_ehandler, m_terrain, parser);
-		}
-	    }
-	    if(m_networkHandler.ServerReturnedWithMessage())
-	    {
-		MSGEncoder encoder;
-		Entity& player = m_ehandler[m_ehandler.Cam().BoundEntity()];
-		encoder.PushString(player.Username());
-		encoder.PushBytes(player.Position(), player.Direction());
-
-		// push if player is shooting and terraforming
-		bool boundEntityShot = m_ehandler.BoundEntityShot();
-
-		bool boundEntityTerraformed = (player.Terraforming() != -1);
-
-		// 0b0000 0000 <- shot
-		//          ^ terraformed
-		int8_t flags = boundEntityShot + (boundEntityTerraformed << 1);
-
-		encoder.PushBytes(flags);
-		if(boundEntityTerraformed)
-		{
-		    decltype(auto) fp = m_terrain.FP(player.Terraforming());
-		    // push force point
-		    encoder.PushBytes(fp);
-		}
-		else encoder.PushBytes(ForcePoint{});
-	    
-		m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
-		m_networkHandler.ServerReturnedWithMessage() = false;
-	    }
-	}*/
-
-	
 	m_ehandler.Update(m_terrain);
 	m_terrain.UpdateForcePoints(m_ehandler.Timedelta());
     }

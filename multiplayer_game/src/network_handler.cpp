@@ -106,7 +106,13 @@ namespace mulgame {
 
 	    MSGParser parser(messageBuffer, client.size /* message size */);
 	    auto playerID = ParseUDPMessage(ehandler, terrain, parser);
-	    SendAllPlayersDatatoClient(ehandler, terrain, playerID, client.address);
+//	    SendAllPlayersDatatoClient(ehandler, terrain, playerID, client.address);
+	    // send all players' data to all players
+//	    UpdatePlayer(ehandler, terrain, playerID, client.address);
+	    for(auto address = m_addresses.begin(); address != m_addresses.end(); ++address)
+	    {
+		UpdatePlayer(ehandler, terrain, address->first, address->second);
+	    }
 	}
     }
 
@@ -154,8 +160,7 @@ namespace mulgame {
 	else encoder.PushBytes(ForcePoint{});
     }
 
-    void NetworkHandler::SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain,
-	 uint32_t playerID, const ClientAddress& addr)
+    void NetworkHandler::UpdatePlayer(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, ClientAddress& addr)
     {
 	MSGEncoder encoder;
 	for(uint32_t i = 0; i < ehandler.Size(); ++i)
@@ -164,23 +169,11 @@ namespace mulgame {
 	    // only sned other people's data
 	    if(ent.ID() != playerID)
 	    {
-		/*
-		encoder.PushString(ent.Username());
-		encoder.PushBytes(ent.Position(), ent.Direction());
-
-		bool shot = ent.Shot();
-		bool terraformed = ent.Terraforming() != -1;
-		int8_t flags = shot + (terraformed << 1);
-		encoder.PushBytes(flags);
-
-		if(terraformed) encoder.PushBytes(terrain.FP(ent.Terraforming()));
-		else encoder.PushBytes(ForcePoint {});
-
-		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);*/
 		EncodePlayerData(encoder, ent, ehandler, terrain);
-//		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
 	    }
 	}
+	// keep address in map updated
+	m_addresses[playerID] = addr;
 	m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
     }
 
@@ -223,7 +216,6 @@ namespace mulgame {
 	    bool tf = getBit(flags, 1);
 	    if(shot)
 	    {
-		std::cout << "entity shot!!!" << std::endl;
 		ehandler.Handle(ability_t::SHOOT, ent.value()->ID());
 	    }
 	    ForcePoint fp = parser.ReadNext<ForcePoint>(CHAR_DELIMITER);

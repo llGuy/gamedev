@@ -5,6 +5,7 @@
 #include <mutex>
 #include <memory>
 #include <thread>
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include "socket.h"
 #include "msg_prototype.h"
@@ -47,7 +48,7 @@ namespace mulgame {
 	void ServerUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
 	void ClientUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
     private:
-	void SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, const ClientAddress& address);
+	void UpdatePlayer(EntitiesHandler&, Terrain&, uint32_t playerID, ClientAddress& addr);
     private:
 	static constexpr int32_t MAX_PENDING = 8;
 	
@@ -55,6 +56,9 @@ namespace mulgame {
 	Socket m_udpSock;
 	Socket m_tcpSock;
 
+	// only the server has this
+	std::unordered_map<uint32_t, ClientAddress> m_addresses;
+	
 	// thread that accepts connections to the server
 	std::unique_ptr<std::thread> m_acceptThread;
 	// thread that the client needs to use to communicate with the server
