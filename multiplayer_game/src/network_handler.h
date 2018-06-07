@@ -2,6 +2,7 @@
 #define _NETWORK_HANDLER_H_
 
 #include <thread>
+#include <mutex>
 #include <memory>
 #include <thread>
 #include <glm/glm.hpp>
@@ -31,20 +32,20 @@ namespace mulgame {
 	NetworkHandler(mode_t mode, EntitiesHandler& ehandler, Terrain& terrain);
 	void Launch(const std::string& port, EntitiesHandler&, Terrain& terrain);
 	void Launch(const std::string& serverName, const std::string& port, EntitiesHandler&, Terrain& terrain);
-
 	void SendPlayerDatatoServer(std::vector<Byte>& data, uint32_t size);
 	uint32_t ParseUDPMessage(EntitiesHandler& ehandler, Terrain&, MSGParser&);
-
-	mode_t Mode(void) { return m_mode; };
-
 	std::optional<MSGParser> ReceiveFromServer(void);
-
-	bool& ServerReturnedWithMessage(void) { return m_received; }; 
+	
+	std::mutex& EHandlerMutex(void) { return m_ehandlerMutex; };
+	bool& ServerReturnedWithMessage(void) { return m_received; };
+	mode_t Mode(void) { return m_mode; };
     private:
+	void EncodePlayerData(MSGEncoder& encoder, Entity& player, EntitiesHandler& ehandler, Terrain& terrain);
 	void AcceptThread(EntitiesHandler& ehandler);
 	void TCPThread(Socket sock, EntitiesHandler& ehandler);
 
 	void ServerUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
+	void ClientUDPThread(EntitiesHandler& ehandler, Terrain& terrain);
     private:
 	void SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, const ClientAddress& address);
     private:
@@ -58,10 +59,19 @@ namespace mulgame {
 	std::unique_ptr<std::thread> m_acceptThread;
 	// thread that the client needs to use to communicate with the server
 	std::unique_ptr<std::thread> m_clientCommunicationThread;
+	// client and server will have udp thread
 	std::unique_ptr<std::thread> m_udpThread;
 	std::vector<std::unique_ptr<std::thread>> m_connectionThreads;
 
 	bool m_received;
+
+	/*
+	  mutex only needs to locked when the entities
+	  because they entities data only get accessed when they 
+	  get rendered
+	 */
+	std::mutex m_ehandlerMutex;
+	std::mutex m_terrainMutex;
     };
 
 }

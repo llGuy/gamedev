@@ -1,4 +1,5 @@
 #ifndef GLM_ENABLE_EXPERIMENTAL
+
 #define GLM_ENABLE_EXPERIMENTAL
 #endif
 #include <glm/gtx/transform.hpp>
@@ -57,7 +58,7 @@ namespace mulgame {
 
     void MULGEngine::Update(void)
     {
-	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
+/*	if(m_networkHandler.Mode() == mode_t::CLIENT_MODE)
 	{
 	    // receive
 	    
@@ -98,7 +99,8 @@ namespace mulgame {
 		m_networkHandler.SendPlayerDatatoServer(encoder.Vector(), encoder.Size());
 		m_networkHandler.ServerReturnedWithMessage() = false;
 	    }
-	}
+	}*/
+
 	
 	m_ehandler.Update(m_terrain);
 	m_terrain.UpdateForcePoints(m_ehandler.Timedelta());

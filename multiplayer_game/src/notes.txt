@@ -1,3 +1,7 @@
-should the client address be stored in the entity class
-       	   	  	  OR
-should the client address be stored in a different structure
+// TODO (one day)
+   -	optimize retrieval of player data
+
+
+"USERNAME#POSITION#DIRECTION#FLAGS#RTERRAFORMDATA#USERNAME#POSITIO..."
+
+

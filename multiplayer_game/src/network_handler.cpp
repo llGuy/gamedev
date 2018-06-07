@@ -55,14 +55,12 @@ namespace mulgame {
 		ehandler.PushEntity(username);
 	    }
 	}
-
 	m_clientCommunicationThread = std::make_unique<std::thread>([this, &ehandler] { TCPThread(m_tcpSock, ehandler); });
-
 	// setup UDP socket for client
 	m_udpSock.Init(AF_INET, 0, SOCK_DGRAM, IPPROTO_UDP, serverName.c_str(), port.c_str());
 	m_udpSock.Connect();
-
-//	m_udpThread = std::make_unique<std::thread>([this, &ehandler] { TCPThread() });
+	// launch udp thread
+	m_udpThread = std::make_unique<std::thread>([this, &ehandler, &terrain] { ClientUDPThread(ehandler, terrain); });
     }
 
     void NetworkHandler::AcceptThread(EntitiesHandler& ehandler)
@@ -92,7 +90,6 @@ namespace mulgame {
 	if(m_mode == CLIENT_MODE)
 	{
 	    // receive username
-	    
 	}
     }
 
@@ -113,7 +110,52 @@ namespace mulgame {
 	}
     }
 
-    void NetworkHandler::SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain, uint32_t playerID, const ClientAddress& addr)
+    void NetworkHandler::ClientUDPThread(EntitiesHandler& ehandler, Terrain& terrain)
+    {
+	static constexpr uint32_t BUFFER_MAX_SIZE = 512;
+
+	for(;;)
+	{
+	    // send or receive
+	    auto received = ReceiveFromServer();
+	    if(received.has_value())
+	    {
+		MSGParser& parser = received.value();
+
+		std::lock_guard<std::mutex> guard(m_ehandlerMutex);
+		for(; !parser.Max();)
+		    ParseUDPMessage(ehandler, terrain, parser);
+	    }
+
+	    MSGEncoder encoder;
+	    Entity& boundPlayer = ehandler[ehandler.Cam().BoundEntity()];
+	    EncodePlayerData(encoder, boundPlayer, ehandler, terrain);
+	    
+	    Byte* bytes = encoder.Data();
+	    m_udpSock.Send(bytes, encoder.Size());
+	}
+    }
+
+    void NetworkHandler::EncodePlayerData(MSGEncoder& encoder, Entity& player,
+	 EntitiesHandler& ehandler, Terrain& terrain)
+    {
+	encoder.PushString(player.Username());
+	encoder.PushBytes(player.Position(), player.Direction());
+	// push if player is shooting and terraforming
+	bool shot = ehandler.BoundEntityShot();
+	bool terraformed = (player.Terraforming() != -1);
+	int8_t flags = shot + (terraformed << 1);
+	encoder.PushBytes(flags);
+	if(terraformed)
+	{
+	    decltype(auto) fp = terrain.FP(player.Terraforming());
+	    encoder.PushBytes(fp);
+	}
+	else encoder.PushBytes(ForcePoint{});
+    }
+
+    void NetworkHandler::SendAllPlayersDatatoClient(EntitiesHandler& ehandler, Terrain& terrain,
+	 uint32_t playerID, const ClientAddress& addr)
     {
 	MSGEncoder encoder;
 	for(uint32_t i = 0; i < ehandler.Size(); ++i)
@@ -122,6 +164,7 @@ namespace mulgame {
 	    // only sned other people's data
 	    if(ent.ID() != playerID)
 	    {
+		/*
 		encoder.PushString(ent.Username());
 		encoder.PushBytes(ent.Position(), ent.Direction());
 
@@ -133,9 +176,12 @@ namespace mulgame {
 		if(terraformed) encoder.PushBytes(terrain.FP(ent.Terraforming()));
 		else encoder.PushBytes(ForcePoint {});
 
-		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
+		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);*/
+		EncodePlayerData(encoder, ent, ehandler, terrain);
+//		m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
 	    }
 	}
+	m_udpSock.Sendto(encoder.Data(), encoder.Size(), addr.address);
     }
 
     std::optional<MSGParser> NetworkHandler::ReceiveFromServer(void)
