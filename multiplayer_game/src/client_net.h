@@ -18,7 +18,7 @@ namespace mulgame {
 	// receive username given by server and other clients' usernames
 	void ReceiveUsernames(EntitiesHandler& ehandler);
     private:
-	
+	std::vector<InputStatePacket> m_history;
     };
 
 }

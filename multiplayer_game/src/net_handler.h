@@ -6,6 +6,7 @@
 #include <thread>
 #include <memory>
 #include "socket.h"
+#include "mtime.h"
 
 namespace mulgame {
 
@@ -24,7 +25,10 @@ namespace mulgame {
     class NetworkInterface
     {
     public:
-	NetworkInterface(void) = default;
+	NetworkInterface(void)
+	    : m_timer(1000000.0) // get time in milliseconds
+	    {
+	    }
 	virtual ~NetworkInterface(void) = default;
 	// network interfaces need to have direct access to the entities handler and terrain
 	virtual void Launch(EntitiesHandler&, Terrain&, const std::string&, const std::string&) = 0;

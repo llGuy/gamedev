@@ -20,7 +20,18 @@ namespace mulgame {
     
     void ClientInterface::UDPThread(EntitiesHandler&, Terrain&)
     {
-	
+	m_timer.StartTimer();
+	for(;;)
+	{
+	    if(m_timer.Difference() > 30.0 /* 30.0 milliseconds */)
+	    {
+		InputStatePacket isp;
+		
+		
+		// reset the timer
+		m_timer.Update();
+	    }
+	}
     }
     
     void ClientInterface::TCPThread(EntitiesHandler&, Terrain&)
