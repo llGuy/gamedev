@@ -18,7 +18,6 @@ namespace mulgame {
 	: m_position(position), m_direction(direction), m_entityID(id), m_height(3.0f), m_terraforming(-1),
 	  m_speed(DEFAULT_SPEED), m_username("INV"), m_requestedTerraforming(false), m_shot(false)
     {
-	std::cout << m_terraforming << std::endl;
     }
 
     // needs the terrain to know whether or not the player is at ground level

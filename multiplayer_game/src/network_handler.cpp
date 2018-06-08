@@ -1,4 +1,5 @@
 #include <functional>
+
 #include "request.h"
 #include "network_handler.h"
 #include <string>
@@ -106,6 +107,7 @@ namespace mulgame {
 
 	    MSGParser parser(messageBuffer, client.size /* message size */);
 	    auto playerID = ParseUDPMessage(ehandler, terrain, parser);
+	    m_addresses[playerID] = client.address;
 //	    SendAllPlayersDatatoClient(ehandler, terrain, playerID, client.address);
 	    // send all players' data to all players
 //	    UpdatePlayer(ehandler, terrain, playerID, client.address);
