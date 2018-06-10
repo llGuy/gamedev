@@ -14,7 +14,12 @@ namespace mulgame {
     Socket::Socket(int32_t handle)
 	: m_handle(handle)
     {
-    }	
+    }
+
+    Socket::~Socket(void)
+    {
+	shutdown(m_handle, 2);
+    }
 
 /*    Socket::Socket(int32_t handle, sockaddr* address, int32_t length)
 	: m_address(addr), m_handle(handle)

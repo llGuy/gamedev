@@ -21,6 +21,7 @@ namespace mulgame {
 	// only need the ip family
 	Socket(void);
 	Socket(int32_t);
+	~Socket(void);
 //	Socket(int32_t handle, sockaddr*, int32_t);
 	
 	void InitSocket(int32_t, int32_t, int32_t);
