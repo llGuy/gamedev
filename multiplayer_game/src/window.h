@@ -21,6 +21,8 @@ public:
 
 	void MBCallback(int32_t button, int32_t action);
     void EForwarder(const mulgame::MULGEventForwarder& ef);
+
+	bool ReceivedKey(int32_t key);
 private:
     void PollKeys(void);
     void PollMouse(void);

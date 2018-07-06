@@ -127,6 +127,10 @@
   <ItemGroup>
     <None Include="res\gen_fsh.shader" />
     <None Include="res\gen_vsh.shader" />
+    <None Include="res\shadow_fsh.shader" />
+    <None Include="res\shadow_vsh.shader" />
+    <None Include="res\tex_fsh.shader" />
+    <None Include="res\tex_vsh.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

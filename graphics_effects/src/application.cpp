@@ -1,8 +1,9 @@
 #include "application.h"
+#include <stb-master/stb_image.h>
 #include <stdio.h>
 
 application::application(int32_t w, int32_t h)
-	: appl_window(w, h, "graphics effects tests")
+	: appl_window(w, h, "graphics effects tests"), resources("")
 {
 }
 
@@ -10,7 +11,8 @@ auto application::init(void) -> void
 {
 	state = std::make_unique<scene_state>(appl_window.pixel_width(), 
 										  appl_window.pixel_height(), 
-										  appl_window.cursor_position());
+										  appl_window.cursor_position(),
+										  resources);
 	time_handler.start();
 }
 

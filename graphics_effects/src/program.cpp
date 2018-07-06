@@ -53,3 +53,7 @@ auto program::uniform_mat4(float* p, uint32_t index) -> void
 {
 	glUniformMatrix4fv(uniform_locations[index], 1, GL_FALSE, p);
 }
+auto program::uniform_1i(int32_t i, uint32_t index) -> void
+{
+	glUniform1i(uniform_locations[index], i);
+}

@@ -1,6 +1,6 @@
 #include "quad.h"
 
-auto quad_3D::create(void) -> void
+auto quad_3D::create(resource_handler &) -> void
 {
 	vertex_buffer.create();
 	index_buffer.create();

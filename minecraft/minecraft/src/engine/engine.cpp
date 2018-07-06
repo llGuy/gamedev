@@ -230,6 +230,7 @@ namespace minecraft
 		m_udata.skyColor = glm::vec3(0.2f, 0.4f, 1.0f);
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
+		std::cout << m_time.deltaT << std::endl;
 		m_time.currentTime = std::chrono::high_resolution_clock::now();
 	}
 	void Engine::UpdatePlayerData(void)

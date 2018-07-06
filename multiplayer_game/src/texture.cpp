@@ -11,11 +11,12 @@ namespace mulgame {
 		SendImageData(data);
 	}
 
+
 	ImageData Texture::ExtractImage(const std::string& dir)
 	{
 		int32_t width, height, numComp;
 		//		uint8_t* data = stbi_load(dir.c_str(), &width, &height, &numComp, 4);
-		return { nullptr, width, height };
+		return { nullptr, 0, 0 };
 	}
 
 	void Texture::Bind(int32_t unit)

@@ -7,23 +7,15 @@
 #include "init.h"
 
 int main(int argc, char* argv[])
-{
-    if(argc != 2)
-    {
-	std::cerr << "need to specify server of client mode : -s -c" << std::endl;
-	return 0;
-    }
-
-    int8_t arg = argv[1][1];
-    
+{/*
     GLFWInit();
     Window window("multiplayer game", 1200, 800);
     window.Init();
     GLEWInit();
-
-    using mulgame::MULGEngine;
-    MULGEngine engine(1200, 800, arg);
-    window.EForwarder(engine.EForwarder());
+	*/
+   /* using mulgame::MULGEngine;
+    MULGEngine engine(1200, 800, 0);
+    //window.EForwarder(engine.EForwarder());
 
     while(window.Open())
     {
@@ -31,7 +23,14 @@ int main(int argc, char* argv[])
 		engine.Update();
 		engine.Render();
 		window.Update();
-    }
+    }*/
+
+	mulgame::MULGEngine engine(2500, 800, 0);
+	while (engine.Running())
+	{
+		engine.Update();
+		engine.Render();
+	}
 
     return 0;
 }

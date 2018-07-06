@@ -70,6 +70,11 @@ void Window::PollKeys(void)
     if (glfwGetKey(m_window, GLFW_KEY_SPACE)) m_eventForwarder.Handle<EntitiesHandler>(movement_t::JUMP);
 }
 
+bool Window::ReceivedKey(int32_t key)
+{
+	return glfwGetKey(m_window, key);
+}
+
 void Window::PollMouse(void)
 {
     using mulgame::EntitiesHandler;

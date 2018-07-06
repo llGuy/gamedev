@@ -146,9 +146,45 @@ Model Quad(void)
 	return { buffer, vao, 6, (void*)sizeof(vertices) };
 }
 
+Model TexturedQuad2D(float radius)
+{
+	glm::vec2 vertices[]
+	{
+		glm::vec2(-radius, -radius), glm::vec2(1.0f, 0.0f),
+		glm::vec2(-radius, +radius), glm::vec2(0.0f, 0.0f),
+		glm::vec2(+radius, -radius), glm::vec2(1.0f, 1.0f),
+		glm::vec2(+radius, +radius), glm::vec2(0.0f, 1.0f)
+	};
+
+	uint16_t indices[]
+	{
+		0, 1, 2,
+		2, 1, 3
+	};
+
+	uint32_t buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(indices), nullptr, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(indices), indices);
+
+	uint32_t vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	return { buffer, vao, 6, (void*)sizeof(vertices) };
+}
+
 Model Cube(void)
 {
-	#define CUBE_RADIUS 0.2f
+	#define CUBE_RADIUS 1.0f
 	glm::vec3 verts[]
 	{
 		// front
@@ -294,6 +330,47 @@ void Link(const Program& program)
 	CheckProgramStatus(program.program);
 }
 
+Program Init3DProgram(const std::string& vsh, const std::string& fsh)
+{
+	auto shader1 = CreateShader(vsh, GL_VERTEX_SHADER);
+	auto shader2 = CreateShader(fsh, GL_FRAGMENT_SHADER);
+	auto program = InitProgram(shader1, shader2);
+	BindAttribs(program, "vertex_position");
+	Link(program);
+
+	return program;
+}
+
+struct Framebuffer
+{
+	uint32_t fbo;
+	uint32_t texture;
+};
+
+Framebuffer CreateFBO(void)
+{
+	uint32_t framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	// depth texture
+	uint32_t depthTexture;
+	glGenTextures(1, &depthTexture);
+	glBindTexture(GL_TEXTURE_2D, depthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
+
+	glDrawBuffer(GL_NONE); // no color buffer is drawn to
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return { 0, 0 };
+	return { framebuffer, depthTexture };
+}
+
 int main(int argc, char* argv[])
 {
 	auto window = CreateWindow(1400, 750);
@@ -303,24 +380,34 @@ int main(int argc, char* argv[])
 	glfwGetCursorPos(window, &x, &y);
 	Camera camera(glm::vec2(static_cast<float>(x), static_cast<float>(y)));
 
-	auto shader1 = CreateShader("res/gen_vsh.shader", GL_VERTEX_SHADER);
-	auto shader2 = CreateShader("res/gen_fsh.shader", GL_FRAGMENT_SHADER);
-	auto program = InitProgram(shader1, shader2);
-	BindAttribs(program, "vertex_position");
-	Link(program);
-	glUseProgram(program.program);
-	uint32_t colorUDataLocation = glGetUniformLocation(program.program, "color");
-	uint32_t viewMatrixUDataLocation = glGetUniformLocation(program.program, "view_matrix");
-	uint32_t projectionMatrixUDataLocation = glGetUniformLocation(program.program, "projection_matrix");
-	uint32_t modelMatrixUDataLocation = glGetUniformLocation(program.program, "model_matrix");
+	auto scene3DProgram = Init3DProgram("res\\gen_vsh.shader", "res\\gen_fsh.shader");
+	glUseProgram(scene3DProgram.program);
+	uint32_t colorUDataLocation = glGetUniformLocation(scene3DProgram.program, "color");
+	uint32_t viewMatrixUDataLocation = glGetUniformLocation(scene3DProgram.program, "view_matrix");
+	uint32_t projectionMatrixUDataLocation = glGetUniformLocation(scene3DProgram.program, "projection_matrix");
+	uint32_t modelMatrixUDataLocation = glGetUniformLocation(scene3DProgram.program, "model_matrix");
+
+	auto shadowShader = Init3DProgram("res\\shadow_vsh.shader", "res\\shadow_fsh.shader");
+	glUseProgram(shadowShader.program);
+	uint32_t shadowViewMatrixUDataLocation = glGetUniformLocation(shadowShader.program, "view_matrix");
+	uint32_t shadowProjectionMatrixUDataLocation = glGetUniformLocation(shadowShader.program, "projection_matrix");
+	uint32_t shadowModelMatrixUDataLocation = glGetUniformLocation(shadowShader.program, "model_matrix");
 
 	auto quad = Quad();
 	auto cube = Cube();
 
 	glm::mat4 projectionMatrix = glm::perspective(glm::radians(70.0f), 1400.0f / 750.0f, 0.01f, 500.0f);
 
+	glm::mat4 translation1 = glm::translate(glm::vec3(3.0f, 3.0f, 3.0f)) * glm::rotate(glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+	glm::mat4 translation2 = glm::translate(glm::vec3(-3.0f, 4.0f, -4.0f)) * glm::rotate(glm::radians(50.0f), glm::vec3(1.0f, 0.0f, 1.0f));
+
+	auto fbo = CreateFBO();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	while (!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 		camera.Move();
@@ -335,8 +422,9 @@ int main(int argc, char* argv[])
 
 		glm::vec3 color(5.0f, 0.5f, 0.5f);
 		decltype(auto) view = camera.ViewMatrix();
-		glm::mat4 translation = glm::mat4(1.0f);
+		glm::mat4 translation = glm::translate(glm::vec3(0.0f, 0.0f, 0.0f));
 
+		glUseProgram(scene3DProgram.program);
 		glUniform3fv(colorUDataLocation, 1, &color[0]);
 		glUniformMatrix4fv(viewMatrixUDataLocation, 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(projectionMatrixUDataLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -345,12 +433,37 @@ int main(int argc, char* argv[])
 		RenderElements(quad);
 
 		color = glm::vec3(0.2f, 0.2f, 0.2f);
-		translation = glm::translate(glm::vec3(2.0f, 2.0f, 2.0f));
-
 		glUniform3fv(colorUDataLocation, 1, &color[0]);
-		glUniformMatrix4fv(modelMatrixUDataLocation, 1, GL_FALSE, &translation[0][0]);
-
+		glUniformMatrix4fv(modelMatrixUDataLocation, 1, GL_FALSE, &translation1[0][0]);
 		RenderElements(cube);
+		glUniformMatrix4fv(modelMatrixUDataLocation, 1, GL_FALSE, &translation2[0][0]);
+		RenderElements(cube);
+
+
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo.fbo);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUseProgram(shadowShader.program);
+
+		// view matrix
+		glm::vec3 lightInvDir = glm::vec3(0.5f, 2.0f, 2.0f);
+		glm::mat4 depthProjection = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
+		glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+		glm::mat4 translation = glm::translate(glm::vec3(0.0f, 0.0f, 0.0f));
+
+		glUniformMatrix4fv(shadowViewMatrixUDataLocation, 1, GL_FALSE, &depthViewMatrix[0][0]);
+		glUniformMatrix4fv(shadowProjectionMatrixUDataLocation, 1, GL_FALSE, &depthProjection[0][0]);
+		glUniformMatrix4fv(shadowModelMatrixUDataLocation, 1, GL_FALSE, &translation[0][0]);
+
+		RenderElements(quad);
+
+		glUniformMatrix4fv(modelMatrixUDataLocation, 1, GL_FALSE, &translation1[0][0]);
+		RenderElements(cube);
+		glUniformMatrix4fv(modelMatrixUDataLocation, 1, GL_FALSE, &translation2[0][0]);
+		RenderElements(cube);
+
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -5,6 +5,7 @@
 #include "window.h"
 #include "timer.h"
 #include "scene_game_state.h"
+#include "resources.h"
 
 class application
 {
@@ -20,6 +21,7 @@ public:
 private:
 	timer time_handler;
 	window appl_window;
+	resource_handler resources;
 	std::unique_ptr<game_state> state;
 };
 

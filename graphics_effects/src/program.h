@@ -58,6 +58,7 @@ public:
 	auto uniform_2f(float* p, uint32_t index) -> void;
 	auto uniform_3f(float* p, uint32_t index) -> void;
 	auto uniform_mat4(float* p, uint32_t index) -> void;
+	auto uniform_1i(int32_t i, uint32_t index) -> void;
 private:
 	std::vector<shader> shaders;
 	std::vector<uint32_t> uniform_locations;

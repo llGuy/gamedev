@@ -146,9 +146,11 @@
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\mtime.h" />
+    <ClInclude Include="src\optional.hpp" />
     <ClInclude Include="src\program.h" />
     <ClInclude Include="src\ray.h" />
     <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\request.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\terrain.h" />
     <ClInclude Include="src\terrain_mound.h" />
@@ -156,6 +158,7 @@
     <ClInclude Include="src\time.h" />
     <ClInclude Include="src\udata.h" />
     <ClInclude Include="src\vao.h" />
+    <ClInclude Include="src\vec_io.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>

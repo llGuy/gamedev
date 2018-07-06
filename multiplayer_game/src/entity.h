@@ -64,7 +64,7 @@ namespace mulgame {
 		    upforce = upforce + velocity * timedelta;
 		    velocity = velocity + gravity * timedelta;
 		}
-	    }
+	    }	
 	void Balance(void)
 	    {
 		upforce = 0.0f;

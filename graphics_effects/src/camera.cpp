@@ -40,7 +40,7 @@ auto camera::update_view_matrix(void) -> glm::mat4 &
 
 auto camera::handle_input(input_handler & ih, float time_delta) -> void
 {
-	static constexpr float speed = 5.0f;
+	static constexpr float speed = 20.0f;
 	static constexpr glm::vec3 up_vector{ 0.0f, 1.0f, 0.0f };
 
 	glm::vec3 direction { 0.0f };
