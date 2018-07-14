@@ -14,7 +14,7 @@ uniform sampler2D b_texture;
 uniform sampler2D blend_map;
 uniform vec3 model_color;
 
-const vec3 light_position = vec3(0.0f, 5.0f, 0.0f);
+const vec3 light_position = vec3(0.0f, 30.0f, 0.0f);
 
 vec4 get_diffuse(void)
 {

@@ -6,7 +6,7 @@ in vec3 final_normal;
 in vec3 final_position;
 in vec3 color;
 
-const vec3 light_position = vec3(0.0f, 5.0f, 0.0f);
+const vec3 light_position = vec3(0.0f, 30.0f, 0.0f);
 
 vec4 get_diffuse(void)
 {
@@ -19,4 +19,5 @@ vec4 get_diffuse(void)
 void main(void)
 {
 	final_color = vec4(color, 1.0f) + get_diffuse();
+	
 }
