@@ -25,3 +25,8 @@ auto vertex_array::divisor(uint32_t loc, uint32_t div) -> void
 {
 	glVertexAttribDivisor(loc, div);
 }
+template<>
+auto vertex_array::push<float>(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void
+{
+	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, ptr);
+}

@@ -1,3 +1,4 @@
+
 #ifndef _CAMERA_H_
 #define _CAMERA_H_
 
@@ -12,6 +13,7 @@ class camera
 public:
 	camera(glm::vec2 const & cursor_xy);
 
+	auto position(void) -> glm::vec3 &;
 	auto cursor_position(void) -> glm::vec2 &;
 	auto look_at(glm::vec2 const & cursor) -> void;
 
@@ -24,6 +26,7 @@ private:
 	glm::vec3 world_position;
 	glm::vec3 world_direction;
 	glm::mat4 camera_view_matrix;
+	float camera_speed;
 };
 
 #endif

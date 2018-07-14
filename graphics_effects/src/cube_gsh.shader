@@ -4,13 +4,11 @@ layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 in vec3 pass_world_positions[];
-in vec2 pass_texture_coords[];
-out vec2 final_texture_coord;
+in vec3 pass_vertex_color[];
+
 out vec3 final_normal;
 out vec3 final_position;
 out vec3 color;
-
-uniform vec3 model_color;
 
 vec3 get_normal(void)
 {
@@ -26,10 +24,9 @@ void main(void)
 	for (int i = 0; i < 3; ++i)
 	{
 		gl_Position = gl_in[i].gl_Position;
-		final_texture_coord = pass_texture_coords[i];
 		final_normal = normal;
 		final_position = pass_world_positions[i];
-		color = pass_world_positions[0] / 8.0f;
+		color = pass_vertex_color[i];
 
 		EmitVertex();
 	}

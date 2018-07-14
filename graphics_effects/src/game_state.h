@@ -23,6 +23,7 @@ public:
 		vao.bind();
 		index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, nullptr);
+		
 		index_buffer.unbind(GL_ELEMENT_ARRAY_BUFFER);
 		vao.unbind();
 	}

@@ -8,6 +8,7 @@
 #include "program.h"
 #include "camera.h"
 #include "quad.h"
+#include "cube.h"
 #include "terrain.h"
 #include "resources.h"
 
@@ -28,8 +29,11 @@ private:
 	glm::mat4 projection_matrix;
 
 	camera main_camera;
-	program scene_program;
-	terrain<64, 64> scene_terrain;
+	program terrain_program;
+	program cube_program;
+	terrain<256, 256> scene_terrain;
+	cube test_cube;
+	std::array<glm::vec3, 10> cube_positions;
 };
 
 #endif

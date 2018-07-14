@@ -2,7 +2,11 @@
 #define _SHADER_H_
 
 #include <iostream>
+#ifdef cpp_no_optional
+#include "optional.hpp"
+#else
 #include <optional>
+#endif
 #include <GL/glew.h>
 
 class shader

@@ -6,8 +6,8 @@
 
 #include "resource_data.h"
 
-typedef unsigned char stbi_uc;
-extern "C" auto stbi_load(char const *filename, int *x, int *y, int *channels_in_file, int desired_channels) -> stbi_uc *;
+//typedef unsigned char stbi_uc;
+//extern "C" auto stbi_load(char const *filename, int *x, int *y, int *channels_in_file, int desired_channels) -> stbi_uc *;
 
 class resource_handler
 {
@@ -22,14 +22,14 @@ public:
 	{
 		return typename data <R>::type();
 	}
-
+	/*
 	template <>
 	auto load <image>(std::string const & dir) -> typename data <image>::type
 	{
 		int32_t w, h, num_comp;
 		auto * data = stbi_load((default_directory + dir).c_str(), &w, &h, &num_comp, 4);
 		return { data, w, h };
-	}
+	}*/
 private:
 	std::string default_directory;
 };

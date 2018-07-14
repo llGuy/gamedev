@@ -19,14 +19,14 @@ public:
 	template <typename T>
 	auto push(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void
 	{
-		static_assert(false);
+		//		static_assert(false);
 	}
 
-	template<>
+	/*	template<>
 	auto push<float>(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void
 	{
 		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, ptr);
-	}
+	}*/
 
 private:
 	uint32_t id;

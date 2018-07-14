@@ -37,8 +37,8 @@ auto application::update(void) -> void
 {
 	// call some update functions
 	state->update(appl_window.user_inputs(), time_handler);
-	appl_window.refresh();
 	time_handler.reset();
+	appl_window.refresh();
 }
 
 auto application::running(void) -> bool

@@ -1,21 +1,34 @@
+
 #version 330 core
 
 out vec4 final_color;
 in vec2 final_texture_coord;
+in vec3 final_normal;
+in vec3 final_position;
+in vec3 color;
 
 uniform sampler2D background;
 uniform sampler2D r_texture;
 uniform sampler2D g_texture;
 uniform sampler2D b_texture;
 uniform sampler2D blend_map;
-
 uniform vec3 model_color;
+
+const vec3 light_position = vec3(0.0f, 5.0f, 0.0f);
+
+vec4 get_diffuse(void)
+{
+	vec3 normal = vec3(0.0f, 1.0f, 0.0f);
+	vec3 light_vector = normalize(light_position - final_position);
+	float d = dot(light_vector, normal);
+	return vec4(d, d, d, 1.0f) * 0.8f;
+}
 
 void main(void)
 {
 	vec4 blend_map_color = texture(blend_map, final_texture_coord);
 	float back_texture_amount = 1 - (blend_map_color.r + blend_map_color.g + blend_map_color.b);
-	vec2 tiled_coords = final_texture_coord * 1000.0f;
+	vec2 tiled_coords = final_texture_coord * 20.0f;
 
 	vec4 background_texture_color = texture(background, tiled_coords) * back_texture_amount;
 
@@ -25,5 +38,5 @@ void main(void)
 
 	vec4 total_color = background_texture_color + r_texture_color + g_texture_color + b_texture_color;
 
-	final_color = total_color;
+	final_color = total_color + get_diffuse();
 }

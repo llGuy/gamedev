@@ -1,7 +1,11 @@
 #ifndef _RENDERABLE_3D_
 #define _RENDERABLE_3D_
 
+#ifdef cpp_no_optional
+#include "optional.hpp"
+#else
 #include <optional>
+#endif
 
 #include "buffer.h"
 #include "texture.h"
