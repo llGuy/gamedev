@@ -1,3 +1,4 @@
+
 #ifndef HEIGHTMAP_HEADER
 #define HEIGHTMAP_HEADER
 
