@@ -57,6 +57,18 @@
     <ClCompile Include="src\resources.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shadows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window.h">
@@ -113,10 +125,38 @@
     <ClInclude Include="src\resource_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\optional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shadows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\scene_vsh.shader" />
     <None Include="src\scene_gsh.shader" />
     <None Include="src\scene_fsh.shader" />
+    <None Include="src\depth_vsh.shader" />
+    <None Include="src\depth_fsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\path.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\mud.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

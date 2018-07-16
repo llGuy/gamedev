@@ -53,8 +53,6 @@ auto shadows::create_fbo(void) -> void
 auto shadows::create_program(void) -> void
 {
 	depth_shader.create_shader(GL_VERTEX_SHADER, "depth_vsh.shader");
-	depth_shader.create_shader(GL_FRAGMENT_SHADER, "depth_fsh.shader");
-	depth_shader.link_shaders("vertex_position");
 	depth_shader.get_uniform_locations("depth_mvp", "model_matrix");
 }
 
