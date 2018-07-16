@@ -17,15 +17,10 @@ auto quad_2D::create(void) -> void
 
 	glm::vec2 vertices[]
 	{
-		mi,						
-		mi + glm::vec2(0.0f, of.y),
-		mi + glm::vec2(of.x, 0.0f),
-		mi + of,		
-
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 1.0f),
-		glm::vec2(0.0f, 1.0f),
+		mi,	glm::vec2(0.0f, 0.0f),
+		mi + glm::vec2(0.0f, of.y),glm::vec2(0.0f, 1.0f), 
+		mi + glm::vec2(of.x, 0.0f),glm::vec2(1.0f, 0.0f),
+		mi + of, glm::vec2(1.0f, 1.0f),
 	};
 
 	vertex_buffer.create();
@@ -36,8 +31,8 @@ auto quad_2D::create(void) -> void
 	buffer_layout.bind();
 	buffer_layout.enable(0);
 	buffer_layout.enable(1);
-	buffer_layout.push<float>(0, 2, 2 * sizeof(float), nullptr);
-	buffer_layout.push<float>(1, 2, 2 * sizeof(float), (void *)(4 * sizeof(glm::vec2)));
+	buffer_layout.push<float>(0, 2, 4 * sizeof(float), nullptr);
+	buffer_layout.push<float>(1, 2, 4 * sizeof(float), (void *)(sizeof(glm::vec2)));
 }
 
 auto quad_2D::vao(void) -> vertex_array &

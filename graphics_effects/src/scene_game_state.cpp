@@ -52,8 +52,8 @@ auto scene_state::render(void) -> void
 	render_scene();
 
 	shadow_fbo.bind();
-	//glViewport(0, 0, 1024, 1024);
-	render_scene();
+	glViewport(0, 0, 1024, 1024);
+	render_depth();
 
 	// render contents in depth texture
 	shadow_fbo.unbind();
@@ -119,6 +119,7 @@ auto scene_state::render_depth_gui(void) -> void
 
 auto scene_state::render_depth(void) -> void
 {
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	auto & fbo = shadow_handler.fbo();
 	auto & shaders = shadow_handler.shaders();
 	auto & depth_texture = shadow_handler.tex();
@@ -129,7 +130,7 @@ auto scene_state::render_depth(void) -> void
 
 	depth_texture.bind(0);
 
-	projection = projection_matrix * main_camera.view_matrix();
+	projection = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 1000.0f) * main_camera.view_matrix();
 	shaders.uniform_mat4(&projection[0][0], 0);
 
 	glm::mat4 identity { 1.0f };

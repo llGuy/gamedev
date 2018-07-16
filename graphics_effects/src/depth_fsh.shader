@@ -1,6 +1,6 @@
 #version 330 core
 
-out float fragment_depth;
+layout(location = 0) out float fragment_depth;
 
 void main(void)
 {

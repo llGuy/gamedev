@@ -21,8 +21,10 @@ auto shadows::create_fbo(void) -> void
 	depth_texture.int_param(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	depth_texture.int_param(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	depth_texture.int_param(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 
-	GLuint depthrenderbuffer;
+	/*GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 768);
@@ -32,17 +34,17 @@ auto shadows::create_fbo(void) -> void
 	color_texture.bind();
 	color_texture.fill(GL_RGB, 1500, 700, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 	color_texture.int_param(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	color_texture.int_param(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	color_texture.int_param(GL_TEXTURE_MIN_FILTER, GL_NEAREST);*/
 	//color_texture.int_param(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	//color_texture.int_param(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	uint32_t renderbuffer;
+	/*uint32_t renderbuffer;
 	glGenRenderbuffers(1, &renderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);*/
 
-	depth_framebuffer.attach_texture(color_texture, GL_COLOR_ATTACHMENT0, 0);
+	depth_framebuffer.attach_texture(depth_texture, GL_DEPTH_ATTACHMENT, 0);
 
-	depth_framebuffer.select_color_buffer(GL_COLOR_ATTACHMENT0);
+	depth_framebuffer.select_color_buffer(GL_NONE);
 
 	if (depth_framebuffer.framebuffer_status()) logger::sub_log("created shadow fbo");
 	else logger::error_log("unable to create shadow fbo");
@@ -93,7 +95,7 @@ auto shadows::fbo(void) -> framebuffer &
 
 auto shadows::tex(void) -> texture &
 {
-	return color_texture;
+	return depth_texture;
 }
 
 auto shadows::bias(void) -> glm::mat4 &

@@ -4,7 +4,7 @@
 
 auto main(int32_t argc, char* argv[]) -> int32_t
 {
-	application app { 1500, 700 };
+	application app { 2800, 1400 };
 
 	logger::new_log("initializing game");
 	glfw_init();
