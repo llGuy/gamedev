@@ -17,10 +17,7 @@ public:
 	auto divisor(uint32_t loc, uint32_t div) -> void;
 
 	template <typename T>
-	auto push(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void
-	{
-		//		static_assert(false);
-	}
+	auto push(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void;
 
 	/*	template<>
 	auto push<float>(uint32_t index, uint32_t size, uint32_t stride, void * ptr) -> void

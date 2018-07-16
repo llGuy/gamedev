@@ -2,11 +2,12 @@
 #define _FRAMEBUFFER_H_
 
 #include <GL/glew.h>
-#include "texture.h"
+#include <stdint.h>
+
+class texture;
 
 class framebuffer
 {
-	friend class texture;
 public:
 	framebuffer(void) = default;
 

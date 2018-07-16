@@ -7,7 +7,8 @@
 
 scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, resource_handler & rh)
 	: resolution { w, h }, projection_matrix(glm::perspective(glm::radians(60.0f), 
-															  (float)w / (float)h, 0.001f, 1000.0f)), main_camera(cursor_pos), test_cube(2.0f, glm::vec3(0.0f, 0.8f, 0.0f))
+											(float)w / (float)h, 0.001f, 1000.0f)), main_camera(cursor_pos), 
+											test_cube(2.0f, glm::vec3(0.0f, 0.8f, 0.0f))
 {
 	using detail::vec_rand;
 
@@ -34,6 +35,8 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	cube_program.create_shader(GL_FRAGMENT_SHADER, "cube_fsh.shader");
 	cube_program.link_shaders("vertex_position", "vertex_color");
 	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix");
+
+	//shadow_handler.create();
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -81,9 +84,24 @@ auto scene_state::render_scene(void) -> void
 	cube_program.uniform_mat4(&main_camera.view_matrix()[0][0], 1);
 
 	for(uint32_t i = 0; i < 10; ++i)
-		{
-			auto trans = glm::translate(cube_positions[i]);
-			cube_program.uniform_mat4(&trans[0][0], 2);
-			render_model(test_cube.vao(), test_cube.element_buffer(), 36);
-		}
+	{
+		auto trans = glm::translate(cube_positions[i]);
+		cube_program.uniform_mat4(&trans[0][0], 2);
+		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
+	}
+}
+
+auto scene_state::render_depth(void) -> void
+{
+	auto & fbo = shadow_handler.fbo();
+	auto & shaders = shadow_handler.shaders();
+	
+	fbo.bind();
+	shaders.use();
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
+
+
 }

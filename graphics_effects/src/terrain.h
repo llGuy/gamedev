@@ -32,7 +32,7 @@ template <uint32_t Width, uint32_t Depth>
 
 	auto create(resource_handler & resources) -> void override
 	{
-		srand(time(NULL));
+		srand(static_cast<int32_t>(time(NULL)));
 
 		generate_vertices();
 		generate_indices();

@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 #include <fstream>
+#include "log.h"
 
 shader::shader(GLenum type)
 	: shader_type(type)
@@ -24,14 +25,14 @@ auto shader::status(void) -> bool
 	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
 	if (status != GL_TRUE)
 	{
-		std::cerr << "ERROR : failed to create shader" << std::endl;
-		
+		logger::error_log("failde to create shader");
 		int32_t info_log_length = 0;
 		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
 		char * buffer = (char *)alloca(info_log_length * sizeof(char));
 		int32_t buffer_size;
 		glGetShaderInfoLog(shader_id, info_log_length * sizeof(char), &buffer_size, buffer);
 
+		logger::new_log("shader compile error info");
 		std::cout << buffer << std::endl;
 		return false;
 	}

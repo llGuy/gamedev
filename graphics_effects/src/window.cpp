@@ -1,10 +1,11 @@
 #include <GL/glew.h>
 #include "window.h"
+#include "log.h"
 
 void glfw_init(void)
 {
-	if (!glfwInit()) std::cerr << "ERROR : unable to initialize GLFW" << std::endl;
-	else std::cout << "LOG : initialized GLFW" << std::endl;
+	if (!glfwInit()) logger::error_log("unable to initialize GLFW");
+	else logger::sub_log("initialized GLFW successfully");
 }
 void glfw_terminate(void)
 {
@@ -13,8 +14,8 @@ void glfw_terminate(void)
 void glew_init(void)
 {
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) std::cerr << "ERROR : unable to initialize GLEW" << std::endl;
-	else std::cout << "LOG : initialized GLEW" << std::endl;
+	if (glewInit() != GLEW_OK) logger::error_log("unable to initialize GLEW");
+	else logger::sub_log("initialized GLEW successfully");
 }
 
 window::window(int32_t w, int32_t h, std::string const & t)
@@ -24,8 +25,8 @@ window::window(int32_t w, int32_t h, std::string const & t)
 auto window::init(void) -> void
 {
 	if (!(glfw_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr)))
-		std::cerr << "ERROR : unable to initialize window" << std::endl;
-	else std::cout << "LOG : initialized window" << std::endl;
+		logger::error_log("unable to initialize window");
+	else logger::sub_log("initialized window successfully");
 	glfwMakeContextCurrent(glfw_window);
 }
 auto window::destroy(void) -> void

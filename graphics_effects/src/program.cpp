@@ -1,4 +1,5 @@
 #include "program.h"
+#include "log.h"
 
 auto program::use(void) -> void
 {
@@ -7,7 +8,11 @@ auto program::use(void) -> void
 auto program::create_shader(GLenum type, std::string const & dir) -> void
 {
 	shaders.emplace_back(type);
+#ifdef _WIN32
+	shaders.back().compile(std::string("src/") + dir);
+#else
 	shaders.back().compile(dir);
+#endif
 }
 auto program::status(void) -> bool
 {	
@@ -15,7 +20,8 @@ auto program::status(void) -> bool
 	glGetProgramiv(program_id, GL_LINK_STATUS, &status);
 	if (status != GL_TRUE)
 	{
-		std::cerr << "ERROR : failed to create program" << std::endl;
+		//std::cerr << "ERROR : failed to create program" << std::endl;
+		logger::error_log("failed to create program");
 
 		int32_t info_log_length = 0;
 		glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &info_log_length);
@@ -23,6 +29,7 @@ auto program::status(void) -> bool
 		int32_t buffer_size;
 		glGetProgramInfoLog(program_id, info_log_length * sizeof(char), &buffer_size, buffer);
 
+		logger::new_log("program link error info");
 		std::cout << buffer << std::endl;
 		return false;
 	}

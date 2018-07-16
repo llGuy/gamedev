@@ -7,6 +7,8 @@
 class texture
 {
 public:
+	friend class framebuffer;
+
 	texture(void) = default;
 
 	auto create(void) -> void;
@@ -14,10 +16,10 @@ public:
 	auto fill(GLenum internal_format, uint32_t w, uint32_t h, GLenum format, GLenum type, void const * data) -> void;
 
 	auto enable_mipmap(void) -> void;
-	auto float_param(GLenum mode, GLenum factor) -> void;
+	auto float_param(GLenum mode, float factor) -> void;
 	auto int_param(GLenum mode, GLenum factor) -> void;
 private:
-	uint32_t obj;
+	uint32_t id;
 };
 
 #endif

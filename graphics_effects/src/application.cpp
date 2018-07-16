@@ -1,9 +1,8 @@
 #include "application.h"
-#include <stb-master/stb_image.h>
 #include <stdio.h>
 
 application::application(int32_t w, int32_t h)
-	: appl_window(w, h, "graphics effects tests"), resources("")
+	: appl_window(w, h, "graphics effects tests"), resources("src/")
 {
 }
 

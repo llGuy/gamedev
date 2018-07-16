@@ -11,6 +11,7 @@
 #include "cube.h"
 #include "terrain.h"
 #include "resources.h"
+#include "shadows.h"
 
 class scene_state
 	: public game_state
@@ -22,6 +23,7 @@ public:
 	auto update(input_handler &, timer &) -> game_state * override;
 private:
 	auto render_scene(void) -> void;
+	auto render_depth(void) -> void;
 
 	auto connect_texture_units(void) -> void;
 private:
@@ -33,6 +35,8 @@ private:
 	program cube_program;
 	terrain<256, 256> scene_terrain;
 	cube test_cube;
+	shadows shadow_handler;
+
 	std::array<glm::vec3, 10> cube_positions;
 };
 

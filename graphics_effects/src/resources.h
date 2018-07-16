@@ -18,10 +18,7 @@ public:
 	}
 
 	template <resource R>
-	auto load (std::string const & dir) -> typename data <R>::type 
-	{
-		return typename data <R>::type();
-	}
+	auto load(std::string const & dir) -> typename data <R>::type;
 	/*
 	template <>
 	auto load <image>(std::string const & dir) -> typename data <image>::type
