@@ -42,7 +42,7 @@ public:
 			uniform_locations.push_back(location);
 		});
 	}
-
+private:
 	auto status(void) -> bool;
 	auto attach_shaders(void) -> void;
 	auto delete_shaders(void) -> void;

@@ -21,7 +21,7 @@ vec4 get_diffuse(void)
 	vec3 normal = vec3(0.0f, 1.0f, 0.0f);
 	vec3 light_vector = normalize(light_position - final_position);
 	float d = dot(light_vector, normal);
-	return vec4(d, d, d, 1.0f) * 0.8f;
+	return vec4(d, d, d, 1.0f) * 0.4f;
 }
 
 void main(void)

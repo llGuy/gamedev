@@ -17,6 +17,9 @@ public:
 	auto shaders(void) -> program &;
 	auto fbo(void) -> framebuffer &;
 	auto tex(void) -> texture &;
+
+	auto bias(void) -> glm::mat4 &;
+	auto depth_projection(void) -> glm::mat4 &;
 private:
 	auto create_fbo(void) -> void;
 	auto create_program(void) -> void;
@@ -24,9 +27,11 @@ private:
 private:
 	program depth_shader;
 	texture depth_texture;
+	texture color_texture;
 	framebuffer depth_framebuffer;
 
 	glm::mat4 ortho_projection;
+	glm::mat4 depth_bias;
 };
 
 #endif

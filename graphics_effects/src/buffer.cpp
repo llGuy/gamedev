@@ -1,5 +1,5 @@
 #include "buffer.h"
- 
+
 auto buffer::create(void) -> uint32_t
 {
 	glGenBuffers(1, &id);

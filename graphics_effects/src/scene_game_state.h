@@ -1,5 +1,5 @@
-#ifndef _SCENE_GAME_STATE_
-#define _SCENE_GAME_STATE_
+#ifndef _SCENE_GAME_STATE_H_
+#define _SCENE_GAME_STATE_H_
 
 #include <iostream>
 #include <GL/glew.h>
@@ -12,6 +12,7 @@
 #include "terrain.h"
 #include "resources.h"
 #include "shadows.h"
+#include "gui.h"
 
 class scene_state
 	: public game_state
@@ -24,6 +25,7 @@ public:
 private:
 	auto render_scene(void) -> void;
 	auto render_depth(void) -> void;
+	auto render_depth_gui(void) -> void;
 
 	auto connect_texture_units(void) -> void;
 private:
@@ -36,6 +38,7 @@ private:
 	terrain<256, 256> scene_terrain;
 	cube test_cube;
 	shadows shadow_handler;
+	gui_handler guis;
 
 	std::array<glm::vec3, 10> cube_positions;
 };

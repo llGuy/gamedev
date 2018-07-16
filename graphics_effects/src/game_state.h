@@ -27,6 +27,13 @@ public:
 		index_buffer.unbind(GL_ELEMENT_ARRAY_BUFFER);
 		vao.unbind();
 	}
+
+	auto render_model_arrays(vertex_array & vao, uint32_t count, GLenum mode) -> void
+	{
+		vao.bind();
+		glDrawArrays(mode, 0, count);
+		vao.unbind();
+	}
 };
 
 #endif

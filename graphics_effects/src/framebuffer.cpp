@@ -24,7 +24,7 @@ auto framebuffer::attach_texture(texture & tex, uint32_t component, uint32_t lev
 	glFramebufferTexture(GL_FRAMEBUFFER, component, tex.id, level);
 }
 
-auto framebuffer::select_color_buffer(uint32_t point) -> void
+auto framebuffer::select_color_buffer(GLenum point) -> void
 {
 	glDrawBuffer(point);
 }

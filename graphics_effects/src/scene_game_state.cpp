@@ -36,14 +36,29 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	cube_program.link_shaders("vertex_position", "vertex_color");
 	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix");
 
-	//shadow_handler.create();
+	shadow_handler.create();
+
+	guis.create();
+	guis.push(glm::vec2(-0.5f, -0.5f), 1.0f);
 
 	glEnable(GL_DEPTH_TEST);
 }
 auto scene_state::render(void) -> void 
 {
+	glViewport(0, 0, resolution.x, resolution.y);
 	// onto default framebuffer
+	auto & shadow_fbo = shadow_handler.fbo();
+	shadow_fbo.unbind();
 	render_scene();
+
+	shadow_fbo.bind();
+	//glViewport(0, 0, 1024, 1024);
+	render_scene();
+
+	// render contents in depth texture
+	shadow_fbo.unbind();
+	glViewport(0, 0, resolution.x, resolution.y);
+	render_depth_gui();
 }
 auto scene_state::update(input_handler & ih, timer & time) -> game_state * 
 {
@@ -91,17 +106,40 @@ auto scene_state::render_scene(void) -> void
 	}
 }
 
+auto scene_state::render_depth_gui(void) -> void
+{
+	auto & quad2D = guis.quad();
+	auto & shaders = guis.shaders();
+	shaders.use();
+	auto & texture = shadow_handler.tex();
+	texture.bind(0);
+	guis.prepare_render();
+	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
+}
+
 auto scene_state::render_depth(void) -> void
 {
 	auto & fbo = shadow_handler.fbo();
 	auto & shaders = shadow_handler.shaders();
-	
+	auto & depth_texture = shadow_handler.tex();
+	auto & projection = shadow_handler.depth_projection();
+
 	fbo.bind();
 	shaders.use();
 
-	glClear(GL_DEPTH_BUFFER_BIT);
+	depth_texture.bind(0);
 
+	projection = projection_matrix * main_camera.view_matrix();
+	shaders.uniform_mat4(&projection[0][0], 0);
+
+	glm::mat4 identity { 1.0f };
+	shaders.uniform_mat4(&identity[0][0], 1);
 	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
 
-
+	/*for (uint32_t i = 0; i < 10; ++i)
+	{
+		auto trans = glm::translate(cube_positions[i]);
+		shaders.uniform_mat4(&trans[0][0], 1);
+		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
+	}*/
 }
