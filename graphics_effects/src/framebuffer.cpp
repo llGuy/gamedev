@@ -1,5 +1,6 @@
 #include "framebuffer.h"
 #include "texture.h"
+#include "renderbuffer.h"
 
 auto framebuffer::create(void) -> uint32_t
 {
@@ -19,7 +20,7 @@ auto framebuffer::unbind(void) -> void
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-auto framebuffer::attach_texture(texture & tex, uint32_t component, uint32_t level) -> void
+auto framebuffer::attach(texture & tex, uint32_t component, uint32_t level) -> void
 {
 	glFramebufferTexture(GL_FRAMEBUFFER, component, tex.id, level);
 }
@@ -32,4 +33,9 @@ auto framebuffer::select_color_buffer(GLenum point) -> void
 auto framebuffer::framebuffer_status(void) -> bool
 {
 	return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+}
+
+auto framebuffer::attach(renderbuffer & rnd, uint32_t component, uint32_t level) -> void
+{
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, component, GL_RENDERBUFFER, rnd.id);
 }

@@ -42,7 +42,7 @@ auto shadows::create_fbo(void) -> void
 	glGenRenderbuffers(1, &renderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);*/
 
-	depth_framebuffer.attach_texture(depth_texture, GL_DEPTH_ATTACHMENT, 0);
+	depth_framebuffer.attach(depth_texture, GL_DEPTH_ATTACHMENT, 0);
 
 	depth_framebuffer.select_color_buffer(GL_NONE);
 
@@ -53,6 +53,8 @@ auto shadows::create_fbo(void) -> void
 auto shadows::create_program(void) -> void
 {
 	depth_shader.create_shader(GL_VERTEX_SHADER, "depth_vsh.shader");
+	depth_shader.create_shader(GL_FRAGMENT_SHADER, "depth_fsh.shader");
+	depth_shader.link_shaders("vertex_position");
 	depth_shader.get_uniform_locations("depth_mvp", "model_matrix");
 }
 
@@ -63,7 +65,7 @@ auto shadows::create_projection(void) -> void
 	// compute the MVP matrix from the light's point of view
 	glm::mat4 depth_projection = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
 	glm::mat4 depth_view_matrix = glm::lookAt(light_inv_dir, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 depth_model_matrix = glm::mat4(1.0f);
+	glm::mat4 depth_model_matrix = glm::translate(glm::vec3(2.0f, 2.0f, 5.0f));
 	glm::mat4 depth_mvp = depth_projection * depth_view_matrix * depth_model_matrix;
 
 	depth_shader.use();

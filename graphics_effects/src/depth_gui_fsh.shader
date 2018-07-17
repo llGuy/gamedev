@@ -8,11 +8,11 @@ uniform sampler2D diffuse;
 vec4 get_depth_color(void)
 {
 	float d = texture(diffuse, pass_texture_coords).x;
+
 	return vec4(d, d, d, 1.0f);
 }
 
 void main(void)
 {
-	//final_color = vec4(pass_texture_coords, 0.0f, 1.0f);
 	final_color = get_depth_color();
 }

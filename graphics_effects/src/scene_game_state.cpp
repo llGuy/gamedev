@@ -130,17 +130,17 @@ auto scene_state::render_depth(void) -> void
 
 	depth_texture.bind(0);
 
-	projection = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 1000.0f) * main_camera.view_matrix();
-	shaders.uniform_mat4(&projection[0][0], 0);
+	glm::mat4 matrix = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 1000.0f) * main_camera.view_matrix();
+	//shaders.uniform_mat4(&matrix[0][0], 0);
 
 	glm::mat4 identity { 1.0f };
 	shaders.uniform_mat4(&identity[0][0], 1);
 	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
 
-	/*for (uint32_t i = 0; i < 10; ++i)
+	for (uint32_t i = 0; i < 10; ++i)
 	{
 		auto trans = glm::translate(cube_positions[i]);
 		shaders.uniform_mat4(&trans[0][0], 1);
 		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
-	}*/
+	}
 }

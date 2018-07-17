@@ -28,7 +28,7 @@ public:
 
 	auto create(resource_handler & resources) -> void override
 	{
-		srand(static_cast<int32_t>(time(NULL)));
+//		srand(static_cast<int32_t>(time(NULL)));
 
 		generate_vertices();
 		generate_indices();
