@@ -28,7 +28,7 @@ public:
 
 	auto create(resource_handler & resources) -> void override
 	{
-//		srand(static_cast<int32_t>(time(NULL)));
+		srand(static_cast<int32_t>(time(NULL)));
 
 		generate_vertices();
 		generate_indices();
@@ -124,7 +124,7 @@ private:
 
 		float final = interp(glm::vec2(positions[2].y, noise_interp_x2), glm::vec2(positions[0].y, noise_interp_x1), x_z.y);
 
-		return final / 2.0f;
+		return final;
 	}
 	auto prepare_height_data(corners & corner_vectors,
 		corners & corner_positions) -> void

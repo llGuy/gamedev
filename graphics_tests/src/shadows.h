@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include "depth_texture.h"
 #include "framebuffer.h"
 #include "texture.h"
 #include "program.h"
@@ -10,7 +11,7 @@
 class shadows
 {
 public:
-	shadows(void) = default;
+	shadows(void);
 
 	auto create(void) -> void;
 
@@ -26,7 +27,7 @@ private:
 	auto create_projection(void) -> void;
 private:
 	program depth_shader;
-	texture depth_texture;
+	depth_texture depth_texture;
 	texture color_texture;
 	framebuffer depth_framebuffer;
 

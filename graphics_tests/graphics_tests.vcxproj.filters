@@ -72,6 +72,9 @@
     <ClCompile Include="src\vao.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\depth_texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\batch_renderer.h">
@@ -231,6 +234,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\depth_texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

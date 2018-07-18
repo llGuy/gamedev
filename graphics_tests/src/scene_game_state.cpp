@@ -39,7 +39,7 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	shadow_handler.create();
 
 	guis.create();
-	guis.push(glm::vec2(-0.5f, -0.5f), 1.0f);
+	guis.push(glm::vec2(-0.5f, -0.5f), 0.6f);
 
 	glEnable(GL_DEPTH_TEST);
 }

@@ -2,6 +2,11 @@
 #include "log.h"
 #include <glm/gtx/transform.hpp>
 
+shadows::shadows(void)
+	: depth_texture(1024, 1024)
+{
+}
+
 auto shadows::create(void) -> void
 {
 	create_fbo();
@@ -15,14 +20,13 @@ auto shadows::create_fbo(void) -> void
 	depth_framebuffer.bind();
 
 	depth_texture.create();
-	depth_texture.bind();
-	depth_texture.fill(GL_DEPTH_COMPONENT16, 1024, 1024, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+/*p	depth_texture.fill(GL_DEPTH_COMPONENT16, 1024, 1024, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	depth_texture.int_param(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	depth_texture.int_param(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	depth_texture.int_param(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	depth_texture.int_param(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	depth_texture.int_param(GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	depth_texture.int_param(GL_TEXTURE_COMPARE_FUNC, GL_COMPARE_R_TO_TEXTURE);
+	depth_texture.int_param(GL_TEXTURE_COMPARE_FUNC, GL_COMPARE_R_TO_TEXTURE);*/
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 
@@ -47,7 +51,7 @@ auto shadows::create_projection(void) -> void
 	glm::vec3 light_inv_dir = glm::normalize(glm::vec3(0.2f, 1.0f, 0.2f));
 
 	// compute the MVP matrix from the light's point of view
-	glm::mat4 depth_projection = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 30.0f);
+	glm::mat4 depth_projection = glm::ortho<float>(-20.0f, 20.0f, -20.0f, 20.0f, -20.0f, 30.0f);
 	glm::mat4 depth_view_matrix = glm::lookAt(light_inv_dir, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 depth_model_matrix = glm::mat4(1.0f);
 	glm::mat4 depth_mvp = depth_projection * depth_view_matrix * depth_model_matrix;

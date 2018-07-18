@@ -23,6 +23,7 @@
     <ClCompile Include="src\buffer.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\cube.cpp" />
+    <ClCompile Include="src\depth_texture.cpp" />
     <ClCompile Include="src\framebuffer.cpp" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\input_handler.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="src\client_addr.h" />
     <ClInclude Include="src\configs.h" />
     <ClInclude Include="src\cube.h" />
+    <ClInclude Include="src\depth_texture.h" />
     <ClInclude Include="src\detail.h" />
     <ClInclude Include="src\entities_handler.h" />
     <ClInclude Include="src\entity.h" />
