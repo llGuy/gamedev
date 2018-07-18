@@ -38,6 +38,7 @@
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\vao.cpp" />
+    <ClCompile Include="src\water.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -93,8 +94,13 @@
     <ClInclude Include="src\tmpg_engine.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\vao.h" />
+    <ClInclude Include="src\water.h" />
     <ClInclude Include="src\window.h" />
     <ClInclude Include="src\win_socket.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\water_fsh.shader" />
+    <None Include="src\water_vsh.shader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

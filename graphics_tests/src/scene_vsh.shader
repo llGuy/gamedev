@@ -13,6 +13,8 @@ uniform mat4 depth_bias;
 
 void main(void)
 {
+	//gl_ClipDistance[0] = -1.0f;
+
 	gl_Position = projection_matrix * view_matrix * vec4(vertex_position, 1.0f);
 	pass_texture_coords = texture_coords;
 

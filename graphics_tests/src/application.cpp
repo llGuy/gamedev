@@ -4,7 +4,9 @@
 application::application(int32_t w, int32_t h)
 	: appl_window(w, h, "graphics effects tests"), resources("src/")
 {
-//	srand(static_cast<int32_t>(time(NULL)));
+	auto seed = static_cast<int32_t>(time(NULL));
+	std::cout << seed << std::endl;
+	srand(seed);
 	srand(0);
 }
 

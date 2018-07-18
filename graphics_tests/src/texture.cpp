@@ -1,5 +1,10 @@
 #include "texture.h"
 
+auto unbind_all_textures(void) -> void
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 auto texture::create(void) -> void
 {
 	glGenTextures(1, &id);

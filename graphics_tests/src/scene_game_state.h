@@ -12,7 +12,9 @@
 #include "terrain.h"
 #include "resources.h"
 #include "shadows.h"
+#include "water.h"
 #include "gui.h"
+#include "water.h"
 
 class scene_state
 	: public game_state
@@ -23,7 +25,7 @@ public:
 	auto render(void) -> void override;
 	auto update(input_handler &, timer &) -> game_state * override;
 private:
-	auto render_scene(void) -> void;
+	auto render_scene(glm::mat4 & view) -> void;
 	auto render_depth(void) -> void;
 	auto render_depth_gui(void) -> void;
 
@@ -41,6 +43,7 @@ private:
 	cube test_cube;
 	shadows shadow_handler;
 	gui_handler guis;
+	water water_handler;
 
 	std::array<glm::vec3, 10> cube_positions;
 };

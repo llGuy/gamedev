@@ -7,6 +7,8 @@
 class texture;
 class renderbuffer;
 
+extern auto unbind_all_framebuffers(void) -> void;
+
 class framebuffer
 {
 public:
@@ -18,7 +20,7 @@ public:
 	auto unbind(void) -> void;
 
     auto attach(texture & obj, uint32_t component, uint32_t level) -> void;
-	auto attach(renderbuffer & rnd, uint32_t component, uint32_t level) -> void;
+	auto attach(renderbuffer & rnd, uint32_t component) -> void;
 
 	auto select_color_buffer(uint32_t point) -> void;
 	auto framebuffer_status(void) -> bool;

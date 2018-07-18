@@ -11,6 +11,8 @@ uniform mat4 projection_matrix;
 
 void main(void)
 {
+	gl_ClipDistance[0] = -1;
+
 	vec4 world_position = model_matrix * vec4(vertex_position, 1.0f);
 	gl_Position = projection_matrix * view_matrix * world_position;
 

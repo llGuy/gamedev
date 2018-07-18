@@ -7,15 +7,15 @@ auto quad_3D::create(resource_handler &) -> void
 	buffer_layout.create();
 
 	// create vertices and indices
-	glm::vec2 vertices[]
+	glm::vec3 vertices[]
 	{
-		glm::vec2{-0.5f, -0.5f},
-		glm::vec2{-0.5f, 0.5f},
-		glm::vec2{0.5f, 0.5f},
-		glm::vec2{0.5f, -0.5f}
+		glm::vec3{-128.0f, 0.0f, -128.0f},
+		glm::vec3{-128.0f, 0.0f, 128.0f},
+		glm::vec3{128.0f, 0.0f, 128.0f},
+		glm::vec3{128.0f, 0.0f, -128.0f}
 	};
 
-	vertex_buffer.fill<glm::vec2>(sizeof(vertices), vertices, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
+	vertex_buffer.fill<glm::vec3>(sizeof(vertices), vertices, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 	
 	uint16_t indices[]
 	{
@@ -26,7 +26,7 @@ auto quad_3D::create(resource_handler &) -> void
 
 	buffer_layout.bind();
 	buffer_layout.enable(0);
-	buffer_layout.push<float>(0, 2, 2 * sizeof(float), nullptr);
+	buffer_layout.push<float>(0, 3, 3 * sizeof(float), nullptr);
 	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 	buffer_layout.unbind();
 }

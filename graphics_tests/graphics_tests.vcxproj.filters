@@ -75,6 +75,9 @@
     <ClCompile Include="src\depth_texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\batch_renderer.h">
@@ -239,5 +242,12 @@
     <ClInclude Include="src\depth_texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\water_vsh.shader" />
+    <None Include="src\water_fsh.shader" />
   </ItemGroup>
 </Project>

@@ -56,8 +56,8 @@ gui_handler::gui_handler(void)
 auto gui_handler::create(void) -> void
 {
 	gui_quad.create();
-	gui_program.create_shader(GL_VERTEX_SHADER, "depth_gui_vsh.shader");
-	gui_program.create_shader(GL_FRAGMENT_SHADER, "depth_gui_fsh.shader");
+	gui_program.create_shader(GL_VERTEX_SHADER, "gui_vsh.shader");
+	gui_program.create_shader(GL_FRAGMENT_SHADER, "gui_fsh.shader");
 	gui_program.link_shaders("vertex_position", "texture_coords");
 	gui_program.get_uniform_locations("model_matrix", "projection_matrix");
 

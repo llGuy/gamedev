@@ -37,11 +37,13 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix");
 
 	shadow_handler.create();
+	water_handler.create(rh);
 
 	guis.create();
 	guis.push(glm::vec2(-0.5f, -0.5f), 0.6f);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CLIP_DISTANCE0);
 }
 auto scene_state::render(void) -> void 
 {
@@ -49,11 +51,19 @@ auto scene_state::render(void) -> void
 	// onto default framebuffer
 	auto & shadow_fbo = shadow_handler.fbo();
 	shadow_fbo.unbind();
-	render_scene();
+	render_scene(main_camera.view_matrix());
 
 	shadow_fbo.bind();
 	glViewport(0, 0, 1024, 1024);
 	render_depth();
+
+	water_handler.bind_refl();
+	render_scene(main_camera.view_matrix());
+	water_handler.unbind_framebuffers(resolution.x, resolution.y);
+
+	water_handler.bind_refr();
+	render_scene(main_camera.view_matrix());
+	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 
 	// render contents in depth texture
 	shadow_fbo.unbind();
@@ -81,7 +91,7 @@ auto scene_state::connect_texture_units(void) -> void
 	terrain_program.uniform_1i(i, i + 4);
 }
 
-auto scene_state::render_scene(void) -> void
+auto scene_state::render_scene(glm::mat4 & view_matrix) -> void
 {
 	glCullFace(GL_BACK);
 
@@ -95,7 +105,7 @@ auto scene_state::render_scene(void) -> void
 	shadow_handler.tex().bind(5);
 	terrain_program.uniform_3f(&color[0], 0);
 	terrain_program.uniform_mat4(&projection_matrix[0][0], 1);
-	terrain_program.uniform_mat4(&main_camera.view_matrix()[0][0], 2);
+	terrain_program.uniform_mat4(&view_matrix[0][0], 2);
 	auto & bias = shadow_handler.bias();
 	terrain_program.uniform_mat4(&bias[0][0], 3);
 
@@ -103,7 +113,7 @@ auto scene_state::render_scene(void) -> void
 
 	cube_program.use();
 	cube_program.uniform_mat4(&projection_matrix[0][0], 0);
-	cube_program.uniform_mat4(&main_camera.view_matrix()[0][0], 1);
+	cube_program.uniform_mat4(&view_matrix[0][0], 1);
 
 	for(uint32_t i = 0; i < 10; ++i)
 	{
@@ -111,6 +121,9 @@ auto scene_state::render_scene(void) -> void
 		cube_program.uniform_mat4(&trans[0][0], 2);
 		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
 	}
+
+	water_handler.prepare(projection_matrix, view_matrix);
+	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
 }
 
 auto scene_state::render_depth_gui(void) -> void
@@ -118,7 +131,7 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & quad2D = guis.quad();
 	auto & shaders = guis.shaders();
 	shaders.use();
-	auto & texture = shadow_handler.tex();
+	auto & texture = water_handler.refr_texture();
 	texture.bind(0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);

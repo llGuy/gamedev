@@ -17,3 +17,9 @@ auto depth_texture::create(void) -> void
 	int_param(GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	int_param(GL_TEXTURE_COMPARE_FUNC, GL_COMPARE_R_TO_TEXTURE);
 }
+
+auto depth_texture::set_dimensions(int32_t w, int32_t h) -> void
+{
+	width = w;
+	height = h;
+}

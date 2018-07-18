@@ -4,6 +4,8 @@
 #include <iostream>
 #include <GL/glew.h>
 
+extern auto unbind_all_textures(void) -> void;
+
 class texture
 {
 public:
