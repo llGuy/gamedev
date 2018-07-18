@@ -3,7 +3,7 @@
 
 #include "../data/uni_data.h"
 #include "../buffer/vao.h"
-#include "../debug/debug.h"
+//#include "../debug/debug.h"
 #include "glderenderdata/glderenderdata.h"
 
 namespace minecraft
@@ -26,7 +26,7 @@ namespace minecraft
 			void ERender(GLenum mode, uint32_t count, void* offset, VAO* vao, uint32_t buffer);
 
 			/* immediate mode rendering */
-			void VecIMMRender(const debug::Line* l, const uint32_t size);
+			//void VecIMMRender(const debug::Line* l, const uint32_t size);
 		};
 	}
 }

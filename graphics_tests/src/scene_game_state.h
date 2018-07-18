@@ -28,6 +28,8 @@ private:
 	auto render_depth_gui(void) -> void;
 
 	auto connect_texture_units(void) -> void;
+
+	auto render_player(program & shaders, uint32_t udata_index) -> void;
 private:
 	glm::ivec2 resolution;
 	glm::mat4 projection_matrix;

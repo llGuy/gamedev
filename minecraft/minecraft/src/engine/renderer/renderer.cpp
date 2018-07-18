@@ -33,19 +33,6 @@ namespace minecraft
 			vao->UnBind();
 		}
 
-		void Renderer::VecIMMRender(const debug::Line* l, const uint32_t size)
-		{
-			for (uint32_t i = 0; i < size; ++i)
-			{
-				glBegin(GL_LINES);
-				glVertex3f(l[i].a.x, l[i].a.y, l[i].a.z);
-				//glColor3f(l[i].color.r, l[i].color.g, l[i].color.b);
-				glVertex3f(l[i].b.x, l[i].b.y, l[i].b.z);
-				//glColor3f(l[i].color.r, l[i].color.g, l[i].color.b);
-				glEnd();
-			}
-		}
-
 		void Renderer::ERender(GLenum mode, const GLDrawElementsRenderData& d)
 		{
 			d.vao->Bind();

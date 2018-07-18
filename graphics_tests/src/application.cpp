@@ -4,7 +4,8 @@
 application::application(int32_t w, int32_t h)
 	: appl_window(w, h, "graphics effects tests"), resources("src/")
 {
-	srand(static_cast<int32_t>(time(NULL)));
+//	srand(static_cast<int32_t>(time(NULL)));
+	srand(0);
 }
 
 auto application::init(void) -> void

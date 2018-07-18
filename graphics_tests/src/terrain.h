@@ -92,7 +92,9 @@ private:
 			{
 				glm::vec2 x_z = construct<glm::vec2, float>(x, z);
 				uint32_t index = vertex_index(x, z);
-				vertices[index] = glm::vec3(x_z.x, generate_height(x_z, noise_vectors, corner_vectors), x_z.y);
+				vertices[index] = glm::vec3(x_z.x - static_cast<float>(Width) / 2.0f, 
+					generate_height(x_z, noise_vectors, corner_vectors) - 5.0f, 
+					x_z.y - static_cast<float>(Depth) / 2.0f);
 				texture_coords[index]= glm::vec2(x_z.x / static_cast<float>(Width), x_z.y / static_cast<float>(Depth));
 			}
 		}
@@ -122,7 +124,7 @@ private:
 
 		float final = interp(glm::vec2(positions[2].y, noise_interp_x2), glm::vec2(positions[0].y, noise_interp_x1), x_z.y);
 
-		return final;
+		return final / 2.0f;
 	}
 	auto prepare_height_data(corners & corner_vectors,
 		corners & corner_positions) -> void

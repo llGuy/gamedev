@@ -19,7 +19,6 @@ namespace minecraft
 		if (m_player != nullptr)
 			delete m_player;
 
-		std::cout << m_fps << std::endl;
 	}
 	void Engine::HEAPDelete(void)
 	{
@@ -112,8 +111,8 @@ namespace minecraft
 	void Engine::RenderDebug(void)
 	{
 		UpdateDebugData();
-		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES), m_debug.Size(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES));
-		m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_CHUNK_CORNER), m_debug.Size(debug::Debug::option_t::RENDER_CHUNK_CORNER));
+		//m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES), m_debug.Size(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES));
+		//m_renderer.VecIMMRender(m_debug.First(debug::Debug::option_t::RENDER_CHUNK_CORNER), m_debug.Size(debug::Debug::option_t::RENDER_CHUNK_CORNER));
 	}
 	void Engine::UpdateData(void)
 	{
@@ -122,8 +121,8 @@ namespace minecraft
 	}
 	void Engine::InitDebugData(void)
 	{
-		m_debug.Resize(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES, 3);
-		m_debug.Resize(debug::Debug::option_t::RENDER_CHUNK_CORNER, 4);
+		//m_debug.Resize(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES, 3);
+		//m_debug.Resize(debug::Debug::option_t::RENDER_CHUNK_CORNER, 4);
 	}
 	void Engine::Init(void)
 	{
@@ -157,7 +156,7 @@ namespace minecraft
 	void Engine::AfterGLEWInit(uint32_t wwidth, uint32_t wheight,
 		glm::vec2 cursorPosition, GLFWwindow* window)
 	{
-		//m_textureAtlas.Init();
+//		m_textureAtlas.Init();
 		m_blockTextureAtlas.Init();
 		m_chunkHandler->AfterGLEWInit();
 		m_chunkHandler->LaunchChunkLoader(m_player, window);
@@ -166,7 +165,7 @@ namespace minecraft
 		m_camera = ent::Camera(cursorPosition);
 		m_camera.Bind(m_player);
 
-		//m_chunkHandler->UseSHProgram();
+		m_chunkHandler->UseSHProgram();
 		m_guihandler.Init(m_udata.projectionMatrix);
 		EnableDebugger();
 		InitDebugData();
@@ -230,7 +229,8 @@ namespace minecraft
 		m_udata.skyColor = glm::vec3(0.2f, 0.4f, 1.0f);
 
 		m_time.deltaT = (double)((std::chrono::high_resolution_clock::now() - m_time.currentTime).count()) / 1000000000;
-		std::cout << m_time.deltaT << std::endl;
+
+
 		m_time.currentTime = std::chrono::high_resolution_clock::now();
 	}
 	void Engine::UpdatePlayerData(void)
@@ -244,15 +244,15 @@ namespace minecraft
 	}
 	void Engine::EnableDebugger(void)
 	{
-		m_debug.DebugMode(true);
-		m_debug.Enable(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES);
-		m_debug.Enable(debug::Debug::option_t::RENDER_CHUNK_CORNER);
+		//m_debug.DebugMode(true);
+		//m_debug.Enable(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES);
+		//m_debug.Enable(debug::Debug::option_t::RENDER_CHUNK_CORNER);
 	}
 
 	void Engine::UpdateDebugData(void)
 	{
 		/* for the axes next to the player */
-		auto YAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(0.0f, 3.0f, 0.0f),
+		/*auto YAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(0.0f, 3.0f, 0.0f),
 			*m_player->EntityWorldPosition() + glm::vec3(0.0f, 0.01f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) }; };
 		auto XAxisLine = [&](void)->debug::Line { return { *m_player->EntityWorldPosition() - glm::vec3(3.0f, 0.0f, 0.0f),
 			*m_player->EntityWorldPosition() + glm::vec3(3.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) }; };
@@ -262,7 +262,7 @@ namespace minecraft
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[0] = YAxisLine();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = XAxisLine();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = ZAxisLine();
-
+		*/
 		/* for the chunk corners */
 		glm::vec3 playerPosition = *m_player->EntityWorldPosition();
 		//	chunk::ChunkDB::CCorners cc = m_chunkHandler->ChunkCorners(
@@ -270,7 +270,7 @@ namespace minecraft
 
 		chunk::ChunkDB::CCorners cc = { glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f), glm::vec2(0.0f) };
 
-		auto nn = [&](void)->debug::Line { return { glm::vec3(cc.nn.x, -50.0f, cc.nn.y) - 0.5f,
+		/*auto nn = [&](void)->debug::Line { return { glm::vec3(cc.nn.x, -50.0f, cc.nn.y) - 0.5f,
 			glm::vec3(cc.nn.x, 50.0f, cc.nn.y) - 0.5f, glm::vec3(1.0f) }; };
 		auto np = [&](void)->debug::Line { return { glm::vec3(cc.np.x, -50.0f, cc.np.y) - 0.5f,
 			glm::vec3(cc.np.x, 50.0f, cc.np.y) - 0.5f, glm::vec3(1.0f) }; };
@@ -282,7 +282,7 @@ namespace minecraft
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[0] = nn();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[1] = np();
 		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[2] = pn();
-		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[3] = pp();
+		m_debug.First(debug::Debug::option_t::RENDER_PLAYER_XYZ_AXES)[3] = pp();*/
 	}
 	void Engine::RecieveMouseInput(mbutton_t&& button)
 	{

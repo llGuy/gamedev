@@ -66,9 +66,6 @@
     <ClCompile Include="src\engine\terrain\heightmap\heightmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\debug\debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\structures\structure\structure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

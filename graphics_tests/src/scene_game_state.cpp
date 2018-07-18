@@ -78,7 +78,7 @@ auto scene_state::connect_texture_units(void) -> void
 	uint32_t i = 0;
 	for(; i < 5; ++i)
 		terrain_program.uniform_1i(i, i + 4);
-	terrain_program.uniform_1f(i, i + 4);
+	terrain_program.uniform_1i(i, i + 4);
 }
 
 auto scene_state::render_scene(void) -> void
@@ -148,4 +148,13 @@ auto scene_state::render_depth(void) -> void
 		shaders.uniform_mat4(&trans[0][0], 1);
 		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
 	}
+
+	render_player(shaders, 1);
+}
+
+auto scene_state::render_player(program & shaders, uint32_t udata_index) -> void
+{
+	auto trans = glm::translate(main_camera.position());
+	shaders.uniform_mat4(&trans[0][0], udata_index);
+	render_model(test_cube.vao(), test_cube.element_buffer(), 36);
 }

@@ -11,7 +11,7 @@
 #include "chunk/map/cmap.h"
 #include "../shader/shprogram.h"
 #include "configs/configs.h"
-#include "debug/debug.h"
+//#include "debug/debug.h"
 #include "entities/player/player.h"
 #include "entities/camera/camera.h"
 #include "../texture/texture.h"
@@ -84,7 +84,7 @@ namespace minecraft
 		data::Time m_time;
 		data::CUData m_udata;
 		rnd::Renderer m_renderer;
-		debug::Debug m_debug;
+//		debug::Debug m_debug;
 		configs::VConfigs m_variableConfigs;
 		configs::CConfigs m_constantConfigs;
 		chunk::CHandler* m_chunkHandler;

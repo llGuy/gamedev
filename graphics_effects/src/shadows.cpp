@@ -9,6 +9,7 @@ auto shadows::create(void) -> void
 	create_projection();
 }
 
+
 auto shadows::create_fbo(void) -> void
 {
 	depth_framebuffer.create();

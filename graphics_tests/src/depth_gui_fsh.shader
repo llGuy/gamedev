@@ -9,8 +9,6 @@ vec4 get_depth_color(void)
 {
 	float d = texture(diffuse, pass_texture_coords).x;
 
-//	if (abs(d - 1.0f) < 0.000001f) d = 0.0f;
-
 	return vec4(d, d, d, 1.0f);
 }
 
