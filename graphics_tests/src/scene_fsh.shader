@@ -42,18 +42,15 @@ void main(void)
 	float visibility = 1.0f;
 	if (shadow_coord.x <= 1.0f && shadow_coord.y <= 1.0f && shadow_coord.x >= 0.0f && shadow_coord.y > 0.0f)
 	{
+		float bias = 0.005f;
+
 		bool visible = true;
 		float z = texture(shadow_map, shadow_coord.xy).x;
-		if (texture(shadow_map, shadow_coord.xy).x < shadow_coord.z)
+		if (texture(shadow_map, shadow_coord.xy).x < shadow_coord.z - bias)
 		{
 			visibility = 0.5f;
 			visible = false;
 		}
-//		final_color = vec4(, 1.0f);
-
-//		final_color = vec4(shadow_coord.x, shadow_coord.x, shadow_coord.x);
-		//final_color = z;
-//		final_color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	}
 	final_color = visibility * (total_color + get_diffuse());
 

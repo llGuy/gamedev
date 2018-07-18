@@ -83,6 +83,8 @@ auto scene_state::connect_texture_units(void) -> void
 
 auto scene_state::render_scene(void) -> void
 {
+	glCullFace(GL_BACK);
+
 	glm::vec3 color { 1.0f, 0.0f, 0.0f };
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -124,6 +126,8 @@ auto scene_state::render_depth_gui(void) -> void
 
 auto scene_state::render_depth(void) -> void
 {
+	glCullFace(GL_FRONT);
+
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	auto & fbo = shadow_handler.fbo();
 	auto & shaders = shadow_handler.shaders();
