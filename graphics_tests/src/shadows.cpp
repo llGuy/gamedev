@@ -3,7 +3,7 @@
 #include <glm/gtx/transform.hpp>
 
 shadows::shadows(void)
-	: depth_texture(1024, 1024)
+	: depth_texture(1024, 1024), plane(0, -1, 0, 0)
 {
 }
 
@@ -62,6 +62,16 @@ auto shadows::create_projection(void) -> void
 	depth_bias = depth_bias * depth_mvp;
 }
 
+auto shadows::get_inverted_view_matrix(camera & cam) -> glm::mat4
+{
+	glm::vec3 inverted_position = cam.position();
+	glm::vec3 inverted_direction = cam.direction();
+	inverted_position.y = -inverted_position.y;
+	inverted_direction.y = -inverted_direction.y;
+
+	return glm::lookAt(inverted_position, inverted_position + inverted_direction, glm::vec3(0, 1, 0));
+}
+
 auto shadows::shaders(void) -> program &
 {
 	return depth_shader;
@@ -85,4 +95,9 @@ auto shadows::bias(void) -> glm::mat4 &
 auto shadows::depth_projection(void) -> glm::mat4 &
 {
 	return ortho_projection;
+}
+
+auto shadows::clip_plane(void) -> glm::vec4 &
+{
+	return plane;
 }

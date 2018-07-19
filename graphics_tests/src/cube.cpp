@@ -62,8 +62,8 @@ auto cube::create_buffers(void) -> void
 		1, 0, 4,
 		// top
 		3, 2, 6,
-		6, 7, 3, 
-			};
+		6, 7, 3,
+	};
 	index_buffer.create();
 	index_buffer.fill(indices.size() * sizeof(uint16_t), indices.data(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);
 }
@@ -74,8 +74,8 @@ auto cube::create_vao(void) -> void
 	buffer_layout.bind();
 	buffer_layout.enable(0);
 	buffer_layout.enable(1);
+	vertex_buffer.bind(GL_ARRAY_BUFFER);
+	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 	buffer_layout.push<float>(0, 3, 6 * sizeof(float), nullptr);
 	buffer_layout.push<float>(1, 3, 6 * sizeof(float), (void *)(sizeof(float) * 3));
-	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-	vertex_buffer.bind(GL_ARRAY_BUFFER);
 }

@@ -34,6 +34,8 @@ void main(void)
 		color = pass_world_positions[0] / 8.0f;
 		shadow_coord = pass_shadow_coord[i];
 
+		gl_ClipDistance[0] = gl_in[0].gl_ClipDistance[0];
+
 		EmitVertex();
 	}
 	EndPrimitive();

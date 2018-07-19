@@ -28,6 +28,7 @@ private:
 	auto create_vao(void) -> void;
 private:
 	buffer vertex_buffer;
+	buffer normal_buffer;
 	buffer index_buffer;
 
 	float radius;

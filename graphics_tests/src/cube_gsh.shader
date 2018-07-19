@@ -27,6 +27,7 @@ void main(void)
 		final_normal = normal;
 		final_position = pass_world_positions[i];
 		color = pass_vertex_color[i];
+		gl_ClipDistance[0] = gl_in[i].gl_ClipDistance[0];
 
 		EmitVertex();
 	}

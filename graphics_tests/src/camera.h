@@ -14,6 +14,7 @@ public:
 	camera(glm::vec2 const & cursor_xy);
 
 	auto position(void) -> glm::vec3 &;
+	auto direction(void) -> glm::vec3 &;
 	auto cursor_position(void) -> glm::vec2 &;
 	auto look_at(glm::vec2 const & cursor) -> void;
 

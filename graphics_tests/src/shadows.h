@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include "camera.h"
 #include "depth_texture.h"
 #include "framebuffer.h"
 #include "texture.h"
@@ -20,7 +21,9 @@ public:
 	auto tex(void) -> texture &;
 
 	auto bias(void) -> glm::mat4 &;
+	auto clip_plane(void) -> glm::vec4 &;
 	auto depth_projection(void) -> glm::mat4 &;
+	auto get_inverted_view_matrix(camera & cam) -> glm::mat4;
 private:
 	auto create_fbo(void) -> void;
 	auto create_program(void) -> void;
@@ -33,6 +36,8 @@ private:
 
 	glm::mat4 ortho_projection;
 	glm::mat4 depth_bias;
+
+	glm::vec4 plane;
 };
 
 #endif

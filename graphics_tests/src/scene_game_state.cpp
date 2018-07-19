@@ -15,7 +15,7 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	test_cube.create(rh);
 	// create test cubes
 	std::for_each(cube_positions.begin(), cube_positions.end(),
-				  [&] (glm::vec3 & p) { p = vec_rand<float, 3>(256); p.y = 10.0f; } );
+				  [&] (glm::vec3 & p) { p = vec_rand<float, 3>(128); p.y = 15.0f; } );
 
 	scene_terrain.create(rh);
 
@@ -23,27 +23,26 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	terrain_program.create_shader(GL_GEOMETRY_SHADER, "scene_gsh.shader");
 	terrain_program.create_shader(GL_FRAGMENT_SHADER, "scene_fsh.shader");
 	terrain_program.link_shaders("vertex_position", "texture_coords");
-	terrain_program.get_uniform_locations("model_color", "projection_matrix", "view_matrix", "depth_bias",
+	terrain_program.get_uniform_locations("model_color", "projection_matrix", "view_matrix", "plane", "depth_bias",
 										  "background", "r_texture", "g_texture", "b_texture", "blend_map", "shadow_map");
 
 	terrain_program.use();
-	//scene_terrain.bind_textures();
 	connect_texture_units();
 
 	cube_program.create_shader(GL_VERTEX_SHADER, "cube_vsh.shader");
 	cube_program.create_shader(GL_GEOMETRY_SHADER, "cube_gsh.shader");
 	cube_program.create_shader(GL_FRAGMENT_SHADER, "cube_fsh.shader");
 	cube_program.link_shaders("vertex_position", "vertex_color");
-	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix");
+	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix", "plane");
 
 	shadow_handler.create();
 	water_handler.create(rh);
 
 	guis.create();
-	guis.push(glm::vec2(-0.5f, -0.5f), 0.6f);
+	guis.push(glm::vec2(-0.5f, 0.5f), 0.6f);
+	guis.push(glm::vec2(0.5f, 0.5f), 0.6f);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CLIP_DISTANCE0);
 }
 auto scene_state::render(void) -> void 
 {
@@ -51,19 +50,34 @@ auto scene_state::render(void) -> void
 	// onto default framebuffer
 	auto & shadow_fbo = shadow_handler.fbo();
 	shadow_fbo.unbind();
-	render_scene(main_camera.view_matrix());
+	glm::vec4 default_plane(0.0f);
+	render_scene(main_camera.view_matrix(), default_plane);
 
 	shadow_fbo.bind();
 	glViewport(0, 0, 1024, 1024);
 	render_depth();
 
 	water_handler.bind_refl();
-	render_scene(main_camera.view_matrix());
+	glEnable(GL_CLIP_DISTANCE0);
+
+	/*
+	
+	FUTURE LUC !!! THE W COORD OF THE PLANE NEEDS TO NEGATED
+	BECAUSE OF "MATHEMATIC REASONS" OK !!
+	
+	*/
+	
+	glm::mat4 refl_view_matrix = shadow_handler.get_inverted_view_matrix(main_camera);
+
+	glm::vec4 plane_refl = glm::vec4(0, 1, 0, -0);
+	render_scene(refl_view_matrix, plane_refl);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 
 	water_handler.bind_refr();
-	render_scene(main_camera.view_matrix());
+	glm::vec4 refr_plane = glm::vec4(0, -1, 0, -0);
+	render_scene(main_camera.view_matrix(), refr_plane);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
+	glDisable(GL_CLIP_DISTANCE0);
 
 	// render contents in depth texture
 	shadow_fbo.unbind();
@@ -87,11 +101,11 @@ auto scene_state::connect_texture_units(void) -> void
 {
 	uint32_t i = 0;
 	for(; i < 5; ++i)
-		terrain_program.uniform_1i(i, i + 4);
-	terrain_program.uniform_1i(i, i + 4);
+		terrain_program.uniform_1i(i, i + 5);
+	terrain_program.uniform_1i(i, i + 5);
 }
 
-auto scene_state::render_scene(glm::mat4 & view_matrix) -> void
+auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane) -> void
 {
 	glCullFace(GL_BACK);
 
@@ -106,14 +120,16 @@ auto scene_state::render_scene(glm::mat4 & view_matrix) -> void
 	terrain_program.uniform_3f(&color[0], 0);
 	terrain_program.uniform_mat4(&projection_matrix[0][0], 1);
 	terrain_program.uniform_mat4(&view_matrix[0][0], 2);
+	terrain_program.uniform_vec4(&plane[0], 3);
 	auto & bias = shadow_handler.bias();
-	terrain_program.uniform_mat4(&bias[0][0], 3);
+	terrain_program.uniform_mat4(&bias[0][0], 4);
 
 	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
 
 	cube_program.use();
 	cube_program.uniform_mat4(&projection_matrix[0][0], 0);
 	cube_program.uniform_mat4(&view_matrix[0][0], 1);
+	cube_program.uniform_vec4(&plane[0], 3);
 
 	for(uint32_t i = 0; i < 10; ++i)
 	{
@@ -131,14 +147,21 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & quad2D = guis.quad();
 	auto & shaders = guis.shaders();
 	shaders.use();
-	auto & texture = water_handler.refr_texture();
-	texture.bind(0);
+	auto & texture_refr = water_handler.refr_texture();
+	texture_refr.bind(0);
 	guis.prepare_render();
+	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
+	
+	auto & texture_refl = water_handler.refl_texture();
+	texture_refl.bind(0);
+	guis.prepare_render(1);
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
 }
 
 auto scene_state::render_depth(void) -> void
 {
+	glDisable(GL_CLIP_DISTANCE0);
+
 	glCullFace(GL_FRONT);
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -167,6 +190,8 @@ auto scene_state::render_depth(void) -> void
 	}
 
 	render_player(shaders, 1);
+
+	glEnable(GL_CLIP_DISTANCE0);
 }
 
 auto scene_state::render_player(program & shaders, uint32_t udata_index) -> void

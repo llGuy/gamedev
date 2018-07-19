@@ -64,3 +64,7 @@ auto program::uniform_1i(int32_t i, uint32_t index) -> void
 {
 	glUniform1i(uniform_locations[index], i);
 }
+auto program::uniform_vec4(float * p, uint32_t index) -> void
+{
+	glUniform4fv(uniform_locations[index], 1, p);
+}

@@ -7,13 +7,13 @@ auto water::create(resource_handler & rh) -> void
 	water_shaders.create_shader(GL_VERTEX_SHADER, "water_vsh.shader");
 	water_shaders.create_shader(GL_FRAGMENT_SHADER, "water_fsh.shader");
 	water_shaders.link_shaders("vertex_position");
-	water_shaders.get_uniform_locations("projection_matrix", "view_matrix");
-
+	water_shaders.get_uniform_locations("projection_matrix", "view_matrix", "reflection_texture", "refraction_texture");
+	water_shaders.use();
+	water_shaders.uniform_1i(0, 2);
+	water_shaders.uniform_1i(1, 3);
 
 	create_reflection_fbo(reflection_width, reflection_height);
 	create_refraction_fbo(refraction_width, refraction_height);
-
-
 }
 
 auto water::bind_framebuffer(framebuffer & fbo, int32_t w, int32_t h) -> void
@@ -28,6 +28,8 @@ auto water::prepare(glm::mat4 & proj, glm::mat4 & view) -> void
 	water_shaders.use();
 	water_shaders.uniform_mat4(&proj[0][0], 0);
 	water_shaders.uniform_mat4(&view[0][0], 1);
+	refl_color.bind(0);
+	refr_color.bind(1);
 }
 
 auto water::quad(void) -> quad_3D &

@@ -25,7 +25,7 @@ public:
 	auto render(void) -> void override;
 	auto update(input_handler &, timer &) -> game_state * override;
 private:
-	auto render_scene(glm::mat4 & view) -> void;
+	auto render_scene(glm::mat4 & view, glm::vec4 & plane) -> void;
 	auto render_depth(void) -> void;
 	auto render_depth_gui(void) -> void;
 

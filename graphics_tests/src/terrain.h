@@ -150,7 +150,7 @@ private:
 				indices[index++] = vertex_index(gsx, gsz);
 				indices[index++] = vertex_index(gsx + 1, gsz);
 				indices[index++] = vertex_index(gsx + 1, gsz + 1);
-
+	   
 				indices[index++] = vertex_index(gsx, gsz);
 				indices[index++] = vertex_index(gsx + 1, gsz + 1);
 				indices[index++] = vertex_index(gsx, gsz + 1);

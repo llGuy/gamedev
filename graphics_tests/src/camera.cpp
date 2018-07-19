@@ -59,3 +59,8 @@ auto camera::handle_input(input_handler & ih, float time_delta) -> void
 
 	world_position += direction * time_delta * camera_speed;
 }
+
+auto camera::direction(void) -> glm::vec3 &
+{
+	return world_direction;
+}
