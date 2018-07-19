@@ -13,7 +13,7 @@ public:
 	game_state(void) = default;
 	virtual ~game_state(void) = default;
 
-	virtual auto render(void) -> void = 0;
+	virtual auto render(timer & time_handler) -> void = 0;
 	// if at some point something happens (crash, disconnected...),
 	// may want to return to main menu or something
 	virtual auto update(input_handler &, timer &) -> game_state * = 0;

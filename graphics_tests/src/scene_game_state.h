@@ -22,10 +22,10 @@ class scene_state
 public:
 	scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, resource_handler &);
 
-	auto render(void) -> void override;
+	auto render(timer & time_handler) -> void override;
 	auto update(input_handler &, timer &) -> game_state * override;
 private:
-	auto render_scene(glm::mat4 & view, glm::vec4 & plane) -> void;
+	auto render_scene(glm::mat4 & view, glm::vec4 & plane, timer & time_handler) -> void;
 	auto render_depth(void) -> void;
 	auto render_depth_gui(void) -> void;
 

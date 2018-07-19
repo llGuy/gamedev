@@ -14,7 +14,7 @@ public:
 	water(void) = default;
 
 	auto create(resource_handler &) -> void;
-	auto prepare(glm::mat4 & proj, glm::mat4 & view) -> void;
+	auto prepare(glm::mat4 & proj, glm::mat4 & view, glm::vec3 & cam_pos, float elapsed) -> void;
 
 	auto quad(void)->quad_3D &;
 	auto bind_refl(void) -> void;
@@ -49,6 +49,7 @@ private:
 	depth_texture refr_depth;
 
 	program water_shaders;
+	texture dudv_texture;
 };
 
 #endif

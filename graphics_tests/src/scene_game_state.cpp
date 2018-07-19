@@ -44,14 +44,14 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 
 	glEnable(GL_DEPTH_TEST);
 }
-auto scene_state::render(void) -> void 
+auto scene_state::render(timer & time_handler) -> void
 {
 	glViewport(0, 0, resolution.x, resolution.y);
 	// onto default framebuffer
 	auto & shadow_fbo = shadow_handler.fbo();
 	shadow_fbo.unbind();
 	glm::vec4 default_plane(0.0f);
-	render_scene(main_camera.view_matrix(), default_plane);
+	render_scene(main_camera.view_matrix(), default_plane, time_handler);
 
 	shadow_fbo.bind();
 	glViewport(0, 0, 1024, 1024);
@@ -70,12 +70,12 @@ auto scene_state::render(void) -> void
 	glm::mat4 refl_view_matrix = shadow_handler.get_inverted_view_matrix(main_camera);
 
 	glm::vec4 plane_refl = glm::vec4(0, 1, 0, -0);
-	render_scene(refl_view_matrix, plane_refl);
+	render_scene(refl_view_matrix, plane_refl, time_handler);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 
 	water_handler.bind_refr();
 	glm::vec4 refr_plane = glm::vec4(0, -1, 0, -0);
-	render_scene(main_camera.view_matrix(), refr_plane);
+	render_scene(main_camera.view_matrix(), refr_plane, time_handler);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 	glDisable(GL_CLIP_DISTANCE0);
 
@@ -105,9 +105,10 @@ auto scene_state::connect_texture_units(void) -> void
 	terrain_program.uniform_1i(i, i + 5);
 }
 
-auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane) -> void
+auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer & time_handler) -> void
 {
 	glCullFace(GL_BACK);
+
 
 	glm::vec3 color { 1.0f, 0.0f, 0.0f };
 
@@ -138,7 +139,7 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane) -> vo
 		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
 	}
 
-	water_handler.prepare(projection_matrix, view_matrix);
+	water_handler.prepare(projection_matrix, view_matrix, main_camera.position(), time_handler.elapsed());
 	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
 }
 
