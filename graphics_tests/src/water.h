@@ -22,8 +22,9 @@ public:
 	auto unbind_framebuffers(int32_t w, int32_t h) -> void;
 
 	// getters
-	auto refl_texture(void)->texture &;
-	auto refr_texture(void)->texture &;
+	auto refl_texture(void) -> texture &;
+	auto refr_texture(void) -> texture &;
+	auto refr_depth_texture(void) -> texture &;
 private:
 	auto bind_framebuffer(framebuffer & fbo, int32_t w, int32_t h) -> void;
 

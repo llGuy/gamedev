@@ -59,6 +59,8 @@ auto water::prepare(glm::mat4 & proj, glm::mat4 & view, glm::vec3 & camera_pos, 
 
 	static float move_factor = 0;
 	move_factor += 0.03f * elapsed;
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	water_shaders.use();
 	water_shaders.uniform_mat4(&proj[0][0], 0);
@@ -146,4 +148,9 @@ auto water::refl_texture(void) -> texture &
 auto water::refr_texture(void) -> texture &
 {
 	return refr_color;
+}
+
+auto water::refr_depth_texture(void) -> texture &
+{
+	return refr_depth;
 }

@@ -40,7 +40,7 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 
 	guis.create();
 	guis.push(glm::vec2(-0.5f, 0.5f), 0.6f);
-	guis.push(glm::vec2(0.5f, 0.5f), 0.6f);
+//	guis.push(glm::vec2(0.5f, 0.5f), 0.6f);
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -78,11 +78,12 @@ auto scene_state::render(timer & time_handler) -> void
 	render_scene(main_camera.view_matrix(), refr_plane, time_handler);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 	glDisable(GL_CLIP_DISTANCE0);
+	glDisable(GL_BLEND);
 
 	// render contents in depth texture
 	shadow_fbo.unbind();
 	glViewport(0, 0, resolution.x, resolution.y);
-	//render_depth_gui();
+	render_depth_gui();
 }
 auto scene_state::update(input_handler & ih, timer & time) -> game_state * 
 {
@@ -148,15 +149,15 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & quad2D = guis.quad();
 	auto & shaders = guis.shaders();
 	shaders.use();
-	auto & texture_refr = water_handler.refr_texture();
+	auto & texture_refr = water_handler.refr_depth_texture();
 	texture_refr.bind(0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
 	
-	auto & texture_refl = water_handler.refl_texture();
+	/*auto & texture_refl = water_handler.refl_texture();
 	texture_refl.bind(0);
 	guis.prepare_render(1);
-	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
+	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);*/
 }
 
 auto scene_state::render_depth(void) -> void
