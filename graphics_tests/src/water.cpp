@@ -27,28 +27,28 @@ auto water::create(resource_handler & rh) -> void
 
 	auto img_dudv = rh.load<image>(path + "waterDUDV.png");
 	dudv_texture.create();
-	dudv_texture.bind();
-	dudv_texture.fill(GL_RGBA, img_dudv.w, img_dudv.h, GL_RGBA, GL_UNSIGNED_BYTE, img_dudv.data);
+	dudv_texture.bind(GL_TEXTURE_2D);
+	dudv_texture.fill(GL_TEXTURE_2D, GL_RGBA, img_dudv.w, img_dudv.h, GL_RGBA, GL_UNSIGNED_BYTE, img_dudv.data);
    
-	dudv_texture.int_param(GL_TEXTURE_WRAP_S, GL_REPEAT);
-	dudv_texture.int_param(GL_TEXTURE_WRAP_T, GL_REPEAT);
-	dudv_texture.float_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	dudv_texture.float_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	dudv_texture.float_param(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+	dudv_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	dudv_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	dudv_texture.float_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	dudv_texture.float_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	dudv_texture.float_param(GL_TEXTURE_2D, GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
 
 	auto img_norm = rh.load<image>(path + "normal.png");
 	normal_map_texture.create();
-	normal_map_texture.bind();
-	normal_map_texture.fill(GL_RGBA, img_norm.w, img_norm.h, GL_RGBA, GL_UNSIGNED_BYTE, img_norm.data);
-	normal_map_texture.int_param(GL_TEXTURE_WRAP_S, GL_REPEAT);
-	normal_map_texture.int_param(GL_TEXTURE_WRAP_T, GL_REPEAT);
-	normal_map_texture.float_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	normal_map_texture.float_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	normal_map_texture.bind(GL_TEXTURE_2D);
+	normal_map_texture.fill(GL_TEXTURE_2D, GL_RGBA, img_norm.w, img_norm.h, GL_RGBA, GL_UNSIGNED_BYTE, img_norm.data);
+	normal_map_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	normal_map_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	normal_map_texture.float_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	normal_map_texture.float_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 auto water::bind_framebuffer(framebuffer & fbo, int32_t w, int32_t h) -> void
 {
-	unbind_all_textures();
+	unbind_all_textures(GL_TEXTURE_2D);
 	fbo.bind();
 	glViewport(0, 0, w, h);
 }
@@ -67,11 +67,11 @@ auto water::prepare(glm::mat4 & proj, glm::mat4 & view, glm::vec3 & camera_pos, 
 	water_shaders.uniform_mat4(&view[0][0], 1);
 	water_shaders.uniform_3f(&camera_pos[0], 2);
 	water_shaders.uniform_1f(move_factor, 3);
-	refl_color.bind(0);
-	refr_color.bind(1);
-	dudv_texture.bind(2);
-	normal_map_texture.bind(3);
-	refr_depth.bind(4);
+	refl_color.bind(GL_TEXTURE_2D, 0);
+	refr_color.bind(GL_TEXTURE_2D, 1);
+	dudv_texture.bind(GL_TEXTURE_2D, 2);
+	normal_map_texture.bind(GL_TEXTURE_2D, 3);
+	refr_depth.bind(GL_TEXTURE_2D, 4);
 }
 
 auto water::quad(void) -> quad_3D &
@@ -100,10 +100,10 @@ auto water::create_refraction_fbo(int32_t w, int32_t h) -> void
 auto water::create_color_texture_attachment(texture & t, framebuffer & fbo, int32_t w, int32_t h) -> void
 {
 	t.create();
-	t.bind();
-	t.fill(GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-	t.int_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	t.int_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	t.bind(GL_TEXTURE_2D);
+	t.fill(GL_TEXTURE_2D, GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	fbo.attach(t, GL_COLOR_ATTACHMENT0, 0);
 }

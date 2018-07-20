@@ -118,7 +118,7 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 
 	terrain_program.use();
 	scene_terrain.bind_textures();
-	shadow_handler.tex().bind(5);
+	shadow_handler.tex().bind(GL_TEXTURE_2D, 5);
 	terrain_program.uniform_3f(&color[0], 0);
 	terrain_program.uniform_mat4(&projection_matrix[0][0], 1);
 	terrain_program.uniform_mat4(&view_matrix[0][0], 2);
@@ -150,7 +150,7 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & shaders = guis.shaders();
 	shaders.use();
 	auto & texture_refr = water_handler.refr_depth_texture();
-	texture_refr.bind(0);
+	texture_refr.bind(GL_TEXTURE_2D, 0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
 	
@@ -175,7 +175,7 @@ auto scene_state::render_depth(void) -> void
 	fbo.bind();
 	shaders.use();
 
-	depth_texture.bind(0);
+	depth_texture.bind(GL_TEXTURE_2D, 0);
 
 	glm::mat4 matrix = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 1000.0f) * main_camera.view_matrix();
 	//shaders.uniform_mat4(&matrix[0][0], 0);

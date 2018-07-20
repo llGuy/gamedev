@@ -59,7 +59,7 @@ public:
 	{
 		for (uint32_t i = 0; i < 5; ++i)
 		{
-			textures[i].bind(i);
+			textures[i].bind(GL_TEXTURE_2D, i);
 		}
 	}
 
@@ -199,13 +199,13 @@ private:
 		for (uint32_t i = 0; i < 5; ++i)
 		{
 			textures[i].create();
-			textures[i].bind();
-			textures[i].int_param(GL_TEXTURE_WRAP_S, GL_REPEAT);
-			textures[i].int_param(GL_TEXTURE_WRAP_T, GL_REPEAT);
-			textures[i].float_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			textures[i].float_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			textures[i].fill(GL_RGBA, images[i].w, images[i].h, GL_RGBA, GL_UNSIGNED_BYTE, images[i].data);
-			textures[i].enable_mipmap();
+			textures[i].bind(GL_TEXTURE_2D);
+			textures[i].int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			textures[i].int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			textures[i].float_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			textures[i].float_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			textures[i].fill(GL_TEXTURE_2D, GL_RGBA, images[i].w, images[i].h, GL_RGBA, GL_UNSIGNED_BYTE, images[i].data);
+			textures[i].enable_mipmap(GL_TEXTURE_2D);
 		}
 	}
 private:
