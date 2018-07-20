@@ -8,11 +8,12 @@ auto water::create(resource_handler & rh) -> void
 	water_shaders.create_shader(GL_FRAGMENT_SHADER, "water_fsh.shader");
 	water_shaders.link_shaders("vertex_position");
 	water_shaders.get_uniform_locations("projection_matrix", "view_matrix", "camera_position", "move_factor",
-		"reflection_texture", "refraction_texture", "dudv_texture");
+		"reflection_texture", "refraction_texture", "dudv_texture", "normal_map");
 	water_shaders.use();
 	water_shaders.uniform_1i(0, 4);
 	water_shaders.uniform_1i(1, 5);
 	water_shaders.uniform_1i(2, 6);
+	water_shaders.uniform_1i(3, 7);
 
 	create_reflection_fbo(reflection_width, reflection_height);
 	create_refraction_fbo(refraction_width, refraction_height);
@@ -23,16 +24,25 @@ auto water::create(resource_handler & rh) -> void
 	std::string path = "";
 #endif
 
-	auto img = rh.load<image>(path + "dudv.png");
+	auto img_dudv = rh.load<image>(path + "dudv.png");
 	dudv_texture.create();
 	dudv_texture.bind();
-	dudv_texture.fill(GL_RG, img.w, img.h, GL_RG, GL_UNSIGNED_BYTE, img.data);
+	dudv_texture.fill(GL_RGBA, img_dudv.w, img_dudv.h, GL_RGBA, GL_UNSIGNED_BYTE, img_dudv.data);
    
 	dudv_texture.int_param(GL_TEXTURE_WRAP_S, GL_REPEAT);
 	dudv_texture.int_param(GL_TEXTURE_WRAP_T, GL_REPEAT);
 	dudv_texture.float_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	dudv_texture.float_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	dudv_texture.float_param(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 4.0f);
+
+	auto img_norm = rh.load<image>(path + "normal_map.png");
+	normal_map_texture.create();
+	normal_map_texture.bind();
+	normal_map_texture.fill(GL_RGBA, img_norm.w, img_norm.h, GL_RGBA, GL_UNSIGNED_BYTE, img_norm.data);
+	normal_map_texture.int_param(GL_TEXTURE_WRAP_S, GL_REPEAT);
+	normal_map_texture.int_param(GL_TEXTURE_WRAP_T, GL_REPEAT);
+	normal_map_texture.float_param(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	normal_map_texture.float_param(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 auto water::bind_framebuffer(framebuffer & fbo, int32_t w, int32_t h) -> void
@@ -55,6 +65,8 @@ auto water::prepare(glm::mat4 & proj, glm::mat4 & view, glm::vec3 & camera_pos, 
 	refl_color.bind(0);
 	refr_color.bind(1);
 	dudv_texture.bind(2);
+	normal_map_texture.bind(3);
+
 }
 
 auto water::quad(void) -> quad_3D &

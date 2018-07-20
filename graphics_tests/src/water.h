@@ -50,6 +50,7 @@ private:
 
 	program water_shaders;
 	texture dudv_texture;
+	texture normal_map_texture;
 };
 
 #endif
