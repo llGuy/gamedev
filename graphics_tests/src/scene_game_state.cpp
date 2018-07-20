@@ -82,7 +82,7 @@ auto scene_state::render(timer & time_handler) -> void
 	// render contents in depth texture
 	shadow_fbo.unbind();
 	glViewport(0, 0, resolution.x, resolution.y);
-	render_depth_gui();
+	//render_depth_gui();
 }
 auto scene_state::update(input_handler & ih, timer & time) -> game_state * 
 {

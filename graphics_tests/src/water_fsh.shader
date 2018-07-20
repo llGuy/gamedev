@@ -10,6 +10,7 @@ uniform sampler2D reflection_texture;
 uniform sampler2D refraction_texture;
 uniform sampler2D dudv_texture;
 uniform sampler2D normal_map;
+uniform sampler2D depth_texture;
 uniform vec3 camera_position;
 uniform float move_factor;
 
@@ -23,6 +24,10 @@ void main(void)
 	vec2 ndc = clip_space.xy / clip_space.w / 2.0f + 0.5f;
 	vec2 refraction_tex_coords = vec2(ndc.x, ndc.y);
 	vec2 reflection_tex_coords = vec2(ndc.x, -ndc.y);
+
+	float depth = texture(depth_texture, refraction_tex_coords).r;
+
+	
 
 	//vec2 distortion1 = (texture(dudv_texture, vec2(texture_coords.x, texture_coords.y)).rg * 2.0f - 1.0f) * wave_strength;
 	//vec2 distortion2 = (texture(dudv_texture, vec2(-texture_coords.x, texture_coords.y + move_factor)).rg * 2.0f - 1.0f) * wave_strength;
