@@ -18,11 +18,11 @@ public:
 	// may want to return to main menu or something
 	virtual auto update(input_handler &, timer &) -> game_state * = 0;
 
-	auto render_model(vertex_array & vao, buffer & index_buffer, uint32_t count) -> void
+	auto render_model(vertex_array & vao, buffer & index_buffer, uint32_t count, GLenum type = GL_UNSIGNED_SHORT) -> void
 	{
 		vao.bind();
 		index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, nullptr);
+		glDrawElements(GL_TRIANGLES, count, type, nullptr);
 		
 		index_buffer.unbind(GL_ELEMENT_ARRAY_BUFFER);
 		vao.unbind();

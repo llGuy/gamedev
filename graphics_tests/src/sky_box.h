@@ -17,14 +17,16 @@ public:
 
 	auto vao(void) -> vertex_array &;
 	auto count(void) -> uint32_t;
+	auto index_buffer(void) -> buffer &;
 private:
 	auto create_cube(void) -> void;
 private:
-	static constexpr float cube_size = 500.0f;
+	static constexpr float cube_size = 100.0f;
 
 	texture sky_box_texture;
 	program sky_box_shaders;
 	buffer cube_vertices;
+	buffer indices;
 	vertex_array buffer_layout;
 };
 

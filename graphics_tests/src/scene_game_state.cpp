@@ -7,7 +7,7 @@
 
 scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, resource_handler & rh)
 	: resolution { w, h }, projection_matrix(glm::perspective(glm::radians(60.0f), 
-											(float)w / (float)h, 0.001f, 1000.0f)), main_camera(cursor_pos), 
+											(float)w / (float)h, 0.001f, 5000.0f)), main_camera(cursor_pos), 
 											test_cube(2.0f, glm::vec3(0.0f, 0.8f, 0.0f))
 {
 	using detail::vec_rand;
@@ -127,7 +127,7 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 	auto & bias = shadow_handler.bias();
 	terrain_program.uniform_mat4(&bias[0][0], 4);
 
-	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
+	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
 
 	cube_program.use();
 	cube_program.uniform_mat4(&projection_matrix[0][0], 0);
@@ -145,7 +145,8 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
 
 	sky.prepare(projection_matrix);
-	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
+//	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
+	render_model(sky.vao(), sky.index_buffer(), sky.count());
 }
 
 auto scene_state::render_depth_gui(void) -> void
@@ -157,11 +158,6 @@ auto scene_state::render_depth_gui(void) -> void
 	texture_refr.bind(GL_TEXTURE_2D, 0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
-	
-	/*auto & texture_refl = water_handler.refl_texture();
-	texture_refl.bind(0);
-	guis.prepare_render(1);
-	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);*/
 }
 
 auto scene_state::render_depth(void) -> void
@@ -181,12 +177,12 @@ auto scene_state::render_depth(void) -> void
 
 	depth_texture.bind(GL_TEXTURE_2D, 0);
 
-	glm::mat4 matrix = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 1000.0f) * main_camera.view_matrix();
+	glm::mat4 matrix = glm::perspective(glm::radians(60.0f), (float)resolution.x / resolution.y, 0.001f, 5000.0f) * main_camera.view_matrix();
 	//shaders.uniform_mat4(&matrix[0][0], 0);
 
 	glm::mat4 identity { 1.0f };
 	shaders.uniform_mat4(&identity[0][0], 1);
-	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), terrain<256, 256>::vertex_count());
+	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
 
 	for (uint32_t i = 0; i < 10; ++i)
 	{

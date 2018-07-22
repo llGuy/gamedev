@@ -35,6 +35,7 @@
     <ClCompile Include="src\scene_game_state.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\shadows.cpp" />
+    <ClCompile Include="src\sky_box.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\vao.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="src\server.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\shadows.h" />
+    <ClInclude Include="src\sky_box.h" />
     <ClInclude Include="src\socket.h" />
     <ClInclude Include="src\terrain.h" />
     <ClInclude Include="src\texture.h" />
@@ -99,6 +101,8 @@
     <ClInclude Include="src\win_socket.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\sky_box_fsh.shader" />
+    <None Include="src\sky_box_vsh.shader" />
     <None Include="src\water_fsh.shader" />
     <None Include="src\water_vsh.shader" />
   </ItemGroup>

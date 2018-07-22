@@ -40,7 +40,7 @@ private:
 	camera main_camera;
 	program terrain_program;
 	program cube_program;
-	terrain<256, 256> scene_terrain;
+	default_terrain scene_terrain;
 	cube test_cube;
 	shadows shadow_handler;
 	gui_handler guis;

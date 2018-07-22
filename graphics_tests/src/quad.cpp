@@ -9,10 +9,10 @@ auto quad_3D::create(resource_handler &) -> void
 	// create vertices and indices
 	glm::vec3 vertices[]
 	{
-		glm::vec3{-128.0f, 0.0f, -128.0f},
-		glm::vec3{-128.0f, 0.0f, 128.0f},
-		glm::vec3{128.0f, 0.0f, 128.0f},
-		glm::vec3{128.0f, 0.0f, -128.0f}
+		glm::vec3{-256.0f, 0.0f, -256.0f},
+		glm::vec3{-256.0f, 0.0f, 256.0f},
+		glm::vec3{256.0f, 0.0f, 256.0f},
+		glm::vec3{256.0f, 0.0f, -256.0f}
 	};
 
 	vertex_buffer.fill<glm::vec3>(sizeof(vertices), vertices, GL_STATIC_DRAW, GL_ARRAY_BUFFER);

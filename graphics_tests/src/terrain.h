@@ -167,7 +167,7 @@ private:
 	auto create_index_buffer(void) -> void
 	{
 		index_buffer.create();
-		index_buffer.fill(indices.size() * sizeof(uint16_t), indices.data(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);
+		index_buffer.fill(indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);
 	}
 	auto create_vertex_array(void) -> void
 	{
@@ -211,12 +211,14 @@ private:
 private:
 	std::array<glm::vec3, Width * Depth> vertices;
 	std::array<glm::vec2, Width * Depth> texture_coords;
-	std::array<uint16_t, (Width - 1) * (Depth - 1) * 6> indices;
+	std::array<uint32_t, (Width - 1) * (Depth - 1) * 6> indices;
 
 	buffer vertex_buffer;
 	buffer index_buffer;
 
 	std::array<texture, 5> textures;
 };
+
+using default_terrain = terrain<512, 512>;
 
 #endif
