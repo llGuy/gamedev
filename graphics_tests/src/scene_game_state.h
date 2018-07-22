@@ -4,6 +4,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "sky_box.h"
 #include "game_state.h"
 #include "program.h"
 #include "camera.h"
@@ -44,6 +45,7 @@ private:
 	shadows shadow_handler;
 	gui_handler guis;
 	water water_handler;
+	sky_box sky;
 
 	std::array<glm::vec3, 10> cube_positions;
 };

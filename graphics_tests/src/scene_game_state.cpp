@@ -37,6 +37,7 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 
 	shadow_handler.create();
 	water_handler.create(rh);
+	sky.create(rh);
 
 	guis.create();
 	guis.push(glm::vec2(-0.5f, 0.5f), 0.6f);
@@ -142,6 +143,9 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 
 	water_handler.prepare(projection_matrix, view_matrix, main_camera.position(), time_handler.elapsed());
 	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
+
+	sky.prepare(projection_matrix);
+	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
 }
 
 auto scene_state::render_depth_gui(void) -> void
