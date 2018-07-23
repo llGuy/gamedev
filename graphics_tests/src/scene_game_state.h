@@ -17,6 +17,7 @@
 #include "gui.h"
 #include "water.h"
 #include "grass.h"
+#include "blur.h"
 
 class scene_state
 	: public game_state
@@ -30,6 +31,7 @@ private:
 	auto render_scene(glm::mat4 & view, glm::vec4 & plane, timer & time_handler) -> void;
 	auto render_depth(void) -> void;
 	auto render_depth_gui(void) -> void;
+	auto render_scene_to_texture(timer & ) -> void;
 
 	auto connect_texture_units(void) -> void;
 
@@ -47,6 +49,7 @@ private:
 	gui_handler guis;
 	water water_handler;
 	sky_box sky;
+	blur_pipeline blur;
 	grass_platform grass_test;
 
 	std::array<glm::vec3, 20> cube_positions;

@@ -49,7 +49,7 @@ auto quad_2D::quad_buffer(void) -> buffer &
 // gui handler
 
 gui_handler::gui_handler(void)
-	: gui_quad(glm::vec2(-0.5f, -0.5f), glm::vec2(1.0f, 1.0f))
+	: gui_quad(glm::vec2(-1.0f, -1.0f), glm::vec2(2.0f, 2.0f))
 {
 }
 

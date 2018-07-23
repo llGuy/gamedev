@@ -58,7 +58,7 @@ auto water::prepare(glm::mat4 & proj, glm::mat4 & view, glm::vec3 & camera_pos, 
 	rand();
 
 	static float move_factor = 0;
-	move_factor += 0.03f * elapsed;
+	move_factor += 0.02f * elapsed;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

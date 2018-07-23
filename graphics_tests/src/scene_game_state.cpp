@@ -42,20 +42,16 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	water_handler.create(rh);
 
 	guis.create();
-	guis.push(glm::vec2(-0.5f, 0.5f), 0.6f);
+	guis.push(glm::vec2(0.0f, 0.0f), 1.0f);
 //	guis.push(glm::vec2(0.5f, 0.5f), 0.6f);
+
+	blur.create(resolution.x, resolution.y);
 
 	glEnable(GL_DEPTH_TEST);
 }
 auto scene_state::render(timer & time_handler) -> void
 {
-	glViewport(0, 0, resolution.x, resolution.y);
-	// onto default framebuffer
 	auto & shadow_fbo = shadow_handler.fbo();
-	shadow_fbo.unbind();
-	glm::vec4 default_plane(0.0f);
-	render_scene(main_camera.view_matrix(), default_plane, time_handler);
-
 	shadow_fbo.bind();
 	glViewport(0, 0, 1024, 1024);
 	render_depth();
@@ -83,14 +79,26 @@ auto scene_state::render(timer & time_handler) -> void
 	glDisable(GL_CLIP_DISTANCE0);
 	glDisable(GL_BLEND);
 
-	// render contents in depth texture
-	shadow_fbo.unbind();
+	render_scene_to_texture(time_handler);
+
+	unbind_all_framebuffers();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	render_depth_gui();
+}
+
+auto scene_state::render_scene_to_texture(timer & time_handler) -> void
+{
+	blur.scene_framebuffer().bind();
+	
 	glViewport(0, 0, resolution.x, resolution.y);
-//	render_depth_gui();
+
+	glm::vec4 default_plane(0.0f);
+	render_scene(main_camera.view_matrix(), default_plane, time_handler);
 
 	water_handler.prepare(projection_matrix, main_camera.view_matrix(), main_camera.position(), time_handler.elapsed());
 	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
 }
+
 auto scene_state::update(input_handler & ih, timer & time) -> game_state * 
 {
 	main_camera.handle_input(ih, time.elapsed());
@@ -161,7 +169,7 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & quad2D = guis.quad();
 	auto & shaders = guis.shaders();
 	shaders.use();
-	auto & texture_refr = water_handler.refr_texture();
+	auto & texture_refr = blur.scene_tex();
 	texture_refr.bind(GL_TEXTURE_2D, 0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
