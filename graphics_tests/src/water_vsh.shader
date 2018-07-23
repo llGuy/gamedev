@@ -11,8 +11,7 @@ uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 
 const float tiling = 6.0f;
-const vec3 light_position = vec3(0, 1000, 0);
-
+const vec3 light_position = vec3(300, 10, 300);
 
 void main(void)
 {

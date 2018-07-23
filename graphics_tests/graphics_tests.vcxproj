@@ -25,6 +25,7 @@
     <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\depth_texture.cpp" />
     <ClCompile Include="src\framebuffer.cpp" />
+    <ClCompile Include="src\grass.cpp" />
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\input_handler.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="src\entity_model_3D.h" />
     <ClInclude Include="src\framebuffer.h" />
     <ClInclude Include="src\game_state.h" />
+    <ClInclude Include="src\grass.h" />
     <ClInclude Include="src\gui.h" />
     <ClInclude Include="src\input_handler.h" />
     <ClInclude Include="src\layer_3D.h" />
@@ -101,6 +103,8 @@
     <ClInclude Include="src\win_socket.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\grass_fsh.shader" />
+    <None Include="src\grass_vsh.shader" />
     <None Include="src\sky_box_fsh.shader" />
     <None Include="src\sky_box_vsh.shader" />
     <None Include="src\water_fsh.shader" />

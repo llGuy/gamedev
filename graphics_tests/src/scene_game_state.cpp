@@ -12,10 +12,12 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 {
 	using detail::vec_rand;
 
+	sky.create(rh);
+
 	test_cube.create(rh);
 	// create test cubes
 	std::for_each(cube_positions.begin(), cube_positions.end(),
-				  [&] (glm::vec3 & p) { p = vec_rand<float, 3>(128); p.y = 15.0f; } );
+				  [&] (glm::vec3 & p) { p = vec_rand<float, 3>(512) - glm::vec3(256, 0, 256); p.y = (float)(rand() % 10); } );
 
 	scene_terrain.create(rh);
 
@@ -35,9 +37,9 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 	cube_program.link_shaders("vertex_position", "vertex_color");
 	cube_program.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix", "plane");
 
+	grass_test.create(rh);
 	shadow_handler.create();
 	water_handler.create(rh);
-	sky.create(rh);
 
 	guis.create();
 	guis.push(glm::vec2(-0.5f, 0.5f), 0.6f);
@@ -75,7 +77,7 @@ auto scene_state::render(timer & time_handler) -> void
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 
 	water_handler.bind_refr();
-	glm::vec4 refr_plane = glm::vec4(0, -1, 0, -0);
+	glm::vec4 refr_plane = glm::vec4(0, -1, 0, 0);
 	render_scene(main_camera.view_matrix(), refr_plane, time_handler);
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 	glDisable(GL_CLIP_DISTANCE0);
@@ -84,7 +86,10 @@ auto scene_state::render(timer & time_handler) -> void
 	// render contents in depth texture
 	shadow_fbo.unbind();
 	glViewport(0, 0, resolution.x, resolution.y);
-	render_depth_gui();
+//	render_depth_gui();
+
+	water_handler.prepare(projection_matrix, main_camera.view_matrix(), main_camera.position(), time_handler.elapsed());
+	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
 }
 auto scene_state::update(input_handler & ih, timer & time) -> game_state * 
 {
@@ -111,7 +116,6 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 {
 	glCullFace(GL_BACK);
 
-
 	glm::vec3 color { 1.0f, 0.0f, 0.0f };
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -127,26 +131,29 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 	auto & bias = shadow_handler.bias();
 	terrain_program.uniform_mat4(&bias[0][0], 4);
 
-	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
+	//render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
 
 	cube_program.use();
 	cube_program.uniform_mat4(&projection_matrix[0][0], 0);
 	cube_program.uniform_mat4(&view_matrix[0][0], 1);
 	cube_program.uniform_vec4(&plane[0], 3);
 
-	for(uint32_t i = 0; i < 10; ++i)
+	for(uint32_t i = 0; i < 20; ++i)
 	{
 		auto trans = glm::translate(cube_positions[i]);
 		cube_program.uniform_mat4(&trans[0][0], 2);
 		render_model(test_cube.vao(), test_cube.element_buffer(), 36);
 	}
 
-	water_handler.prepare(projection_matrix, view_matrix, main_camera.position(), time_handler.elapsed());
-	render_model(water_handler.quad().vao(), water_handler.quad().element_buffer(), 6);
+	grass_test.prepare(projection_matrix, view_matrix, main_camera.position(), time_handler.elapsed());
+	render_model_arrays(grass_test.vao(), 4, GL_TRIANGLE_STRIP);
 
-	sky.prepare(projection_matrix);
-//	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
+
+	sky.prepare(projection_matrix, view_matrix, plane);
+	//	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
 	render_model(sky.vao(), sky.index_buffer(), sky.count());
+
+
 }
 
 auto scene_state::render_depth_gui(void) -> void
@@ -154,7 +161,7 @@ auto scene_state::render_depth_gui(void) -> void
 	auto & quad2D = guis.quad();
 	auto & shaders = guis.shaders();
 	shaders.use();
-	auto & texture_refr = water_handler.refr_depth_texture();
+	auto & texture_refr = water_handler.refr_texture();
 	texture_refr.bind(GL_TEXTURE_2D, 0);
 	guis.prepare_render();
 	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
@@ -182,9 +189,9 @@ auto scene_state::render_depth(void) -> void
 
 	glm::mat4 identity { 1.0f };
 	shaders.uniform_mat4(&identity[0][0], 1);
-	render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
+	//render_model(scene_terrain.vao(), scene_terrain.element_buffer(), default_terrain::vertex_count(), GL_UNSIGNED_INT);
 
-	for (uint32_t i = 0; i < 10; ++i)
+	for (uint32_t i = 0; i < 20; ++i)
 	{
 		auto trans = glm::translate(cube_positions[i]);
 		shaders.uniform_mat4(&trans[0][0], 1);

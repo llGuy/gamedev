@@ -13,7 +13,7 @@ class sky_box
 {
 public:
 	auto create(resource_handler & rh) -> void;
-	auto prepare(glm::mat4 & projection) -> void;
+	auto prepare(glm::mat4 & projection, glm::mat4 & view, glm::vec4 & plane) -> void;
 
 	auto vao(void) -> vertex_array &;
 	auto count(void) -> uint32_t;
@@ -21,7 +21,7 @@ public:
 private:
 	auto create_cube(void) -> void;
 private:
-	static constexpr float cube_size = 100.0f;
+	static constexpr float cube_size = 500.0f;
 
 	texture sky_box_texture;
 	program sky_box_shaders;

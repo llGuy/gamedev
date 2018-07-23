@@ -14,7 +14,7 @@ uniform sampler2D depth_texture;
 uniform vec3 camera_position;
 uniform float move_factor;
 
-const vec3 light_color = vec3(1.0f, 1.0f, 1.0f) * 0.7f;
+const vec3 light_color = vec3(1, 1,1) * 0.7f;
 const float wave_strength = 0.02f;
 const float shine_damper = 30.0f;
 const float reflectivity = 0.6;
@@ -68,7 +68,8 @@ void main(void)
 	specular = pow(specular, shine_damper);
 	vec3 specular_highlights = light_color * specular * reflectivity;
 
-	final_color = mix(reflection_color, refraction_color, refractive_factor) + vec4(specular_highlights, 0.0f) * 0.001f;
+	final_color = mix(reflection_color, refraction_color, refractive_factor) + vec4(specular_highlights, 0.0f);
+//	final_color = reflection_color + vec4(specular_highlights, 0.0f);
 	final_color = mix(final_color, vec4(0, 0.5, 0.5, 1.0), 0.5);
 //	final_color.a = clamp(water_depth / 5.0f, 0, 1);
 	//final_color = vec4(water_depth / 50.0f);

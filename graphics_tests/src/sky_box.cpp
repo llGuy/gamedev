@@ -20,28 +20,35 @@ auto sky_box::create(resource_handler & rh) -> void
 	sky_box_texture.int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	sky_box_texture.int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
+	sky_box_texture.int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	sky_box_texture.int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	sky_box_shaders.create_shader(GL_VERTEX_SHADER, "sky_box_vsh.shader");
 	sky_box_shaders.create_shader(GL_FRAGMENT_SHADER, "sky_box_fsh.shader");
 	sky_box_shaders.link_shaders("vertex_position");
-	sky_box_shaders.get_uniform_locations("projection_matrix", "view_matrix");
+	sky_box_shaders.get_uniform_locations("projection_matrix", "view_matrix", "plane");
 
 	create_cube();
 }
 
-auto sky_box::prepare(glm::mat4 & projection) -> void
+auto sky_box::prepare(glm::mat4 & projection, glm::mat4 & view, glm::vec4 & plane) -> void
 {
 	sky_box_shaders.use();
 	sky_box_shaders.uniform_mat4(&projection[0][0], 0);
 
-	glm::mat4 view(1.0f);
-	sky_box_shaders.uniform_mat4(&view[0][0], 1);
+	glm::mat4 view_matrix(view);
+	view_matrix[3][0] = 0.0f;
+	view_matrix[3][1] = 0.0f;
+	view_matrix[3][2] = 0.0f; 
+	sky_box_shaders.uniform_mat4(&view_matrix[0][0], 1);
+	sky_box_shaders.uniform_vec4(&plane[0], 2);
 
 	sky_box_texture.bind(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 auto sky_box::create_cube(void) -> void
 {
-	std::array<glm::vec3, 16> verts
+	std::array<glm::vec3, 8> verts
 	{
 		// front
 		glm::vec3(-cube_size, -cube_size,  cube_size),
@@ -84,7 +91,9 @@ auto sky_box::create_cube(void) -> void
 	buffer_layout.create();
 	buffer_layout.bind();
 	buffer_layout.enable(0);
-	buffer_layout.push<float>(0, 3, sizeof(float) * 3, nullptr);
+	cube_vertices.bind(GL_ARRAY_BUFFER);
+	buffer_layout.push<float>(0, 3, sizeof(float) * 3, nullptr);	
+	indices.bind(GL_ELEMENT_ARRAY_BUFFER);
 	buffer_layout.unbind();
 }
 

@@ -16,6 +16,7 @@
 #include "water.h"
 #include "gui.h"
 #include "water.h"
+#include "grass.h"
 
 class scene_state
 	: public game_state
@@ -46,8 +47,9 @@ private:
 	gui_handler guis;
 	water water_handler;
 	sky_box sky;
+	grass_platform grass_test;
 
-	std::array<glm::vec3, 10> cube_positions;
+	std::array<glm::vec3, 20> cube_positions;
 };
 
 #endif

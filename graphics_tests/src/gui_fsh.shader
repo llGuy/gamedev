@@ -23,5 +23,6 @@ vec4 get_depth_color(void)
 
 void main(void)
 {
-	final_color = get_depth_color();
+	//final_color = get_depth_color();
+	final_color = texture(diffuse, pass_texture_coords);
 }

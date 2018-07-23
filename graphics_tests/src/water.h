@@ -34,7 +34,7 @@ private:
 	auto create_depth_texture_attachment(depth_texture & t, framebuffer & fbo, int32_t, int32_t) -> void;
 	auto create_depth_buffer_attachment(renderbuffer & r, framebuffer & fbo, int32_t w, int32_t h) -> void;
 private:
-	static constexpr int32_t reflection_width = 230;
+	static constexpr int32_t reflection_width = 320;
 	static constexpr int32_t refraction_width = 1280;
 	static constexpr int32_t reflection_height = 180;
 	static constexpr int32_t refraction_height = 720;

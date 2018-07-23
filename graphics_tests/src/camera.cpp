@@ -41,7 +41,7 @@ auto camera::update_view_matrix(void) -> glm::mat4 &
 	return (camera_view_matrix = glm::lookAt(world_position, world_position + world_direction, up_vector));
 }
 
-#define DEFAULT_CAMERA_SPEED 10.0f
+#define DEFAULT_CAMERA_SPEED 30.0f
 
 auto camera::handle_input(input_handler & ih, float time_delta) -> void
 {
