@@ -32,6 +32,7 @@ private:
 	auto render_depth(void) -> void;
 	auto render_depth_gui(void) -> void;
 	auto render_scene_to_texture(timer & ) -> void;
+	auto render_blurs(void) -> void;
 
 	auto connect_texture_units(void) -> void;
 

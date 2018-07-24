@@ -263,6 +263,9 @@
     <ClInclude Include="src\blur.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\bright_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\water_vsh.shader" />
@@ -274,5 +277,7 @@
     <None Include="src\horizontal_blur_vsh.shader" />
     <None Include="src\horizontal_blur_fsh.shader" />
     <None Include="src\vertical_blur_vsh.shader" />
+    <None Include="src\blur_fsh.shader" />
+    <None Include="src\bright_filter_fsh.shader" />
   </ItemGroup>
 </Project>

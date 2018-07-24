@@ -8,7 +8,7 @@ auto sky_box::create(resource_handler & rh) -> void
 	sky_box_texture.bind(GL_TEXTURE_CUBE_MAP, 0);
 	std::array<std::string, 6> files
 	{
-		"right.png", "left.png", "top.png", "bottom.png", "back.png", "front.png"
+		"right2.png", "left2.png", "up2.png", "down2.png", "back2.png", "front2.png"
 	};
 
 	for (uint32_t i = 0; i < files.size(); ++i)

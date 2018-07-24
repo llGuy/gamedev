@@ -48,6 +48,7 @@
     <ClInclude Include="src\application.h" />
     <ClInclude Include="src\batch_renderer.h" />
     <ClInclude Include="src\blur.h" />
+    <ClInclude Include="src\bright_filter.h" />
     <ClInclude Include="src\buffer.h" />
     <ClInclude Include="src\bullet.h" />
     <ClInclude Include="src\camera.h" />
@@ -105,6 +106,8 @@
     <ClInclude Include="src\win_socket.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\blur_fsh.shader" />
+    <None Include="src\bright_filter_fsh.shader" />
     <None Include="src\grass_fsh.shader" />
     <None Include="src\grass_vsh.shader" />
     <None Include="src\horizontal_blur_fsh.shader" />

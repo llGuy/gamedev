@@ -80,10 +80,40 @@ auto scene_state::render(timer & time_handler) -> void
 	glDisable(GL_BLEND);
 
 	render_scene_to_texture(time_handler);
+	render_blurs();
 
 	unbind_all_framebuffers();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, resolution.x, resolution.y);
 	render_depth_gui();
+}
+
+auto scene_state::render_blurs(void) -> void
+{
+	blur.hor_framebuffer().bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, resolution.x / 4, resolution.y / 4);
+
+	auto & quad2D = guis.quad();
+
+	auto & shaders = guis.shaders();
+	shaders.use();
+	auto & texture_refr = blur.scene_tex();
+	texture_refr.bind(GL_TEXTURE_2D, 0);
+	guis.prepare_render();
+
+
+//	blur.prepare_ho_shaders();
+
+	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
+
+	blur.ver_framebuffer().bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, resolution.x / 4, resolution.y / 4);
+
+	blur.prepare_ve_shaders();
+	render_model_arrays(quad2D.vao(), 4, GL_TRIANGLE_STRIP);
 }
 
 auto scene_state::render_scene_to_texture(timer & time_handler) -> void
