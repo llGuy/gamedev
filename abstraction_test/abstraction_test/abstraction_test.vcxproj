@@ -19,112 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\application.cpp" />
-    <ClCompile Include="src\blur.cpp" />
-    <ClCompile Include="src\buffer.cpp" />
-    <ClCompile Include="src\camera.cpp" />
-    <ClCompile Include="src\cube.cpp" />
-    <ClCompile Include="src\depth_texture.cpp" />
-    <ClCompile Include="src\framebuffer.cpp" />
-    <ClCompile Include="src\grass.cpp" />
-    <ClCompile Include="src\gui.cpp" />
-    <ClCompile Include="src\input_handler.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\program.cpp" />
-    <ClCompile Include="src\quad.cpp" />
-    <ClCompile Include="src\renderbuffer.cpp" />
-    <ClCompile Include="src\resources.cpp" />
-    <ClCompile Include="src\scene_game_state.cpp" />
-    <ClCompile Include="src\shader.cpp" />
-    <ClCompile Include="src\shadows.cpp" />
-    <ClCompile Include="src\sky_box.cpp" />
-    <ClCompile Include="src\texture.cpp" />
-    <ClCompile Include="src\timer.cpp" />
-    <ClCompile Include="src\vao.cpp" />
-    <ClCompile Include="src\water.cpp" />
-    <ClCompile Include="src\window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\application.h" />
-    <ClInclude Include="src\batch_renderer.h" />
-    <ClInclude Include="src\blur.h" />
-    <ClInclude Include="src\bright_filter.h" />
-    <ClInclude Include="src\buffer.h" />
-    <ClInclude Include="src\bullet.h" />
-    <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\client.h" />
-    <ClInclude Include="src\client_addr.h" />
-    <ClInclude Include="src\configs.h" />
-    <ClInclude Include="src\cube.h" />
-    <ClInclude Include="src\depth_texture.h" />
-    <ClInclude Include="src\detail.h" />
-    <ClInclude Include="src\entities_handler.h" />
-    <ClInclude Include="src\entity.h" />
-    <ClInclude Include="src\entity_model_3D.h" />
-    <ClInclude Include="src\framebuffer.h" />
-    <ClInclude Include="src\game_state.h" />
-    <ClInclude Include="src\grass.h" />
-    <ClInclude Include="src\gui.h" />
-    <ClInclude Include="src\input_handler.h" />
-    <ClInclude Include="src\layer_3D.h" />
-    <ClInclude Include="src\log.h" />
-    <ClInclude Include="src\mesh_3D.h" />
-    <ClInclude Include="src\net_handler.h" />
-    <ClInclude Include="src\optional.hpp" />
-    <ClInclude Include="src\packet_delimiter.h" />
-    <ClInclude Include="src\packet_encoder.h" />
-    <ClInclude Include="src\packet_parser.h" />
-    <ClInclude Include="src\packet_type.h" />
-    <ClInclude Include="src\physics_handler.h" />
-    <ClInclude Include="src\platform.h" />
-    <ClInclude Include="src\platform_mound.h" />
-    <ClInclude Include="src\platform_shield.h" />
-    <ClInclude Include="src\player.h" />
-    <ClInclude Include="src\program.h" />
-    <ClInclude Include="src\quad.h" />
-    <ClInclude Include="src\ray.h" />
-    <ClInclude Include="src\renderable_3D.h" />
-    <ClInclude Include="src\renderbuffer.h" />
-    <ClInclude Include="src\renderer_3D.h" />
-    <ClInclude Include="src\resources.h" />
-    <ClInclude Include="src\resource_data.h" />
-    <ClInclude Include="src\scene_game_state.h" />
-    <ClInclude Include="src\server.h" />
-    <ClInclude Include="src\shader.h" />
-    <ClInclude Include="src\shadows.h" />
-    <ClInclude Include="src\sky_box.h" />
-    <ClInclude Include="src\socket.h" />
-    <ClInclude Include="src\terrain.h" />
-    <ClInclude Include="src\texture.h" />
-    <ClInclude Include="src\unix_socket.h" />
-    <ClInclude Include="src\timer.h" />
-    <ClInclude Include="src\tmpg_engine.h" />
-    <ClInclude Include="src\utils.h" />
-    <ClInclude Include="src\vao.h" />
-    <ClInclude Include="src\water.h" />
-    <ClInclude Include="src\window.h" />
-    <ClInclude Include="src\win_socket.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\blur_fsh.shader" />
-    <None Include="src\bright_filter_fsh.shader" />
-    <None Include="src\cube_fsh.shader" />
-    <None Include="src\cube_vsh.shader" />
-    <None Include="src\grass_fsh.shader" />
-    <None Include="src\grass_vsh.shader" />
-    <None Include="src\horizontal_blur_fsh.shader" />
-    <None Include="src\horizontal_blur_vsh.shader" />
-    <None Include="src\sky_box_fsh.shader" />
-    <None Include="src\sky_box_vsh.shader" />
-    <None Include="src\vertical_blur_vsh.shader" />
-    <None Include="src\water_fsh.shader" />
-    <None Include="src\water_vsh.shader" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{8a0bbed9-005c-46bd-a4fa-0fce4a942886}</ProjectGuid>
-    <RootNamespace>graphics_tests</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{51811d54-94f1-42f0-acdb-5e076c56566e}</ProjectGuid>
+    <RootNamespace>abstraction_test</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -178,12 +79,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:/dependencies/GLFW/include;C:/dependencies/GLEW/include;C:/dependencies/</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:/include/GLFW/lib-vc2015;C:/incliude/stb-master;C:/include/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\dependencies\stb-master;C:\dependencies\GLEW\lib\Release\Win32\;C:\dependencies\GLFW\lib-vc2015\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

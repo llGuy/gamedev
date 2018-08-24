@@ -1,0 +1,7 @@
+$(SolutionDir)Dependencies/GLFW/include;$(SolutionDir)Dependencies/GLEW/include;$(SolutionDir)Dependencies
+
+_MBCS;GLM_ENABLE_EXPERIMENTAL;GLEW_STATIC;STB_IMAGE_IMPLEMENTATION
+
+$(SolutionDir)Dependencies/GLFW/lib-vc2015;$(SolutionDir)Dependencies/stb-master;$(SolutionDir)Dependencies/GLEW/lib/Release/Win32
+
+glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib

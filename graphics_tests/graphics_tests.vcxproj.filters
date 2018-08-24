@@ -279,5 +279,7 @@
     <None Include="src\vertical_blur_vsh.shader" />
     <None Include="src\blur_fsh.shader" />
     <None Include="src\bright_filter_fsh.shader" />
+    <None Include="src\cube_fsh.shader" />
+    <None Include="src\cube_vsh.shader" />
   </ItemGroup>
 </Project>

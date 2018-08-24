@@ -74,7 +74,7 @@ auto scene_state::render(timer & time_handler) -> void
 
 	water_handler.bind_refr();
 	glm::vec4 refr_plane = glm::vec4(0, -1, 0, 0);
-	render_scene(main_camera.view_matrix(), refr_plane, time_handler);
+	render_scene(main_camera.view_matrix(), refr_plane, time_handler); 
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 	glDisable(GL_CLIP_DISTANCE0);
 	glDisable(GL_BLEND);
@@ -188,10 +188,7 @@ auto scene_state::render_scene(glm::mat4 & view_matrix, glm::vec4 & plane, timer
 
 
 	sky.prepare(projection_matrix, view_matrix, plane);
-	//	render_model_arrays(sky.vao(), sky.count(), GL_TRIANGLES);
 	render_model(sky.vao(), sky.index_buffer(), sky.count());
-
-
 }
 
 auto scene_state::render_depth_gui(void) -> void

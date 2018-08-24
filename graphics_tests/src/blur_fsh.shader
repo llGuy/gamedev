@@ -19,4 +19,4 @@ void main(void)
 	final_color += texture(original_texture, blur_texture_coords[8]) * 0.065984;
 	final_color += texture(original_texture, blur_texture_coords[9]) * 0.028002;
 	final_color += texture(original_texture, blur_texture_coords[10]) * 0.0093;
-}
+}`
