@@ -21,7 +21,6 @@ vec3 calculate_normal(int i1, int i2, int i3)
 	return normalize(cross(diff_world_pos2, diff_world_pos1));
 }
 
-
 void main(void)
 {
 	for (int i = 0; i < 3; ++i)

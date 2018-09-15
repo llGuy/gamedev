@@ -10,8 +10,8 @@
 
 application::application(i32 w, i32 h)
 	: appl_window(w, h, "landscaper"), resources(""), 
-	scene_platform(glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), glm::vec3(-PLANE_RAD, 0, PLANE_RAD), 
-		glm::vec3(PLANE_RAD, 0, -PLANE_RAD), glm::vec3(PLANE_RAD, 0, PLANE_RAD)), a_cube(2),
+	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
+		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
 	light_position(-50000.0f, 10000.0f, -50000.0f)
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
@@ -65,7 +65,7 @@ auto application::render(void) -> void
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
 
 	glm::vec3 color{ 0.2f };
-	glm::vec3 color2{ 0.1f, 0.1f, 0.5f };
+	glm::vec3 color2{ 0.07, 0.07f, 0.4f };
 
 	quad_3D_shaders.use();
 	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
@@ -76,6 +76,7 @@ auto application::render(void) -> void
 	quad_3D_shaders.uniform_mat4(&shadow_bias[0][0], 5);
 	quad_3D_shaders.uniform_mat4(&projection_matrix[0][0], 0);
 	quad_3D_shaders.uniform_mat4(&view_matrix[0][0], 1);
+
 	quad_3D_shaders.uniform_3f(&color[0], 2);
 
 	glm::mat4 translation = glm::translate( glm::vec3(0.0f, 2.f, 0.0f) );

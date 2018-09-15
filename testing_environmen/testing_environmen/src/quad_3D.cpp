@@ -1,9 +1,11 @@
 #include "quad_3D.h"
+#include <glm/gtx/string_cast.hpp>
 
 quad_3D::quad_3D(glm::vec3 const & p1, glm::vec3 const & p2,
 	glm::vec3 const & p3, glm::vec3 const & p4)
 	: verts { p1, p2, p3, p4 }
 {
+	std::cout << glm::to_string(glm::normalize(glm::cross(p1, p2))).c_str() << std::endl;
 }
 
 auto quad_3D::create(resource_handler & rh) -> void 

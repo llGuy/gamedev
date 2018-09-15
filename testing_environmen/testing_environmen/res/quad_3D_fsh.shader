@@ -7,6 +7,7 @@ in vec4 shadow;
 in vec3 world_pos;
 in float dist;
 
+uniform vec3 light_position;
 uniform vec3 camera_pos;
 uniform sampler2D shadow_map;
 uniform vec3 color;
@@ -47,10 +48,10 @@ void main(void)
 
 	float light_factor = 1.0f - (total * dist);
 
-	float diffuse = clamp(dot(light_vector, normal), 0, 1);
+	float diffuse = clamp(dot(normalize(light_position - world_pos), normal), 0, 1);
 	vec4 diffuse_light = vec4(diffuse);
 	diffuse_light.a = 1.0f;
-	
-	final_color = vec4(color, 1.0f) +diffuse_light;
-	final_color *= light_factor;
+
+	final_color = vec4(color, 1.0f) + diffuse_light * light_factor;
+//	final_color *= light_factor;
 }
