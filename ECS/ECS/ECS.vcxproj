@@ -20,9 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\other.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\all.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\component.h" />
     <ClInclude Include="src\entity.h" />

@@ -8,11 +8,13 @@
 #include "entity.h"
 #include "component.h"
 
+class entity_component_system;
+
 class isystem
 {
 public:
 	/* ADD FUNCTION!!! */
-	virtual auto update(f32 td, std::vector<entity> & entities) -> void = 0;
+	virtual auto update(f32 td, std::vector<entity> & entities, entity_component_system const & ecs) -> void = 0;
 	virtual auto remove(i32 at) -> void = 0;
 };
 
@@ -31,10 +33,14 @@ public:
 		components.reserve(initial_size);
 	}
 
-	auto update(f32 td, std::vector<entity> & entities) -> void override
+	auto update(f32 td, std::vector<entity> & entities, entity_component_system const & ecs) -> void override
 	{
 		std::for_each(components.begin(), components.end(),
-			[&td, &entities](component<T> & comp) { if (comp.active()) comp.update(td, entities); });
+			[&td, &entities, &ecs](component<T> & comp) { if (comp.active()) comp.update(td, entities, ecs); });
+	}
+	auto operator[](i32 comp_at) -> component<T> &
+	{
+		return components[comp_at];
 	}
 public:
 	template <typename ... Args> auto add(Args && ... constr_args) -> i32

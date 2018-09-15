@@ -110,10 +110,13 @@
     <None Include="src\bright_filter_fsh.shader" />
     <None Include="src\cube_fsh.shader" />
     <None Include="src\cube_vsh.shader" />
+    <None Include="src\depth_fsh.shader" />
     <None Include="src\grass_fsh.shader" />
     <None Include="src\grass_vsh.shader" />
+    <None Include="src\gui_fsh.shader" />
     <None Include="src\horizontal_blur_fsh.shader" />
     <None Include="src\horizontal_blur_vsh.shader" />
+    <None Include="src\scene_fsh.shader" />
     <None Include="src\sky_box_fsh.shader" />
     <None Include="src\sky_box_vsh.shader" />
     <None Include="src\vertical_blur_vsh.shader" />
@@ -183,7 +186,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:/include/GLFW/lib-vc2015;C:/incliude/stb-master;C:/include/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:/dependencies/GLFW/lib-vc2015;C:/dependencies/stb-master;C:/dependencies/GLEW/lib/Release/Win32</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

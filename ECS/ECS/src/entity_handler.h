@@ -24,13 +24,14 @@ public:
 	auto init(void)
 	{
 		std::vector<entity> players(1);
-		ecs entity_component_system;
+		entity_component_system entity_component_system;
 		entity_component_system.add_system<position>(30);
 		entity_component_system.add_system<direction>(30);
 		entity_component_system.add_component<position>(players[0], glm::vec3(0));
 		entity_component_system.add_component<direction>(players[0], glm::vec3(0));
 
 //		entity_component_system.update(0, players);
+
 		entity_component_system.update_only<position>(0, players);
 
 		entity_component_system.remove(players[0]);

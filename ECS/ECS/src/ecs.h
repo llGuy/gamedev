@@ -8,23 +8,25 @@
 template <typename T> struct component_type { static i32 value; };
 template <typename T> i32 component_type<T>::value = -1;
 
-class ecs
+class entity_component_system
 {
 private:
 	std::vector<isystem *> systems;
 public:
 	template <typename ... T> auto update_except(f32 td, std::vector<entity> & entities) -> void
 	{
-
+		for (u32 i = 0; i < systems.size(); ++i)
+			if (((component_type<T>::value != i) && ...))
+				systems[i]->update(td, entities, *this);
 	}
 	template <typename ... T> auto update_only(f32 td, std::vector<entity> & entities) -> void
 	{
-		i8 impl[] { ( systems[component_type<T>::value]->update(td, entities), static_cast<i8>(0) )... };
+		(systems[component_type<T>::value]->update(td, entities, *this), ...);
 	}
 	auto update(f32 td, std::vector<entity> & entities) -> void
 	{
 		std::for_each(systems.begin(), systems.end(), 
-			[&td, &entities](isystem * sys) { sys->update(td, entities); });
+			[&td, &entities, this](isystem * sys) { sys->update(td, entities, *this); });
 	}
 public:
 	/* adding */
@@ -46,8 +48,7 @@ public:
 
 		auto & sys = get_system<T>();
 		i32 comp_at = sys.add(std::forward<Args>(constr_args)...);
-		handle new_comp_handle = handle{ component_type<T>::value, comp_at };
-		subject.components.push_back(new_comp_handle);
+		subject.components.insert({ component_type<T>::value, comp_at });
 	}
 public:
 	/* removing */
@@ -55,8 +56,9 @@ public:
 	{
 		for (auto & comp_handle : subject.components)
 		{
-			auto * sys = get_system(comp_handle.type);
-			sys->remove(comp_handle.index);
+			auto [type, index] = comp_handle;
+			auto * sys = get_system(type);
+			sys->remove(index);
 		}
 	}
 public:
@@ -68,5 +70,10 @@ public:
 	auto get_system(i32 at) -> isystem *
 	{
 		return systems[at];
+	}
+	template <typename T> auto get_component(i32 comp_at) -> component<T> &
+	{
+		auto & sys = get_system<T>();
+		return sys[comp_at];
 	}
 };

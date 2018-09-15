@@ -281,5 +281,8 @@
     <None Include="src\bright_filter_fsh.shader" />
     <None Include="src\cube_fsh.shader" />
     <None Include="src\cube_vsh.shader" />
+    <None Include="src\gui_fsh.shader" />
+    <None Include="src\depth_fsh.shader" />
+    <None Include="src\scene_fsh.shader" />
   </ItemGroup>
 </Project>

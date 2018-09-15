@@ -43,11 +43,12 @@ scene_state::scene_state(int32_t w, int32_t h, glm::vec2 const & cursor_pos, res
 
 	guis.create();
 	guis.push(glm::vec2(0.0f, 0.0f), 1.0f);
-//	guis.push(glm::vec2(0.5f, 0.5f), 0.6f);
 
 	blur.create(resolution.x, resolution.y);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 auto scene_state::render(timer & time_handler) -> void
 {
@@ -56,15 +57,8 @@ auto scene_state::render(timer & time_handler) -> void
 	glViewport(0, 0, 1024, 1024);
 	render_depth();
 
-	water_handler.bind_refl();
+/*	water_handler.bind_refl();
 	glEnable(GL_CLIP_DISTANCE0);
-
-	/*
-	
-	FUTURE LUC !!! THE W COORD OF THE PLANE NEEDS TO NEGATED
-	BECAUSE OF "MATHEMATIC REASONS" OK !!
-	
-	*/
 	
 	glm::mat4 refl_view_matrix = shadow_handler.get_inverted_view_matrix(main_camera);
 
@@ -77,10 +71,12 @@ auto scene_state::render(timer & time_handler) -> void
 	render_scene(main_camera.view_matrix(), refr_plane, time_handler); 
 	water_handler.unbind_framebuffers(resolution.x, resolution.y);
 	glDisable(GL_CLIP_DISTANCE0);
-	glDisable(GL_BLEND);
+	glDisable(GL_BLEND); */
 
-	render_scene_to_texture(time_handler);
-	render_blurs();
+//	render_scene_to_texture(time_handler);
+//	render_blurs();
+
+	render_scene(main_camera.view_matrix(), glm::vec4(0), time_handler);
 
 	unbind_all_framebuffers();
 
