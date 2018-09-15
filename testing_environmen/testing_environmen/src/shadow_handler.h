@@ -12,6 +12,7 @@ class shadow_handler
 {
 private:
 	static constexpr i32 shadow_map_size = 4096;
+
 	/* dimensions of the frustum */
 	f32 far_width, far_height;
 	f32 near_width, near_height;
@@ -28,9 +29,12 @@ private:
 	/* dimensions of the orthogonal projection */
 	f32 x_min, y_min, z_min;
 	f32 x_max, y_max, z_max;
+
 	/* projection matrices */
 	glm::mat4 light_view_matrix;
 	glm::mat4 projection_matrix;
+	glm::mat4 shadow_bias;
+
 	/* opengl objects */
 	framebuffer depth_fbo;
 	texture depth_map;
@@ -44,22 +48,21 @@ public:
 	auto get_fbo(void) -> framebuffer & { return depth_fbo; }
 	auto get_shaders(void) -> program & { return shaders; }
 	auto get_light_view(void) -> glm::mat4 & { return light_view_matrix; }
+	auto get_shadow_bias(void) -> glm::mat4 & { return shadow_bias; }
 public:
 	auto create(glm::vec3 const & light_pos) -> void
 	{
 		create_fbo();
 		create_shaders();
+		create_shadow_bias_matrix();
 		create_light_view_matrix(light_pos);
 	}
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void
 	{
-		calculate_frustum_dimensions(far, near, aspect, fov);
-
 		std::array<glm::vec4, 8> corners;
+		calculate_frustum_dimensions(far, near, aspect, fov);
 		calculate_ortho_corners(pos, dir, far, near, corners);
-
 		find_min_max_values(corners);
-
 		projection_matrix = glm::ortho<f32>(x_min, x_max, y_min, y_max, z_min, z_max);
 	}
 private:
@@ -143,5 +146,15 @@ private:
 	auto create_light_view_matrix(glm::vec3 const & light_dir) -> void
 	{
 		light_view_matrix = glm::lookAt(glm::normalize(-light_dir), glm::vec3(0), detail::up);
+	}
+	auto create_shadow_bias_matrix(void) -> void
+	{
+		shadow_bias = glm::mat4
+		(
+			0.5, 0.0, 0.0, 0.0,
+			0.0, 0.5, 0.0, 0.0,
+			0.0, 0.0, 0.5, 0.0,
+			0.5, 0.5, 0.5, 1.0
+		);
 	}
 };

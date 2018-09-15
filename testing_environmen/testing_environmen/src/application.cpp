@@ -6,10 +6,12 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/transform.hpp>
 
+#define PLANE_RAD 50.0f
+
 application::application(i32 w, i32 h)
 	: appl_window(w, h, "landscaper"), resources(""), 
-	scene_platform(glm::vec3(-100.0f, 0, -100.0f), glm::vec3(-100.0f, 0, 100.0f), 
-		glm::vec3(100.0f, 0, -100.0f), glm::vec3(100.0f, 0, 100.0f)), a_cube(2),
+	scene_platform(glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), glm::vec3(-PLANE_RAD, 0, PLANE_RAD), 
+		glm::vec3(PLANE_RAD, 0, -PLANE_RAD), glm::vec3(PLANE_RAD, 0, PLANE_RAD)), a_cube(2),
 	light_position(-50000.0f, 10000.0f, -50000.0f)
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
@@ -80,7 +82,7 @@ auto application::render(void) -> void
 	quad_3D_shaders.uniform_mat4(&translation[0][0], 3);
 	render_model(a_cube, GL_TRIANGLES);
 
-	glm::mat4 translation1 = glm::translate(glm::vec3(-50.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
+	glm::mat4 translation1 = glm::translate(glm::vec3(-30.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
 	quad_3D_shaders.uniform_mat4(&translation1[0][0], 3);
 	render_model(a_cube, GL_TRIANGLES);
 
@@ -126,22 +128,16 @@ auto application::render_depth(void) -> void
 
 	shaders.use();
 	auto & view = entities.cam().matrix();
-//	glm::mat4 mv = glm::ortho<f32>(-15.0f, 15.0f, -15.0f, 15.0f, -15.0f, 45.0f) * shadows.light_view();
+
 	glm::mat4 mv = shadows.get_projection() * shadows.get_light_view();
 
-	glm::mat4 bias {
-0.5, 0.0, 0.0, 0.0,
-0.0, 0.5, 0.0, 0.0,
-0.0, 0.0, 0.5, 0.0,
-0.5, 0.5, 0.5, 1.0
-	};
-	shadow_bias = bias * mv;
+	shadow_bias = shadows.get_shadow_bias() * mv;
 
 	glm::mat4 cube_translation = mv * glm::translate(glm::vec3(0, 2., 0));
 	shaders.uniform_mat4(&cube_translation[0][0], 0);
 	render_model(a_cube, GL_TRIANGLES);
 
-	glm::mat4 second_translation = mv * glm::translate(glm::vec3(-50.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
+	glm::mat4 second_translation = mv * glm::translate(glm::vec3(-30.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
 	quad_3D_shaders.uniform_mat4(&second_translation[0][0], 3);
 	render_model(a_cube, GL_TRIANGLES);
 
