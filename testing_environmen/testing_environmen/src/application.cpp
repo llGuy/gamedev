@@ -29,13 +29,13 @@ auto application::init(void) -> void
 	scene_platform.create(resources);
 	gui_quad.create(resources);
 
-	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube);
+	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces);
 	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f));
 	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f));
 	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
 
-
+	traces.create();
 	shadows.create(glm::vec3(-1, -1, -1));
 	create_test_fbo();
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
@@ -96,11 +96,14 @@ auto application::render(void) -> void
 	quad_3D_shaders.uniform_mat4(&translation2[0][0], 3);
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
 
+	traces.render(projection_matrix, view_matrix);
+
 	render_depth();
 }
 
 auto application::update(void) -> void
 {
+	traces.clear();
 	appl_window.refresh();
 	entities.update(time.elapsed());
 	auto & cam = entities.cam();

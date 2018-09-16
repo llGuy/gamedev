@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <memory>
 #include <vector>
 #include <iostream>
 #include <stdint.h>
@@ -141,7 +142,7 @@ public:
 class entity_cs
 {
 private:
-	std::vector<isystem *> systems;
+	std::vector<std::unique_ptr<isystem>> systems;
 public:
 	template <typename ... T> auto update_except(f32 td, vec_dd<entity> & entities,
 		std::function<bool(i32)> const & depr = [](i32) { return true; }) -> void
@@ -159,7 +160,7 @@ public:
 		std::function<bool(i32)> const & depr = [](i32) { return true; }) -> void
 	{
 		std::for_each(systems.begin(), systems.end(),
-			[&td, &entities, &depr, this](isystem * sys) { sys->update(td, entities, *this, depr); });
+			[&td, &entities, &depr, this](std::unique_ptr<isystem> & sys) { sys->update(td, entities, *this, depr); });
 	}
 public:
 	/* adding */
@@ -169,7 +170,7 @@ public:
 		using new_type = component_type<T>;
 
 		new_type::value = systems.size();
-		systems.emplace_back(new component_system<T>(size));
+		systems.emplace_back(std::make_unique<component_system<T>>(component_system<T>(size)));
 	}
 	template <typename T, typename ... Args> auto add_component(entity & subject, Args && ... constr_args) -> void
 	{
@@ -190,7 +191,7 @@ public:
 		for (auto & comp_handle : subject.components)
 		{
 			auto[type, index] = comp_handle;
-			auto * sys = get_system(type);
+			auto & sys = get_system(type);
 			sys->remove(index);
 		}
 	}
@@ -198,9 +199,9 @@ public:
 	/* access to system needs static_pointer_cast */
 	template <typename T> auto get_system(void) -> component_system<T> &
 	{
-		return *static_cast<component_system<T>*>(systems[component_type<T>::value]);
+		return *static_cast< component_system<T>* >( (systems[component_type<T>::value].get()) );
 	}
-	auto get_system(i32 at) -> isystem *
+	auto get_system(i32 at) -> std::unique_ptr<isystem> &
 	{
 		return systems[at];
 	}

@@ -15,6 +15,7 @@
 //#include "shadows.h"
 #include "shadow_handler.h"
 #include "input_handler.h"
+#include "tracer_handler.h"
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
@@ -46,6 +47,8 @@ private:
 	gui_handler guis;
 	entity_handler entities;
 	shadow_handler shadows;
+	/* for bullets */
+	tracer_handler traces;
 	program quad_3D_shaders;
 	program quad_2D_shaders;
 	quad_3D scene_platform;

@@ -194,6 +194,12 @@
     <ClInclude Include="src\ecs\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ecs\little_gun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tracer_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />
@@ -207,5 +213,7 @@
     <None Include="res\shadow\shadow_gui_fsh.shader" />
     <None Include="res\plain_color\vsh.shader" />
     <None Include="res\plain_color\fsh.shader" />
+    <None Include="res\lines\line_vsh.shader" />
+    <None Include="res\lines\line_fsh.shader" />
   </ItemGroup>
 </Project>

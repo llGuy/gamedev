@@ -8,16 +8,17 @@
 #include "ecs/depth_render.h"
 #include "ecs/basic_components.h"
 #include "ecs/basic_key_control.h"
+#include "ecs/little_gun.h"
 #include "ecs/mouse_control.h"
 
 entity_handler::entity_handler(void)
 {
 }
 
-auto entity_handler::create(input_handler & ih, program & d, renderable & m) -> void
+auto entity_handler::create(input_handler & ih, program & d, renderable & m, tracer_handler & th) -> void
 {
 	create_component_system();
-	create_main_player(ih, d, m);
+	create_main_player(ih, d, m, th);
 }
 
 auto entity_handler::update(f32 td) -> void
@@ -39,6 +40,7 @@ auto entity_handler::create_component_system(void) -> void
 	component_system.add_system<graphics>(10);
 	component_system.add_system<physics>(1);
 	component_system.add_system<height>(10);
+	component_system.add_system<little_gun>(1);
 	component_system.add_system<depth>(10);
 }
 
@@ -60,7 +62,7 @@ auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d,
 	component_system.add_component<depth>(new_entity, at, dpth, model);
 }
 
-auto entity_handler::create_main_player(input_handler & ih, program & dpth, renderable & model) -> void
+auto entity_handler::create_main_player(input_handler & ih, program & dpth, renderable & model, tracer_handler & th) -> void
 {
 	entity new_entity;
 	auto & data = new_entity.get_data();
@@ -78,4 +80,5 @@ auto entity_handler::create_main_player(input_handler & ih, program & dpth, rend
 	component_system.add_component<mouse_control>(new_entity, at, ih, entity_camera);
 	component_system.add_component<depth>(new_entity, at, dpth, model);
 	component_system.add_component<physics>(new_entity, at);
+	component_system.add_component<little_gun>(new_entity, at, ih, th);
 }
