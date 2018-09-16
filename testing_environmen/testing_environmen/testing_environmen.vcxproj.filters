@@ -182,6 +182,18 @@
     <ClInclude Include="src\shadows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\shadow_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\model_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\depth_render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\physics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />

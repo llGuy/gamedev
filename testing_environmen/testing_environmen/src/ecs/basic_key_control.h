@@ -25,8 +25,8 @@ public:
 		if (inputs->got_key(GLFW_KEY_A)) move(-glm::normalize(glm::cross(lateral_dir, up)), ent.vel, td, ent);
 		if (inputs->got_key(GLFW_KEY_S)) move(-lateral_dir, ent.vel, td, ent);
 		if (inputs->got_key(GLFW_KEY_D)) move(glm::normalize(glm::cross(lateral_dir, up)), ent.vel, td, ent);
-		if (inputs->got_key(GLFW_KEY_SPACE)) move(up, ent.vel, td, ent);
-		if (inputs->got_key(GLFW_KEY_LEFT_SHIFT)) move(-up, ent.vel, td, ent);
+		//if (inputs->got_key(GLFW_KEY_SPACE)) move(up, ent.vel, td, ent);
+		//if (inputs->got_key(GLFW_KEY_LEFT_SHIFT)) move(-up, ent.vel, td, ent);
 
 		ent.pos += ent.vel * td;
 

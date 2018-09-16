@@ -36,6 +36,7 @@ private:
 	auto render_depth_gui(void) -> void;
 
 	auto create_test_fbo(void) -> void;
+	auto add_entity(glm::vec3 const & p, glm::vec3 const & d) -> void;
 private:
 	window appl_window;
 	resource_handler resources;

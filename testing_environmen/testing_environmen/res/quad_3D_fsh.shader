@@ -13,7 +13,7 @@ uniform sampler2D shadow_map;
 uniform vec3 color;
 
 const float map_size = 2048.0f * 2.0f;
-const int pcf_count = 2;
+const int pcf_count = 1;
 const float total_texels = (pcf_count * 2.0f + 1.0f) * (pcf_count * 2.0f + 1.0f);
 
 const float shadow_distance = 100.0f;
@@ -39,7 +39,7 @@ void main(void)
 				float object_nearest_light = texture(shadow_map, shadow.xy + vec2(x, y) * texel_size).x;
 				if (shadow.z > object_nearest_light + 0.002f)
 				{
-					total += 0.3f;
+					total += 0.5f;
 				}
 			}
 		}

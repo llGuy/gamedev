@@ -6,6 +6,9 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "ecs/graphics.h"
+#include "ecs/depth_render.h"
+
 #define PLANE_RAD 50.0f
 
 application::application(i32 w, i32 h)
@@ -25,7 +28,14 @@ auto application::init(void) -> void
 	a_cube.create(resources);
 	scene_platform.create(resources);
 	gui_quad.create(resources);
-	entities.create(appl_window.user_inputs());
+
+	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube);
+	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f));
+	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f));
+	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
+
+
 	shadows.create(glm::vec3(-1, -1, -1));
 	create_test_fbo();
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
@@ -65,7 +75,7 @@ auto application::render(void) -> void
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
 
 	glm::vec3 color{ 0.2f };
-	glm::vec3 color2{ 0.07, 0.07f, 0.4f };
+	glm::vec3 color2 = glm::vec3( 0.07, 0.07f, 0.6f ) * 0.7f;
 
 	quad_3D_shaders.use();
 	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
@@ -79,13 +89,7 @@ auto application::render(void) -> void
 
 	quad_3D_shaders.uniform_3f(&color[0], 2);
 
-	glm::mat4 translation = glm::translate( glm::vec3(0.0f, 2.f, 0.0f) );
-	quad_3D_shaders.uniform_mat4(&translation[0][0], 3);
-	render_model(a_cube, GL_TRIANGLES);
-
-	glm::mat4 translation1 = glm::translate(glm::vec3(-30.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
-	quad_3D_shaders.uniform_mat4(&translation1[0][0], 3);
-	render_model(a_cube, GL_TRIANGLES);
+	entities.update_only<graphics>();
 
 	glm::mat4 translation2 = detail::identity_matrix;
 	quad_3D_shaders.uniform_3f(&color2[0], 2);
@@ -93,9 +97,6 @@ auto application::render(void) -> void
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
 
 	render_depth();
-	//render_color();
-
-	//render_depth_gui();
 }
 
 auto application::update(void) -> void
@@ -134,16 +135,12 @@ auto application::render_depth(void) -> void
 
 	shadow_bias = shadows.get_shadow_bias() * mv;
 
-	glm::mat4 cube_translation = mv * glm::translate(glm::vec3(0, 2., 0));
-	shaders.uniform_mat4(&cube_translation[0][0], 0);
-	render_model(a_cube, GL_TRIANGLES);
+	shaders.uniform_mat4(&mv[0][0], 0);
 
-	glm::mat4 second_translation = mv * glm::translate(glm::vec3(-30.0f, 2.f, 30.0f)) * glm::rotate(90.0f, glm::vec3(0, 1, 0));
-	quad_3D_shaders.uniform_mat4(&second_translation[0][0], 3);
-	render_model(a_cube, GL_TRIANGLES);
+	entities.update_only<depth>();
 
-	glm::mat4 plat_translation = mv;
-	shaders.uniform_mat4(&plat_translation[0][0], 0);
+	glm::mat4 plat_translation = glm::mat4(1);
+	shaders.uniform_mat4(&plat_translation[0][0], 1);
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
@@ -220,4 +217,9 @@ auto application::create_test_fbo(void) -> void
 	rnd.set_storage(GL_DEPTH_COMPONENT, 2048, 2048);
 
 	test_fbo.attach(rnd, GL_DEPTH_ATTACHMENT);
+}
+
+auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d) -> void
+{
+	entities.add_entity(p, d, a_cube, quad_3D_shaders, shadows.get_shaders());
 }

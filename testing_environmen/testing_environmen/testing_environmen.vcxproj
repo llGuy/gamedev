@@ -47,9 +47,12 @@
     <ClInclude Include="src\detail.h" />
     <ClInclude Include="src\ecs\basic_components.h" />
     <ClInclude Include="src\ecs\basic_key_control.h" />
+    <ClInclude Include="src\ecs\depth_render.h" />
     <ClInclude Include="src\ecs\ecs.h" />
     <ClInclude Include="src\ecs\graphics.h" />
+    <ClInclude Include="src\ecs\model_matrix.h" />
     <ClInclude Include="src\ecs\mouse_control.h" />
+    <ClInclude Include="src\ecs\physics.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\framebuffer.h" />
     <ClInclude Include="src\gui.h" />
