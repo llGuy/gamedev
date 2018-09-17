@@ -14,6 +14,7 @@
 #include "resources.h"
 //#include "shadows.h"
 #include "shadow_handler.h"
+#include "puff_handler.h"
 #include "input_handler.h"
 #include "tracer_handler.h"
 #include "timer.h"
@@ -47,6 +48,7 @@ private:
 	gui_handler guis;
 	entity_handler entities;
 	shadow_handler shadows;
+	puff_handler puffs;
 	/* for bullets */
 	tracer_handler traces;
 	program quad_3D_shaders;

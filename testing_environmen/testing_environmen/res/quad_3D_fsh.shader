@@ -16,7 +16,7 @@ const float map_size = 2048.0f * 2.0f;
 const int pcf_count = 1;
 const float total_texels = (pcf_count * 2.0f + 1.0f) * (pcf_count * 2.0f + 1.0f);
 
-const float shadow_distance = 100.0f;
+const float shadow_distance = 80.0f;
 const float transition_distance = 20.0f;
 
 void main(void)

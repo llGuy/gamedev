@@ -27,6 +27,10 @@ public:
 		float y_axis_rot = detail::fequ(data.dir.x, 0.0f) ? 0.00001f : -atan(data.dir.z / data.dir.x);
 		rotation = glm::rotate(y_axis_rot, glm::vec3(0, 1, 0));
 	}
+	auto get_model_matrix(void) -> glm::mat4 const &
+	{
+		return translation * rotation;
+	}
 	auto get_translation(void) -> glm::mat4 const &
 	{
 		return translation;

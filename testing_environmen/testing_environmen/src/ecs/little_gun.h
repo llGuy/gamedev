@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ecs.h"
+#include "../detail.h"
 #include "../input_handler.h"
+#include "../puff_handler.h"
 #include "../tracer_handler.h"
 
 struct aabb { glm::vec3 min, max; };
@@ -11,9 +13,11 @@ template <> class component <struct little_gun> : public icomponent
 private:
 	tracer_handler * th;
 	input_handler * ih;
+	puff_handler * puffs;
+	bool clicked{ false };
 public:
-	component(entity & subject, i32 index, input_handler & ih, tracer_handler & th)
-		: icomponent::icomponent(index), ih(&ih), th(&th)
+	component(entity & subject, i32 index, input_handler & ih, tracer_handler & th, puff_handler & ph)
+		: icomponent::icomponent(index), ih(&ih), th(&th), puffs(&ph)
 	{
 	}
 	auto update(f32 td, vec_dd<entity> & entities, entity_cs & ecs) -> void override
@@ -34,21 +38,48 @@ public:
 				if (i != entity_index)
 				{
 					auto & data = entities[i].get_data();
-					glm::vec3 pos = data.pos;
-					pos.y += 2.0f;
-					aabb box{ pos - glm::vec3(2.0f), pos + glm::vec3(2.0f) };
+					/* get rotation matrix of the cube */
+					u32 model_matrix_comp_id = entities[i].get_component_index<model_matrix>();
+					auto & mm_comp = ecs.get_component<model_matrix>(model_matrix_comp_id);
+
+					auto trans_m = glm::translate(-glm::vec3(data.pos.x, data.pos.y + 2.0f, data.pos.z));
+					auto rota_m = glm::inverse(ecs.get_component<model_matrix>(model_matrix_comp_id).get_rotation());
+
+					glm::mat4 model = mm_comp.get_model_matrix();
+					glm::mat4 inverse_model = rota_m * trans_m;
+
+					aabb box{ glm::vec3(-2.0f), glm::vec3(2.0f) };
 
 					f32 frac;
 
-					hit = line_aabb_intersection(box, position, v1, intersection, frac);
-					if (hit) break;
+					glm::vec3 translated_pos = glm::vec3(inverse_model * glm::vec4(position, 1.0f));
+					glm::vec3 translated_v1 = glm::vec3(inverse_model * glm::vec4(v1, 1.0f));
+
+					hit = line_aabb_intersection(box, translated_pos, translated_v1, intersection, frac);
+
+					if (hit)
+					{
+						auto rotation = mm_comp.get_rotation();
+						auto translation = mm_comp.get_translation();
+						//intersection = glm::vec3(translation * rotation * glm::vec4(intersection, 1.0f));
+						intersection =  glm::inverse(inverse_model) * glm::vec4(intersection, 1.0f);
+						break;
+					}
 				}
 			}
 			if (hit)
-				th->push(glm::vec3(0), position, intersection);
-			else th->push(glm::vec3(0), position, v1);
-		}
+			{
+				glm::vec3 direction_test = glm::normalize(intersection - position);
 
+				th->push(glm::vec3(0.0f, 0.0f, 0.3f),
+					position + detail::up * 1.5f + glm::cross(data.dir, detail::up) / 5.0f, intersection);
+
+				if (!clicked) puffs->add_puff(intersection);
+			}
+
+			clicked = true;
+		}
+		else clicked = false;
 	}
 private:
 	auto clip_line(i32 d, aabb const & box, glm::vec3 const & v0, glm::vec3 const & v1, f32 & f_low, f32 & f_high) -> bool

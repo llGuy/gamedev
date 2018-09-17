@@ -200,6 +200,12 @@
     <ClInclude Include="src\tracer_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\audio\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\puff_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />
@@ -215,5 +221,13 @@
     <None Include="res\plain_color\fsh.shader" />
     <None Include="res\lines\line_vsh.shader" />
     <None Include="res\lines\line_fsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\..\..\Downloads\bounce.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="src\audio\bounce.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

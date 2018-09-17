@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h" />
+    <ClInclude Include="src\audio\audio.h" />
     <ClInclude Include="src\buffer.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\cube.h" />
@@ -62,6 +63,7 @@
     <ClInclude Include="src\math\barry_centric.h" />
     <ClInclude Include="src\math\ray_trace.h" />
     <ClInclude Include="src\program.h" />
+    <ClInclude Include="src\puff_handler.h" />
     <ClInclude Include="src\quad_2D.h" />
     <ClInclude Include="src\quad_3D.h" />
     <ClInclude Include="src\quaternion.h" />
@@ -97,6 +99,10 @@
     <None Include="res\shadow\shadow_gui_fsh.shader" />
     <None Include="res\shadow\shadow_gui_vsh.shader" />
     <None Include="res\shadow\shadow_vsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\..\..\Downloads\bounce.wav" />
+    <Media Include="src\audio\bounce.wav" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -156,13 +162,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\OpenAL\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\dependencies\stb-master;C:\dependencies\GLEW\lib\Release\Win32\;C:\dependencies\GLFW\lib-vc2015\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dependencies\stb-master;C:\dependencies\GLEW\lib\Release\Win32\;C:\dependencies\OpenAL\libs\Win32;C:\dependencies\GLFW\lib-vc2015\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;OpenAL32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

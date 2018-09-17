@@ -15,10 +15,10 @@ entity_handler::entity_handler(void)
 {
 }
 
-auto entity_handler::create(input_handler & ih, program & d, renderable & m, tracer_handler & th) -> void
+auto entity_handler::create(input_handler & ih, program & d, renderable & m, tracer_handler & th, puff_handler & ph) -> void
 {
 	create_component_system();
-	create_main_player(ih, d, m, th);
+	create_main_player(ih, d, m, th, ph);
 }
 
 auto entity_handler::update(f32 td) -> void
@@ -62,7 +62,7 @@ auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d,
 	component_system.add_component<depth>(new_entity, at, dpth, model);
 }
 
-auto entity_handler::create_main_player(input_handler & ih, program & dpth, renderable & model, tracer_handler & th) -> void
+auto entity_handler::create_main_player(input_handler & ih, program & dpth, renderable & model, tracer_handler & th, puff_handler & ph) -> void
 {
 	entity new_entity;
 	auto & data = new_entity.get_data();
@@ -80,5 +80,5 @@ auto entity_handler::create_main_player(input_handler & ih, program & dpth, rend
 	component_system.add_component<mouse_control>(new_entity, at, ih, entity_camera);
 	component_system.add_component<depth>(new_entity, at, dpth, model);
 	component_system.add_component<physics>(new_entity, at);
-	component_system.add_component<little_gun>(new_entity, at, ih, th);
+	component_system.add_component<little_gun>(new_entity, at, ih, th, ph);
 }

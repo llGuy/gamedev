@@ -61,7 +61,7 @@ public:
 			shaders.uniform_mat4(&view[0][0], 1);
 
 			layout.bind();
-			glDrawArrays(GL_LINES, 0, traces.size());
+			glDrawArrays(GL_LINES, 0, traces.size() * 2);
 			unbind_vertex_layouts();
 		}
 	}

@@ -3,6 +3,7 @@
 #include "renderable.h"
 #include "program.h"
 #include "input_handler.h"
+#include "puff_handler.h"
 #include "tracer_handler.h"
 #include "ecs/ecs.h"
 #include "vec_dd.h"
@@ -17,7 +18,7 @@ private:
 	entity_cs component_system;
 public:
 	entity_handler(void);
-	auto create(input_handler & ih, program & depth, renderable & model, tracer_handler & th) -> void;
+	auto create(input_handler & ih, program & depth, renderable & model, tracer_handler & th, puff_handler & ph) -> void;
 	auto update(f32 td) -> void;
 	auto cam(void) -> camera &;
 
@@ -30,5 +31,5 @@ public:
 		renderable & model, program & color, program & depth) -> void;
 private:
 	auto create_component_system(void) -> void;
-	auto create_main_player(input_handler & ih, program & depth, renderable & model, tracer_handler & th) -> void;
+	auto create_main_player(input_handler & ih, program & depth, renderable & model, tracer_handler & th, puff_handler & ph) -> void;
 };

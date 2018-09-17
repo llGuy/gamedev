@@ -15,7 +15,7 @@ application::application(i32 w, i32 h)
 	: appl_window(w, h, "landscaper"), resources(""), 
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
-	light_position(-50000.0f, 10000.0f, -50000.0f)
+	light_position(-50000.0f, 60000.0f, -50000.0f)
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
 }
@@ -24,19 +24,25 @@ auto application::init(void) -> void
 {
 	glEnable(GL_DEPTH_TEST);
 
+	appl_window.window_hint(GLFW_SAMPLES, 4);
+	glEnable(GL_MULTISAMPLE);
+
 	time.start();
 	a_cube.create(resources);
 	scene_platform.create(resources);
 	gui_quad.create(resources);
 
-	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces);
+	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces, puffs);
 	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f));
 	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f));
 	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
+	add_entity(glm::vec3(19.0f, 0.0f, -8.0f), glm::vec3(-0.5f, 0.0f, 1.0f));
+	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
+	add_entity(glm::vec3(-20.0f, 0.0f, -30.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
 
 	traces.create();
-	shadows.create(glm::vec3(-1, -1, -1));
+	shadows.create(glm::vec3(-1));
 	create_test_fbo();
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 
@@ -74,8 +80,8 @@ auto application::render(void) -> void
 
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
 
-	glm::vec3 color{ 0.2f };
-	glm::vec3 color2 = glm::vec3( 0.07, 0.07f, 0.6f ) * 0.7f;
+	glm::vec3 color{ 0.3f, 0.6f, 0.0f };
+	glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);
 
 	quad_3D_shaders.use();
 	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
@@ -98,6 +104,10 @@ auto application::render(void) -> void
 
 	traces.render(projection_matrix, view_matrix);
 
+	glm::vec3 red(0.7f, 0.0f, 0.0f);
+	//quad_3D_shaders.uniform_3f(&red[0], 2);
+	puffs.render(quad_3D_shaders, 3, 2, a_cube);
+
 	render_depth();
 }
 
@@ -106,10 +116,11 @@ auto application::update(void) -> void
 	traces.clear();
 	appl_window.refresh();
 	entities.update(time.elapsed());
+	puffs.update(time.elapsed());
 	auto & cam = entities.cam();
 
 	f32 aspect = (f32)appl_window.pixel_width() / appl_window.pixel_height();
-	shadows.update(0.1f, 100.0f, aspect, 60.0f, cam.pos(), cam.dir());
+	shadows.update(0.1f, 80.0f, aspect, 60.0f, cam.pos(), cam.dir());
 
 	time.reset();
 }
@@ -145,6 +156,13 @@ auto application::render_depth(void) -> void
 	glm::mat4 plat_translation = glm::mat4(1);
 	shaders.uniform_mat4(&plat_translation[0][0], 1);
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
+
+	traces.render(shadows.get_projection(), shadows.get_light_view());
+
+	quad_3D_shaders.use();
+	quad_3D_shaders.uniform_mat4(&shadows.get_projection()[0][0], 0);
+	quad_3D_shaders.uniform_mat4(&shadows.get_light_view()[0][0], 1);
+	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }

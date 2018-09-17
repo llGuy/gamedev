@@ -33,7 +33,7 @@ public:
 		auto const & ent = entities[entity_index].get_data();
 
 		auto & mmatrix = ecs.get_component<model_matrix>(model_matrix_component);
-		glm::mat4 model_matrix = mmatrix.get_translation();// *mmatrix.get_rotation();
+		glm::mat4 model_matrix = mmatrix.get_translation() * mmatrix.get_rotation();
 
 		shaders->uniform_mat4(&model_matrix[0][0], 3);
 		render_model(*rnd, GL_TRIANGLES);
