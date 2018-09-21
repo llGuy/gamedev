@@ -55,7 +55,7 @@ public:
 		create_fbo();
 		create_shaders();
 		create_shadow_bias_matrix();
-		create_light_view_matrix(light_pos);
+		create_light_view_matrix(glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
 	}
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void
 	{
@@ -64,6 +64,10 @@ public:
 		calculate_ortho_corners(pos, dir, far, near, corners);
 		find_min_max_values(corners);
 		projection_matrix = glm::ortho<f32>(x_min, x_max, y_min, y_max, z_min, z_max);
+	}
+	auto update_light_view(glm::vec3 const & light_pos) -> void
+	{
+		create_light_view_matrix(glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
 	}
 private:
 	/* update methods */

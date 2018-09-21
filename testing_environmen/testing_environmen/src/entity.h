@@ -29,6 +29,12 @@ public:
 	
 	auto add_entity(glm::vec3 const & pos, glm::vec3 const & dir,
 		renderable & model, program & color, program & depth) -> void;
+
+	auto main_player_lateral_direction(void) -> glm::vec3
+	{
+		auto & data = entities[0].get_data();
+		return glm::normalize(glm::vec3(data.dir.x, 0.0f, data.dir.z));
+	}
 private:
 	auto create_component_system(void) -> void;
 	auto create_main_player(input_handler & ih, program & depth, renderable & model, tracer_handler & th, puff_handler & ph) -> void;

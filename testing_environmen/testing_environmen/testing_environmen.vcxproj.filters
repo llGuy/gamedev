@@ -72,6 +72,21 @@
     <ClCompile Include="src\quad_2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\post_processing\default_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processing\hblur_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processing\render_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processing\vblur_stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processing\depth_of_field.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h">
@@ -206,6 +221,24 @@
     <ClInclude Include="src\puff_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\post_processing\default_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processing\hblur_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processing\post_proc_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processing\render_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processing\vblur_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processing\depth_of_field.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />
@@ -221,6 +254,12 @@
     <None Include="res\plain_color\fsh.shader" />
     <None Include="res\lines\line_vsh.shader" />
     <None Include="res\lines\line_fsh.shader" />
+    <None Include="res\blur\horizontal_vsh.shader" />
+    <None Include="res\blur\blur_fsh.shader" />
+    <None Include="res\blur\vertical_vsh.shader" />
+    <None Include="res\todo.m" />
+    <None Include="res\dof\vsh.shader" />
+    <None Include="res\dof\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\..\Downloads\bounce.wav">

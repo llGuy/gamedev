@@ -20,6 +20,12 @@
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
+#include "post_processing/vblur_stage.h"
+#include "post_processing/hblur_stage.h"
+#include "post_processing/default_stage.h"
+#include "post_processing/depth_of_field.h"
+
+struct blur_stage { hblur_stage h; vblur_stage v; };
 
 class application
 {
@@ -33,6 +39,8 @@ public:
 	auto running(void) -> bool;
 	auto destroy(void) -> void;
 private:
+	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
+	auto render_scene(render_params & params) -> void;
 	auto render_depth(void) -> void;
 	auto render_color(void) -> void;
 	auto render_depth_gui(void) -> void;
@@ -54,8 +62,13 @@ private:
 	program quad_3D_shaders;
 	program quad_2D_shaders;
 	quad_3D scene_platform;
-	quad_2D gui_quad;
+	gui_quad render_quad;
 	cube a_cube;
+
+	/* render pipeline */
+	default_stage default_target;
+	std::array<blur_stage, 2> blur_stages;
+	depth_of_field dof_stage;
 
 	glm::vec3 light_position;
 	glm::mat4 shadow_bias;

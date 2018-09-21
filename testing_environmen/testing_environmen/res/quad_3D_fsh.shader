@@ -49,7 +49,7 @@ void main(void)
 	float light_factor = 1.0f - (total * dist);
 
 	float diffuse = clamp(dot(normalize(light_position - world_pos), normal), 0, 1);
-	vec4 diffuse_light = vec4(diffuse);
+	vec4 diffuse_light = min(vec4(diffuse), 0.6);
 	diffuse_light.a = 1.0f;
 
 	final_color = vec4(color, 1.0f) + diffuse_light * light_factor;

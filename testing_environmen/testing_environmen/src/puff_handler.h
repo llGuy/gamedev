@@ -20,7 +20,7 @@ struct puff
 class puff_handler
 {
 private:
-	static constexpr f32 default_scale = 0.2f;
+	static constexpr f32 default_scale = 0.1f;
 
 	std::vector<puff> puffs;
 public:
@@ -32,9 +32,10 @@ public:
 	{
 		for (auto & pf : puffs)
 		{
-			f32 factor = (pf.scale - 0.3f) * 3.f;
+			f32 factor = (pf.scale - 0.1f) * 0.6f;
 			glm::vec3 color = glm::vec3(4.0f, 0.0f, 0.0f);
-			if (factor > 0.3f) color = glm::mix(glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(4.0f, 4.0f, 0.0f), factor);
+//			if (factor > 0.3f) 
+				color = glm::mix(glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(4.0f, 4.0f, 0.0f), factor);
 			glm::mat4 model_matrix = glm::translate(pf.position) * glm::scale(glm::vec3(pf.scale));
 			shaders.uniform_mat4(&model_matrix[0][0], uni_id);
 			shaders.uniform_3f(&color[0], color_id);

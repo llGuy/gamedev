@@ -28,6 +28,11 @@
     <ClCompile Include="src\gui.cpp" />
     <ClCompile Include="src\input_handler.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\post_processing\default_stage.cpp" />
+    <ClCompile Include="src\post_processing\depth_of_field.cpp" />
+    <ClCompile Include="src\post_processing\hblur_stage.cpp" />
+    <ClCompile Include="src\post_processing\render_pipeline.cpp" />
+    <ClCompile Include="src\post_processing\vblur_stage.cpp" />
     <ClCompile Include="src\program.cpp" />
     <ClCompile Include="src\quad_2D.cpp" />
     <ClCompile Include="src\quad_3D.cpp" />
@@ -62,6 +67,12 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\math\barry_centric.h" />
     <ClInclude Include="src\math\ray_trace.h" />
+    <ClInclude Include="src\post_processing\default_stage.h" />
+    <ClInclude Include="src\post_processing\depth_of_field.h" />
+    <ClInclude Include="src\post_processing\hblur_stage.h" />
+    <ClInclude Include="src\post_processing\post_proc_stage.h" />
+    <ClInclude Include="src\post_processing\render_pipeline.h" />
+    <ClInclude Include="src\post_processing\vblur_stage.h" />
     <ClInclude Include="src\program.h" />
     <ClInclude Include="src\puff_handler.h" />
     <ClInclude Include="src\quad_2D.h" />
@@ -86,6 +97,12 @@
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\blur\blur_fsh.shader" />
+    <None Include="res\blur\horizontal_vsh.shader" />
+    <None Include="res\dof\fsh.shader" />
+    <None Include="res\dof\vsh.shader" />
+    <None Include="res\todo.m" />
+    <None Include="res\blur\vertical_vsh.shader" />
     <None Include="res\lines\line_fsh.shader" />
     <None Include="res\lines\line_vsh.shader" />
     <None Include="res\plain_color\fsh.shader" />
