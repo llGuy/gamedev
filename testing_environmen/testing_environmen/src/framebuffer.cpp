@@ -48,3 +48,8 @@ auto framebuffer::attach(renderbuffer & rnd, u32 component) -> void
 {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, component, GL_RENDERBUFFER, rnd.id);
 }
+
+auto framebuffer::clean_up(void) -> void
+{
+	glDeleteFramebuffers(1, &id);
+}

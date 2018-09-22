@@ -59,3 +59,8 @@ auto texture::enable_mipmap(GLenum target) -> void
 	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameterf(target, GL_TEXTURE_LOD_BIAS, -1);
 }
+
+auto texture::clean_up(void) -> void
+{
+	glDeleteTextures(1, &id);
+}

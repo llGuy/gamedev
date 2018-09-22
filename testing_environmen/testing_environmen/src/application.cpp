@@ -16,8 +16,8 @@ application::application(i32 w, i32 h)
 	: appl_window(w, h, "testing"), resources(""), 
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
-	light_position(-20000.0f, 40000.0f, -20000.0f),
-	blur_stages{ blur_stage{1, 2}, blur_stage{4, 8} }
+	light_position(20000.0f, 30000.0f, 20000.0f),
+	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
 }
@@ -26,7 +26,6 @@ auto application::init(void) -> void
 {
 	glEnable(GL_DEPTH_TEST);
 
-	appl_window.window_hint(GLFW_SAMPLES, 4);
 	glEnable(GL_MULTISAMPLE);
 
 	time.start();
@@ -49,7 +48,7 @@ auto application::init(void) -> void
 	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
 	add_entity(glm::vec3(19.0f, 0.0f, -8.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
 	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(-20.0f, 0.0f, -30.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 2.0f, 0.5f));
+	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 2.0f, 0.5f));
 
 	render_quad.create(resources);
 
@@ -84,6 +83,7 @@ auto application::init_window(void) -> void
 	appl_window.window_hint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	appl_window.window_hint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	appl_window.window_hint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	appl_window.window_hint(GLFW_SAMPLES, 4);
 
 	appl_window.init();
 	appl_window.launch_input_handler();
@@ -190,6 +190,20 @@ auto application::update(void) -> void
 		light_position -= detail::up * elapsed * 5000.0f;
 
 	shadows.update_light_view(light_position);
+
+	if (inputs.win_resized())
+	{
+		i32 w = appl_window.pixel_width() = inputs.window_size().x;
+		i32 h = appl_window.pixel_height() = inputs.window_size().y;
+
+		default_target.reset(w, h);
+		for (auto & bstage : blur_stages)
+		{
+			bstage.v.reset(w, h);
+			bstage.h.reset(w, h);
+		}
+		dof_stage.reset(w, h);
+	}
 
 	time.reset();
 }

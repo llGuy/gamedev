@@ -10,6 +10,7 @@ public:
 	friend class framebuffer;
 
 	virtual auto create(void) -> void;
+	auto clean_up(void) -> void;
 
 	auto bind(GLenum target, u32 slot = -1) -> void;
 	auto fill(GLenum target, GLenum internal_format, 

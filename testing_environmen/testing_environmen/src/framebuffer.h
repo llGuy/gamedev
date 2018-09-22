@@ -14,6 +14,7 @@ public:
 	framebuffer(void) = default;
 
 	auto create(i32 width, i32 height) -> u32;
+	auto clean_up(void) -> void; 
 	auto destroy(void) -> void;
 	auto bind(void) -> void;
 	auto unbind(void) -> void;

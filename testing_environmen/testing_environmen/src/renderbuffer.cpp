@@ -27,3 +27,8 @@ auto create_depth_buffer(renderbuffer & r, int32_t w, int32_t h) -> void
 	r.bind();
 	r.set_storage(GL_DEPTH_COMPONENT, w, h);
 }
+
+auto renderbuffer::clean_up(void) -> void
+{
+	glDeleteRenderbuffers(1, &id);
+}

@@ -18,6 +18,7 @@ public:
 	vblur_stage(i32 scale);
 
 	auto create(i32 w, i32 h) -> void override;
+	auto reset(i32 w, i32 h) -> void;
 	auto bind(void) -> void override;
 	auto render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void override;
 

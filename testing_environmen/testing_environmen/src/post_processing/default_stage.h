@@ -17,6 +17,8 @@ private:
 	i32 w, h;
 public:
 	auto create(i32 w, i32 h) -> void;
+	auto reset(i32 w, i32 h) -> void;
+	auto clean(void) -> void;
 	auto bind(void) -> void;
 	auto render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void;
 

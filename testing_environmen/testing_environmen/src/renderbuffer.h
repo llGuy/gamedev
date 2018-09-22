@@ -11,6 +11,7 @@ public:
 	renderbuffer(void) = default;
 
 	auto create(void) -> u32;
+	auto clean_up(void) -> void;
 	auto bind(void) -> void;
 	auto destroy(void) -> void;
 

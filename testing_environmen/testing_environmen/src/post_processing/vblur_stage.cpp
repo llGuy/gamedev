@@ -61,3 +61,25 @@ auto vblur_stage::create_depth(i32 w, i32 h) -> void
 	depth.bind();
 	depth.set_storage(GL_DEPTH_COMPONENT, w, h);
 }
+
+auto vblur_stage::reset(i32 width, i32 height) -> void
+{
+	main.clean_up();
+	out.clean_up();
+	depth.clean_up();
+
+	this->w = width / scale;
+	this->h = height / scale;
+
+	main.create(w, h);
+	main.bind();
+
+	create_texture(w, h);
+	create_depth(w, h);
+
+	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
+	main.attach(depth, GL_DEPTH_ATTACHMENT);
+
+	shaders.use();
+	shaders.uniform_1f(static_cast<f32>(height), 0);
+}

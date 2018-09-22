@@ -22,6 +22,11 @@ auto default_stage::bind(void) -> void
 	main.bind();
 }
 
+auto default_stage::clean(void) -> void
+{
+
+}
+
 auto default_stage::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void
 {
 	/*the rendering of the actual scene will happen in the game state
@@ -48,4 +53,23 @@ auto default_stage::create_depth(i32 w, i32 h) -> void
 	depth.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	depth.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	depth.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+auto default_stage::reset(i32 w, i32 h) -> void
+{
+	main.clean_up();
+	out.clean_up();
+	depth.clean_up();
+
+	this->w = w;
+	this->h = h;
+
+	main.create(w, h);
+	main.bind();
+
+	create_texture(w, h);
+	create_depth(w, h);
+
+	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
+	main.attach(depth, GL_DEPTH_ATTACHMENT, 0);
 }
