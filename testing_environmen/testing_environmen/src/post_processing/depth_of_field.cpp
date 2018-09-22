@@ -30,7 +30,7 @@ auto depth_of_field::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> voi
 {
 	bind();
 
-	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 0, 0, 0);
+	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1, 1, 1);
 
 	shaders.use();
 
@@ -54,6 +54,7 @@ auto depth_of_field::create_texture(i32 w, i32 h) -> void
 	out.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, nullptr, w, h);
 	out.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	out.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 }
 
 auto depth_of_field::create_depth(i32 w, i32 h) -> void

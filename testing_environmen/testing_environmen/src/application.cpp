@@ -16,7 +16,7 @@ application::application(i32 w, i32 h)
 	: appl_window(w, h, "testing"), resources(""), 
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
-	light_position(-20000.0f, 50000.0f, -20000.0f),
+	light_position(-20000.0f, 40000.0f, -20000.0f),
 	blur_stages{ blur_stage{2, 2}, blur_stage{4, 8} }
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
@@ -129,6 +129,8 @@ auto application::render(void) -> void
 	default_target.bind();
 
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
+
+	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 color{ 0.3f, 0.6f, 0.0f };
 	glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);

@@ -33,8 +33,9 @@ public:
 		shaders.link_shaders("vertex_position", "vertex_color");
 		shaders.get_uniform_locations("projection_matrix", "camera_direction", "top", "bottom", "model_matrix");
 		shaders.use();
-		glm::vec4 blue(0.0f, 1.0f, 1.0f, 1.0f);
-		glm::vec4 yellow = glm::mix(blue, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 0.6f);
+		glm::vec4 blue(1.0f, 1.0f, 1.0f, 1.0f);
+		//glm::vec4 yellow = glm::mix(blue, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 0.6f);
+		glm::vec4 yellow(1.0f);
 
 		shaders.uniform_mat4(glm::value_ptr(projection), 0);
 		shaders.uniform_4f(glm::value_ptr(blue), 2);

@@ -134,7 +134,7 @@ private:
 	{
 		depth_map.create();
 		depth_map.bind(GL_TEXTURE_2D);
-		depth_map.fill(GL_TEXTURE_2D, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr, shadow_map_size, shadow_map_size);
+		depth_map.fill(GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr, shadow_map_size, shadow_map_size);
 		depth_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		depth_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		depth_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
