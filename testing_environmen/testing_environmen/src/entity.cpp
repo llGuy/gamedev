@@ -45,7 +45,7 @@ auto entity_handler::create_component_system(void) -> void
 }
 
 auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d, 
-	renderable & model, program & color, program & dpth) -> void
+	renderable & model, program & color, program & dpth, glm::vec3 const & scale) -> void
 {
 	entity new_entity;
 	auto & data = new_entity.get_data();
@@ -53,6 +53,7 @@ auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d,
 	data.pos = p;
 	data.dir = d;
 	data.vel = glm::vec3(0);
+	data.size = scale;
 
 	i32 at = entities.add(new_entity);
 	

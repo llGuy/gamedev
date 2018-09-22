@@ -28,7 +28,7 @@ public:
 	}
 	
 	auto add_entity(glm::vec3 const & pos, glm::vec3 const & dir,
-		renderable & model, program & color, program & depth) -> void;
+		renderable & model, program & color, program & depth, glm::vec3 const & scale) -> void;
 
 	auto main_player_lateral_direction(void) -> glm::vec3
 	{

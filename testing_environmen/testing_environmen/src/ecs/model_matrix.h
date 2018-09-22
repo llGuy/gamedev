@@ -12,6 +12,7 @@ private:
 	i32 height_component_index;
 	glm::mat4 translation;
 	glm::mat4 rotation;
+	glm::mat4 scale;
 public:
 	component(entity & subject, i32 index)
 		: icomponent::icomponent(index)
@@ -22,10 +23,12 @@ public:
 	{
 		auto & ent_height = ecs.get_component<height>(height_component_index).value.val;
 		auto & data = entities[entity_index].get_data();
-		translation = glm::translate(glm::vec3(data.pos.x, data.pos.y + ent_height, data.pos.z));
+		translation = glm::translate(glm::vec3(data.pos.x, data.pos.y + data.size.y * 2.0f, data.pos.z));
 
 		float y_axis_rot = detail::fequ(data.dir.x, 0.0f) ? 0.00001f : -atan(data.dir.z / data.dir.x);
 		rotation = glm::rotate(y_axis_rot, glm::vec3(0, 1, 0));
+
+		scale = glm::scale(data.size);
 	}
 	auto get_model_matrix(void) -> glm::mat4 const &
 	{
@@ -38,5 +41,9 @@ public:
 	auto get_rotation(void) -> glm::mat4 const &
 	{
 		return rotation;
+	}
+	auto get_scale(void) -> glm::mat4 const &
+	{
+		return scale;
 	}
 };

@@ -19,7 +19,7 @@ struct entity_data
 	glm::vec3 dir;
 	glm::vec3 vel;
 	f32 speed;
-	f32 size;
+	glm::vec3 size;
 };
 
 /* implementation structure to get index in vector of systems of a certain type of componente */

@@ -17,7 +17,7 @@ application::application(i32 w, i32 h)
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
 	light_position(-20000.0f, 40000.0f, -20000.0f),
-	blur_stages{ blur_stage{2, 2}, blur_stage{4, 8} }
+	blur_stages{ blur_stage{1, 2}, blur_stage{4, 8} }
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
 }
@@ -43,13 +43,13 @@ auto application::init(void) -> void
 	}
 
 	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces, puffs);
-	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f));
-	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f));
-	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
-	add_entity(glm::vec3(19.0f, 0.0f, -8.0f), glm::vec3(-0.5f, 0.0f, 1.0f));
-	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
-	add_entity(glm::vec3(-20.0f, 0.0f, -30.0f), glm::vec3(-1.0f, 0.0f, -0.5f));
+	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
+	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
+	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
+	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
+	add_entity(glm::vec3(19.0f, 0.0f, -8.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
+	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
+	add_entity(glm::vec3(-20.0f, 0.0f, -30.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 2.0f, 0.5f));
 
 	render_quad.create(resources);
 
@@ -89,40 +89,6 @@ auto application::init_window(void) -> void
 	appl_window.launch_input_handler();
 	appl_window.set_window_input_mode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
-
-/*auto application::render_scene(render_params & params) -> void
-{
-	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
-
-	glm::vec3 color{ 0.3f, 0.6f, 0.0f };
-	glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);
-
-	params.shaders.use();
-	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
-
-	shadows.get_depth_map().bind(GL_TEXTURE_2D, 0);
-
-	params.shaders.uniform_3f(&light_position[0], 4);
-	params.shaders.uniform_3f(&entities.cam().pos()[0], 6);
-	params.shaders.uniform_mat4(&shadow_bias[0][0], 5);
-	params.shaders.uniform_mat4(&projection_matrix[0][0], 0);
-	params.shaders.uniform_mat4(&view_matrix[0][0], 1);
-
-	quad_3D_shaders.uniform_3f(&color[0], 2);
-
-	entities.update_only<graphics>();
-
-	glm::mat4 translation2 = detail::identity_matrix;
-	quad_3D_shaders.uniform_3f(&color2[0], 2);
-	quad_3D_shaders.uniform_mat4(&translation2[0][0], 3);
-	render_model(scene_platform, GL_TRIANGLE_STRIP);
-
-	traces.render(projection_matrix, view_matrix);
-
-	glm::vec3 red(0.7f, 0.0f, 0.0f);
-	//quad_3D_shaders.uniform_3f(&red[0], 2);
-	puffs.render(quad_3D_shaders, 3, 2, a_cube);
-}*/
 
 auto application::render(void) -> void
 {
@@ -208,7 +174,7 @@ auto application::update(void) -> void
 	auto & cam = entities.cam();
 
 	f32 aspect = (f32)appl_window.pixel_width() / appl_window.pixel_height();
-	shadows.update(0.1f, 80.0f, aspect, 60.0f, cam.pos(), cam.dir());
+	shadows.update(100.0f, 0.1f, aspect, 60.0f, cam.pos(), cam.dir());
 
 	f32 elapsed = time.elapsed();
 
@@ -343,7 +309,7 @@ auto application::create_test_fbo(void) -> void
 	test_fbo.attach(rnd, GL_DEPTH_ATTACHMENT);
 }
 
-auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d) -> void
+auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale) -> void
 {
-	entities.add_entity(p, d, a_cube, quad_3D_shaders, shadows.get_shaders());
+	entities.add_entity(p, d, a_cube, quad_3D_shaders, shadows.get_shaders(), scale);
 }

@@ -42,11 +42,12 @@ public:
 					u32 model_matrix_comp_id = entities[i].get_component_index<model_matrix>();
 					auto & mm_comp = ecs.get_component<model_matrix>(model_matrix_comp_id);
 
-					auto trans_m = glm::translate(-glm::vec3(data.pos.x, data.pos.y + 2.0f, data.pos.z));
+					auto trans_m = glm::translate(-glm::vec3(data.pos.x, data.pos.y + data.size.y * 2.0f, data.pos.z));
 					auto rota_m = glm::inverse(ecs.get_component<model_matrix>(model_matrix_comp_id).get_rotation());
+					auto scale_m = glm::scale(1.0f / data.size);
 
 					glm::mat4 model = mm_comp.get_model_matrix();
-					glm::mat4 inverse_model = rota_m * trans_m;
+					glm::mat4 inverse_model = scale_m * rota_m * trans_m;
 
 					aabb box{ glm::vec3(-2.0f), glm::vec3(2.0f) };
 
