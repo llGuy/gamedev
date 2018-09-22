@@ -17,7 +17,7 @@ application::application(i32 w, i32 h)
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
 	light_position(-20000.0f, 50000.0f, -20000.0f),
-	blur_stages{ blur_stage{2, 4}, blur_stage{8, 10} }
+	blur_stages{ blur_stage{2, 2}, blur_stage{4, 8} }
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
 }
@@ -33,6 +33,8 @@ auto application::init(void) -> void
 	default_target.create(appl_window.pixel_width(), appl_window.pixel_height());
 	a_cube.create(resources);
 	scene_platform.create(resources);
+
+	sky.create(resources, projection_matrix, 60.0f, (float)appl_window.pixel_width() / appl_window.pixel_height());
 
 	for (auto & blur_stage : blur_stages)
 	{
@@ -157,6 +159,8 @@ auto application::render(void) -> void
 	//quad_3D_shaders.uniform_3f(&red[0], 2);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 
+	sky.render(entities.cam().dir());
+
 	render_depth();
 
 	/* rendering the blur stages */
@@ -175,7 +179,7 @@ auto application::render(void) -> void
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 
 
-	blur_stages[0].v.output().bind(GL_TEXTURE_2D, 2);
+	blur_stages[1].v.output().bind(GL_TEXTURE_2D, 2);
 	default_target.depth_out().bind(GL_TEXTURE_2D, 1);
 
 	dof_stage.render(render_quad, default_target.output(), window_width, window_height);

@@ -19,8 +19,7 @@ float convert_depth(float d)
 void main(void)
 {
 	/* sample depth of center of screen */
-	vec2 center_coords = vec2(0.5f);
-	float depth_at_center = convert_depth(texture(depth_texture, center_coords).r);
+	float depth_at_center = convert_depth(texture(depth_texture, vec2(0.5f)).r);
 
 	/* sample depth at texture coord */
 	float depth_at_point = convert_depth(texture(depth_texture, pass_texture_coords).r);

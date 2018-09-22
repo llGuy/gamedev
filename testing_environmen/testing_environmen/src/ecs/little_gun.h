@@ -70,14 +70,14 @@ public:
 			if (hit)
 			{
 				th->push(glm::vec3(1.f, 1.f, 0.0f),
-					position + detail::up * 1.5f + glm::cross(data.dir, detail::up) / 5.0f, intersection);
+					position + detail::up * 1.f + glm::cross(data.dir, detail::up) / 5.0f, intersection);
 
 				if (!clicked) puffs->add_puff(intersection);
 			}
 			else
 			{
 				th->push(glm::vec3(1.f, 1.f, 0.0f),
-					position + detail::up * 1.5f + glm::cross(data.dir, detail::up) / 5.0f, v1);
+					position + detail::up * 1.f + glm::cross(data.dir, detail::up) / 5.0f, v1);
 			}
 
 			clicked = true;

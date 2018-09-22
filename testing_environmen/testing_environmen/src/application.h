@@ -20,6 +20,7 @@
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
+#include "gradient_sky.h"
 #include "post_processing/vblur_stage.h"
 #include "post_processing/hblur_stage.h"
 #include "post_processing/default_stage.h"
@@ -64,6 +65,7 @@ private:
 	quad_3D scene_platform;
 	gui_quad render_quad;
 	cube a_cube;
+	gradient_sky sky;
 
 	/* render pipeline */
 	default_stage default_target;

@@ -239,6 +239,9 @@
     <ClInclude Include="src\post_processing\depth_of_field.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gradient_sky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />
@@ -260,6 +263,8 @@
     <None Include="res\todo.m" />
     <None Include="res\dof\vsh.shader" />
     <None Include="res\dof\fsh.shader" />
+    <None Include="res\sky\vsh.shader" />
+    <None Include="res\sky\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\..\Downloads\bounce.wav">

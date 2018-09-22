@@ -72,7 +72,7 @@ auto entity_handler::create_main_player(input_handler & ih, program & dpth, rend
 	data.speed = 15;
 	i32 at = entities.add(new_entity);
 	bound_entity = at;
-	component_system.add_component<height>(new_entity, at, height{ 2.f });
+	component_system.add_component<height>(new_entity, at, height{1.2f });
 	component_system.add_component<basic_key_control>(new_entity, at, ih);
 	component_system.add_component<model_matrix>(new_entity, at);
 	entity_camera.bind_entity(at, entities);
