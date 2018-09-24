@@ -1,16 +1,16 @@
 #version 330 core
 
-out vec4 final_color;
-in vec3 light_vector;
-in vec3 normal;
+in vec3 pass_world_position;
+in vec3 pass_normal;
+in vec2 pass_texture_coords;
 in vec4 shadow;
-in vec3 world_pos;
-in float dist;
+out vec4 final_color;
 
 uniform vec3 light_position;
 uniform vec3 camera_pos;
+
+uniform sampler2D diffuse;
 uniform sampler2D shadow_map;
-uniform vec3 color;
 
 const float map_size = 2048.0f * 2.0f;
 const int pcf_count = 1;
@@ -19,9 +19,9 @@ const float total_texels = (pcf_count * 2.0f + 1.0f) * (pcf_count * 2.0f + 1.0f)
 const float shadow_distance = 100.0f;
 const float transition_distance = 20.0f;
 
-void main(void)
+void main (void)
 {
-	float dist = distance(world_pos, camera_pos);
+	float dist = distance(pass_world_position, camera_pos);
 
 	dist = dist - (shadow_distance - transition_distance);
 	dist = dist / transition_distance;
@@ -48,10 +48,11 @@ void main(void)
 
 	float light_factor = 1.0f - (total * dist);
 
-	float diffuse = clamp(dot(normalize(light_position - world_pos), normal), 0, 1);
+	vec4 color = texture(diffuse, pass_texture_coords);
+
+	float diffuse = clamp(dot(normalize(light_position - pass_world_position), pass_normal), 0, 1);
 	vec4 diffuse_light = min(vec4(diffuse), 0.6);
 	diffuse_light.a = 1.0f;
 
-	final_color = vec4(color, 1.0f) + diffuse_light * light_factor;
-//	final_color *= light_factor;
+	final_color = color + diffuse_light * light_factor;
 }

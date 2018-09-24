@@ -32,3 +32,8 @@ auto renderbuffer::clean_up(void) -> void
 {
 	glDeleteRenderbuffers(1, &id);
 }
+
+auto renderbuffer::set_storage_ms(i32 samples, GLenum format, i32 w, i32 h) -> void
+{
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, format, w, h);
+}

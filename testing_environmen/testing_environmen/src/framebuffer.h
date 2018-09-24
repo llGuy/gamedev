@@ -19,6 +19,8 @@ public:
 	auto bind(void) -> void;
 	auto unbind(void) -> void;
 
+	auto resolve(framebuffer & other) -> void;
+
 	auto attach(texture & obj, u32 component, u32 level) -> void;
 	auto attach(renderbuffer & rnd, u32 component) -> void;
 

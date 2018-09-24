@@ -39,6 +39,7 @@
     <ClCompile Include="src\renderbuffer.cpp" />
     <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\shadows\shadow.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\vao.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\math\barry_centric.h" />
     <ClInclude Include="src\math\ray_trace.h" />
+    <ClInclude Include="src\model_loader.h" />
     <ClInclude Include="src\post_processing\default_stage.h" />
     <ClInclude Include="src\post_processing\depth_of_field.h" />
     <ClInclude Include="src\post_processing\hblur_stage.h" />
@@ -85,6 +87,7 @@
     <ClInclude Include="src\resolution.h" />
     <ClInclude Include="src\resources.h" />
     <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\shadows\shadow.h" />
     <ClInclude Include="src\shadow_box.h" />
     <ClInclude Include="src\shadows.h" />
     <ClInclude Include="src\shadow_handler.h" />
@@ -103,6 +106,8 @@
     <None Include="res\blur\horizontal_vsh.shader" />
     <None Include="res\dof\fsh.shader" />
     <None Include="res\dof\vsh.shader" />
+    <None Include="res\model_shaders\fsh.shader" />
+    <None Include="res\model_shaders\vsh.shader" />
     <None Include="res\sky\fsh.shader" />
     <None Include="res\sky\vsh.shader" />
     <None Include="res\todo.m" />

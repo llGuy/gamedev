@@ -10,7 +10,7 @@
 #include "ecs/graphics.h"
 #include "ecs/depth_render.h"
 
-#define PLANE_RAD 50.0f
+#define PLANE_RAD 80.0f
 
 application::application(i32 w, i32 h)
 	: appl_window(w, h, "testing"), resources(""), 
@@ -43,12 +43,12 @@ auto application::init(void) -> void
 
 	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces, puffs);
 	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
-	add_entity(glm::vec3(-30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
-	add_entity(glm::vec3(16.0f, 0.0f, 30.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(8.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
-	add_entity(glm::vec3(19.0f, 0.0f, -8.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
+	add_entity(glm::vec3(-40.0f, 0.0f, 40.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
+	add_entity(glm::vec3(26.0f, 0.0f, 40.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
+	add_entity(glm::vec3(18.0f, 0.0f, -20.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
+	add_entity(glm::vec3(29.0f, 0.0f, -18.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
 	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 2.0f, 0.5f));
+	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.5f));
 
 	render_quad.create(resources);
 
@@ -75,6 +75,11 @@ auto application::init(void) -> void
 	quad_3D_shaders.use();
 	quad_3D_shaders.uniform_mat4(&projection_matrix[0][0], 0);
 	quad_3D_shaders.uniform_3f(&light_position[0], 4);
+
+	loader.create(projection_matrix, light_position, shadows.get_shadow_bias());
+	test_model = loader.load_model("res/models/stall.obj");
+
+	create_textures();
 }
 
 auto application::init_window(void) -> void
@@ -92,7 +97,7 @@ auto application::init_window(void) -> void
 
 auto application::render(void) -> void
 {
-	default_target.bind();
+	default_target.bind_aa();
 
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
 
@@ -124,10 +129,18 @@ auto application::render(void) -> void
 	traces.render(projection_matrix, view_matrix);
 
 	glm::vec3 red(0.7f, 0.0f, 0.0f);
-	//quad_3D_shaders.uniform_3f(&red[0], 2);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 
 	sky.render(entities.cam().dir());
+
+
+	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f));
+	loader.render(test_model, model_texture, view_matrix,
+		projection_matrix, test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+
+
+	default_target.blit();
+	default_target.bind();
 
 	render_depth();
 
@@ -162,7 +175,6 @@ auto application::render(void) -> void
 	guis.render();
 
 	glEnable(GL_DEPTH_TEST);
-
 }
 
 auto application::update(void) -> void
@@ -193,8 +205,8 @@ auto application::update(void) -> void
 
 	if (inputs.win_resized())
 	{
-		i32 w = appl_window.pixel_width() = inputs.window_size().x;
-		i32 h = appl_window.pixel_height() = inputs.window_size().y;
+		i32 w = appl_window.pixel_width() = (i32)inputs.window_size().x;
+		i32 h = appl_window.pixel_height() = (i32)inputs.window_size().y;
 
 		default_target.reset(w, h);
 		for (auto & bstage : blur_stages)
@@ -247,6 +259,10 @@ auto application::render_depth(void) -> void
 	quad_3D_shaders.uniform_mat4(&shadows.get_light_view()[0][0], 1);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 
+	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f));
+	loader.render(test_model, model_texture, shadows.get_light_view(), 
+		shadows.get_projection(), test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }
 
@@ -290,14 +306,9 @@ auto application::render_depth_gui(void) -> void
 	glDisable(GL_DEPTH_TEST);
 
 	guis.prepare(gui_slot::DEBUG_0, 0);
-	auto & tex1 = default_target.depth_out();
+	auto & tex1 = shadows.get_depth_map();
 	tex1.bind(GL_TEXTURE_2D, 0);
 	guis.render();
-
-/*	guis.prepare(gui_slot::DEBUG_1, 1);
-	auto & tex2 = test_tex;
-	tex2.bind(GL_TEXTURE_2D, 0);
-	guis.render();*/
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -326,4 +337,17 @@ auto application::create_test_fbo(void) -> void
 auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale) -> void
 {
 	entities.add_entity(p, d, a_cube, quad_3D_shaders, shadows.get_shaders(), scale);
+}
+
+auto application::create_textures(void) -> void
+{
+	model_texture.create();
+	model_texture.bind(GL_TEXTURE_2D);
+
+	auto img = resources.load<image>("res/models/stallTexture.png");
+
+	model_texture.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img.data, img.w, img.h);
+
+	model_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	model_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }

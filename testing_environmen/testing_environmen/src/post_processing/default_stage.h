@@ -12,6 +12,10 @@ private:
 	texture out;
 	texture depth;
 
+	framebuffer antialiased;
+	renderbuffer aa_color;
+	renderbuffer aa_depth;
+
 	program shaders;
 
 	i32 w, h;
@@ -21,6 +25,9 @@ public:
 	auto clean(void) -> void;
 	auto bind(void) -> void;
 	auto render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void;
+
+	auto blit(void) -> void;
+	auto bind_aa(void) -> void;
 
 	inline auto depth_out(void) -> texture & { return depth; }
 	inline auto output(void) -> texture & { return out; };

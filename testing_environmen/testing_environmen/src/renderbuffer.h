@@ -15,6 +15,7 @@ public:
 	auto bind(void) -> void;
 	auto destroy(void) -> void;
 
+	auto set_storage_ms(i32 samples, GLenum format, i32 w, i32 h) -> void;
 	auto set_storage(GLenum component, u32 w, u32 h) -> void;
 private:
 	u32 id;

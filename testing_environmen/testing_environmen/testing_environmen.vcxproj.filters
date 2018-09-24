@@ -87,6 +87,9 @@
     <ClCompile Include="src\post_processing\depth_of_field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shadows\shadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h">
@@ -245,6 +248,12 @@
     <ClInclude Include="src\terrain\mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\shadows\shadow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />
@@ -268,6 +277,8 @@
     <None Include="res\dof\fsh.shader" />
     <None Include="res\sky\vsh.shader" />
     <None Include="res\sky\fsh.shader" />
+    <None Include="res\model_shaders\vsh.shader" />
+    <None Include="res\model_shaders\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\..\Downloads\bounce.wav">

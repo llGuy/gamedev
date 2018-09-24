@@ -20,6 +20,7 @@
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
+#include "model_loader.h"
 #include "gradient_sky.h"
 #include "post_processing/vblur_stage.h"
 #include "post_processing/hblur_stage.h"
@@ -41,19 +42,24 @@ public:
 	auto destroy(void) -> void;
 private:
 	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
-	auto render_scene(render_params & params) -> void;
 	auto render_depth(void) -> void;
 	auto render_color(void) -> void;
 	auto render_depth_gui(void) -> void;
 
 	auto create_test_fbo(void) -> void;
 	auto add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale) -> void;
+
+	auto create_textures(void) -> void;
 private:
 	window appl_window;
 	resource_handler resources;
 	timer time;
 	glm::mat4 projection_matrix;
 
+	model test_model;
+	texture model_texture;
+
+	model_loader loader;
 	gui_handler guis;
 	entity_handler entities;
 	shadow_handler shadows;

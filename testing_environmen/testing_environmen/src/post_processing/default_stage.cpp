@@ -15,11 +15,32 @@ auto default_stage::create(i32 w, i32 h) -> void
 
 	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
 	main.attach(depth, GL_DEPTH_ATTACHMENT, 0);
+
+
+
+	antialiased.create(w, h);
+	antialiased.bind();
+
+	aa_color.create();
+	aa_color.bind();
+	aa_color.set_storage_ms(4, GL_RGBA8, w, h);
+
+	aa_depth.create();
+	aa_depth.bind();
+	aa_depth.set_storage_ms(4, GL_DEPTH_COMPONENT24, w, h);
+
+	antialiased.attach(aa_color, GL_COLOR_ATTACHMENT0);
+	antialiased.attach(aa_depth, GL_DEPTH_ATTACHMENT);
 }
 
 auto default_stage::bind(void) -> void
 {
 	main.bind();
+}
+
+auto default_stage::bind_aa(void) -> void
+{
+	antialiased.bind();
 }
 
 auto default_stage::clean(void) -> void
@@ -31,6 +52,11 @@ auto default_stage::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void
 {
 	/*the rendering of the actual scene will happen in the game state
 	  class, it will bind to this  */
+}
+
+auto default_stage::blit(void) -> void
+{
+	antialiased.resolve(main);
 }
 
 auto default_stage::create_texture(i32 w, i32 h) -> void
@@ -60,6 +86,7 @@ auto default_stage::reset(i32 w, i32 h) -> void
 	main.clean_up();
 	out.clean_up();
 	depth.clean_up();
+	antialiased.clean_up();
 
 	this->w = w;
 	this->h = h;
@@ -72,4 +99,19 @@ auto default_stage::reset(i32 w, i32 h) -> void
 
 	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
 	main.attach(depth, GL_DEPTH_ATTACHMENT, 0);
+
+
+	antialiased.create(w, h);
+	antialiased.bind();
+
+	aa_color.create();
+	aa_color.bind();
+	aa_color.set_storage_ms(4, GL_RGBA8, w, h);
+
+	aa_depth.create();
+	aa_depth.bind();
+	aa_depth.set_storage_ms(4, GL_DEPTH_COMPONENT24, w, h);
+
+	antialiased.attach(aa_color, GL_COLOR_ATTACHMENT0);
+	antialiased.attach(aa_depth, GL_DEPTH_ATTACHMENT);
 }

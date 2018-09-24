@@ -53,3 +53,15 @@ auto framebuffer::clean_up(void) -> void
 {
 	glDeleteFramebuffers(1, &id);
 }
+
+auto framebuffer::resolve(framebuffer & other) -> void
+{
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, other.id);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
+
+	glBlitFramebuffer(0, 0, w, h, 0, 0, other.width(), other.height(), 
+		GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+}
