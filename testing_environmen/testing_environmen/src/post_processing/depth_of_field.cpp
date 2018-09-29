@@ -16,14 +16,14 @@ auto depth_of_field::create(i32 width, i32 height) -> void
 	main.attach(depth, GL_DEPTH_ATTACHMENT);
 
 	/* create shaders */
-	shaders.create_shader(GL_VERTEX_SHADER, "dof/vsh.shader");
-	shaders.create_shader(GL_FRAGMENT_SHADER, "dof/fsh.shader");
-	shaders.link_shaders();
+	shaders.attach(shader(GL_VERTEX_SHADER, "dof/vsh.shader"));
+	shaders.attach(shader(GL_FRAGMENT_SHADER, "dof/fsh.shader"));
+	shaders.link();
 	shaders.get_uniform_locations("scene_texture", "depth_texture", "blur_texture");
-	shaders.use();
-	shaders.uniform_1i(0, 0);
-	shaders.uniform_1i(1, 1);
-	shaders.uniform_1i(2, 2);
+	shaders.bind();
+	shaders.send_uniform_int(0, 0);
+	shaders.send_uniform_int(1, 1);
+	shaders.send_uniform_int(2, 2);
 }
 
 auto depth_of_field::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void
@@ -32,7 +32,7 @@ auto depth_of_field::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> voi
 
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1, 1, 1);
 
-	shaders.use();
+	shaders.bind();
 
 	/* bind other two to 1 and 2 */
 	prev.bind(GL_TEXTURE_2D, 0);

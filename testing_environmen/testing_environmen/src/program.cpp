@@ -1,4 +1,4 @@
-#include "program.h"
+/*#include "program.h"
 #include "log.h"
 
 auto program::use(void) -> void
@@ -67,4 +67,4 @@ auto program::uniform_1i(i32 i, u32 index) -> void
 auto program::uniform_4f(f32 * p, u32 index) -> void
 {
 	glUniform4fv(uniform_locations[index], 1, p);
-}
+}*/

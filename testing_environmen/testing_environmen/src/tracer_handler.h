@@ -3,12 +3,13 @@
 #include "buffer.h"
 #include "vao.h"
 
-#include "program.h"
+#include "shader_program.h"
 
 #include "render_func.h"
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 struct tracer
 {
@@ -30,9 +31,9 @@ private:
 public:
 	auto create(void) -> void
 	{
-		shaders.create_shader(GL_VERTEX_SHADER, "lines/line_vsh.shader");
-		shaders.create_shader(GL_FRAGMENT_SHADER, "lines/line_fsh.shader");
-		shaders.link_shaders("vertex_position", "vertex_color");
+		shaders.attach(shader(GL_VERTEX_SHADER, "lines/line_vsh.shader"));
+		shaders.attach(shader(GL_FRAGMENT_SHADER, "lines/line_fsh.shader"));
+		shaders.link("vertex_position", "vertex_color");
 		shaders.get_uniform_locations("projection", "view");
 
 		gpu_traces_buffer.create();
@@ -56,9 +57,9 @@ public:
 		{
 			gpu_traces_buffer.partial_fill(0, traces.size() * sizeof(tracer), traces.data(), GL_ARRAY_BUFFER);
 
-			shaders.use();
-			shaders.uniform_mat4(&projection[0][0], 0);
-			shaders.uniform_mat4(&view[0][0], 1);
+			shaders.bind();
+			shaders.send_uniform_mat4(0, glm::value_ptr(projection), 1);
+			shaders.send_uniform_mat4(1, glm::value_ptr(view), 1);
 
 			layout.bind();
 			glDrawArrays(GL_LINES, 0, traces.size() * 2);

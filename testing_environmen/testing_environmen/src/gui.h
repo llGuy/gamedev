@@ -1,7 +1,7 @@
 #pragma once
 
 #include "quad_2D.h"
-#include "program.h"
+#include "shader_program.h"
 #include "texture.h"
 #include <glm/glm.hpp>
 

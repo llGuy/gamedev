@@ -3,7 +3,7 @@
 #include "types.h"
 #include "detail.h"
 #include "texture.h"
-#include "program.h"
+#include "shader_program.h"
 #include "framebuffer.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -142,9 +142,9 @@ private:
 	}
 	auto create_shaders(void) -> void
 	{
-		shaders.create_shader(GL_VERTEX_SHADER, "shadow/shadow_vsh.shader");
-		shaders.create_shader(GL_FRAGMENT_SHADER, "shadow/shadow_fsh.shader");
-		shaders.link_shaders("vertex_position");
+		shaders.attach(shader(GL_VERTEX_SHADER, "shadow/shadow_vsh.shader"));
+		shaders.attach(shader(GL_FRAGMENT_SHADER, "shadow/shadow_fsh.shader"));
+		shaders.link("vertex_position");
 		shaders.get_uniform_locations("vp", "model");
 	}
 	auto create_light_view_matrix(glm::vec3 const & light_dir) -> void

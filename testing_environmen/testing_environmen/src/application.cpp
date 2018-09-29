@@ -67,18 +67,22 @@ auto application::init(void) -> void
 
 	glm::vec3 color{ 1, 1, 1 };
 
-	quad_3D_shaders.create_shader(GL_VERTEX_SHADER, "quad_3D_vsh.shader");
-	quad_3D_shaders.create_shader(GL_GEOMETRY_SHADER, "quad_3D_gsh.shader");
-	quad_3D_shaders.create_shader(GL_FRAGMENT_SHADER, "quad_3D_fsh.shader");
-	quad_3D_shaders.link_shaders("vertex_position");
+	quad_3D_shaders.attach(shader(GL_VERTEX_SHADER, "quad_3D_vsh.shader"));
+	quad_3D_shaders.attach(shader(GL_GEOMETRY_SHADER, "quad_3D_gsh.shader"));
+	quad_3D_shaders.attach(shader(GL_FRAGMENT_SHADER, "quad_3D_fsh.shader"));
+	quad_3D_shaders.link("vertex_position");
 	quad_3D_shaders.get_uniform_locations("projection_matrix", "view_matrix", "color", "model_matrix", "light_position", "shadow_bias", "camera_pos");
-	quad_3D_shaders.use();
-	quad_3D_shaders.uniform_mat4(&projection_matrix[0][0], 0);
-	quad_3D_shaders.uniform_3f(&light_position[0], 4);
+	quad_3D_shaders.bind();
+	quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(projection_matrix), 1);
+	quad_3D_shaders.send_uniform_vec3(4, glm::value_ptr(light_position), 1);
 
-	loader.create(projection_matrix, light_position, shadows.get_shadow_bias());
-	test_model = loader.load_model("res/models/tree.obj");
-	test_rock = loader.load_model("res/models/rock2.obj");
+	model_loader.init(projection_matrix, light_position, shadows.get_shadow_bias());
+
+	tree_model_instance = model_loader.create_model();
+	rock_model_instance = model_loader.create_model();
+
+	model_loader.load_model("res/models/tree.obj", tree_model_instance);
+	model_loader.load_model("res/models/rock.obj", rock_model_instance);
 
 	create_textures();
 }
@@ -107,24 +111,24 @@ auto application::render(void) -> void
 	glm::vec3 color{ 0.3f, 0.6f, 0.0f };
 	glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);
 
-	quad_3D_shaders.use();
+	quad_3D_shaders.bind();
 	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
 
 	shadows.get_depth_map().bind(GL_TEXTURE_2D, 0);
 
-	quad_3D_shaders.uniform_3f(&light_position[0], 4);
-	quad_3D_shaders.uniform_3f(&entities.cam().pos()[0], 6);
-	quad_3D_shaders.uniform_mat4(&shadow_bias[0][0], 5);
-	quad_3D_shaders.uniform_mat4(&projection_matrix[0][0], 0);
-	quad_3D_shaders.uniform_mat4(&view_matrix[0][0], 1);
+	quad_3D_shaders.send_uniform_vec3(4, glm::value_ptr(light_position), 1);
+	quad_3D_shaders.send_uniform_vec3(6, glm::value_ptr(entities.cam().pos()), 1);
+	quad_3D_shaders.send_uniform_mat4(5, glm::value_ptr(shadow_bias), 1);
+	quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(projection_matrix), 1);
+	quad_3D_shaders.send_uniform_mat4(1, glm::value_ptr(view_matrix), 1);
 
-	quad_3D_shaders.uniform_3f(&color[0], 2);
+	quad_3D_shaders.send_uniform_vec3(2, glm::value_ptr(color), 1);
 
 	entities.update_only<graphics>();
 
 	glm::mat4 translation2 = detail::identity_matrix;
-	quad_3D_shaders.uniform_3f(&color2[0], 2);
-	quad_3D_shaders.uniform_mat4(&translation2[0][0], 3);
+	quad_3D_shaders.send_uniform_vec3(2, glm::value_ptr(color2), 1);
+	quad_3D_shaders.send_uniform_mat4(3, glm::value_ptr(translation2), 1);
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
 
 	traces.render(projection_matrix, view_matrix);
@@ -135,15 +139,14 @@ auto application::render(void) -> void
 	sky.render(entities.cam().dir());
 
 
-	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
-	loader.render(test_model, model_texture, view_matrix,
-		projection_matrix, test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+	render_pass_data data{projection_matrix, view_matrix, shadow_bias, 
+		light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
+	model_loader.prepare(data);
+	glm::mat4 tree_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
+	model_loader.render_model(tree_model_instance, tree_translation);
 
-
-	glm::mat4 test_translation2 = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
-	loader.render(test_rock, model_texture, view_matrix,
-		projection_matrix, test_translation2, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
-
+	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	model_loader.render_model(rock_model_instance, rock_translation);
 
 	default_target.blit();
 	default_target.bind();
@@ -243,70 +246,44 @@ auto application::render_depth(void) -> void
 	fbo.bind();
 	clear(GL_DEPTH_BUFFER_BIT, 1, 1, 1);
 
-	shaders.use();
+	shaders.bind();
 	auto & view = entities.cam().matrix();
 
 	glm::mat4 mv = shadows.get_projection() * shadows.get_light_view();
 
 	shadow_bias = shadows.get_shadow_bias() * mv;
 
-	shaders.uniform_mat4(&mv[0][0], 0);
+	shaders.send_uniform_mat4(0, glm::value_ptr(mv), 1);
 
 	entities.update_only<depth>();
 
 	glm::mat4 plat_translation = glm::mat4(1);
-	shaders.uniform_mat4(&plat_translation[0][0], 1);
+	shaders.send_uniform_mat4(1, glm::value_ptr(plat_translation), 1);
 	render_model(scene_platform, GL_TRIANGLE_STRIP);
 
 	traces.render(shadows.get_projection(), shadows.get_light_view());
 
-	quad_3D_shaders.use();
-	quad_3D_shaders.uniform_mat4(&shadows.get_projection()[0][0], 0);
-	quad_3D_shaders.uniform_mat4(&shadows.get_light_view()[0][0], 1);
+	quad_3D_shaders.bind();
+	quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(shadows.get_projection()), 1);
+	quad_3D_shaders.send_uniform_mat4(1, glm::value_ptr(shadows.get_light_view()), 1);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 	
-	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
+	/*glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, shadows.get_light_view(), 
 		shadows.get_projection(), test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
 
 	glm::mat4 test_translation2 = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
 	loader.render(test_rock, model_texture, shadows.get_light_view(),
-		shadows.get_projection(), test_translation2, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+		shadows.get_projection(), test_translation2, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);*/
 
-	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
-}
+	render_pass_data data{ shadows.get_projection(), shadows.get_light_view(), 
+		shadow_bias, light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
+	model_loader.prepare(data);
+	glm::mat4 tree_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
+	model_loader.render_model(tree_model_instance, tree_translation);
 
-auto application::render_color(void) -> void
-{
-	auto & fbo = test_fbo;
-	fbo.bind();
-	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1, 1, 1);
-
-	glm::vec3 color{ 0.2f };
-	glm::vec3 color2{ 0.1f, 0.1f, 0.5f };
-
-	quad_3D_shaders.use();
-	auto view_matrix = shadows.get_light_view();
-
-	shadows.get_depth_map().bind(GL_TEXTURE_2D, 0);
-
-	quad_3D_shaders.uniform_mat4(&shadow_bias[0][0], 5);
-	quad_3D_shaders.uniform_mat4(&shadows.get_projection()[0][0], 0);
-	quad_3D_shaders.uniform_mat4(&view_matrix[0][0], 1);
-	quad_3D_shaders.uniform_3f(&color[0], 2);
-
-	glm::vec3 translation(0.0f, 1.0f, 0.0f);
-	quad_3D_shaders.uniform_3f(&translation[0], 3);
-	render_model(a_cube, GL_TRIANGLES);
-
-	glm::vec3 translation1(-50.0f, 1.0f, 30.0f);
-	quad_3D_shaders.uniform_3f(&translation1[0], 3);
-	render_model(a_cube, GL_TRIANGLES);
-
-	glm::vec3 translation2(0.0f, 0.0f, 0.0f);
-	quad_3D_shaders.uniform_3f(&color2[0], 2);
-	quad_3D_shaders.uniform_3f(&translation2[0], 3);
-	render_model(scene_platform, GL_TRIANGLE_STRIP);
+	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	model_loader.render_model(rock_model_instance, rock_translation);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }
@@ -351,13 +328,13 @@ auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3
 
 auto application::create_textures(void) -> void
 {
-	model_texture.create();
-	model_texture.bind(GL_TEXTURE_2D);
+	low_poly_map.create();
+	low_poly_map.bind(GL_TEXTURE_2D);
 
 	auto img = resources.load<image>("res/models/low_poly.png");
 
-	model_texture.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img.data, img.w, img.h);
+	low_poly_map.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img.data, img.w, img.h);
 
-	model_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	model_texture.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	low_poly_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	low_poly_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }

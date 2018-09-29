@@ -1,62 +1,68 @@
-#include "shader.h"
 #include <array>
-#include <string>
+#include "shader.h"
+#include "xcp_io.h"
 #include <fstream>
-#include "log.h"
 
-shader::shader(GLenum type)
-	: shader_type(type)
+shader::shader(GLenum type, std::string const & file)
+	: file_name(file), shader_type(type)
 {
 }
-auto shader::compile(std::string const & dir) -> void
+
+auto shader::compile(void) -> void
 {
-	shader_id = glCreateShader(shader_type);
-	auto src = extract_source(dir);
-	if (src.has_value())
-	{
-		std::array<char const *, 1> srcs{ src.value().c_str() };
-		glShaderSource(shader_id, 1, srcs.data(), 0);
-		glCompileShader(shader_id);
-	}
+	id = glCreateShader(shader_type);
+
+	std::string src = extract_source(file_name);
+	std::array<char const *, 1> srcs { src.c_str() };
+
+	glShaderSource(id, 1, srcs.data(), 0);
+	glCompileShader(id);
+
+	check_status(file_name);
 }
-auto shader::status(void) -> bool
+
+auto shader::check_status(std::string const & dir) -> void
 {
-	int32_t status;
-	glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
+	i32 status;
+	glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+
 	if (status != GL_TRUE)
 	{
-		logger::error_log("failde to create shader");
-		int32_t info_log_length = 0;
-		glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
+		i32 info_log_length = 0;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &info_log_length);
 		char * buffer = (char *)alloca(info_log_length * sizeof(char));
-		int32_t buffer_size;
-		glGetShaderInfoLog(shader_id, info_log_length * sizeof(char), &buffer_size, buffer);
+		i32 buffer_size;
+		glGetShaderInfoLog(id, info_log_length * sizeof(char), &buffer_size, buffer);
 
-		logger::new_log("shader compile error info");
-		std::cout << buffer << std::endl;
-		return false;
+		std::string result_msg(buffer);
+
+		throw xcp::shader_compile_error(dir, result_msg);
 	}
-	return true;
 }
-auto shader::delete_shader(void) -> void
+
+auto shader::destroy(void) -> void
 {
-	glDeleteShader(shader_id);
+	glDeleteShader(id);
 }
-auto shader::id(void) -> u32
+
+auto shader::get_id(void) const -> u32
 {
-	return shader_id;
+	return id;
 }
-auto shader::type(void) -> GLenum
+
+auto shader::extract_source(std::string const & dir) -> std::string
 {
-	return shader_type;
-}
-auto shader::extract_source(std::string const & dir)->std::optional<std::string>
-{
-	std::ifstream file(dir);
+	std::ifstream file("res/" + dir);
+
 	if (!file.good())
 	{
-		std::cerr << "ERROR : unable to extract from : " << dir << std::endl;
-		return std::optional<std::string>{};
+		throw xcp::file_open_error(dir);
 	}
-	else return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+
+	return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+}
+
+auto shader::get_file_name(void) const -> std::string const &
+{
+	return file_name;
 }

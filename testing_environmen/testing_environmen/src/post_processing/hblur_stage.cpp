@@ -20,12 +20,12 @@ auto hblur_stage::create(i32 width, i32 height) -> void
 	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
 	main.attach(depth, GL_DEPTH_ATTACHMENT);
 
-	shaders.create_shader(GL_VERTEX_SHADER, "blur/horizontal_vsh.shader");
-	shaders.create_shader(GL_FRAGMENT_SHADER, "blur/blur_fsh.shader");
-	shaders.link_shaders("vertex_position", "texture_coords");
+	shaders.attach(shader(GL_VERTEX_SHADER, "blur/horizontal_vsh.shader"));
+	shaders.attach(shader(GL_FRAGMENT_SHADER, "blur/blur_fsh.shader"));
+	shaders.link("vertex_position", "texture_coords");
 	shaders.get_uniform_locations("target_width");
-	shaders.use();
-	shaders.uniform_1f(static_cast<f32>(width), 0);
+	shaders.bind();
+	shaders.send_uniform_float(0, static_cast<f32>(width));
 }
 
 auto hblur_stage::bind(void) -> void
@@ -39,7 +39,7 @@ auto hblur_stage::render(quad_2D & quad, texture & prev, i32 w, i32 h) -> void
 
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 0, 0, 0);
 
-	shaders.use();
+	shaders.bind();
 	prev.bind(GL_TEXTURE_2D, 0);
 	render_model(quad, GL_TRIANGLE_STRIP);
 }
@@ -78,6 +78,6 @@ auto hblur_stage::reset(i32 width, i32 height) -> void
 	main.attach(out, GL_COLOR_ATTACHMENT0, 0);
 	main.attach(depth, GL_DEPTH_ATTACHMENT);
 
-	shaders.use();
-	shaders.uniform_1f(static_cast<f32>(width), 0);
+	shaders.bind();
+	shaders.send_uniform_float(0, static_cast<f32>(width));
 }

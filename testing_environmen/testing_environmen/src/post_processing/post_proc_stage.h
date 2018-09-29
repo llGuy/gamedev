@@ -2,7 +2,7 @@
 
 #include "../framebuffer.h"
 #include "../texture.h"
-#include "../program.h"
+#include "../shader_program.h"
 #include "../quad_2D.h"
 #include "../renderbuffer.h"
 

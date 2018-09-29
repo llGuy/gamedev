@@ -16,11 +16,11 @@
 #include "shadow_handler.h"
 #include "puff_handler.h"
 #include "input_handler.h"
+#include "model_handler.h"
 #include "tracer_handler.h"
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
-#include "model_loader.h"
 #include "gradient_sky.h"
 #include "post_processing/vblur_stage.h"
 #include "post_processing/hblur_stage.h"
@@ -43,7 +43,6 @@ public:
 private:
 	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
 	auto render_depth(void) -> void;
-	auto render_color(void) -> void;
 	auto render_depth_gui(void) -> void;
 
 	auto create_test_fbo(void) -> void;
@@ -56,13 +55,11 @@ private:
 	timer time;
 	glm::mat4 projection_matrix;
 
-	model test_model;
-	texture model_texture;
+	model_instance tree_model_instance;
+	model_instance rock_model_instance;
+	texture low_poly_map;
 
-	model test_rock;
-	texture rock_texture;
-
-	model_loader loader;
+	model_handler model_loader;
 	gui_handler guis;
 	entity_handler entities;
 	shadow_handler shadows;

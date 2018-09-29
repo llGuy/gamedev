@@ -2,7 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <stack>
-#include "program.h"
+#include "shader_program.h"
+#include <glm/gtc/type_ptr.hpp>
 #include "render_func.h"
 #include "cube.h"
 #include <algorithm>
@@ -34,11 +35,11 @@ public:
 		{
 			f32 factor = (pf.scale - 0.1f) * 0.6f;
 			glm::vec3 color = glm::vec3(4.0f, 0.0f, 0.0f);
-//			if (factor > 0.3f) 
-				color = glm::mix(glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(4.0f, 4.0f, 0.0f), factor);
+
+			color = glm::mix(glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(4.0f, 4.0f, 0.0f), factor);
 			glm::mat4 model_matrix = glm::translate(pf.position) * glm::scale(glm::vec3(pf.scale));
-			shaders.uniform_mat4(&model_matrix[0][0], uni_id);
-			shaders.uniform_3f(&color[0], color_id);
+			shaders.send_uniform_mat4(uni_id, glm::value_ptr(model_matrix), 1);
+			shaders.send_uniform_vec3(color_id, glm::value_ptr(color), 1);
 			render_model(cbe, GL_TRIANGLES);
 		}
 	}

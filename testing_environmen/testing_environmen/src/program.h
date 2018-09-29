@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 
 #include <GL/glew.h>
 #include <algorithm>
@@ -62,4 +62,4 @@ private:
 	std::vector<shader> shaders;
 	std::vector<u32> uniform_locations;
 	u32 program_id;
-};
+};*/

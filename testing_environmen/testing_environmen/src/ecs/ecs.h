@@ -36,7 +36,7 @@ public:
 	friend entity_cs;
 
 	entity(void) = default;
-	auto get_data(void) -> entity_data & 
+	auto get_data(void) -> entity_data &
 	{
 		return data;
 	}
@@ -96,7 +96,7 @@ public:
 class isystem
 {
 public:
-	virtual auto update(f32 td, vec_dd<entity> & entities, 
+	virtual auto update(f32 td, vec_dd<entity> & entities,
 		entity_cs & ecs, std::function<bool(i32)> const &) -> void = 0;
 	virtual auto remove(i32 at) -> void = 0;
 };
@@ -119,7 +119,7 @@ public:
 	auto update(f32 td, vec_dd<entity> & entities, entity_cs & ecs, std::function<bool(i32)> const & func) -> void override
 	{
 		for (u32 i = 0; i < components.vec_size(); ++i)
-			if (components[i].active() && func(components[i].subject_index())) 
+			if (components[i].active() && func(components[i].subject_index()))
 				components[i].update(td, entities, ecs);
 	}
 	auto operator[](i32 comp_at) -> component<T> &
@@ -151,7 +151,7 @@ public:
 			if (((component_type<T>::value != i) && ...))
 				systems[i]->update(td, entities, *this, depr);
 	}
-	template <typename ... T> auto update_only(f32 td, vec_dd<entity> & entities, 
+	template <typename ... T> auto update_only(f32 td, vec_dd<entity> & entities,
 		std::function<bool(i32)> const & depr = [](i32) { return true; }) -> void
 	{
 		(systems[component_type<T>::value]->update(td, entities, *this, depr), ...);
@@ -199,7 +199,7 @@ public:
 	/* access to system needs static_pointer_cast */
 	template <typename T> auto get_system(void) -> component_system<T> &
 	{
-		return *static_cast< component_system<T>* >( (systems[component_type<T>::value].get()) );
+		return *static_cast<component_system<T>*>((systems[component_type<T>::value].get()));
 	}
 	auto get_system(i32 at) -> std::unique_ptr<isystem> &
 	{

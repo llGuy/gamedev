@@ -28,18 +28,18 @@ public:
 	{
 		f32 far = 200.0f;
 
-		shaders.create_shader(GL_VERTEX_SHADER, "sky/vsh.shader");
-		shaders.create_shader(GL_FRAGMENT_SHADER, "sky/fsh.shader");
-		shaders.link_shaders("vertex_position", "vertex_color");
+		shaders.attach(shader(GL_VERTEX_SHADER, "sky/vsh.shader"));
+		shaders.attach(shader(GL_FRAGMENT_SHADER, "sky/fsh.shader"));
+		shaders.link("vertex_position", "vertex_color");
 		shaders.get_uniform_locations("projection_matrix", "camera_direction", "top", "bottom", "model_matrix");
-		shaders.use();
+		shaders.bind();
 		glm::vec4 blue(1.0f, 1.0f, 1.0f, 1.0f);
 		//glm::vec4 yellow = glm::mix(blue, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 0.6f);
 		glm::vec4 yellow(1.0f);
 
-		shaders.uniform_mat4(glm::value_ptr(projection), 0);
-		shaders.uniform_4f(glm::value_ptr(blue), 2);
-		shaders.uniform_4f(glm::value_ptr(yellow), 3);
+		shaders.send_uniform_mat4(0, glm::value_ptr(projection), 1);
+		shaders.send_uniform_vec4(2, glm::value_ptr(blue), 1);
+		shaders.send_uniform_vec4(3, glm::value_ptr(yellow), 1);
 
 
 		f32 far_width = 2.0f * far * tan(glm::radians(fov));
@@ -49,7 +49,7 @@ public:
 		glm::mat4 model_matrix = glm::translate(glm::vec3(0.0f, 0.0f, -far)) 
 			* glm::scale(glm::vec3(far_width / 2.0f, far_height / 2.0f, 1.0f));
 
-		shaders.uniform_mat4(glm::value_ptr(model_matrix), 4);
+		shaders.send_uniform_mat4(4, glm::value_ptr(model_matrix), 1);
 
 
 		glm::vec3 colors [] 
@@ -64,9 +64,9 @@ public:
 
 	auto render(glm::vec3 & cam_dir) -> void
 	{
-		shaders.use();
+		shaders.bind();
 
-		shaders.uniform_3f(glm::value_ptr(cam_dir), 1);
+		shaders.send_uniform_vec3(1, glm::value_ptr(cam_dir), 1);
 
 		render_model(sky_quad, GL_TRIANGLE_STRIP);
 	}

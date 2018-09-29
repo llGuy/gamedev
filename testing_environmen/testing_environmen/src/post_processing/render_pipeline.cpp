@@ -40,9 +40,9 @@ auto render_pipeline::create(i32 w, i32 h, resource_handler & rh) -> void
 	}
 
 	render_quad.create(rh);
-	shaders.create_shader(GL_VERTEX_SHADER, "shaders/gui_quad/vsh.shader");
-	shaders.create_shader(GL_FRAGMENT_SHADER, "shaders/gui_quad/fsh.shader");
-	shaders.link_shaders("vertex_position", "texture_coords");
+	shaders.attach(shader(GL_VERTEX_SHADER, "shaders/gui_quad/vsh.shader"));
+	shaders.attach(shader(GL_FRAGMENT_SHADER, "shaders/gui_quad/fsh.shader"));
+	shaders.link("vertex_position", "texture_coords");
 	shaders.get_uniform_locations("model_matrix");
 }
 
@@ -64,8 +64,8 @@ auto render_pipeline::finalize_process(void) -> void
 	unbind_all_framebuffers(default_target.width(), default_target.height());
 	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 0, 0, 0);
 
-	shaders.use();
-	shaders.uniform_mat4(&identity_matrix[0][0], 0);
+	shaders.bind();
+	shaders.send_uniform_mat4(0, &identity_matrix[0][0], 1);
 
 	render_model(render_quad, GL_TRIANGLE_STRIP);
 }
