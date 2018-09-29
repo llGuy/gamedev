@@ -4,12 +4,12 @@
 #include <array>
 #include <utility>
 
-namespace gml { namespace detail {
+namespace detail {
 
 	template <typename T, std::size_t N, std::size_t ... I> 
-	auto construct_with_one(std::array<T, N> & arr, T val, std::index_sequence<I...>) -> void
+	auto construct_array_with_one(std::array<T, N> & dest, T value, std::index_sequence<I...>)
 	{
-		new(arr.data()) std::array<T, N> { (I, val)... };
+		new(dest.data()) std::array<T, N>( (I, value)... );
 	}
 
-}  }
+}

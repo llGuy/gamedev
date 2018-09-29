@@ -59,6 +59,9 @@ private:
 	model test_model;
 	texture model_texture;
 
+	model test_rock;
+	texture rock_texture;
+
 	model_loader loader;
 	gui_handler guis;
 	entity_handler entities;

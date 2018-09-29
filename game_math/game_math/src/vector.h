@@ -10,6 +10,12 @@
 
 namespace gml {
 
+	auto apply_intrisic(__m128 const & a, __m128 const & b, 
+		__m128(*f)(__m128, __m128)) -> __m128
+	{
+		return f(a, b);
+	}
+
 	template <typename T> using scalar = T;
 
 	template <typename T, std::size_t N> class __declspec(align(16)) vector
@@ -29,7 +35,6 @@ namespace gml {
 		{
 		}
 	public:
-		/* access */
 		auto data(void) -> scalar<T> *
 		{
 			return v.data();
@@ -45,7 +50,6 @@ namespace gml {
 			return v[index];
 		}
 	public:
-		/* basic math operations */
 		auto operator=(vector<T, N> const & other) -> vector<T, N>
 		{
 			__m128 other_sse = _mm_load_ps(other.data());
@@ -73,6 +77,18 @@ namespace gml {
 			__m128 b = _mm_load_ps(other.data());
 
 			_mm_store_ps(new_v.data(), _mm_sub_ps(a, b));
+
+			return new_v;
+		}
+
+		auto operator*(T sc) -> vector<T, N>
+		{
+			vector<T, N> new_v;
+
+			__m128 sc_reg = _mm_set1_ps(sc);
+			__m128 ve_reg = _mm_load_ps(data());
+
+			_mm_store_ps(new_v.data(), _mm_mul_ps(sc_reg, ve_reg));
 
 			return new_v;
 		}

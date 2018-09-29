@@ -78,6 +78,7 @@ auto application::init(void) -> void
 
 	loader.create(projection_matrix, light_position, shadows.get_shadow_bias());
 	test_model = loader.load_model("res/models/tree.obj");
+	test_rock = loader.load_model("res/models/rock2.obj");
 
 	create_textures();
 }
@@ -137,6 +138,11 @@ auto application::render(void) -> void
 	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, view_matrix,
 		projection_matrix, test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+
+
+	glm::mat4 test_translation2 = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	loader.render(test_rock, model_texture, view_matrix,
+		projection_matrix, test_translation2, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
 
 
 	default_target.blit();
@@ -258,10 +264,14 @@ auto application::render_depth(void) -> void
 	quad_3D_shaders.uniform_mat4(&shadows.get_projection()[0][0], 0);
 	quad_3D_shaders.uniform_mat4(&shadows.get_light_view()[0][0], 1);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
-
+	
 	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, shadows.get_light_view(), 
 		shadows.get_projection(), test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
+
+	glm::mat4 test_translation2 = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	loader.render(test_rock, model_texture, shadows.get_light_view(),
+		shadows.get_projection(), test_translation2, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }

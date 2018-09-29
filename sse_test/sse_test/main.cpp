@@ -202,16 +202,5 @@ auto main(void) -> int
 	for(std::size_t i = 0; i < 100; ++i)
 		test_add();
 	
-	float v[2]{ 4, 4 };
-
-	__m128 s = _mm_load_ps(v);
-
-	__m128 res = _mm_sqrt_ps(s);
-
-	float r[2];
-
-	_mm_store_ps(r, res);
-
-
 	std::cin.get();
 }
