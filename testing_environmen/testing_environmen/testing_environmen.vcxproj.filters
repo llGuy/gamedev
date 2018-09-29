@@ -279,6 +279,7 @@
     <None Include="res\sky\fsh.shader" />
     <None Include="res\model_shaders\vsh.shader" />
     <None Include="res\model_shaders\fsh.shader" />
+    <None Include="res\model_shaders\gsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\..\Downloads\bounce.wav">

@@ -50,7 +50,7 @@ void main (void)
 
 	vec4 color = texture(diffuse, pass_texture_coords);
 
-	float diffuse = clamp(dot(normalize(light_position - pass_world_position), pass_normal), 0, 1);
+	float diffuse = clamp(dot(normalize(light_position - pass_world_position), pass_normal), 0, 1) * 0.4f;
 	vec4 diffuse_light = min(vec4(diffuse), 0.6);
 	diffuse_light.a = 1.0f;
 

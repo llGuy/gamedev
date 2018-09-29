@@ -16,7 +16,7 @@ application::application(i32 w, i32 h)
 	: appl_window(w, h, "testing"), resources(""), 
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
-	light_position(20000.0f, 30000.0f, 20000.0f),
+	light_position(10000.0f, 40000.0f, 10000.0f),
 	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }
 {
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 1000.0f);
@@ -77,7 +77,7 @@ auto application::init(void) -> void
 	quad_3D_shaders.uniform_3f(&light_position[0], 4);
 
 	loader.create(projection_matrix, light_position, shadows.get_shadow_bias());
-	test_model = loader.load_model("res/models/stall.obj");
+	test_model = loader.load_model("res/models/tree.obj");
 
 	create_textures();
 }
@@ -134,7 +134,7 @@ auto application::render(void) -> void
 	sky.render(entities.cam().dir());
 
 
-	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f));
+	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, view_matrix,
 		projection_matrix, test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
 
@@ -259,7 +259,7 @@ auto application::render_depth(void) -> void
 	quad_3D_shaders.uniform_mat4(&shadows.get_light_view()[0][0], 1);
 	puffs.render(quad_3D_shaders, 3, 2, a_cube);
 
-	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f));
+	glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, shadows.get_light_view(), 
 		shadows.get_projection(), test_translation, shadows.get_depth_map(), entities.cam().pos(), shadow_bias);
 
@@ -344,7 +344,7 @@ auto application::create_textures(void) -> void
 	model_texture.create();
 	model_texture.bind(GL_TEXTURE_2D);
 
-	auto img = resources.load<image>("res/models/stallTexture.png");
+	auto img = resources.load<image>("res/models/low_poly.png");
 
 	model_texture.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, img.data, img.w, img.h);
 

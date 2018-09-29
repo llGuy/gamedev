@@ -107,6 +107,7 @@
     <None Include="res\dof\fsh.shader" />
     <None Include="res\dof\vsh.shader" />
     <None Include="res\model_shaders\fsh.shader" />
+    <None Include="res\model_shaders\gsh.shader" />
     <None Include="res\model_shaders\vsh.shader" />
     <None Include="res\sky\fsh.shader" />
     <None Include="res\sky\vsh.shader" />

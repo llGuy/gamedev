@@ -28,6 +28,7 @@ public:
 	auto create(glm::mat4 & projection_matrix, glm::vec3 & light_pos, glm::mat4 & bias) -> void
 	{
 		shaders.create_shader(GL_VERTEX_SHADER, "model_shaders/vsh.shader");
+		shaders.create_shader(GL_GEOMETRY_SHADER, "model_shaders/gsh.shader");
 		shaders.create_shader(GL_FRAGMENT_SHADER, "model_shaders/fsh.shader");
 		shaders.link_shaders("vertex_position", "vertex_normal", "texture_coords");
 		shaders.get_uniform_locations("projection_matrix", "view_matrix", "model_matrix", "light_position", "diffuse", "shadow_map", "camera_pos", "shadow_bias");
