@@ -5,8 +5,6 @@
 
 #include "shader_program.h"
 
-#include "render_func.h"
-
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

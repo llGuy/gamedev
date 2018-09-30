@@ -1,4 +1,4 @@
-#include "cube.h"
+/*#include "cube.h"
 #include <glm/glm.hpp>
 
 cube::cube(f32 radius)
@@ -59,4 +59,4 @@ auto cube::create(resource_handler & rh) -> void
 auto cube::destroy(void) -> void
 {
 	
-}
+}*/

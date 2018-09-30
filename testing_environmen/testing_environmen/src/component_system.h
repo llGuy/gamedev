@@ -39,6 +39,10 @@ namespace cs {
 		{
 			return components[component_type<T, Data>::value];
 		}
+		template <typename T> auto has_component(void) -> bool
+		{
+			return components.find(component_type<T, Data>::value) != components.end();
+		}
 		auto add_component(std::pair<i32, i32> const & comp) -> void
 		{
 			components.insert(comp);

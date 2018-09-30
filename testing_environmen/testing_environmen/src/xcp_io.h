@@ -17,11 +17,15 @@ namespace xcp {
 
 		virtual auto what(void) const -> char const * override
 		{
+			static char buffer[512];
+
 			std::ostringstream str;
 
 			str << gl_xcp::what() << " : " << file_name;
 
-			return str.str().c_str();
+			strncpy_s(buffer, str.str().c_str(), 512);
+
+			return buffer;
 		}
 	};
 

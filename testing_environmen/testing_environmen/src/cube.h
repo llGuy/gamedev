@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "renderable.h"
 
 class cube : public renderable
@@ -20,4 +20,4 @@ private:
 
 	buffer index_buffer;
 	buffer vertex_buffer;
-};
+};*/

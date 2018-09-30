@@ -17,6 +17,7 @@ auto model_handler::init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, g
 	data_system.add_system<normal_buffer_component>(20);
 	data_system.add_system<index_buffer_component>(20);
 	data_system.add_system<color_buffer_component>(20);
+	data_system.add_system<vertices_component>(20);
 	data_system.add_system<texture_component>(20);
 
 	model_shaders.attach(shader(GL_VERTEX_SHADER, vsh_dir));
@@ -62,6 +63,27 @@ auto model_handler::render_model(model_instance instance, glm::mat4 & model_matr
 	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 
 	glDrawElements(GL_TRIANGLES, obj.get_data().count, GL_UNSIGNED_INT, nullptr);
+
+	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
+	unbind_vertex_layouts();
+}
+
+auto model_handler::render(model_instance instance) -> void
+{
+	auto & data = models[instance].get_data();
+	data.vao.bind();
+
+	if (models[instance].has_component<index_buffer_component>())
+	{
+		auto & index_buffer = get_buffer<index_buffer_component>(instance);
+		index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
+
+		glDrawElements(GL_TRIANGLES, data.count, GL_UNSIGNED_INT, nullptr);
+	}
+	else
+	{
+		glDrawArrays(GL_TRIANGLES, 0, data.count);
+	}
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();

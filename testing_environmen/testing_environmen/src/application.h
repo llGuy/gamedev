@@ -10,7 +10,6 @@
 #include "entity.h"
 #include "quad_3D.h"
 #include "quad_2D.h"
-#include "cube.h"
 #include "resources.h"
 //#include "shadows.h"
 #include "shadow_handler.h"
@@ -38,7 +37,7 @@ public:
 	auto init_window(void) -> void;
 	auto render(void) -> void;
 	auto update(void) -> void;
-	auto running(void) -> bool;
+	auto is_running(void) -> bool;
 	auto destroy(void) -> void;
 private:
 	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
@@ -65,13 +64,16 @@ private:
 	entity_handler entities;
 	shadow_handler shadows;
 	puff_handler puffs;
+
 	/* for bullets */
 	tracer_handler traces;
 	program quad_3D_shaders;
 	program quad_2D_shaders;
 	quad_3D scene_platform;
 	gui_quad render_quad;
-	cube a_cube;
+
+	model_instance cube_model_instance;
+
 	gradient_sky sky;
 
 	/* render pipeline */
@@ -84,4 +86,6 @@ private:
 
 	framebuffer test_fbo;
 	texture test_tex;
+
+	bool running;
 };

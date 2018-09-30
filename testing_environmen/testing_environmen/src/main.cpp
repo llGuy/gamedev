@@ -9,7 +9,7 @@ auto main(i32 argc, char * argv[]) -> i32
 	glew_init();
 	app.init();
 
-	while (app.running())
+	while (app.is_running())
 	{
 		app.render();
 		app.update();

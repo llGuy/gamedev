@@ -5,7 +5,7 @@
 #include "shader_program.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "render_func.h"
-#include "cube.h"
+#include "model_handler.h"
 #include <algorithm>
 #include "detail.h"
 #include <vector>
@@ -29,7 +29,7 @@ public:
 	{
 		puffs.push_back(puff{ default_scale, pos });
 	}
-	auto render(program & shaders, u32 uni_id, u32 color_id, cube & cbe) -> void
+	auto render(program & shaders, u32 uni_id, u32 color_id, model_instance cbe, model_handler & mh) -> void
 	{
 		for (auto & pf : puffs)
 		{
@@ -40,7 +40,7 @@ public:
 			glm::mat4 model_matrix = glm::translate(pf.position) * glm::scale(glm::vec3(pf.scale));
 			shaders.send_uniform_mat4(uni_id, glm::value_ptr(model_matrix), 1);
 			shaders.send_uniform_vec3(color_id, glm::value_ptr(color), 1);
-			render_model(cbe, GL_TRIANGLES);
+			mh.render(cbe);
 		}
 	}
 	auto update(f32 td) -> void

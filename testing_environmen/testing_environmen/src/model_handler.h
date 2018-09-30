@@ -6,7 +6,9 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+
 #include "component_system.h"
+#include "texture.h"
 
 #include <glm/glm.hpp>
 
@@ -14,13 +16,14 @@
 #include "buffer.h"
 #include "shader_program.h"
 
+/* all models have a vertex layout and count */
 struct model_data { vertex_layout vao; u32 count; };
 
 using model_prototype = cs::object<model_data>;
 using model_instance = u32;
 
-
 struct vertex_buffer_component { buffer value; };
+struct vertices_component { std::vector<glm::vec3> vertices; };
 struct normal_buffer_component { buffer value; };
 struct color_buffer_component { buffer value; };
 struct texture_buffer_component { buffer value; };
@@ -51,6 +54,7 @@ private:
 	/* model vaos or just the model handlers */
 	vec_dd<model_prototype> models;
 
+	/* rendering models color with textures */
 	program model_shaders;
 public:
 	model_handler(void);
@@ -63,8 +67,16 @@ public:
 
 	auto load_model(std::string const & file_name, model_instance instance) -> void;
 
+	/* rendering the models needs a prepare() call followed by all the model draw calls */
 	auto prepare(render_pass_data & args) -> void;
+
+	auto render(model_instance instance) -> void;
 	auto render_model(model_instance instance, glm::mat4 & model_matrix) -> void;
+
+	template <typename T> auto load_static_model(T const & shape, model_instance instance) -> void
+	{
+		shape(*this, models[instance].get_data(), instance);
+	}
 
 	template <typename T> auto get_buffer(model_instance instance) -> buffer &
 	{
@@ -72,6 +84,7 @@ public:
 		return data_system.get_component<T>(obj.get_component_index<T>()).value.value;
 	}
 private:
+	/* code for loading models from blender */
 	auto break_face_line(std::vector<std::string> const & face_line_words,
 		std::vector<u32> & indices, std::vector<glm::vec2> const & raw_textures,
 		std::vector<glm::vec3> const & raw_normals,
@@ -106,3 +119,5 @@ public:
 		return gpu_buffer;
 	}
 };
+
+#include "static_models.h"

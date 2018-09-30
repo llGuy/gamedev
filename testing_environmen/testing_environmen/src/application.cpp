@@ -15,7 +15,7 @@
 application::application(i32 w, i32 h)
 	: appl_window(w, h, "testing"), resources(""), 
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
-		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), a_cube(2),
+		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), 
 	light_position(10000.0f, 40000.0f, 10000.0f),
 	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }
 {
@@ -28,65 +28,86 @@ auto application::init(void) -> void
 
 	glEnable(GL_MULTISAMPLE);
 
-	time.start();
-	default_target.create(appl_window.pixel_width(), appl_window.pixel_height());
-	a_cube.create(resources);
-	scene_platform.create(resources);
-
-	sky.create(resources, projection_matrix, 60.0f, (float)appl_window.pixel_width() / appl_window.pixel_height());
-
-	for (auto & blur_stage : blur_stages)
+	try
 	{
-		blur_stage.v.create(appl_window.pixel_width(), appl_window.pixel_height());
-		blur_stage.h.create(appl_window.pixel_width(), appl_window.pixel_height());
+
+		time.start();
+		default_target.create(appl_window.pixel_width(), appl_window.pixel_height());
+		scene_platform.create(resources);
+
+		sky.create(resources, projection_matrix, 60.0f, (float)appl_window.pixel_width() / appl_window.pixel_height());
+
+		for (auto & blur_stage : blur_stages)
+		{
+			blur_stage.v.create(appl_window.pixel_width(), appl_window.pixel_height());
+			blur_stage.h.create(appl_window.pixel_width(), appl_window.pixel_height());
+		}
+
+		/*add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
+		add_entity(glm::vec3(-40.0f, 0.0f, 40.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
+		add_entity(glm::vec3(26.0f, 0.0f, 40.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
+		add_entity(glm::vec3(18.0f, 0.0f, -20.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
+		add_entity(glm::vec3(29.0f, 0.0f, -18.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
+		add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
+		add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.5f));*/
+
+		render_quad.create(resources);
+
+		traces.create();
+		shadows.create(light_position);
+		create_test_fbo();
+
+		dof_stage.create(appl_window.pixel_width(), appl_window.pixel_height());
+
+		unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
+
+		guis.create(resources);
+		guis.push(glm::vec2(-0.5f, -0.5f), 0.3f);
+		guis.push(glm::vec2(-0.5f, 0.5f), 0.3f);
+		guis.push(glm::vec2(0.0f), 1.0f);
+
+		glm::vec3 color{ 1, 1, 1 };
+
+		quad_3D_shaders.attach(shader(GL_VERTEX_SHADER, "quad_3D_vsh.shader"));
+		quad_3D_shaders.attach(shader(GL_GEOMETRY_SHADER, "quad_3D_gsh.shader"));
+		quad_3D_shaders.attach(shader(GL_FRAGMENT_SHADER, "quad_3D_fsh.shader"));
+		quad_3D_shaders.link("vertex_position");
+		quad_3D_shaders.get_uniform_locations("projection_matrix", "view_matrix", "color", "model_matrix", "light_position", "shadow_bias", "camera_pos");
+		quad_3D_shaders.bind();
+		quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(projection_matrix), 1);
+		quad_3D_shaders.send_uniform_vec3(4, glm::value_ptr(light_position), 1);
+
+		model_loader.init(projection_matrix, light_position, shadows.get_shadow_bias());
+
+		tree_model_instance = model_loader.create_model();
+		rock_model_instance = model_loader.create_model();
+		rock_model_instance2 = model_loader.create_model();
+		cube_model_instance = model_loader.create_model();
+
+		model_loader.load_model("res/models/tree.obj", tree_model_instance);
+		model_loader.load_model("res/models/rock.obj", rock_model_instance);
+		model_loader.load_model("res/models/rock2.obj", rock_model_instance2);
+		model_loader.load_static_model(shape<cube>(1.0f), cube_model_instance);
+
+		entities.create(appl_window.user_inputs(), shadows.get_shaders(), cube_model_instance, traces, puffs, model_loader);
+
+		create_textures();
+
+		running = true;
+
 	}
+	catch (xcp::gl_xcp const & exception)
+	{
+		std::cout << std::endl;
 
-	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces, puffs);
-	/*add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
-	add_entity(glm::vec3(-40.0f, 0.0f, 40.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
-	add_entity(glm::vec3(26.0f, 0.0f, 40.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(18.0f, 0.0f, -20.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
-	add_entity(glm::vec3(29.0f, 0.0f, -18.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
-	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.5f));*/
+		std::cout << exception.what() << std::endl;
 
-	render_quad.create(resources);
+		appl_window.destroy();
 
-	traces.create();
-	shadows.create(light_position);
-	create_test_fbo();
+		glfw_terminate();
 
-	dof_stage.create(appl_window.pixel_width(), appl_window.pixel_height());
-
-	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
-
-	guis.create(resources);
-	guis.push(glm::vec2(-0.5f, -0.5f), 0.3f);
-	guis.push(glm::vec2(-0.5f, 0.5f), 0.3f);
-	guis.push(glm::vec2(0.0f), 1.0f);
-
-	glm::vec3 color{ 1, 1, 1 };
-
-	quad_3D_shaders.attach(shader(GL_VERTEX_SHADER, "quad_3D_vsh.shader"));
-	quad_3D_shaders.attach(shader(GL_GEOMETRY_SHADER, "quad_3D_gsh.shader"));
-	quad_3D_shaders.attach(shader(GL_FRAGMENT_SHADER, "quad_3D_fsh.shader"));
-	quad_3D_shaders.link("vertex_position");
-	quad_3D_shaders.get_uniform_locations("projection_matrix", "view_matrix", "color", "model_matrix", "light_position", "shadow_bias", "camera_pos");
-	quad_3D_shaders.bind();
-	quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(projection_matrix), 1);
-	quad_3D_shaders.send_uniform_vec3(4, glm::value_ptr(light_position), 1);
-
-	model_loader.init(projection_matrix, light_position, shadows.get_shadow_bias());
-
-	tree_model_instance = model_loader.create_model();
-	rock_model_instance = model_loader.create_model();
-	rock_model_instance2 = model_loader.create_model();
-
-	model_loader.load_model("res/models/tree.obj", tree_model_instance);
-	model_loader.load_model("res/models/rock.obj", rock_model_instance);
-	model_loader.load_model("res/models/rock2.obj", rock_model_instance2);
-
-	create_textures();
+		running = false;
+	}
 }
 
 auto application::init_window(void) -> void
@@ -136,7 +157,7 @@ auto application::render(void) -> void
 	traces.render(projection_matrix, view_matrix);
 
 	glm::vec3 red(0.7f, 0.0f, 0.0f);
-	puffs.render(quad_3D_shaders, 3, 2, a_cube);
+	puffs.render(quad_3D_shaders, 3, 2, cube_model_instance, model_loader);
 
 	sky.render(entities.cam().dir());
 
@@ -239,11 +260,13 @@ auto application::update(void) -> void
 	}
 
 	time.reset();
+
+	running = appl_window.is_open();
 }
 
-auto application::running(void) -> bool
+auto application::is_running(void) -> bool
 {
-	return appl_window.is_open();
+	return running;
 }
 
 auto application::destroy(void) -> void
@@ -278,7 +301,7 @@ auto application::render_depth(void) -> void
 	quad_3D_shaders.bind();
 	quad_3D_shaders.send_uniform_mat4(0, glm::value_ptr(shadows.get_projection()), 1);
 	quad_3D_shaders.send_uniform_mat4(1, glm::value_ptr(shadows.get_light_view()), 1);
-	puffs.render(quad_3D_shaders, 3, 2, a_cube);
+	puffs.render(quad_3D_shaders, 3, 2, cube_model_instance, model_loader);
 	
 	/*glm::mat4 test_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
 	loader.render(test_model, model_texture, shadows.get_light_view(), 
@@ -345,7 +368,7 @@ auto application::create_test_fbo(void) -> void
 
 auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale) -> void
 {
-	entities.add_entity(p, d, a_cube, quad_3D_shaders, shadows.get_shaders(), scale);
+	entities.add_entity(p, d, cube_model_instance, quad_3D_shaders, shadows.get_shaders(), scale, model_loader);
 }
 
 auto application::create_textures(void) -> void
