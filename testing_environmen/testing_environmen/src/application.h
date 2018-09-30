@@ -57,6 +57,7 @@ private:
 
 	model_instance tree_model_instance;
 	model_instance rock_model_instance;
+	model_instance rock_model_instance2;
 	texture low_poly_map;
 
 	model_handler model_loader;

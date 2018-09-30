@@ -42,13 +42,13 @@ auto application::init(void) -> void
 	}
 
 	entities.create(appl_window.user_inputs(), shadows.get_shaders(), a_cube, traces, puffs);
-	add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
+	/*add_entity(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f));
 	add_entity(glm::vec3(-40.0f, 0.0f, 40.0f), glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(1.0f));
 	add_entity(glm::vec3(26.0f, 0.0f, 40.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(2.0f, 1.5f, 3.0f));
 	add_entity(glm::vec3(18.0f, 0.0f, -20.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(2.0f, 1.0f, 1.0f));
 	add_entity(glm::vec3(29.0f, 0.0f, -18.0f), glm::vec3(-0.5f, 0.0f, 1.0f), glm::vec3(3.0f, 0.5f, 2.0f));
 	add_entity(glm::vec3(-19.0f, 0.0f, -10.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.5f, 3.0f));
-	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.5f));
+	add_entity(glm::vec3(-10.0f, 0.0f, -40.0f), glm::vec3(-1.0f, 0.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.5f));*/
 
 	render_quad.create(resources);
 
@@ -80,9 +80,11 @@ auto application::init(void) -> void
 
 	tree_model_instance = model_loader.create_model();
 	rock_model_instance = model_loader.create_model();
+	rock_model_instance2 = model_loader.create_model();
 
 	model_loader.load_model("res/models/tree.obj", tree_model_instance);
 	model_loader.load_model("res/models/rock.obj", rock_model_instance);
+	model_loader.load_model("res/models/rock2.obj", rock_model_instance2);
 
 	create_textures();
 }
@@ -124,7 +126,7 @@ auto application::render(void) -> void
 
 	quad_3D_shaders.send_uniform_vec3(2, glm::value_ptr(color), 1);
 
-	entities.update_only<graphics>();
+	//entities.update_only<graphics>();
 
 	glm::mat4 translation2 = detail::identity_matrix;
 	quad_3D_shaders.send_uniform_vec3(2, glm::value_ptr(color2), 1);
@@ -139,14 +141,24 @@ auto application::render(void) -> void
 	sky.render(entities.cam().dir());
 
 
-	render_pass_data data{projection_matrix, view_matrix, shadow_bias, 
+	render_pass_data data{ projection_matrix, view_matrix, shadow_bias,
 		light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
 	model_loader.prepare(data);
-	glm::mat4 tree_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
+	glm::mat4 tree_translation = glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(3.0f));
 	model_loader.render_model(tree_model_instance, tree_translation);
 
-	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(3.0f));
 	model_loader.render_model(rock_model_instance, rock_translation);
+
+	glm::mat4 rock_translation2 = glm::translate(glm::vec3(8.0f, 0.0f, -7.0f)) * glm::scale(glm::vec3(3.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation2);
+
+	glm::mat4 rock_translation3 = glm::translate(glm::vec3(-2.0f, 0.0f, -2.0f)) * glm::scale(glm::vec3(4.0f, 3.0f, 3.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation3);
+
+	glm::mat4 rock_translation4 = glm::translate(glm::vec3(-15.0f, 0.0f, -11.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation4);
+
 
 	default_target.blit();
 	default_target.bind();
@@ -278,12 +290,22 @@ auto application::render_depth(void) -> void
 
 	render_pass_data data{ shadows.get_projection(), shadows.get_light_view(), 
 		shadow_bias, light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
+
 	model_loader.prepare(data);
-	glm::mat4 tree_translation = glm::translate(glm::vec3(-28.0f, 0.0f, -37.0f)) * glm::scale(glm::vec3(3.0f));
+	glm::mat4 tree_translation = glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(3.0f));
 	model_loader.render_model(tree_model_instance, tree_translation);
 
-	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(2.0f));
+	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(3.0f));
 	model_loader.render_model(rock_model_instance, rock_translation);
+
+	glm::mat4 rock_translation2 = glm::translate(glm::vec3(8.0f, 0.0f, -7.0f)) * glm::scale(glm::vec3(3.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation2);
+
+	glm::mat4 rock_translation3 = glm::translate(glm::vec3(-2.0f, 0.0f, -2.0f)) * glm::scale(glm::vec3(4.0f, 3.0f, 3.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation3);
+
+	glm::mat4 rock_translation4 = glm::translate(glm::vec3(-15.0f, 0.0f, -11.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
+	model_loader.render_model(rock_model_instance2, rock_translation4);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }
