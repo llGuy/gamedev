@@ -25,34 +25,37 @@ auto model_handler::init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, g
 	model_shaders.attach(shader(GL_FRAGMENT_SHADER, fsh_dir));
 
 	model_shaders.link("vertex_position", "vertex_normal", "texture_coords");
-	model_shaders.get_uniform_locations("projection_matrix", "view_matrix", 
-		"model_matrix", "shadow_bias", "light_position", "camera_pos", "diffuse_map", "shadow_map");
 
 	model_shaders.bind();
 
-	model_shaders.send_uniform_int(6, 0);
-	model_shaders.send_uniform_int(7, 1);
+	model_shaders.send_uniform_int("diffuse_map", 0);
+	model_shaders.send_uniform_int("shadow_map", 1);
 
-	model_shaders.send_uniform_vec3(4, glm::value_ptr(light_pos), 1);
+	model_shaders.send_uniform_vec3("light_position", glm::value_ptr(light_pos), 1);
 }
 
 auto model_handler::prepare(render_pass_data & args) -> void
 {
 	model_shaders.bind();
-	model_shaders.send_uniform_mat4(0, glm::value_ptr(args.projection_matrix), 1);
-	model_shaders.send_uniform_mat4(1, glm::value_ptr(args.view_matrix), 1);
-	model_shaders.send_uniform_mat4(3, glm::value_ptr(args.shadow_bias), 1);
-	model_shaders.send_uniform_vec3(4, glm::value_ptr(args.light_position), 1);
-	model_shaders.send_uniform_vec3(5, glm::value_ptr(args.camera_pos), 1);
+	model_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(args.projection_matrix), 1);
+	model_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(args.view_matrix), 1);
+	model_shaders.send_uniform_mat4("shadow_bias", glm::value_ptr(args.shadow_bias), 1);
+	model_shaders.send_uniform_vec3("light_position", glm::value_ptr(args.light_position), 1);
+	model_shaders.send_uniform_vec3("camera_pos", glm::value_ptr(args.camera_pos), 1);
 
 	args.diffuse.bind(GL_TEXTURE_2D, 0);
 	args.depth_map.bind(GL_TEXTURE_2D, 1);
 }
 
+auto model_handler::render_model(std::string const & name, glm::mat4 & model_matrix) -> void
+{
+	render_model(map_model_locs[name], model_matrix);
+}
+
 auto model_handler::render_model(model_instance instance, glm::mat4 & model_matrix) -> void
 {
 	model_shaders.bind();
-	model_shaders.send_uniform_mat4(2, glm::value_ptr(model_matrix), 1);
+	model_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(model_matrix), 1);
 
 	auto & obj = models[instance];
 
@@ -89,11 +92,19 @@ auto model_handler::render(model_instance instance) -> void
 	unbind_vertex_layouts();
 }
 
-auto model_handler::create_model(void) -> model_instance
+auto model_handler::create_model(std::string const & name) -> model_instance
 {
 	u32 index = models.vec_size();
 	models.add(model_prototype());
+
+	map_model_locs[name] = index;
+
 	return index;
+}
+
+auto model_handler::get_data(std::string const & name) -> model_data &
+{
+	return get_data(map_model_locs[name]);
 }
 
 auto model_handler::get_data(model_instance instance) -> model_data &
@@ -101,8 +112,15 @@ auto model_handler::get_data(model_instance instance) -> model_data &
 	return models[instance].get_data();
 }
 
-auto model_handler::load_model(std::string const & file_name, model_instance instance) -> void
+auto model_handler::load_model(std::string const & file_name, std::string const & name) -> void
 {
+	if (map_model_locs.find(name) == map_model_locs.end())
+	{
+		throw xcp::model_load_error(name);
+	}
+
+	model_instance instance = map_model_locs.at(name);
+
 	std::ifstream file(file_name);
 
 	std::vector<glm::vec3> normals;
@@ -200,9 +218,9 @@ auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<
 	buffer normal_buffer = create_buffer(normals, GL_ARRAY_BUFFER);
 	buffer texture_buffer = create_buffer(texture_coords, GL_ARRAY_BUFFER);
 
-	data_system.add_component<vertex_buffer_component>(models[instance], instance, vertex_buffer_component{ vertex_buffer });
-	data_system.add_component<normal_buffer_component>(models[instance], instance, normal_buffer_component{ normal_buffer });
-	data_system.add_component<texture_buffer_component>(models[instance], instance, texture_buffer_component{ texture_buffer });
+	add_component<vertex_buffer_component>(instance, vertex_buffer);
+	add_component<normal_buffer_component>(instance, normal_buffer);
+	add_component<texture_buffer_component>(instance, texture_buffer);
 
 	vertex_layout & layout = models[instance].get_data().vao;
 
@@ -224,7 +242,7 @@ auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<
 
 	buffer index_buffer = create_buffer(indices, GL_ELEMENT_ARRAY_BUFFER);
 
-	data_system.add_component<index_buffer_component>(models[instance], instance, index_buffer_component{ index_buffer });
+	add_component<index_buffer_component>(instance, index_buffer);
 
 	models[instance].get_data().count = indices.size();
 

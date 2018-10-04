@@ -72,8 +72,8 @@ auto entity_handler::create_main_player(input_handler & ih, program & dpth, mode
 	data.pos = glm::vec3(3, 0.0f, 3.0f);
 	data.dir = glm::vec3(1, 0.00, 0.00);
 	data.vel = glm::vec3(0);
-	data.speed = 15;
-	data.size = glm::vec3(1);
+	data.speed = 60;
+	data.size = glm::vec3(2.0f);
 
 	i32 at = entities.add(new_entity);
 	bound_entity = at;

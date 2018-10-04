@@ -5,7 +5,7 @@ out vec4 final_color;
 
 uniform sampler2D diffuse;
 
-const float near = 0.001f;
+const float near = 0.1f;
 const float far = 1000.0f;
 
 void main(void)

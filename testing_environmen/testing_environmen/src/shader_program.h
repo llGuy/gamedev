@@ -6,6 +6,7 @@
 #include <sstream>
 #include "shader.h"
 #include "types.h"
+#include <unordered_map>
 
 namespace xcp {
 
@@ -50,7 +51,7 @@ class program
 {
 private:
 	std::vector<shader> shaders;
-	std::vector<u32> uniform_locations;
+	std::unordered_map<std::string, i32> uloc_cache;
 
 	u32 id;
 public:
@@ -58,12 +59,12 @@ public:
 
 	auto attach(shader const & sh) -> void;
 public:
-	auto send_uniform_vec2(u32 uni_index, float * ptr, u32 count) -> void;
-	auto send_uniform_vec3(u32 uni_index, float * ptr, u32 count) -> void;
-	auto send_uniform_vec4(u32 uni_index, float * ptr, u32 count) -> void;
-	auto send_uniform_mat4(u32 uni_index, float * ptr, u32 count) -> void;
-	auto send_uniform_float(u32 uni_index, float v) -> void;
-	auto send_uniform_int(u32 uni_index, i32 v) -> void;
+	auto send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void;
+	auto send_uniform_vec3(std::string const & name, float * ptr, u32 count) -> void;
+	auto send_uniform_vec4(std::string const & name, float * ptr, u32 count) -> void;
+	auto send_uniform_mat4(std::string const & name, float * ptr, u32 count) -> void;
+	auto send_uniform_float(std::string const & name, float v) -> void;
+	auto send_uniform_int(std::string const & name, i32 v) -> void;
 public:
 	template <typename ... T> auto link(T ... attrib_names) -> void
 	{
@@ -78,21 +79,13 @@ public:
 
 		check_status();
 	}
-
-	template <typename ... T> auto get_uniform_locations(T ... locs) -> void
-	{
-		std::array<char const *, sizeof...(locs)> names{ locs... };
-		std::for_each(names.begin(), names.end(), [&](char const * name)
-		{
-			u32 location = glGetUniformLocation(id, name);
-			uniform_locations.push_back(location);
-		});
-	}
 private:
 	auto attach_shaders(void) -> void;
 	auto destroy_shaders(void) -> void;
 
 	auto check_status(void) -> void;
+
+	auto get_uniform_location(std::string const & name) -> i32;
 private:
 	template <typename ... T> auto bind_attribs(T ... attribs) -> void
 	{
@@ -100,6 +93,4 @@ private:
 
 		(glBindAttribLocation(id, i++, attribs), ...);
 	}
-
-	auto get_uniform(char const * name) -> u32;
 };

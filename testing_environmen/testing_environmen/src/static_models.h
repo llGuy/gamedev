@@ -1,10 +1,11 @@
 #pragma once
 
 #include "types.h"
+#include "noise_generator.h"
 
 /* responsible for creating shape vertices and indices */
 /* the color or texture or normals are up to the use to create */
-template <typename T> struct shape;
+template <typename T, typename = void> struct shape;
 
 template <> struct shape <struct cube>
 {
@@ -33,9 +34,9 @@ private:
 		};
 	}
 
-	auto create_indices(void) const -> std::vector<i32>
+	auto create_indices(void) const -> std::vector<u32>
 	{
-		return std::vector<i32>
+		return std::vector<u32>
 		{
 			// front
 			0, 1, 2,

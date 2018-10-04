@@ -26,7 +26,7 @@ void main(void)
 	{
 		gl_Position = gl_in[i].gl_Position;
 
-		//pass_normal = normal[0];
+		//pass_normal = normalize(normal[2]);
 		//pass_normal = calculate_normal(i, (i + 1) % 3, (i - 2) % 3);
 		pass_normal = calculate_normal(0, 2, 1);
 		pass_normal.x *= -1;

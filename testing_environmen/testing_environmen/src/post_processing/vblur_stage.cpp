@@ -23,9 +23,8 @@ auto vblur_stage::create(i32 width, i32 height) -> void
 	shaders.attach(shader(GL_VERTEX_SHADER, "blur/vertical_vsh.shader"));
 	shaders.attach(shader(GL_FRAGMENT_SHADER, "blur/blur_fsh.shader"));
 	shaders.link("vertex_position", "texture_coords");
-	shaders.get_uniform_locations("target_height");
 	shaders.bind();
-	shaders.send_uniform_float(0, static_cast<f32>(height));
+	shaders.send_uniform_float("target_height", static_cast<f32>(height));
 }
 
 auto vblur_stage::bind(void) -> void

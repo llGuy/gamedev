@@ -29,7 +29,7 @@ public:
 	{
 		puffs.push_back(puff{ default_scale, pos });
 	}
-	auto render(program & shaders, u32 uni_id, u32 color_id, model_instance cbe, model_handler & mh) -> void
+	auto render(program & shaders, std::string const & model_name, std::string const & color_name, model_instance cbe, model_handler & mh) -> void
 	{
 		for (auto & pf : puffs)
 		{
@@ -38,8 +38,8 @@ public:
 
 			color = glm::mix(glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(4.0f, 4.0f, 0.0f), factor);
 			glm::mat4 model_matrix = glm::translate(pf.position) * glm::scale(glm::vec3(pf.scale));
-			shaders.send_uniform_mat4(uni_id, glm::value_ptr(model_matrix), 1);
-			shaders.send_uniform_vec3(color_id, glm::value_ptr(color), 1);
+			shaders.send_uniform_mat4(model_name, glm::value_ptr(model_matrix), 1);
+			shaders.send_uniform_vec3(color_name, glm::value_ptr(color), 1);
 			mh.render(cbe);
 		}
 	}

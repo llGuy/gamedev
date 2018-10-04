@@ -33,7 +33,7 @@ public:
 
 		if (ih->got_mouse_button(GLFW_MOUSE_BUTTON_1))
 		{
-			for (i32 i = 0; i < entities.amount(); ++i)
+			for (u32 i = 0; i < entities.amount(); ++i)
 			{
 				if (i != entity_index)
 				{

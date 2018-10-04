@@ -43,7 +43,6 @@ auto render_pipeline::create(i32 w, i32 h, resource_handler & rh) -> void
 	shaders.attach(shader(GL_VERTEX_SHADER, "shaders/gui_quad/vsh.shader"));
 	shaders.attach(shader(GL_FRAGMENT_SHADER, "shaders/gui_quad/fsh.shader"));
 	shaders.link("vertex_position", "texture_coords");
-	shaders.get_uniform_locations("model_matrix");
 }
 
 auto render_pipeline::bind_default(void) -> void

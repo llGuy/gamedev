@@ -30,7 +30,7 @@ public:
 
 		scale = glm::scale(data.size);
 	}
-	auto get_model_matrix(void) -> glm::mat4 const &
+	auto get_model_matrix(void) -> glm::mat4
 	{
 		return translation * rotation;
 	}

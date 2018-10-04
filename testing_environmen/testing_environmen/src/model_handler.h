@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 #include <vector>
 #include <sstream>
 #include <fstream>
@@ -15,6 +16,38 @@
 #include "vao.h"
 #include "buffer.h"
 #include "shader_program.h"
+
+
+
+namespace xcp {
+
+	class model_load_error : public gl_xcp
+	{
+	private:
+		std::string model_name;
+	public:
+		model_load_error(std::string const & name)
+			: model_name(name), gl_xcp::gl_xcp("unable to load model that wasn't created")
+		{
+		}
+
+		virtual auto what(void) const -> char const * override
+		{
+			static char buffer[512];
+
+			std::ostringstream str;
+
+			str << gl_xcp::what() << " : " << model_name;
+
+			strncpy_s(buffer, str.str().c_str(), 512);
+
+			return buffer;
+		}
+	};
+
+}
+
+
 
 /* all models have a vertex layout and count */
 struct model_data { vertex_layout vao; u32 count; };
@@ -45,14 +78,20 @@ struct render_pass_data
 class model_handler
 {
 private:
+
 	char const * vsh_dir = "model_shaders/vsh.shader";
 	char const * gsh_dir = "model_shaders/gsh.shader";
 	char const * fsh_dir = "model_shaders/fsh.shader";
+
 private:
 	/* models don't need any data */
 	cs::component_system<model_data> data_system;
 	/* model vaos or just the model handlers */
 	vec_dd<model_prototype> models;
+
+	/* map is used to map to a model from external structures */
+	/* creates an interface for accessing the model indices to render them etc... */
+	std::unordered_map<std::string, u32> map_model_locs;
 
 	/* rendering models color with textures */
 	program model_shaders;
@@ -61,20 +100,28 @@ public:
 
 	auto init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, glm::mat4 & shadow_bias) -> void;
 
-	auto create_model(void) -> model_instance;
+	auto create_model(std::string const & name) -> model_instance;
 
+	auto get_data(std::string const & name) -> model_data &;
 	auto get_data(model_instance instance) -> model_data &;
 
-	auto load_model(std::string const & file_name, model_instance instance) -> void;
+	auto load_model(std::string const & file_name, std::string const & name) -> void;
 
 	/* rendering the models needs a prepare() call followed by all the model draw calls */
 	auto prepare(render_pass_data & args) -> void;
 
 	auto render(model_instance instance) -> void;
+	auto render_model(std::string const & name, glm::mat4 & model_matrix) -> void;
 	auto render_model(model_instance instance, glm::mat4 & model_matrix) -> void;
 
-	template <typename T> auto load_static_model(T const & shape, model_instance instance) -> void
+	template <typename T> auto load_static_model(T const & shape, std::string const & name) -> void
 	{
+		if (map_model_locs.find(name) == map_model_locs.end())
+		{
+			throw xcp::model_load_error(name);
+		}
+
+		model_instance instance = map_model_locs.at(name);
 		shape(*this, models[instance].get_data(), instance);
 	}
 
@@ -102,7 +149,7 @@ private:
 public:
 	template <typename T, typename ... C> auto add_component(model_instance instance, C ... args) -> void
 	{
-		data_system.add_component<T>(models[instance], instance, args...);
+		data_system.add_component<T>(models[instance], instance, T{ args... });
 	}
 
 	template <typename T> auto get_component(model_instance instance) -> T &

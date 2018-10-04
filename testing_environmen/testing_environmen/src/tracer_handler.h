@@ -32,7 +32,6 @@ public:
 		shaders.attach(shader(GL_VERTEX_SHADER, "lines/line_vsh.shader"));
 		shaders.attach(shader(GL_FRAGMENT_SHADER, "lines/line_fsh.shader"));
 		shaders.link("vertex_position", "vertex_color");
-		shaders.get_uniform_locations("projection", "view");
 
 		gpu_traces_buffer.create();
 		gpu_traces_buffer.bind(GL_ARRAY_BUFFER);
@@ -56,8 +55,8 @@ public:
 			gpu_traces_buffer.partial_fill(0, traces.size() * sizeof(tracer), traces.data(), GL_ARRAY_BUFFER);
 
 			shaders.bind();
-			shaders.send_uniform_mat4(0, glm::value_ptr(projection), 1);
-			shaders.send_uniform_mat4(1, glm::value_ptr(view), 1);
+			shaders.send_uniform_mat4("projection", glm::value_ptr(projection), 1);
+			shaders.send_uniform_mat4("view", glm::value_ptr(view), 1);
 
 			layout.bind();
 			glDrawArrays(GL_LINES, 0, traces.size() * 2);

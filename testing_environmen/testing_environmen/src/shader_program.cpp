@@ -47,37 +47,42 @@ auto program::attach(shader const & sh) -> void
 	shaders.back().compile();
 }
 
-auto program::send_uniform_vec2(u32 uni_index, float * ptr, u32 count) -> void
+auto program::send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void
 {
-	glUniform2fv(uniform_locations[uni_index], count, ptr);
+	glUniform2fv(get_uniform_location(name), count, ptr);
 }
 
-auto program::send_uniform_vec3(u32 uni_index, float * ptr, u32 count) -> void
+auto program::send_uniform_vec3(std::string const & name, float * ptr, u32 count) -> void
 {
-	glUniform3fv(uniform_locations[uni_index], count, ptr);
+	glUniform3fv(get_uniform_location(name), count, ptr);
 }
 
-auto program::send_uniform_vec4(u32 uni_index, float * ptr, u32 count) -> void
+auto program::send_uniform_vec4(std::string const & name, float * ptr, u32 count) -> void
 {
-	glUniform4fv(uniform_locations[uni_index], count, ptr);
+	glUniform4fv(get_uniform_location(name), count, ptr);
 }
 
-auto program::send_uniform_mat4(u32 uni_index, float * ptr, u32 count) -> void
+auto program::send_uniform_mat4(std::string const & name, float * ptr, u32 count) -> void
 {
-	glUniformMatrix4fv(uniform_locations[uni_index], count, GL_FALSE, ptr);
+	glUniformMatrix4fv(get_uniform_location(name), count, GL_FALSE, ptr);
 }
 
-auto program::send_uniform_float(u32 uni_index, float v) -> void
+auto program::send_uniform_float(std::string const & name, float v) -> void
 {
-	glUniform1f(uniform_locations[uni_index], v);
+	glUniform1f(get_uniform_location(name), v);
 }
 
-auto program::send_uniform_int(u32 uni_index, i32 v) -> void
+auto program::send_uniform_int(std::string const & name, i32 v) -> void
 {
-	glUniform1i(uniform_locations[uni_index], v);
+	glUniform1i(get_uniform_location(name), v);
 }
 
-auto program::get_uniform(char const * name) -> u32
+auto program::get_uniform_location(std::string const & name) -> i32
 {
-	return glGetUniformLocation(id, name);
+	if (auto location = uloc_cache.find(name); location != uloc_cache.end())
+	{
+		return location->second;
+	}
+	
+	return ( uloc_cache[name] = glGetUniformLocation(id, name.c_str()) );
 }

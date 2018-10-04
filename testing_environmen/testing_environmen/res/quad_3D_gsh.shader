@@ -27,7 +27,8 @@ void main(void)
 	{
 		gl_Position = gl_in[i].gl_Position;
 
-		normal = calculate_normal(i, (i + 1) % 3, (i + 2) % 3);
+		//normal = calculate_normal(i, (i + 1) % 3, (i + 2) % 3);
+		normal = calculate_normal(0, 1, 2);
 		light_vector = normalize(light_position - pass_world_position[i]);
 		shadow = shadow_coord[i];
 		world_pos = pass_world_position[i];

@@ -20,7 +20,6 @@
 #include "timer.h"
 #include "types.h"
 #include "camera.h"
-#include "gradient_sky.h"
 #include "post_processing/vblur_stage.h"
 #include "post_processing/hblur_stage.h"
 #include "post_processing/default_stage.h"
@@ -42,6 +41,7 @@ public:
 private:
 	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
 	auto render_depth(void) -> void;
+	auto render_color(void) -> void;
 	auto render_depth_gui(void) -> void;
 
 	auto create_test_fbo(void) -> void;
@@ -51,10 +51,11 @@ private:
 private:
 	window appl_window;
 	resource_handler resources;
-	timer time;
+	timer time_handler;
 	glm::mat4 projection_matrix;
 
 	model_instance tree_model_instance;
+	model_instance tree_model_instance2;
 	model_instance rock_model_instance;
 	model_instance rock_model_instance2;
 	texture low_poly_map;
@@ -73,8 +74,7 @@ private:
 	gui_quad render_quad;
 
 	model_instance cube_model_instance;
-
-	gradient_sky sky;
+	model_instance mesh_model_instance;
 
 	/* render pipeline */
 	default_stage default_target;
@@ -88,4 +88,6 @@ private:
 	texture test_tex;
 
 	bool running;
+
+	i32 terrain_dimensions;
 };

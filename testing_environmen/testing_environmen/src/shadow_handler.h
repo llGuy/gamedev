@@ -30,10 +30,15 @@ private:
 	f32 x_min, y_min, z_min;
 	f32 x_max, y_max, z_max;
 
+	std::array<glm::vec4, 8> corners;
+
 	/* projection matrices */
 	glm::mat4 light_view_matrix;
 	glm::mat4 projection_matrix;
 	glm::mat4 shadow_bias;
+
+	glm::vec3 light_pos;
+	glm::vec3 light_dir;
 
 	/* opengl objects */
 	framebuffer depth_fbo;
@@ -55,11 +60,10 @@ public:
 		create_fbo();
 		create_shaders();
 		create_shadow_bias_matrix();
-		create_light_view_matrix(glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
+		create_light_view_matrix(light_dir = glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
 	}
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void
 	{
-		std::array<glm::vec4, 8> corners;
 		calculate_frustum_dimensions(far, near, aspect, fov);
 		calculate_ortho_corners(pos, dir, far, near, corners);
 		find_min_max_values(corners);
@@ -68,6 +72,17 @@ public:
 	auto update_light_view(glm::vec3 const & light_pos) -> void
 	{
 		create_light_view_matrix(glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
+	}
+	auto get_perspective_view(void) -> glm::mat4
+	{
+		glm::mat4 inverse_view = glm::inverse(light_view_matrix);
+
+		glm::vec4 middle = corners[flb] + (corners[flt] - corners[flb]) / 2.0f;
+		middle = middle + (corners[frt] - corners[flt]) / 2.0f;
+
+		glm::vec3 middle_vert = glm::vec3(inverse_view * middle);
+
+		return glm::lookAt(middle_vert, middle_vert + light_dir, detail::up);
 	}
 private:
 	/* update methods */
@@ -145,7 +160,6 @@ private:
 		shaders.attach(shader(GL_VERTEX_SHADER, "shadow/shadow_vsh.shader"));
 		shaders.attach(shader(GL_FRAGMENT_SHADER, "shadow/shadow_fsh.shader"));
 		shaders.link("vertex_position");
-		shaders.get_uniform_locations("vp", "model");
 	}
 	auto create_light_view_matrix(glm::vec3 const & light_dir) -> void
 	{

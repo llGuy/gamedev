@@ -23,9 +23,8 @@ auto hblur_stage::create(i32 width, i32 height) -> void
 	shaders.attach(shader(GL_VERTEX_SHADER, "blur/horizontal_vsh.shader"));
 	shaders.attach(shader(GL_FRAGMENT_SHADER, "blur/blur_fsh.shader"));
 	shaders.link("vertex_position", "texture_coords");
-	shaders.get_uniform_locations("target_width");
 	shaders.bind();
-	shaders.send_uniform_float(0, static_cast<f32>(width));
+	shaders.send_uniform_float("target_width", static_cast<f32>(width));
 }
 
 auto hblur_stage::bind(void) -> void
