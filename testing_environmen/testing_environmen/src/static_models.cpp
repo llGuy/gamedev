@@ -1,7 +1,7 @@
 #include "model_handler.h"
 #include "static_models.h"
 
-auto shape<cube>::operator()(model_handler & handler, model_data & data, model_instance index) const -> void
+auto shape<cube>::operator()(model_handler & handler, model_data & data, u32 index) const -> void
 {
 	std::vector<glm::vec3> verts = create_vertices();
 	buffer vertex_buffer;

@@ -18,10 +18,22 @@ private:
 	entity_cs component_system;
 public:
 	entity_handler(void);
-	auto create(input_handler & ih, program & depth, model_instance model, 
+	auto create(input_handler & ih, program & depth, std::string const & model, 
 		tracer_handler & th, puff_handler & ph, model_handler & mh) -> void;
 	auto update(f32 td) -> void;
 	auto cam(void) -> camera &;
+
+	template <typename T> auto render(bool render_main, f32 td = 0.0f) -> void
+	{
+		component_system.update_only<T>(td, entities, [this, &render_main](i32 other)
+		{
+			if (other == entity_camera.bound_entity())
+			{
+				return render_main;
+			}
+			else return true;
+		});
+	}
 
 	template <typename T> auto update_only(f32 td = 0.0f) -> void
 	{
@@ -29,7 +41,7 @@ public:
 	}
 	
 	auto add_entity(glm::vec3 const & pos, glm::vec3 const & dir,
-		model_instance model, program & color, program & depth, glm::vec3 const & scale, model_handler & mh) -> void;
+		std::string const & model, program & color, program & depth, glm::vec3 const & scale, model_handler & mh) -> void;
 
 	auto main_player_lateral_direction(void) -> glm::vec3
 	{
@@ -38,6 +50,6 @@ public:
 	}
 private:
 	auto create_component_system(void) -> void;
-	auto create_main_player(input_handler & ih, program & depth, model_instance model, 
+	auto create_main_player(input_handler & ih, program & depth, std::string const & model, 
 		tracer_handler & th, puff_handler & ph, model_handler & mh) -> void;
 };

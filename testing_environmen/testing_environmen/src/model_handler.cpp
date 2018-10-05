@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 model_handler::model_handler(void)
-	: models(30)
+	: models(30), check_xcp(true)
 {
 }
 
@@ -49,13 +49,10 @@ auto model_handler::prepare(render_pass_data & args) -> void
 
 auto model_handler::render_model(std::string const & name, glm::mat4 & model_matrix) -> void
 {
-	render_model(map_model_locs[name], model_matrix);
-}
-
-auto model_handler::render_model(model_instance instance, glm::mat4 & model_matrix) -> void
-{
 	model_shaders.bind();
 	model_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(model_matrix), 1);
+
+	u32 instance = get_model_index(name);
 
 	auto & obj = models[instance];
 
@@ -71,9 +68,11 @@ auto model_handler::render_model(model_instance instance, glm::mat4 & model_matr
 	unbind_vertex_layouts();
 }
 
-auto model_handler::render(model_instance instance) -> void
+auto model_handler::render(std::string const & name) -> void
 {
-	auto & data = models[instance].get_data();
+	u32 instance = get_model_index(name);
+
+	auto & data = models[get_model_index(name)].get_data();
 	data.vao.bind();
 
 	if (models[instance].has_component<index_buffer_component>())
@@ -92,34 +91,30 @@ auto model_handler::render(model_instance instance) -> void
 	unbind_vertex_layouts();
 }
 
-auto model_handler::create_model(std::string const & name) -> model_instance
+auto model_handler::create_model(std::string const & name) -> void
 {
 	u32 index = models.vec_size();
 	models.add(model_prototype());
 
 	map_model_locs[name] = index;
-
-	return index;
 }
 
-auto model_handler::get_data(std::string const & name) -> model_data &
+auto model_handler::get_data(std::string const & instance) -> model_data &
 {
-	return get_data(map_model_locs[name]);
+	return models[get_model_index(instance)].get_data();
 }
 
-auto model_handler::get_data(model_instance instance) -> model_data &
+auto model_handler::get_model_index(std::string const & name) -> u32
 {
-	return models[instance].get_data();
+	if (!check_xcp) return map_model_locs.at(name);
+
+	if (auto model = map_model_locs.find(name); model != map_model_locs.end()) return model->second;
+	else throw xcp::model_access_error(name);
 }
 
 auto model_handler::load_model(std::string const & file_name, std::string const & name) -> void
 {
-	if (map_model_locs.find(name) == map_model_locs.end())
-	{
-		throw xcp::model_load_error(name);
-	}
-
-	model_instance instance = map_model_locs.at(name);
+	u32 instance = get_model_index(name);
 
 	std::ifstream file(file_name);
 
@@ -212,7 +207,7 @@ auto model_handler::split(std::string const & str, char const splitter) -> std::
 }
 
 auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<glm::vec3> & normals,
-	std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, model_instance instance) -> void
+	std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, u32 instance) -> void
 {
 	buffer vertex_buffer = create_buffer(vertices, GL_ARRAY_BUFFER);
 	buffer normal_buffer = create_buffer(normals, GL_ARRAY_BUFFER);

@@ -23,7 +23,7 @@ application::application(i32 w, i32 h)
 	light_position(10000.0f, 40000.0f, 10000.0f),
 	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }
 {
-	srand(time(NULL));
+	srand((int)time(NULL));
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 100000.0f);
 }
 
@@ -74,26 +74,50 @@ auto application::init(void) -> void
 
 		model_loader.init(projection_matrix, light_position, shadows.get_shadow_bias());
 
-		tree_model_instance = model_loader.create_model("tree1");
-		tree_model_instance2 = model_loader.create_model("tree2");
+		model_loader.create_model("tree1");
+		model_loader.create_model("tree2");
+		model_loader.create_model("tree3");
 
-		rock_model_instance = model_loader.create_model("rock1");
-		rock_model_instance2 = model_loader.create_model("rock2");
+		model_loader.create_model("rock1");
+		model_loader.create_model("rock2");
 
-		cube_model_instance = model_loader.create_model("cube");
-		mesh_model_instance = model_loader.create_model("mesh");
+		model_loader.create_model("sphere");
+		model_loader.create_model("mesh");
 
 		model_loader.load_model("res/models/tree.obj", "tree1");
-		model_loader.load_model("res/models/tree3.obj", "tree2");
+		model_loader.load_model("res/models/tree2.obj", "tree2");
+		model_loader.load_model("res/models/tree3.obj", "tree3");
 		model_loader.load_model("res/models/rock.obj", "rock1");
 		model_loader.load_model("res/models/rock2.obj", "rock2");
-		model_loader.load_model("res/models/round.obj", "cube");
+		model_loader.load_model("res/models/round.obj", "sphere");
 		terrain_dimensions = 100;
 
-		model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
-			perlin_noise_generator(terrain_dimensions, terrain_dimensions, 10.0f, 1.0f)), "mesh");
+		/*model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
+			perlin_noise_generator(terrain_dimensions, terrain_dimensions, 10.0f, 1.0f)), "mesh"); */
 
-		entities.create(appl_window.user_inputs(), shadows.get_shaders(), cube_model_instance, traces, puffs, model_loader);
+		model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
+			static_noise_generator()), "mesh");
+
+		entities.create(appl_window.user_inputs(), shadows.get_shaders(), "sphere", traces, puffs, model_loader);
+
+		/* trees */
+		//add_entity(glm::vec3(-30.0f, 0.0f, -30.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "tree1");
+		add_entity(glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f), "tree1");
+		add_entity(glm::vec3(80.0f, 0.0f, -65.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "tree3");
+		add_entity(glm::vec3(-50.0f, 0.0f, -50.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(4.0f), "tree3");
+		add_entity(glm::vec3(-50.0f, 0.0f, 55.0f), glm::vec3(0.2f, 0.0f, 1.0f), glm::vec3(15.0f), "tree1");
+
+		/* rocks */
+		add_entity(glm::vec3(-8.0f, 0.0f, 7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock1");
+		add_entity(glm::vec3(8.0f, 0.0f, -7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock2");
+		add_entity(glm::vec3(-2.0f, 0.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(4.0f, 3.0f, 3.0f), "rock2");
+		add_entity(glm::vec3(-15.0f, 0.0f, -11.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(2.0f), "rock2");
+
+		/* more rocks */
+		add_entity(glm::vec3(-28.0f, 0.0f, 27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(6.0f), "rock1");
+		add_entity(glm::vec3(28.0f, 0.0f, -27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(8.0f), "rock2");
+		add_entity(glm::vec3(-22.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f, 3.0f, 3.0f), "rock2");
+		add_entity(glm::vec3(-95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock1");
 
 		create_textures();
 
@@ -129,104 +153,106 @@ auto application::init_window(void) -> void
 
 auto application::render(void) -> void
 {
-	default_target.bind_aa();
-
-	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
-
-	glEnable(GL_DEPTH_TEST);
-
-	glm::vec3 color{ 0.3f, 0.6f, 0.0f };
-	glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);
-
-	quad_3D_shaders.bind();
-	auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
-
-	shadows.get_depth_map().bind(GL_TEXTURE_2D, 0);
-
-	quad_3D_shaders.send_uniform_vec3("light_position", glm::value_ptr(light_position), 1);
-	quad_3D_shaders.send_uniform_vec3("camera_pos", glm::value_ptr(entities.cam().pos()), 1);
-	quad_3D_shaders.send_uniform_mat4("shadow_bias", glm::value_ptr(shadow_bias), 1);
-	quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(projection_matrix), 1);
-	quad_3D_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
-
-	quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color), 1);
-
-	f32 scale = 5.0f;
-
-	glm::vec3 cam_pos = entities.cam().pos();
-
-	glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
-		glm::scale(glm::vec3(scale, 1.0f, scale));
-	quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color2), 1);
-	quad_3D_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
-	model_loader.render(mesh_model_instance);
-
-	traces.render(projection_matrix, view_matrix);
-
-	glm::vec3 red(0.7f, 0.0f, 0.0f);
-	puffs.render(quad_3D_shaders, "model_matrix", "color", cube_model_instance, model_loader);
-	
-	render_pass_data data{ projection_matrix, view_matrix, shadow_bias,
-		light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
-	model_loader.prepare(data);
-	glm::mat4 tree_translation = glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(tree_model_instance, tree_translation);
-
-	glm::mat4 tree_translation2 = glm::translate(glm::vec3(10.0f, 0.0f, 10.0f)) * glm::scale(glm::vec3(4.0f));
-	model_loader.render_model(tree_model_instance2, tree_translation2);
-
-	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance, rock_translation);
-
-	glm::mat4 rock_translation2 = glm::translate(glm::vec3(8.0f, 0.0f, -7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation2);
-
-	glm::mat4 rock_translation3 = glm::translate(glm::vec3(-2.0f, 0.0f, -2.0f)) * glm::scale(glm::vec3(4.0f, 3.0f, 3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation3);
-
-	glm::mat4 rock_translation4 = glm::translate(glm::vec3(-15.0f, 0.0f, -11.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation4);
-
-
-	default_target.blit();
-	default_target.bind();
-
-	render_depth();
-	render_color();
-
-	/* rendering the blur stages */
-	i32 window_width = appl_window.pixel_width();
-	i32 window_height = appl_window.pixel_height();
-	blur_stages[0].h.render(render_quad, default_target.output(), window_width, window_height);
-	blur_stages[0].v.render(render_quad, blur_stages[0].h.output(), window_width, window_height);
-
-	for (u32 i = 1; i < blur_stages.size(); ++i)
+	try
 	{
-		blur_stages[i].h.render(render_quad, blur_stages[i - 1].v.output(), window_width, window_height);
-		blur_stages[i].v.render(render_quad, blur_stages[i].h.output(), window_width, window_height);
+
+		default_target.bind_aa();
+
+		clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
+
+		glEnable(GL_DEPTH_TEST);
+
+		glm::vec3 color{ 0.3f, 0.6f, 0.0f };
+		glm::vec3 color2 = glm::vec3(0.6, 0.3f, 0.0f);
+
+		quad_3D_shaders.bind();
+		auto view_matrix = glm::lookAt(entities.cam().pos(), entities.cam().pos() + entities.cam().dir(), detail::up);
+
+		shadows.get_depth_map().bind(GL_TEXTURE_2D, 0);
+
+		quad_3D_shaders.send_uniform_vec3("light_position", glm::value_ptr(light_position), 1);
+		quad_3D_shaders.send_uniform_vec3("camera_pos", glm::value_ptr(entities.cam().pos()), 1);
+		quad_3D_shaders.send_uniform_mat4("shadow_bias", glm::value_ptr(shadow_bias), 1);
+		quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(projection_matrix), 1);
+		quad_3D_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
+
+		quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color), 1);
+
+		f32 scale = 5.0f;
+
+		glm::vec3 cam_pos = entities.cam().pos();
+
+		glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
+			glm::scale(glm::vec3(scale, 1.0f, scale));
+		quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color2), 1);
+		quad_3D_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
+		model_loader.render("mesh");
+
+		traces.render(projection_matrix, view_matrix);
+
+		glm::vec3 red(0.7f, 0.0f, 0.0f);
+		puffs.render(quad_3D_shaders, "model_matrix", "color", "sphere", model_loader);
+
+		render_pass_data data{ projection_matrix, view_matrix, shadow_bias,
+			light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
+
+		model_loader.prepare(data);
+
+		entities.update_only<graphics>();
+
+		default_target.blit();
+		default_target.bind();
+
+		render_depth();
+		render_color();
+
+		/* rendering the blur stages */
+		i32 window_width = appl_window.pixel_width();
+		i32 window_height = appl_window.pixel_height();
+		blur_stages[0].h.render(render_quad, default_target.output(), window_width, window_height);
+		blur_stages[0].v.render(render_quad, blur_stages[0].h.output(), window_width, window_height);
+
+		for (u32 i = 1; i < blur_stages.size(); ++i)
+		{
+			blur_stages[i].h.render(render_quad, blur_stages[i - 1].v.output(), window_width, window_height);
+			blur_stages[i].v.render(render_quad, blur_stages[i].h.output(), window_width, window_height);
+		}
+
+		/* render scene to texture */
+		unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
+
+
+		blur_stages[1].v.output().bind(GL_TEXTURE_2D, 2);
+		default_target.depth_out().bind(GL_TEXTURE_2D, 1);
+
+		dof_stage.render(render_quad, default_target.output(), window_width, window_height);
+
+
+		clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1, 1, 1);
+
+		glDisable(GL_DEPTH_TEST);
+		guis.prepare((gui_slot)2, 1);
+		auto & tex2 = dof_stage.output();
+		tex2.bind(GL_TEXTURE_2D, 0);
+		guis.render();
+
+		//render_depth_gui();
+
+		glEnable(GL_DEPTH_TEST);
+
 	}
+	catch (xcp::gl_xcp const & exception)
+	{
+		std::cout << std::endl;
 
-	/* render scene to texture */
-	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
+		std::cout << exception.what() << std::endl;
 
+		appl_window.destroy();
 
-	blur_stages[1].v.output().bind(GL_TEXTURE_2D, 2);
-	default_target.depth_out().bind(GL_TEXTURE_2D, 1);
+		glfw_terminate();
 
-	dof_stage.render(render_quad, default_target.output(), window_width, window_height);
-
-
-	clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1, 1, 1);
-
-	glDisable(GL_DEPTH_TEST);
-	guis.prepare((gui_slot)2, 1);
-	auto & tex2 = dof_stage.output();
-	tex2.bind(GL_TEXTURE_2D, 0);
-	guis.render();
-
-	render_depth_gui();
-
-	glEnable(GL_DEPTH_TEST);
+		running = false;
+	}
 }
 
 auto application::render_color(void) -> void
@@ -265,41 +291,21 @@ auto application::render_color(void) -> void
 
 	quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color2), 1);
 	quad_3D_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
-	model_loader.render(mesh_model_instance);
+	model_loader.render("mesh");
 
 	traces.render(projection_matrix, view);
 
 	glm::vec3 red(0.7f, 0.0f, 0.0f);
-	puffs.render(quad_3D_shaders, "model_matrix", "color", cube_model_instance, model_loader);
+	puffs.render(quad_3D_shaders, "model_matrix", "color", "sphere", model_loader);
 
 	entities.update_only<graphics>();
-
-	//sky.render(entities.cam().dir());
 
 
 	render_pass_data data{ projection, view, shadow_bias,
 		light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
 	model_loader.prepare(data);
 
-	glm::mat4 tree_translation = glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(tree_model_instance, tree_translation);
-
-	glm::mat4 tree_translation2 = glm::translate(glm::vec3(10.0f, 0.0f, 10.0f)) * glm::scale(glm::vec3(4.0f));
-	model_loader.render_model(tree_model_instance2, tree_translation2);
-
-	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance, rock_translation);
-
-	glm::mat4 rock_translation2 = glm::translate(glm::vec3(8.0f, 0.0f, -7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation2);
-
-	glm::mat4 rock_translation3 = glm::translate(glm::vec3(-2.0f, 0.0f, -2.0f)) * glm::scale(glm::vec3(4.0f, 3.0f, 3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation3);
-
-	glm::mat4 rock_translation4 = glm::translate(glm::vec3(-15.0f, 0.0f, -11.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation4);
-
-	entities.update_only<graphics>();
+	entities.render<graphics>(true);
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }
@@ -346,7 +352,7 @@ auto application::update(void) -> void
 
 	time_handler.reset();
 
-	running = appl_window.is_open();
+	if (running) running = appl_window.is_open();
 }
 
 auto application::is_running(void) -> bool
@@ -375,8 +381,6 @@ auto application::render_depth(void) -> void
 
 	shaders.send_uniform_mat4("vp", glm::value_ptr(mv), 1);
 
-	entities.update_only<depth>();
-
 	glm::mat4 plat_translation = glm::mat4(1);
 	shaders.send_uniform_mat4("model", glm::value_ptr(plat_translation), 1);
 
@@ -388,37 +392,22 @@ auto application::render_depth(void) -> void
 		glm::scale(glm::vec3(scale, 1.0f, scale));
 
 	shaders.send_uniform_mat4("model", glm::value_ptr(translation2), 1);
-	model_loader.render(mesh_model_instance);
-
+	model_loader.render("mesh");
 
 	traces.render(shadows.get_projection(), shadows.get_light_view());
 
 	quad_3D_shaders.bind();
 	quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(shadows.get_projection()), 1);
 	quad_3D_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(shadows.get_light_view()), 1);
-	puffs.render(quad_3D_shaders, "model_matrix", "color", cube_model_instance, model_loader);
+	puffs.render(quad_3D_shaders, "model_matrix", "color", "sphere", model_loader);
 	
-	render_pass_data data{ shadows.get_projection(), shadows.get_light_view(), 
-		shadow_bias, light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
+	//render_pass_data data{ shadows.get_projection(), shadows.get_light_view(), 
+		//shadow_bias, light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
 
-	model_loader.prepare(data);
-	glm::mat4 tree_translation = glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(tree_model_instance, tree_translation);
+	//model_loader.prepare(data);
 
-	glm::mat4 tree_translation2 = glm::translate(glm::vec3(10.0f, 0.0f, 10.0f)) * glm::scale(glm::vec3(4.0f));
-	model_loader.render_model(tree_model_instance2, tree_translation2);
-
-	glm::mat4 rock_translation = glm::translate(glm::vec3(-8.0f, 0.0f, 7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance, rock_translation);
-
-	glm::mat4 rock_translation2 = glm::translate(glm::vec3(8.0f, 0.0f, -7.0f)) * glm::scale(glm::vec3(3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation2);
-
-	glm::mat4 rock_translation3 = glm::translate(glm::vec3(-2.0f, 0.0f, -2.0f)) * glm::scale(glm::vec3(4.0f, 3.0f, 3.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation3);
-
-	glm::mat4 rock_translation4 = glm::translate(glm::vec3(-15.0f, 0.0f, -11.0f)) * glm::scale(glm::vec3(2.0f, 2.0f, 2.0f));
-	model_loader.render_model(rock_model_instance2, rock_translation4);
+	shaders.bind();
+	entities.update_only<depth>();
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }
@@ -461,9 +450,9 @@ auto application::create_test_fbo(void) -> void
 	test_fbo.attach(rnd, GL_DEPTH_ATTACHMENT);
 }
 
-auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale) -> void
+auto application::add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale, std::string const & model) -> void
 {
-	entities.add_entity(p, d, cube_model_instance, quad_3D_shaders, shadows.get_shaders(), scale, model_loader);
+	entities.add_entity(p, d, model, quad_3D_shaders, shadows.get_shaders(), scale, model_loader);
 }
 
 auto application::create_textures(void) -> void

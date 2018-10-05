@@ -49,7 +49,7 @@ namespace detail {
 	{
 		glm::vec<N, T, glm::highp> result;
 		for (u32 i = 0; i < N; ++i)
-			result[i] = rand() % max;
+			result[i] = (T)(rand() % max);
 
 		return result;
 		//return random_vec_impl<T, N>(max, std::make_index_sequence<N>());

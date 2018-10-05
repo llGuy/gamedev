@@ -23,7 +23,7 @@ public:
 	{
 		auto & ent_height = ecs.get_component<height>(height_component_index).value.val;
 		auto & data = entities[entity_index].get_data();
-		translation = glm::translate(glm::vec3(data.pos.x, data.pos.y + data.size.y * 2.0f, data.pos.z));
+		translation = glm::translate(glm::vec3(data.pos.x, data.pos.y, data.pos.z));
 
 		float y_axis_rot = detail::fequ(data.dir.x, 0.0f) ? 0.00001f : -atan(data.dir.z / data.dir.x);
 		rotation = glm::rotate(y_axis_rot, glm::vec3(0, 1, 0));
@@ -32,7 +32,7 @@ public:
 	}
 	auto get_model_matrix(void) -> glm::mat4
 	{
-		return translation * rotation;
+		return translation * rotation * scale;
 	}
 	auto get_translation(void) -> glm::mat4 const &
 	{

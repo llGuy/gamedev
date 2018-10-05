@@ -5,7 +5,7 @@
 #include <vector>
 
 
-template <typename T, typename = void> struct shape;
+template <typename T, typename> struct shape;
 
 /* G will be a noise generator */
 template <typename G> struct shape <struct mesh, G>
@@ -19,7 +19,7 @@ template <typename G> struct shape <struct mesh, G>
 	{
 	}
 
-	auto operator()(model_handler & handler, model_data & data, model_instance index) const -> void
+	auto operator()(model_handler & handler, model_data & data, u32 index) const -> void
 	{
 		std::vector<glm::vec3> vertices = create_vertices();
 		std::vector<u32> indices = create_indices();

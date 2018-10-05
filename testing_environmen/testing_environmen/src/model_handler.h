@@ -21,13 +21,13 @@
 
 namespace xcp {
 
-	class model_load_error : public gl_xcp
+	class model_access_error : public gl_xcp
 	{
 	private:
 		std::string model_name;
 	public:
-		model_load_error(std::string const & name)
-			: model_name(name), gl_xcp::gl_xcp("unable to load model that wasn't created")
+		model_access_error(std::string const & name)
+			: model_name(name), gl_xcp::gl_xcp("unable to access model that wasn't created")
 		{
 		}
 
@@ -53,7 +53,6 @@ namespace xcp {
 struct model_data { vertex_layout vao; u32 count; };
 
 using model_prototype = cs::object<model_data>;
-using model_instance = u32;
 
 struct vertex_buffer_component { buffer value; };
 struct vertices_component { std::vector<glm::vec3> vertices; };
@@ -84,6 +83,8 @@ private:
 	char const * fsh_dir = "model_shaders/fsh.shader";
 
 private:
+	bool check_xcp;
+
 	/* models don't need any data */
 	cs::component_system<model_data> data_system;
 	/* model vaos or just the model handlers */
@@ -100,33 +101,36 @@ public:
 
 	auto init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, glm::mat4 & shadow_bias) -> void;
 
-	auto create_model(std::string const & name) -> model_instance;
+	auto create_model(std::string const & name) -> void;
 
 	auto get_data(std::string const & name) -> model_data &;
-	auto get_data(model_instance instance) -> model_data &;
 
 	auto load_model(std::string const & file_name, std::string const & name) -> void;
 
 	/* rendering the models needs a prepare() call followed by all the model draw calls */
 	auto prepare(render_pass_data & args) -> void;
 
-	auto render(model_instance instance) -> void;
+	auto render(std::string const & name) -> void;
+
 	auto render_model(std::string const & name, glm::mat4 & model_matrix) -> void;
-	auto render_model(model_instance instance, glm::mat4 & model_matrix) -> void;
 
 	template <typename T> auto load_static_model(T const & shape, std::string const & name) -> void
 	{
-		if (map_model_locs.find(name) == map_model_locs.end())
-		{
-			throw xcp::model_load_error(name);
-		}
+		u32 instance = get_model_index(name);
 
-		model_instance instance = map_model_locs.at(name);
 		shape(*this, models[instance].get_data(), instance);
 	}
 
-	template <typename T> auto get_buffer(model_instance instance) -> buffer &
+	template <typename T> auto get_buffer(u32 index) -> buffer &
 	{
+		auto & obj = models[index];
+		return data_system.get_component<T>(obj.get_component_index<T>()).value.value;
+	}
+
+	template <typename T> auto get_buffer(std::string const & name) -> buffer &
+	{
+		u32 instance = get_model_index(name);
+
 		auto & obj = models[instance];
 		return data_system.get_component<T>(obj.get_component_index<T>()).value.value;
 	}
@@ -145,15 +149,22 @@ private:
 	auto split(std::string const & str, char const splitter) -> std::vector<std::string>;
 
 	auto create_model(std::vector<glm::vec3> & vertices, std::vector<glm::vec3> & normals,
-		std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, model_instance instance) -> void;
+		std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, u32 index) -> void;
 public:
-	template <typename T, typename ... C> auto add_component(model_instance instance, C ... args) -> void
+	template <typename T, typename ... C> auto add_component(std::string const & model_name, C ... args) -> void
 	{
-		data_system.add_component<T>(models[instance], instance, T{ args... });
+		add_component(get_model_index(model_name), args...);
 	}
 
-	template <typename T> auto get_component(model_instance instance) -> T &
+	template <typename T, typename ... C> auto add_component(u32 index, C ... args) -> void
 	{
+		data_system.add_component<T>(models[index], index, T{ args... });
+	}
+
+	template <typename T> auto get_component(std::string const & model_name) -> T &
+	{
+		u32 instance = get_model_index(model_name);
+
 		return data_system.get_component<T>(instance).value;
 	}
 
@@ -165,6 +176,8 @@ public:
 
 		return gpu_buffer;
 	}
+private:
+	auto get_model_index(std::string const & name) -> u32;
 };
 
 #include "static_models.h"

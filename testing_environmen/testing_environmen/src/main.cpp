@@ -2,8 +2,8 @@
 
 auto main(i32 argc, char * argv[]) -> i32
 {
-	//application app { (i32)(640.0 * 2.0), (i32)(1136.0 * 2.0) };
-	application app { 1440, 850 };
+//	application app { (i32)(640.0 * 2.0), (i32)(1136.0 * 2.0) };
+	application app { (i32)(1440 * 1.5), (i32)(850 * 1.5) };
 	glfw_init();
 	app.init_window();
 	glew_init();

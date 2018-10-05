@@ -29,7 +29,7 @@ public:
 	{
 		puffs.push_back(puff{ default_scale, pos });
 	}
-	auto render(program & shaders, std::string const & model_name, std::string const & color_name, model_instance cbe, model_handler & mh) -> void
+	auto render(program & shaders, std::string const & model_name, std::string const & color_name, std::string const & cbe, model_handler & mh) -> void
 	{
 		for (auto & pf : puffs)
 		{

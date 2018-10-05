@@ -15,7 +15,7 @@ entity_handler::entity_handler(void)
 {
 }
 
-auto entity_handler::create(input_handler & ih, program & d, model_instance m, 
+auto entity_handler::create(input_handler & ih, program & d, std::string const & m, 
 	tracer_handler & th, puff_handler & ph, model_handler & mh) -> void
 {
 	create_component_system();
@@ -46,7 +46,7 @@ auto entity_handler::create_component_system(void) -> void
 }
 
 auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d, 
-	model_instance model, program & color, program & dpth, glm::vec3 const & scale, model_handler & mh) -> void
+	std::string const & model, program & color, program & dpth, glm::vec3 const & scale, model_handler & mh) -> void
 {
 	entity new_entity;
 	auto & data = new_entity.get_data();
@@ -58,13 +58,13 @@ auto entity_handler::add_entity(glm::vec3 const & p, glm::vec3 const & d,
 
 	i32 at = entities.add(new_entity);
 	
-	component_system.add_component<height>(new_entity, at, height{2.f});
+	component_system.add_component<height>(new_entity, at, height{0.f});
 	component_system.add_component<model_matrix>(new_entity, at);
 	component_system.add_component<graphics>(new_entity, at, color, model, mh);
 	component_system.add_component<depth>(new_entity, at, dpth, model, mh);
 }
 
-auto entity_handler::create_main_player(input_handler & ih, program & dpth, model_instance model, 
+auto entity_handler::create_main_player(input_handler & ih, program & dpth, std::string const & model, 
 	tracer_handler & th, puff_handler & ph, model_handler & mh) -> void
 {
 	entity new_entity;

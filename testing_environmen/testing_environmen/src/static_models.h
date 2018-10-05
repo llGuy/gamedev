@@ -16,7 +16,7 @@ template <> struct shape <struct cube>
 	{
 	}
 
-	auto operator()(model_handler & handler, model_data & data, model_instance index) const -> void;
+	auto operator()(model_handler & handler, model_data & data, u32 index) const -> void;
 private:
 	auto create_vertices(void) const -> std::vector<glm::vec3>
 	{

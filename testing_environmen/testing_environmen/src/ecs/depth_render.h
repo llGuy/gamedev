@@ -15,12 +15,12 @@ template <> class component <struct depth> : public icomponent
 {
 private:
 	i32 model_matrix_component;
-	model_instance model;
+	std::string model_name;
 	model_handler * mh;
 	program * shaders;
 public:
-	component(entity & subject, i32 index, program & shadrs, model_instance model, model_handler & mh)
-		: mh(&mh), shaders(&shadrs), icomponent::icomponent(index), model(model)
+	component(entity & subject, i32 index, program & shadrs, std::string const & model, model_handler & mh)
+		: mh(&mh), shaders(&shadrs), icomponent::icomponent(index), model_name(model)
 	{
 		model_matrix_component = subject.get_component_index<model_matrix>();
 	}
@@ -37,6 +37,6 @@ public:
 		glm::mat4 model_matrix = mmatrix.get_translation() * mmatrix.get_rotation() * mmatrix.get_scale();
 
 		shaders->send_uniform_mat4("model", &model_matrix[0][0], 1);
-		mh->render(model);
+		mh->render(model_name);
 	}
 };
