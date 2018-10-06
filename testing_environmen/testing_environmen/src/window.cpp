@@ -22,9 +22,10 @@ window::window(int32_t w, int32_t h, std::string const & t)
 	: width(w), height(h), title(t)
 {
 }
-auto window::init(void) -> void
+auto window::init(bool full_screen) -> void
 {
-	if (!(glfw_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr)))
+	if (!(glfw_window = glfwCreateWindow(width, height, title.c_str(), 
+		full_screen ? glfwGetPrimaryMonitor() : nullptr, nullptr)))
 		logger::error_log("unable to initialize window");
 	else logger::sub_log("initialized window successfully");
 	glfwMakeContextCurrent(glfw_window);

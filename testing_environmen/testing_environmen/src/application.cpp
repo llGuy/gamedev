@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "render_func.h"
 #include "application.h"
 #include "detail.h"
@@ -21,7 +23,7 @@ application::application(i32 w, i32 h)
 	scene_platform(glm::vec3(-PLANE_RAD, 0, PLANE_RAD), glm::vec3(-PLANE_RAD, 0, -PLANE_RAD), 
 		glm::vec3(PLANE_RAD, 0, PLANE_RAD), glm::vec3(PLANE_RAD, 0, -PLANE_RAD)), 
 	light_position(10000.0f, 40000.0f, 10000.0f),
-	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }
+	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }, max_fps(120.0f)
 {
 	srand((int)time(NULL));
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 100000.0f);
@@ -83,6 +85,7 @@ auto application::init(void) -> void
 
 		model_loader.create_model("sphere");
 		model_loader.create_model("mesh");
+		model_loader.create_model("2D quad");
 
 		model_loader.load_model("res/models/tree.obj", "tree1");
 		model_loader.load_model("res/models/tree2.obj", "tree2");
@@ -97,6 +100,8 @@ auto application::init(void) -> void
 
 		model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
 			static_noise_generator()), "mesh");
+
+		model_loader.load_static_model(shape<textured_quad_2D>(), "2D quad");
 
 		entities.create(appl_window.user_inputs(), shadows.get_shaders(), "sphere", traces, puffs, model_loader);
 
@@ -146,7 +151,7 @@ auto application::init_window(void) -> void
 	appl_window.window_hint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	appl_window.window_hint(GLFW_SAMPLES, 4);
 
-	appl_window.init();
+	appl_window.init(false);
 	appl_window.launch_input_handler();
 	appl_window.set_window_input_mode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
@@ -234,9 +239,9 @@ auto application::render(void) -> void
 		guis.prepare((gui_slot)2, 1);
 		auto & tex2 = dof_stage.output();
 		tex2.bind(GL_TEXTURE_2D, 0);
-		guis.render();
+		guis.render(model_loader);
 
-		//render_depth_gui();
+//		render_depth_gui();
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -298,9 +303,6 @@ auto application::render_color(void) -> void
 	glm::vec3 red(0.7f, 0.0f, 0.0f);
 	puffs.render(quad_3D_shaders, "model_matrix", "color", "sphere", model_loader);
 
-	entities.update_only<graphics>();
-
-
 	render_pass_data data{ projection, view, shadow_bias,
 		light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
 	model_loader.prepare(data);
@@ -312,16 +314,16 @@ auto application::render_color(void) -> void
 
 auto application::update(void) -> void
 {
+	f32 elapsed = time_handler.elapsed();
+
 	traces.clear();
 	appl_window.refresh();
-	entities.update(time_handler.elapsed());
-	puffs.update(time_handler.elapsed());
+	entities.update(elapsed);
+	puffs.update(elapsed);
 	auto & cam = entities.cam();
 
 	f32 aspect = (f32)appl_window.pixel_width() / appl_window.pixel_height();
 	shadows.update(200.0f, 1.0f, aspect, 60.0f, cam.pos(), cam.dir());
-
-	f32 elapsed = time_handler.elapsed();
 
 	/* update light position */
 	auto & inputs = appl_window.user_inputs();
@@ -350,9 +352,26 @@ auto application::update(void) -> void
 		dof_stage.reset(w, h);
 	}
 
-	time_handler.reset();
-
 	if (running) running = appl_window.is_open();
+	
+	//wait(time_handler.elapsed());
+
+	if (inputs.got_key(GLFW_KEY_G))
+		printf("%f\n", 1.0f / time_handler.elapsed());
+
+	time_handler.reset();
+}
+
+auto application::wait(f32 elapsed) -> void
+{
+	f32 min_time_per_fps = 1.0f / max_fps;
+
+	if (elapsed < min_time_per_fps)
+	{
+		f32 seconds_to_wait = min_time_per_fps - elapsed;
+
+		std::this_thread::sleep_for(std::chrono::duration<double>(seconds_to_wait));
+	}
 }
 
 auto application::is_running(void) -> bool
@@ -382,7 +401,7 @@ auto application::render_depth(void) -> void
 	shaders.send_uniform_mat4("vp", glm::value_ptr(mv), 1);
 
 	glm::mat4 plat_translation = glm::mat4(1);
-	shaders.send_uniform_mat4("model", glm::value_ptr(plat_translation), 1);
+	shaders.send_uniform_mat4("model_matrix", glm::value_ptr(plat_translation), 1);
 
 	f32 scale = 5.0f;
 
@@ -391,7 +410,7 @@ auto application::render_depth(void) -> void
 	glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
 		glm::scale(glm::vec3(scale, 1.0f, scale));
 
-	shaders.send_uniform_mat4("model", glm::value_ptr(translation2), 1);
+	shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
 	model_loader.render("mesh");
 
 	traces.render(shadows.get_projection(), shadows.get_light_view());
@@ -419,12 +438,12 @@ auto application::render_depth_gui(void) -> void
 	guis.prepare(gui_slot::DEBUG_0, 0);
 	auto & tex1 = shadows.get_depth_map();
 	tex1.bind(GL_TEXTURE_2D, 0);
-	guis.render();
+	guis.render(model_loader);
 
 	guis.prepare(gui_slot::DEBUG_1, 1);
 	auto & tex2 = test_tex;
 	tex2.bind(GL_TEXTURE_2D, 0);
-	guis.render();
+	guis.render(model_loader);
 
 	glEnable(GL_DEPTH_TEST);
 }
@@ -466,4 +485,9 @@ auto application::create_textures(void) -> void
 
 	low_poly_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	low_poly_map.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+}
+
+auto application::set_max_framerate(f32 fps) -> void
+{
+	max_fps = fps;
 }

@@ -29,7 +29,8 @@ auto gui_handler::prepare(gui_slot slot, i32 i) -> void
 	programs[i].send_uniform_mat4("model_matrix", glm::value_ptr(model_matrix), 1);
 }
 
-auto gui_handler::render(void) -> void
+auto gui_handler::render(model_handler & mh) -> void
 {
-	render_model(quad, GL_TRIANGLE_STRIP);
+	mh.render("2D quad");
+//	render_model(quad, GL_TRIANGLE_STRIP);
 }

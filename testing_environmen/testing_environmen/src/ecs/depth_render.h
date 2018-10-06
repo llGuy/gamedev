@@ -36,7 +36,7 @@ public:
 		auto & mmatrix = ecs.get_component<model_matrix>(model_matrix_component);
 		glm::mat4 model_matrix = mmatrix.get_translation() * mmatrix.get_rotation() * mmatrix.get_scale();
 
-		shaders->send_uniform_mat4("model", &model_matrix[0][0], 1);
+		shaders->send_uniform_mat4("model_matrix", &model_matrix[0][0], 1);
 		mh->render(model_name);
 	}
 };

@@ -62,7 +62,7 @@ auto model_handler::render_model(std::string const & name, glm::mat4 & model_mat
 	vao.bind();
 	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 
-	glDrawElements(GL_TRIANGLES, obj.get_data().count, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(obj.get_data().primitive, obj.get_data().count, GL_UNSIGNED_INT, nullptr);
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();
@@ -80,11 +80,11 @@ auto model_handler::render(std::string const & name) -> void
 		auto & index_buffer = get_buffer<index_buffer_component>(instance);
 		index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 
-		glDrawElements(GL_TRIANGLES, data.count, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(data.primitive, data.count, GL_UNSIGNED_INT, nullptr);
 	}
 	else
 	{
-		glDrawArrays(GL_TRIANGLES, 0, data.count);
+		glDrawArrays(data.primitive, 0, data.count);
 	}
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
@@ -240,6 +240,7 @@ auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<
 	add_component<index_buffer_component>(instance, index_buffer);
 
 	models[instance].get_data().count = indices.size();
+	models[instance].get_data().primitive = GL_TRIANGLES;
 
 	unbind_vertex_layouts();
 }

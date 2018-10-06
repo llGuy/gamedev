@@ -50,7 +50,7 @@ namespace xcp {
 
 
 /* all models have a vertex layout and count */
-struct model_data { vertex_layout vao; u32 count; };
+struct model_data { vertex_layout vao; u32 count; GLenum primitive; };
 
 using model_prototype = cs::object<model_data>;
 

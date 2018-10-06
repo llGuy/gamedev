@@ -325,4 +325,7 @@
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\todo.txt" />
+  </ItemGroup>
 </Project>

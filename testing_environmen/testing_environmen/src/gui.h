@@ -4,6 +4,7 @@
 #include "shader_program.h"
 #include "texture.h"
 #include <glm/glm.hpp>
+#include "model_handler.h"
 
 enum gui_slot : i32
 {
@@ -18,7 +19,7 @@ public:
 	auto push(glm::vec2 const & translation, f32 scale) -> void;
 
 	auto prepare(gui_slot slot, i32 i) -> void;
-	auto render(void) -> void;
+	auto render(model_handler & mh) -> void;
 private:
 	gui_quad quad;
 

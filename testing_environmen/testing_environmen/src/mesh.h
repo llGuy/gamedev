@@ -28,6 +28,8 @@ template <typename G> struct shape <struct mesh, G>
 		buffer index_buffer = create_buffer(indices, GL_ELEMENT_ARRAY_BUFFER);
 
 		data.count = indices.size();
+		data.primitive = GL_TRIANGLES;
+
 		data.vao.create();
 		data.vao.bind();
 

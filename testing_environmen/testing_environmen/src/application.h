@@ -38,6 +38,8 @@ public:
 	auto update(void) -> void;
 	auto is_running(void) -> bool;
 	auto destroy(void) -> void;
+
+	auto set_max_framerate(f32 fps) -> void;
 private:
 	struct render_params { program & shaders; u32 model_matrix_id; u32 color_id; };
 
@@ -49,6 +51,8 @@ private:
 	auto add_entity(glm::vec3 const & p, glm::vec3 const & d, glm::vec3 const & scale, std::string const & model) -> void;
 
 	auto create_textures(void) -> void;
+
+	auto wait(f32 elapsed) -> void;
 private:
 	window appl_window;
 	resource_handler resources;
@@ -84,4 +88,6 @@ private:
 	bool running;
 
 	i32 terrain_dimensions;
+
+	f32 max_fps;
 };

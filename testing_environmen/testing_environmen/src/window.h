@@ -19,7 +19,7 @@ class window
 public:
 	window(int32_t w, int32_t h, std::string const & title);
 
-	auto init(void) -> void;
+	auto init(bool full_screen) -> void;
 	auto destroy(void) -> void;
 	auto refresh(void) -> void;
 	auto is_open(void) const -> bool;

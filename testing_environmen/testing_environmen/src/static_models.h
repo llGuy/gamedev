@@ -59,3 +59,21 @@ private:
 		};
 	}
 };
+
+template <> struct shape <struct textured_quad_2D>
+{
+	shape(void) = default;
+
+	auto operator()(model_handler & handler, model_data & data, u32 index) const -> void;
+private:
+	auto create_vertices(void) const -> std::vector<glm::vec2>
+	{
+		return std::vector<glm::vec2>
+		{
+			glm::vec2(-1.0f, -1.0f), glm::vec2(0.0f, 0.0f),
+			glm::vec2(-1.0f, +1.0f), glm::vec2(0.0f, 1.0f),
+			glm::vec2(+1.0f, -1.0f), glm::vec2(1.0f, 0.0f),
+			glm::vec2(+1.0f, +1.0f), glm::vec2(1.0f, 1.0f)
+		};
+	}
+};
