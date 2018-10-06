@@ -3,6 +3,8 @@
 #include "ecs.h"
 #include "../detail.h"
 #include "../input_handler.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 template <> class component <struct basic_key_control> : public icomponent
 {
@@ -28,7 +30,12 @@ public:
 		if (inputs->got_key(GLFW_KEY_SPACE)) move(up, ent.vel, td, ent);
 		if (inputs->got_key(GLFW_KEY_LEFT_SHIFT)) move(-up, ent.vel, td, ent);
 
-		ent.pos += ent.vel * td;
+		if (inputs->got_key(GLFW_KEY_T))
+		{
+			printf("%f     %s\n", 1.0f / td, glm::to_string(ent.vel).c_str());
+		}
+
+		ent.pos += ent.vel;
 
 		ent.vel = glm::vec3(0);
 	};
@@ -36,6 +43,6 @@ public:
 private:
 	auto move(glm::vec3 const & dir, glm::vec3 & vel, f32 td, entity_data const & data) -> void
 	{
-		vel += dir * data.speed;
+		vel += dir * data.speed * td;
 	}
 };

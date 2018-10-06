@@ -159,7 +159,7 @@ private:
 	{
 		shaders.attach(shader(GL_VERTEX_SHADER, "shadow/shadow_vsh.shader"));
 		shaders.attach(shader(GL_FRAGMENT_SHADER, "shadow/shadow_fsh.shader"));
-		shaders.link("vertex_position");
+		shaders.link("vertex_position", "transform_matrix");
 	}
 	auto create_light_view_matrix(glm::vec3 const & light_dir) -> void
 	{

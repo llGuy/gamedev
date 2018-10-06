@@ -76,4 +76,14 @@ public:
 		bin_stack.push(at);
 		--size;
 	}
+
+	auto begin(void)
+	{
+		return list.begin();
+	}
+
+	auto end(void)
+	{
+		return list.end();
+	}
 };

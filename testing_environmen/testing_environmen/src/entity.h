@@ -27,9 +27,13 @@ public:
 	{
 		component_system.update_only<T>(td, entities, [this, &render_main](i32 other)
 		{
-			if (other == entity_camera.bound_entity())
+			if (render_main)
 			{
-				return render_main;
+				if (other == entity_camera.bound_entity())
+				{
+					return true;
+				}
+				else return false;
 			}
 			else return true;
 		});

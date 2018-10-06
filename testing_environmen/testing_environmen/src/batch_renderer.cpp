@@ -6,7 +6,7 @@ batch_renderer::batch_renderer(void)
 	: size(0), max(10)
 {
 	data_buffer.create();
-	data_buffer.fill<void>(max, nullptr, GL_DYNAMIC_DRAW, GL_ARRAY_BUFFER);
+	data_buffer.fill<void>(max * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW, GL_ARRAY_BUFFER);
 }
 
 auto batch_renderer::prepare_model_vao(vertex_layout & layout) -> void
@@ -33,12 +33,12 @@ auto batch_renderer::submit(glm::mat4 const & transform) -> void
 	}
 }
 
-auto batch_renderer::render_indices(vertex_layout & vao, buffer & indices, GLenum mode, u32 prim_count, u32 index_count) -> void
+auto batch_renderer::render_indices(vertex_layout & vao, buffer & indices, GLenum mode, u32 index_count) -> void
 {
 	vao.bind();
 	indices.bind(GL_ELEMENT_ARRAY_BUFFER);
 
-	glDrawElementsInstanced(mode, index_count, GL_UNSIGNED_INT, nullptr, prim_count);
+	glDrawElementsInstanced(mode, index_count, GL_UNSIGNED_INT, nullptr, size);
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();

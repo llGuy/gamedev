@@ -126,6 +126,10 @@ namespace cs {
 		{
 			return components[comp_at];
 		}
+		auto size(void) -> u32
+		{
+			return components.vec_size();
+		}
 	public:
 		template <typename ... Args> auto add(Args && ... constr_args) -> i32
 		{

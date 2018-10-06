@@ -23,7 +23,12 @@ public:
 
 	auto submit(glm::mat4 const & transform) -> void;
 
-	auto render_indices(vertex_layout & vao, buffer & indices, GLenum mode, u32 prim_count, u32 index_count) -> void;
+	auto render_indices(vertex_layout & vao, buffer & indices, GLenum mode, u32 index_count) -> void;
 
 	auto flush(void) -> void;
+
+	inline auto contains_objects(void) -> bool
+	{
+		return size > 0;
+	}
 };

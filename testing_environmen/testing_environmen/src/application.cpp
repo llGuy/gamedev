@@ -79,6 +79,7 @@ auto application::init(void) -> void
 		model_loader.create_model("tree1");
 		model_loader.create_model("tree2");
 		model_loader.create_model("tree3");
+		model_loader.create_model("tree4");
 
 		model_loader.create_model("rock1");
 		model_loader.create_model("rock2");
@@ -90,6 +91,7 @@ auto application::init(void) -> void
 		model_loader.load_model("res/models/tree.obj", "tree1");
 		model_loader.load_model("res/models/tree2.obj", "tree2");
 		model_loader.load_model("res/models/tree3.obj", "tree3");
+		model_loader.load_model("res/models/tree4.obj", "tree4");
 		model_loader.load_model("res/models/rock.obj", "rock1");
 		model_loader.load_model("res/models/rock2.obj", "rock2");
 		model_loader.load_model("res/models/round.obj", "sphere");
@@ -107,23 +109,30 @@ auto application::init(void) -> void
 		entities.create(appl_window.user_inputs(), shadows.get_shaders(), "sphere", traces, puffs, model_loader);
 
 		/* trees */
-		//add_entity(glm::vec3(-30.0f, 0.0f, -30.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "tree1");
 		add_entity(glm::vec3(30.0f, 0.0f, 30.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f), "tree1");
 		add_entity(glm::vec3(80.0f, 0.0f, -65.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "tree3");
 		add_entity(glm::vec3(-50.0f, 0.0f, -50.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(4.0f), "tree3");
 		add_entity(glm::vec3(-50.0f, 0.0f, 55.0f), glm::vec3(0.2f, 0.0f, 1.0f), glm::vec3(15.0f), "tree1");
-
+		/* even more trees */
+		add_entity(glm::vec3(-100.0f, 0.0f, -80.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f), "tree1");
+		add_entity(glm::vec3(80.0f, 0.0f, 95.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(4.0f), "tree4");
+		add_entity(glm::vec3(-50.0f, 0.0f, 90.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(4.0f), "tree3");
+		add_entity(glm::vec3(-50.0f, 0.0f, -95.0f), glm::vec3(0.2f, 0.0f, 1.0f), glm::vec3(6.0f), "tree4");
 		/* rocks */
 		add_entity(glm::vec3(-8.0f, 0.0f, 7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock1");
 		add_entity(glm::vec3(8.0f, 0.0f, -7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock2");
 		add_entity(glm::vec3(-2.0f, 0.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(4.0f, 3.0f, 3.0f), "rock2");
 		add_entity(glm::vec3(-15.0f, 0.0f, -11.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(2.0f), "rock2");
-
 		/* more rocks */
 		add_entity(glm::vec3(-28.0f, 0.0f, 27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(6.0f), "rock1");
 		add_entity(glm::vec3(28.0f, 0.0f, -27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(8.0f), "rock2");
 		add_entity(glm::vec3(-22.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f, 3.0f, 3.0f), "rock2");
 		add_entity(glm::vec3(-95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock1");
+		/* even more rocks */
+		add_entity(glm::vec3(-48.0f, 0.0f, 47.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(6.0f, 4.0f, 5.0f), "rock1");
+		add_entity(glm::vec3(48.0f, 0.0f, -47.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(8.0f, 4.0f, 6.0f), "rock2");
+		add_entity(glm::vec3(-22.0f, 0.0f, -52.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f, 5.0f, 7.0f), "rock2");
+		add_entity(glm::vec3(+95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock2");
 
 		create_textures();
 
@@ -206,11 +215,13 @@ auto application::render(void) -> void
 
 		entities.update_only<graphics>();
 
+		model_loader.batch_render_all();
+
 		default_target.blit();
 		default_target.bind();
 
 		render_depth();
-		render_color();
+		//render_color();
 
 		/* rendering the blur stages */
 		i32 window_width = appl_window.pixel_width();
@@ -243,6 +254,8 @@ auto application::render(void) -> void
 		guis.render(model_loader);
 
 		glEnable(GL_DEPTH_TEST);
+
+		model_loader.batch_flush_all();
 
 	}
 	catch (xcp::gl_xcp const & exception)
@@ -317,7 +330,6 @@ auto application::update(void) -> void
 
 	traces.clear();
 	appl_window.refresh();
-	entities.update(elapsed);
 	puffs.update(elapsed);
 	auto & cam = entities.cam();
 
@@ -358,6 +370,8 @@ auto application::update(void) -> void
 	if (inputs.got_key(GLFW_KEY_G))
 		printf("%f\n", 1.0f / time_handler.elapsed());
 
+	entities.update(time_handler.elapsed());
+
 	time_handler.reset();
 }
 
@@ -388,6 +402,7 @@ auto application::render_depth(void) -> void
 	auto & fbo = shadows.get_fbo();
 	auto shaders = shadows.get_shaders();
 	fbo.bind();
+
 	clear(GL_DEPTH_BUFFER_BIT, 1, 1, 1);
 
 	shaders.bind();
@@ -399,33 +414,9 @@ auto application::render_depth(void) -> void
 
 	shaders.send_uniform_mat4("vp", glm::value_ptr(mv), 1);
 
-	glm::mat4 plat_translation = glm::mat4(1);
-	shaders.send_uniform_mat4("model_matrix", glm::value_ptr(plat_translation), 1);
-
-	f32 scale = 5.0f;
-
-	glm::vec3 cam_pos = entities.cam().pos();
-
-	glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
-		glm::scale(glm::vec3(scale, 1.0f, scale));
-
-	shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
-	model_loader.render("mesh");
-
-	traces.render(shadows.get_projection(), shadows.get_light_view());
-
-	quad_3D_shaders.bind();
-	quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(shadows.get_projection()), 1);
-	quad_3D_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(shadows.get_light_view()), 1);
-	puffs.render(quad_3D_shaders, "model_matrix", "color", "sphere", model_loader);
-	
-	//render_pass_data data{ shadows.get_projection(), shadows.get_light_view(), 
-		//shadow_bias, light_position, entities.cam().pos(), shadows.get_depth_map(), low_poly_map };
-
-	//model_loader.prepare(data);
-
-	shaders.bind();
-	entities.update_only<depth>();
+	/* submit depth of the main players model */
+	entities.render<depth>(true);
+	model_loader.batch_render_all_raw();
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }

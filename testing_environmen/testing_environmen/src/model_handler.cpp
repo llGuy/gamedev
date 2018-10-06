@@ -12,6 +12,7 @@ model_handler::model_handler(void)
 
 auto model_handler::init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, glm::mat4 & shadow_bias) -> void
 {
+	data_system.add_system<batch_rendering_component>(20);
 	data_system.add_system<texture_buffer_component>(20);
 	data_system.add_system<vertex_buffer_component>(20);
 	data_system.add_system<normal_buffer_component>(20);
@@ -24,7 +25,7 @@ auto model_handler::init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, g
 	model_shaders.attach(shader(GL_GEOMETRY_SHADER, gsh_dir));
 	model_shaders.attach(shader(GL_FRAGMENT_SHADER, fsh_dir));
 
-	model_shaders.link("vertex_position", "vertex_normal", "texture_coords");
+	model_shaders.link("vertex_position", "vertex_normal", "texture_coords", "transform_matrix");
 
 	model_shaders.bind();
 
@@ -42,6 +43,7 @@ auto model_handler::prepare(render_pass_data & args) -> void
 	model_shaders.send_uniform_mat4("shadow_bias", glm::value_ptr(args.shadow_bias), 1);
 	model_shaders.send_uniform_vec3("light_position", glm::value_ptr(args.light_position), 1);
 	model_shaders.send_uniform_vec3("camera_pos", glm::value_ptr(args.camera_pos), 1);
+	model_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(detail::identity_matrix), 1);
 
 	args.diffuse.bind(GL_TEXTURE_2D, 0);
 	args.depth_map.bind(GL_TEXTURE_2D, 1);
@@ -49,7 +51,7 @@ auto model_handler::prepare(render_pass_data & args) -> void
 
 auto model_handler::render_model(std::string const & name, glm::mat4 & model_matrix) -> void
 {
-	model_shaders.bind();
+	/*model_shaders.bind();
 	model_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(model_matrix), 1);
 
 	u32 instance = get_model_index(name);
@@ -65,7 +67,50 @@ auto model_handler::render_model(std::string const & name, glm::mat4 & model_mat
 	glDrawElements(obj.get_data().primitive, obj.get_data().count, GL_UNSIGNED_INT, nullptr);
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
-	unbind_vertex_layouts();
+	unbind_vertex_layouts();*/
+
+	u32 instance = get_model_index(name);
+
+	auto & obj = models[instance];
+	auto & data = obj.get_data();
+	
+	auto & renderer = get_component<batch_rendering_component>(name).value;
+	renderer.submit(model_matrix);
+}
+
+auto model_handler::batch_render_all(void) -> void
+{
+	model_shaders.bind();
+
+	batch_render_all_raw();
+}
+
+auto model_handler::batch_render_all_raw(void) -> void
+{
+	/* loop through all batch renderers and instance render objects */
+	for (u32 i = 0; i < models.vec_size(); ++i)
+	{
+		auto & obj_data = models[i].get_data();
+
+		if (models[i].has_component<batch_rendering_component>())
+		{
+			auto & renderer = get_component<batch_rendering_component>(i).value;
+
+			if (renderer.contains_objects())
+				renderer.render_indices(obj_data.vao,
+					get_buffer<index_buffer_component>(i), GL_TRIANGLES, obj_data.count);
+		}
+	}
+}
+
+auto model_handler::batch_flush_all(void) -> void
+{
+	auto & batch_system = data_system.get_system<batch_rendering_component>();
+
+	for (u32 i = 0; i < batch_system.size(); ++i)
+	{
+		batch_system[i].value.value.flush();
+	}
 }
 
 auto model_handler::render(std::string const & name) -> void
@@ -96,7 +141,6 @@ auto model_handler::create_model(std::string const & name, bool batch) -> void
 	u32 index = models.vec_size();
 
 	model_prototype proto;
-	proto.get_data().renderer = new batch_renderer;
 
 	models.add(model_prototype());
 
@@ -247,4 +291,10 @@ auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<
 	models[instance].get_data().primitive = GL_TRIANGLES;
 
 	unbind_vertex_layouts();
+
+	batch_renderer renderer;
+
+	renderer.prepare_model_vao(layout);
+
+	add_component<batch_rendering_component>(instance, renderer);
 }

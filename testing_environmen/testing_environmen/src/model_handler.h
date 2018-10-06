@@ -48,10 +48,8 @@ namespace xcp {
 
 }
 
-
-
 /* all models have a vertex layout and count */
-struct model_data { vertex_layout vao; u32 count; GLenum primitive; batch_renderer * renderer; };
+struct model_data { vertex_layout vao; u32 count; GLenum primitive; };
 
 using model_prototype = cs::object<model_data>;
 
@@ -62,6 +60,8 @@ struct color_buffer_component { buffer value; };
 struct texture_buffer_component { buffer value; };
 struct index_buffer_component { buffer value; };
 struct texture_component { texture value; u32 point; };
+struct batch_rendering_component { batch_renderer value; };
+/* most models will have a batch renderer */
 
 struct render_pass_data
 {
@@ -117,6 +117,13 @@ public:
 
 	auto render_model(std::string const & name, glm::mat4 & model_matrix) -> void;
 
+	auto batch_render_all(void) -> void;
+
+	/* without binding to shader */
+	auto batch_render_all_raw(void) -> void;
+
+	auto batch_flush_all(void) -> void;
+
 	template <typename T> auto load_static_model(T const & shape, std::string const & name) -> void
 	{
 		u32 instance = get_model_index(name);
@@ -169,6 +176,11 @@ public:
 		u32 instance = get_model_index(model_name);
 
 		return data_system.get_component<T>(instance).value;
+	}
+
+	template <typename T> auto get_component(u32 index) -> T &
+	{
+		return data_system.get_component<T>(index).value;
 	}
 
 	template <typename T> auto create_buffer(std::vector<T> & data, GLenum target) -> buffer
