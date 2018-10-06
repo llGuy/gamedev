@@ -102,6 +102,9 @@
     <ClCompile Include="src\static_models.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\batch_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h">
@@ -288,6 +291,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\batch_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

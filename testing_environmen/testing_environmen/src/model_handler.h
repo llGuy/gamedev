@@ -15,6 +15,7 @@
 
 #include "vao.h"
 #include "buffer.h"
+#include "batch_renderer.h"
 #include "shader_program.h"
 
 
@@ -50,7 +51,7 @@ namespace xcp {
 
 
 /* all models have a vertex layout and count */
-struct model_data { vertex_layout vao; u32 count; GLenum primitive; };
+struct model_data { vertex_layout vao; u32 count; GLenum primitive; batch_renderer * renderer; };
 
 using model_prototype = cs::object<model_data>;
 
@@ -83,6 +84,8 @@ private:
 	char const * fsh_dir = "model_shaders/fsh.shader";
 
 private:
+	friend class batch_renderer;
+
 	bool check_xcp;
 
 	/* models don't need any data */
@@ -101,7 +104,7 @@ public:
 
 	auto init(glm::mat4 & projection_matrix, glm::vec3 & light_pos, glm::mat4 & shadow_bias) -> void;
 
-	auto create_model(std::string const & name) -> void;
+	auto create_model(std::string const & name, bool create_batch = false) -> void;
 
 	auto get_data(std::string const & name) -> model_data &;
 
@@ -176,7 +179,8 @@ public:
 
 		return gpu_buffer;
 	}
-private:
+
+public:
 	auto get_model_index(std::string const & name) -> u32;
 };
 

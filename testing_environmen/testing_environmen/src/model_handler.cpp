@@ -91,9 +91,13 @@ auto model_handler::render(std::string const & name) -> void
 	unbind_vertex_layouts();
 }
 
-auto model_handler::create_model(std::string const & name) -> void
+auto model_handler::create_model(std::string const & name, bool batch) -> void
 {
 	u32 index = models.vec_size();
+
+	model_prototype proto;
+	proto.get_data().renderer = new batch_renderer;
+
 	models.add(model_prototype());
 
 	map_model_locs[name] = index;

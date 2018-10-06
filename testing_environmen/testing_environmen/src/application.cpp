@@ -93,6 +93,7 @@ auto application::init(void) -> void
 		model_loader.load_model("res/models/rock.obj", "rock1");
 		model_loader.load_model("res/models/rock2.obj", "rock2");
 		model_loader.load_model("res/models/round.obj", "sphere");
+
 		terrain_dimensions = 100;
 
 		/*model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
@@ -240,8 +241,6 @@ auto application::render(void) -> void
 		auto & tex2 = dof_stage.output();
 		tex2.bind(GL_TEXTURE_2D, 0);
 		guis.render(model_loader);
-
-//		render_depth_gui();
 
 		glEnable(GL_DEPTH_TEST);
 
