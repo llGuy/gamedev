@@ -2,13 +2,11 @@
 
 #include "../../api/api.h"
 #include "../mesh/mesh_handler.h"
-
+/*
 struct render_func
 {
 private:
-	/* some data */
 public:
-	/* renders */
 	virtual auto draw(mesh_handler & mh) -> void = 0;
 };
 
@@ -57,4 +55,4 @@ public:
 
 		unbind_vertex_layouts();
 	}
-};
+};*/

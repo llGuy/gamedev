@@ -28,19 +28,20 @@ auto mesh_handler::create_mesh(std::string const & name) -> void
 	map_model_locs[name] = index;
 }
 
-auto mesh_handler::create_render_func(std::string const & name) -> std::unique_ptr<render_func>
+/*auto mesh_handler::create_render_func(std::string const & name) -> std::unique_ptr<render_func>
 {
 	auto & mesh = models[get_mesh_index(name)];
 
 	if (mesh.has_component<index_buffer_component>())
 	{
-		return std::make_unique<render_indices>(render_indices{name});
+		//return std::make_unique<render_indices>(render_indices{name});
 	}
 	else
 	{
-		return std::make_unique<render_func>(render_arrays{name});
+		//return std::make_unique<render_func>(render_arrays{name});
 	}
-}
+	
+}*/
 
 auto mesh_handler::get_data(std::string const & instance) -> mesh_data &
 {
