@@ -51,24 +51,6 @@ auto model_handler::prepare(render_pass_data & args) -> void
 
 auto model_handler::render_model(std::string const & name, glm::mat4 & model_matrix) -> void
 {
-	/*model_shaders.bind();
-	model_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(model_matrix), 1);
-
-	u32 instance = get_model_index(name);
-
-	auto & obj = models[instance];
-
-	auto & vao = obj.get_data().vao;
-	auto & index_buffer = get_buffer<index_buffer_component>(instance);
-
-	vao.bind();
-	index_buffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-
-	glDrawElements(obj.get_data().primitive, obj.get_data().count, GL_UNSIGNED_INT, nullptr);
-
-	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
-	unbind_vertex_layouts();*/
-
 	u32 instance = get_model_index(name);
 
 	auto & obj = models[instance];

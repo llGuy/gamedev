@@ -18,8 +18,6 @@
 #include "batch_renderer.h"
 #include "shader_program.h"
 
-
-
 namespace xcp {
 
 	class model_access_error : public gl_xcp
@@ -75,6 +73,7 @@ struct render_pass_data
 	texture diffuse;
 };
 
+/* handles models' data */
 class model_handler
 {
 private:

@@ -5,11 +5,13 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec3 pass_world_position[];
 in vec4 shadow_coord[];
+in vec3 pass_color[];
 
 out vec3 world_pos;
 out vec3 light_vector;
 out vec3 normal;
 out vec4 shadow;
+out vec3 color;
 
 uniform vec3 camera_pos;
 uniform vec3 light_position;
@@ -29,9 +31,10 @@ void main(void)
 
 		//normal = calculate_normal(i, (i + 1) % 3, (i + 2) % 3);
 		normal = calculate_normal(0, 1, 2);
-		light_vector = normalize(light_position - pass_world_position[i]);
+		light_vector = normalize(light_position - pass_world_position[0]);
 		shadow = shadow_coord[i];
 		world_pos = pass_world_position[i];
+		color = pass_color[2];
 
 		EmitVertex();
 	}

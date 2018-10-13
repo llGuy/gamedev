@@ -1,9 +1,10 @@
 #pragma once
 
+#include <utility>
+
 #include "model_handler.h"
 #include "types.h"
 #include <vector>
-
 
 template <typename T, typename> struct shape;
 
@@ -33,21 +34,26 @@ template <typename G> struct shape <struct mesh, G>
 		data.vao.create();
 		data.vao.bind();
 
-		attribute vertex_att{ GL_FLOAT, 3, GL_FALSE, sizeof(glm::vec3), nullptr, false };
+		attribute vertex_att{ GL_FLOAT, 3, GL_FALSE, sizeof(glm::vec3), nullptr };
+		attribute color_att{ GL_FLOAT, 3, GL_FALSE, sizeof(glm::vec3), 
+			(void *)(sizeof(glm::vec3) * width * dep), std::optional<i32>(1) };
 
-		data.vao.attach(vertex_buffer, vertex_att);
+		data.vao.attach(vertex_buffer, vertex_att, color_att);
 
 		unbind_vertex_layouts();
 
 		handler.add_component<vertex_buffer_component>(index, vertex_buffer);
 		handler.add_component<index_buffer_component>(index, index_buffer);
-		handler.add_component<vertices_component>(index, std::move(vertices));
 	}
 private:
 	auto create_vertices(void) const -> std::vector<glm::vec3>
 	{
+		glm::vec3 two_colors[]{ 
+			glm::vec3(13.0f, 174.0f, 4.0f) / 255.0f,
+		glm::vec3(103.0f, 179.0f, 0.1f) / 255.0f };
+
 		std::vector<glm::vec3> vertices;
-		vertices.reserve(width * dep);
+		vertices.reserve(width * dep + (width - 1) * (dep - 1));
 
 		for (i32 zi = 0; zi < dep; ++zi)
 		{
@@ -57,6 +63,16 @@ private:
 				f32 z = static_cast<f32>(zi);
 
 				vertices.push_back(glm::vec3(x, generator(glm::vec2(x, z)), z));
+			}
+		}
+
+		for (i32 zi = 0; zi < dep - 1; ++zi)
+		{
+			for (i32 xi = 0; xi < width - 1; ++xi)
+			{
+				u32 which = (rand() % 10 > 3);
+
+				vertices.push_back(two_colors[which]);
 			}
 		}
 

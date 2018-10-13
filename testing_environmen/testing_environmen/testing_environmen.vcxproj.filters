@@ -296,6 +296,9 @@
     <ClInclude Include="src\batch_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\layers\layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\quad_3D_vsh.shader" />

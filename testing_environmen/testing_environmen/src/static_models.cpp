@@ -4,11 +4,13 @@
 auto shape<cube>::operator()(model_handler & handler, model_data & data, u32 index) const -> void
 {
 	std::vector<glm::vec3> verts = create_vertices();
+
 	buffer vertex_buffer;
 	vertex_buffer.create();
 	vertex_buffer.fill(verts.size() * sizeof(glm::vec3), verts.data(), GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 
 	std::vector<u32> indices = create_indices();
+
 	buffer index_buffer;
 	index_buffer.create();
 	index_buffer.fill(indices.size() * sizeof(u32), indices.data(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);

@@ -25,7 +25,7 @@ application::application(i32 w, i32 h)
 	light_position(10000.0f, 40000.0f, 10000.0f),
 	blur_stages{ blur_stage{1, 2}, blur_stage{4, 6} }, max_fps(120.0f)
 {
-	srand((int)time(NULL));
+	srand(14398);
 	projection_matrix = glm::perspective(glm::radians(60.0f), (float)w / h, 0.1f, 100000.0f);
 }
 
@@ -68,7 +68,7 @@ auto application::init(void) -> void
 		quad_3D_shaders.attach(shader(GL_VERTEX_SHADER, "quad_3D_vsh.shader"));
 		quad_3D_shaders.attach(shader(GL_GEOMETRY_SHADER, "quad_3D_gsh.shader"));
 		quad_3D_shaders.attach(shader(GL_FRAGMENT_SHADER, "quad_3D_fsh.shader"));
-		quad_3D_shaders.link("vertex_position");
+		quad_3D_shaders.link("vertex_position", "vertex_color");
 
 		quad_3D_shaders.bind();
 		quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(projection_matrix), 1);
@@ -96,13 +96,13 @@ auto application::init(void) -> void
 		model_loader.load_model("res/models/rock2.obj", "rock2");
 		model_loader.load_model("res/models/round.obj", "sphere");
 
-		terrain_dimensions = 100;
+		terrain_dimensions = 20;
 
-		/*model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
-			perlin_noise_generator(terrain_dimensions, terrain_dimensions, 10.0f, 1.0f)), "mesh"); */
+		model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
+			perlin_noise_generator(terrain_dimensions, terrain_dimensions, 5.f, 1.0f)), "mesh");
 
-		model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
-			static_noise_generator()), "mesh");
+		//model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
+			//static_noise_generator()), "mesh");
 
 		model_loader.load_static_model(shape<textured_quad_2D>(), "2D quad");
 
@@ -170,7 +170,6 @@ auto application::render(void) -> void
 {
 	try
 	{
-
 		default_target.bind_aa();
 
 		clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, 1.0f, 1.0f, 1.0f);
@@ -191,16 +190,15 @@ auto application::render(void) -> void
 		quad_3D_shaders.send_uniform_mat4("projection_matrix", glm::value_ptr(projection_matrix), 1);
 		quad_3D_shaders.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
 
-		quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color), 1);
-
-		f32 scale = 5.0f;
+		f32 scale = 15.0f;
 
 		glm::vec3 cam_pos = entities.cam().pos();
 
 		glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
-			glm::scale(glm::vec3(scale, 1.0f, scale));
+			glm::scale(glm::vec3(scale, scale, scale));
 		quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color2), 1);
 		quad_3D_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
+
 		model_loader.render("mesh");
 
 		traces.render(projection_matrix, view_matrix);
@@ -221,7 +219,6 @@ auto application::render(void) -> void
 		default_target.bind();
 
 		render_depth();
-		//render_color();
 
 		/* rendering the blur stages */
 		i32 window_width = appl_window.pixel_width();
@@ -256,7 +253,6 @@ auto application::render(void) -> void
 		glEnable(GL_DEPTH_TEST);
 
 		model_loader.batch_flush_all();
-
 	}
 	catch (xcp::gl_xcp const & exception)
 	{
@@ -299,12 +295,12 @@ auto application::render_color(void) -> void
 
 	quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color), 1);
 
-	f32 scale = 5.0f;
+	f32 scale = 10.0f;
 
 	glm::vec3 cam_pos = entities.cam().pos();
 
 	glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
-		glm::scale(glm::vec3(scale, 1.0f, scale));
+		glm::scale(glm::vec3(scale, scale, scale));
 
 	quad_3D_shaders.send_uniform_vec3("color", glm::value_ptr(color2), 1);
 	quad_3D_shaders.send_uniform_mat4("model_matrix", glm::value_ptr(translation2), 1);
@@ -417,6 +413,12 @@ auto application::render_depth(void) -> void
 	/* submit depth of the main players model */
 	entities.render<depth>(true);
 	model_loader.batch_render_all_raw();
+
+	f32 scale = 10.0f;
+//	glm::mat4 translation2 = glm::translate(glm::vec3(-terrain_dimensions, 0.0f, -terrain_dimensions) / 2.0f * scale) *
+//		glm::scale(glm::vec3(scale, 1.0f, scale));
+//	shaders.send_uniform_mat4();
+//	model_loader.render("mesh");
 
 	unbind_all_framebuffers(appl_window.pixel_width(), appl_window.pixel_height());
 }

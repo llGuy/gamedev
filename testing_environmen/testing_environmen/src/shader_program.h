@@ -32,7 +32,7 @@ namespace xcp {
 
 			std::ostringstream str;
 
-			str << gl_xcp::what() << " : ";
+			str << gl_xcp::what() << " : \n";
 			for (auto file : file_names)
 			{
 				str << "\t - " << file << '\n';
