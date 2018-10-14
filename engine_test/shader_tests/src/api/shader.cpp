@@ -2,6 +2,8 @@
 #include <fstream>
 #include "shader.h"
 
+char const * glsl_shader::version = "#version 400\n";
+
 glsl_shader::glsl_shader(GLenum type)
 	: shader_type(type)
 {
@@ -17,6 +19,9 @@ auto glsl_shader::compile(std::string const & dbg_name) -> void
 	id = glCreateShader(shader_type);
 
 	std::vector<char const *> srcs_raw;
+	
+	srcs_raw.push_back(version);
+
 	for (auto & src : srcs) srcs_raw.push_back(src.c_str());
 
 	glShaderSource(id, srcs_raw.size(), srcs_raw.data(), 0);

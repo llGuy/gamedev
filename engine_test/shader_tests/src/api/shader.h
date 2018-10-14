@@ -9,6 +9,8 @@
 class glsl_shader
 {
 private:
+	static char const * version;
+
 	u32 id;
 
 	GLenum shader_type;

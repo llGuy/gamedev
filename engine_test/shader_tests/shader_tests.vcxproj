@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -26,10 +26,15 @@
     <ClCompile Include="src\api\texture.cpp" />
     <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\app\application.cpp" />
+    <ClCompile Include="src\entity\camera.cpp" />
+    <ClCompile Include="src\entity\entity_handler.cpp" />
     <ClCompile Include="src\graphics\mesh\mesh_handler.cpp" />
     <ClCompile Include="src\graphics\renderer\basic_renderer.cpp" />
+    <ClCompile Include="src\graphics\renderer\render_func.cpp" />
     <ClCompile Include="src\graphics\shader\shader_mapper.cpp" />
     <ClCompile Include="src\io\io.cpp" />
+    <ClCompile Include="src\lighting\light_handler.cpp" />
+    <ClCompile Include="src\time\timer.cpp" />
     <ClCompile Include="src\win\input_handler.cpp" />
     <ClCompile Include="src\win\window.cpp" />
   </ItemGroup>
@@ -43,6 +48,11 @@
     <ClInclude Include="src\app\application.h" />
     <ClInclude Include="src\data\component_system.h" />
     <ClInclude Include="src\data\vec_dd.h" />
+    <ClInclude Include="src\entity\camera.h" />
+    <ClInclude Include="src\entity\ecs.h" />
+    <ClInclude Include="src\entity\entity_handler.h" />
+    <ClInclude Include="src\entity\key_control.h" />
+    <ClInclude Include="src\entity\mouse_control.h" />
     <ClInclude Include="src\graphics\graphics.h" />
     <ClInclude Include="src\graphics\mesh\component_types.h" />
     <ClInclude Include="src\graphics\mesh\mesh.h" />
@@ -53,9 +63,13 @@
     <ClInclude Include="src\graphics\renderer\render_func.h" />
     <ClInclude Include="src\graphics\shader\shader_properties.h" />
     <ClInclude Include="src\graphics\shader\shader_mapper.h" />
+    <ClInclude Include="src\graphics\target\layer.h" />
     <ClInclude Include="src\io\io.h" />
+    <ClInclude Include="src\lighting\light_handler.h" />
+    <ClInclude Include="src\lighting\light_info.h" />
     <ClInclude Include="src\math\math.h" />
     <ClInclude Include="src\shaders\master2D_vsh.shader" />
+    <ClInclude Include="src\time\timer.h" />
     <ClInclude Include="src\utils\detail.h" />
     <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\utils\types.h" />

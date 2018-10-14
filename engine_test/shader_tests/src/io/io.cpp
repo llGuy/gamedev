@@ -15,8 +15,6 @@ auto extract_file(std::string const & dir) -> std::string
 
 auto extract_png(std::string const & dir) -> image
 {
-	stbi_set_flip_vertically_on_load(1);
-
 	i32 w, h, num_comp;
 	auto * data = stbi_load(dir.c_str(), &w, &h, &num_comp, 4);
 	return image{ data, w, h };

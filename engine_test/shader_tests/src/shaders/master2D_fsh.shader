@@ -1,5 +1,3 @@
-#version 400
-
 layout(location = 0) out vec4 final_color;
 
 in struct 

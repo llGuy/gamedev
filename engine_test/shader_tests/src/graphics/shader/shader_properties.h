@@ -11,9 +11,9 @@ enum class shader_property : u32
 
 constexpr std::array<char const *, static_cast<u32>(shader_property::invalid)> property_map
 {
-	"#define USES_COLOR", 
-	"#define USES_STATIC_NORMALS", 
-	"#define USES_TEXTURE", 
-	"#define USES_DYNAMIC_NORMALS", 
-	"#define LINKED_TO_GSH"
+	"#define USES_COLOR\n", 
+	"#define USES_STATIC_NORMALS\n", 
+	"#define USES_TEXTURE\n", 
+	"#define USES_DYNAMIC_NORMALS\n", 
+	"#define LINKED_TO_GSH\n"
 };

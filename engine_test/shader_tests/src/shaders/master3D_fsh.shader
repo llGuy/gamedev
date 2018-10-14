@@ -1,23 +1,34 @@
-#version 400
+layout(location = 0) out vec4 final_color;
 
-layout(location = 0) vec4 final_color;
+/* determine whether is linked to gsh or not */
+#ifdef LINKED_TO_GSH
 
-struct input_prev
+in struct input_prev
 {
 	vec3 vertex_position;
 
 	vec3 vertex_color;
 
-	vec3 texture_coords;
+	vec2 texture_coords;
 
 	vec3 vertex_normal;
-};
+}
+geometry_out;
 
-/* determine whether is linked to gsh or not */
-#ifdef LINKED_TO_GSH
-in struct input_prev geometry_out;
 #else
-in struct input_prev vertex_out;
+
+in struct input_prev
+{
+	vec3 vertex_position;
+
+	vec3 vertex_color;
+
+	vec2 texture_coords;
+
+	vec3 vertex_normal;
+} 
+vertex_out;
+
 #endif
 
 uniform sampler2D diffuse;
@@ -25,10 +36,16 @@ uniform sampler2D diffuse;
 void main(void)
 {
 #ifdef LINKED_TO_GSH
-	input_prev input = geometry_out;
+	input_prev input_data = geometry_out;
 #else
-	input_prev input = vertex_out;
+	input_prev input_data = vertex_out;
 #endif
 
-	final_color = texture(diffuse, input.texture_coords);
+#ifdef USES_TEXTURE
+	final_color = texture(diffuse, input_data.texture_coords);
+#endif
+
+#ifdef USES_COLOR
+	final_color = vec4(input_data.vertex_color, 1.0f);
+#endif
 }

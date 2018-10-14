@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "application.h"
@@ -18,13 +20,19 @@ auto application::init(void) -> void
 		glfw_init();
 
 		display.init(false);
+		display.launch_input_handler();
+
+		display.set_window_input_mode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glew_init();
 
-		init_meshes();
+		init_data();
 		init_shaders();
+		init_meshes();
 
 		is_running = true;
+
+		timer.start();
 	}
 	catch (xcp::gl_xcp const & exception)
 	{
@@ -41,14 +49,21 @@ auto application::render(void) -> void
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-	vao.bind();
+	auto view_matrix = entities.get_camera().matrix();
+
+	auto program = shaders[shader_handle("3D shader")];
+	program.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
+
 	tex.bind(GL_TEXTURE_2D, 0);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	renderer.render(program, meshes);
 }
 
 auto application::update(void) -> void
 {
 	display.refresh();
+
+	entities.update(timer.elapsed());
+	timer.reset();
 
 	is_running = display.is_open();
 }
@@ -60,54 +75,51 @@ auto application::running(void) -> bool
 
 auto application::init_meshes(void) -> void
 {
-	f32 vertices[]
-	{
-		-1.0f, -1.0f, 0.0f,    0.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,     0.0f, 1.0f,
-		1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
+	auto image = extract_png("res/textures/low_poly.png");
 
-        1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
-		-1.0f, 1.0f, 0.0f,     0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f,      1.0f, 1.0f
-	};
+	tex.create();
+	tex.bind(GL_TEXTURE_2D);
+	tex.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, image.data, image.w, image.h);
 
-	buffer vbo;
-	vbo.create();
-	vbo.fill(sizeof vertices, vertices, GL_STATIC_DRAW, GL_ARRAY_BUFFER);
-
-	vao.create();
-	vao.bind();
-
-	attribute vertex_att(0, GL_FLOAT, 3, GL_FALSE, 5 * sizeof(f32), nullptr);
-	attribute color_att(2, GL_FLOAT, 2, GL_FALSE, 5 * sizeof(f32), (void *)(sizeof(glm::vec3)));
-	vao.attach(vbo, vertex_att, color_att);
-
-	auto image = extract_png("res/textures/texture_test.png");
-	create_color_texture(tex, image.w, image.h, image.data);
-
-
+	tex.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	tex.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	meshes.init();
 
+	shaders.init();
+
+	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
+
+
+	/* process to creating a mesh : 
+	-  create the handle for the mesh e.g. name ...
+	-  load the model which will return a "shader handle" 
+	-  set the name for the shader that you want to use for the handle 
+	-  create the program with the handle (which will have all the properties selected) */
 	meshes.create_mesh("icosphere");
 	/* loads contents of ico.obj to the mesh "icosphere" */
 	shader_handle handle = meshes.load_mesh("res/models/ico.obj", "icosphere");
+	handle.set_name("3D shader");
 	shaders.create_program(handle, "3D");
+
+
+	auto program = shaders[shader_handle("3D shader")];
+	program.bind();
+	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
+	program.send_uniform_mat4("view_matrix", glm::value_ptr(detail::identity_matrix), 1);
+
+	auto func = meshes.create_render_func("icosphere");
+	renderer.set(func);
+
+	renderer.submit(detail::identity_matrix);
+}
+
+auto application::init_data(void) -> void
+{
+	entities.create(display.user_inputs());
 }
 
 auto application::init_shaders(void) -> void
 {
-	shaders.init();
 
-
-	shader_handle handle("basic 2D");
-	/* configuring the shader to use vertex colors given by attributes instead of texture */
-	handle.set(shader_property::texture_coords);
-	shaders.create_program(handle, "2D");
-
-	glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f);
-
-	auto program = shaders[shader_handle("basic 2D")];
-	program.bind();
-	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
 }

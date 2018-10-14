@@ -1,18 +1,16 @@
-#version 400
-
 /* all possible attributes */
 layout(location = 0) in vec3 vertex_position;
-layout(location = 1) in vec3 vertex_color;
-layout(location = 2) in vec2 texture_coords;
-layout(location = 3) in vec3 vertex_normal;
+layout(location = 1) in vec2 texture_coords;
+layout(location = 2) in vec3 vertex_normal;
+layout(location = 3) in vec3 vertex_color;
 
-out struct
+out struct input_prev
 {
 	vec3 vertex_position;
 
 	vec3 vertex_color;
 
-	vec3 texture_coords;
+	vec2 texture_coords;
 
 	vec3 vertex_normal;
 } 
@@ -27,7 +25,7 @@ void main(void)
 	vertex_out.vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0f));
 
 #ifdef USES_COLOR
-	vertex_out.vertex_color = vertex_color;
+	vertex_out.vertex_color = vec3(1.0f, 0.0f, 1.0f);
 #endif
 
 #ifdef USES_TEXTURE

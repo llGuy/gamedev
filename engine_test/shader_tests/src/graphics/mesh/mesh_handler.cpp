@@ -28,20 +28,19 @@ auto mesh_handler::create_mesh(std::string const & name) -> void
 	map_model_locs[name] = index;
 }
 
-/*auto mesh_handler::create_render_func(std::string const & name) -> std::unique_ptr<render_func>
+auto mesh_handler::create_render_func(std::string const & name) -> std::unique_ptr<render_func>
 {
 	auto & mesh = models[get_mesh_index(name)];
 
 	if (mesh.has_component<index_buffer_component>())
 	{
-		//return std::make_unique<render_indices>(render_indices{name});
+		return std::unique_ptr<render_func>(new render_indices(name));
 	}
 	else
 	{
-		//return std::make_unique<render_func>(render_arrays{name});
+		return std::unique_ptr<render_func>(new render_arrays(name));
 	}
-	
-}*/
+}
 
 auto mesh_handler::get_data(std::string const & instance) -> mesh_data &
 {
@@ -113,6 +112,7 @@ auto mesh_handler::load_mesh(std::string const & file_name, std::string const & 
 
 	create_mesh(vertices, normals, texture_coords, indices, instance);
 
+	/* setting shader handle properties for the shader of the mesh */
 	shader_handle handle;
 	if (normals.size() != 0) handle.set(shader_property::vertex_normal);
 	else
@@ -177,8 +177,8 @@ auto mesh_handler::create_mesh(std::vector<glm::vec3> & vertices, std::vector<gl
 	vertex_layout & layout = models[instance].get_data().vao;
 
 	attribute v_attrib{ 0, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
-	attribute n_attrib{ 1, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
-	attribute t_attrib{ 2, GL_FLOAT, 2, GL_FALSE, sizeof glm::vec2, nullptr };
+	attribute t_attrib{ 1, GL_FLOAT, 2, GL_FALSE, sizeof glm::vec2, nullptr };
+	attribute n_attrib{ 2, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
 
 	layout.create();
 	layout.bind();

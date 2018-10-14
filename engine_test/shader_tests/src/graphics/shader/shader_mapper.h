@@ -147,7 +147,7 @@ public:
 		}
 		else if (src_provided == "3D")
 		{
-
+			new_shader.provide(master3D_srcs.srcs.at(type));
 		}
 		else
 		{

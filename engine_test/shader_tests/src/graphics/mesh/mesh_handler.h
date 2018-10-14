@@ -92,7 +92,7 @@ public:
 
 	auto load_mesh(std::string const & file_name, std::string const & name) -> shader_handle;
 
-	/*auto create_render_func(std::string const & name) -> std::unique_ptr<render_func>;*/
+	auto create_render_func(std::string const & name) -> std::unique_ptr<render_func>;
 
 	template <typename T> auto load_static_mesh(T const & shape, std::string const & name) -> void
 	{
