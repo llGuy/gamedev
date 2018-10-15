@@ -26,9 +26,13 @@ auto application::init(void) -> void
 
 		glew_init();
 
+		glEnable(GL_DEPTH_TEST);
+
 		init_data();
-		init_shaders();
+		init_textures();
 		init_meshes();
+		init_shaders();
+		init_layers();
 
 		is_running = true;
 
@@ -51,11 +55,11 @@ auto application::render(void) -> void
 
 	auto view_matrix = entities.get_camera().matrix();
 
-	auto program = shaders[shader_handle("3D shader")];
+	auto program = shaders[shader_handle("icosphere shader")];
 	program.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
 
-	tex.bind(GL_TEXTURE_2D, 0);
-	renderer.render(program, meshes);
+	//tex.bind(GL_TEXTURE_2D, 0);
+	main_layer.refresh(shaders, meshes);
 }
 
 auto application::update(void) -> void
@@ -64,6 +68,10 @@ auto application::update(void) -> void
 
 	entities.update(timer.elapsed());
 	timer.reset();
+
+	meshes.flush_renderers();
+
+	main_layer[0]->submit(detail::identity_matrix);
 
 	is_running = display.is_open();
 }
@@ -75,21 +83,7 @@ auto application::running(void) -> bool
 
 auto application::init_meshes(void) -> void
 {
-	auto image = extract_png("res/textures/low_poly.png");
-
-	tex.create();
-	tex.bind(GL_TEXTURE_2D);
-	tex.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, image.data, image.w, image.h);
-
-	tex.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	tex.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
 	meshes.init();
-
-	shaders.init();
-
-	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
-
 
 	/* process to creating a mesh : 
 	-  create the handle for the mesh e.g. name ...
@@ -97,22 +91,24 @@ auto application::init_meshes(void) -> void
 	-  set the name for the shader that you want to use for the handle 
 	-  create the program with the handle (which will have all the properties selected) */
 
-	meshes.create_mesh("icosphere");
+	u32 mesh_id = meshes.create_mesh("icosphere");
 	/* loads contents of ico.obj to the mesh "icosphere" */
-	shader_handle handle = meshes.load_mesh("res/models/ico.obj", "icosphere");
-	handle.set_name("3D shader");
-	shaders.create_program(handle, "3D");
+	meshes.load_mesh("res/models/ico.obj", mesh_id);
+}
 
+auto application::init_textures(void) -> void
+{
+	auto image = extract_png("res/textures/low_poly.png");
 
-	auto program = shaders[shader_handle("3D shader")];
-	program.bind();
-	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
-	program.send_uniform_mat4("view_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	u32 low_poly_id = textures.create_texture("low poly");
+	auto & low_poly_colors = textures[low_poly_id];
 
-	auto func = meshes.create_render_func("icosphere");
-	renderer.set(func);
+	low_poly_colors.create();
+	low_poly_colors.bind(GL_TEXTURE_2D);
+	low_poly_colors.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, image.data, image.w, image.h);
 
-	renderer.submit(detail::identity_matrix);
+	low_poly_colors.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	low_poly_colors.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 auto application::init_data(void) -> void
@@ -122,5 +118,30 @@ auto application::init_data(void) -> void
 
 auto application::init_shaders(void) -> void
 {
+	shaders.init();
 
+	shader_handle shader = meshes.create_shader_handle(meshes.get_mesh_id("icosphere"));
+	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
+	shader.set_name("icosphere shader");
+
+	shaders.create_program(shader, "3D");
+
+
+
+	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
+
+	auto & program = shaders[shader_handle("icosphere shader")];
+	program.bind();
+	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
+}
+
+auto application::init_layers(void) -> void
+{
+	u32 mesh_id = meshes.get_mesh_id("icosphere");
+	auto renderer = meshes.create_renderer<basic_renderer>(mesh_id);
+
+
+
+	main_layer.submit_renderer(renderer);
+	main_layer.submit_shader(shader_handle("icosphere shader"));
 }

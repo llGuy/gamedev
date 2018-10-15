@@ -3,15 +3,15 @@
 #include "render_func.h"
 #include "../mesh/mesh_handler.h"
 
-render_indices::render_indices(std::string const & name)
-	: name(name)
+render_indices::render_indices(u32 model_id)
+	: model_id(model_id)
 {
 }
 
 auto render_indices::draw(mesh_handler & mh) -> void
 {
-	mesh_data & data = mh.get_data(name);
-	buffer & ibo = mh.get_buffer<index_buffer_component>(name);
+	mesh_data & data = mh[model_id];
+	buffer & ibo = mh.get_buffer<index_buffer_component>(model_id);
 
 	data.vao.bind();
 	ibo.bind(GL_ELEMENT_ARRAY_BUFFER);
@@ -22,14 +22,14 @@ auto render_indices::draw(mesh_handler & mh) -> void
 	unbind_vertex_layouts();
 }
 
-render_arrays::render_arrays(std::string const & name)
-	: name(name)
+render_arrays::render_arrays(u32 model_id)
+	: model_id(model_id)
 {
 }
 
 auto render_arrays::draw(mesh_handler & mh) -> void
 {
-	mesh_data & data = mh.get_data(name);
+	mesh_data & data = mh[model_id];
 
 	data.vao.bind();
 

@@ -16,17 +16,17 @@ public:
 struct render_indices : render_func
 {
 private:
-	std::string name;
+	u32 model_id;
 public:
-	render_indices(std::string const & name);
+	render_indices(u32 model_id);
 	auto draw(mesh_handler & mh) -> void override;
 };
 
 struct render_arrays : render_func
 {
 private:
-	std::string name;
+	u32 model_id;
 public:
-	render_arrays(std::string const & name);
+	render_arrays(u32 model_id);
 	auto draw(mesh_handler & mh) -> void override;
 };

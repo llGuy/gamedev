@@ -16,15 +16,16 @@ private:
 	window display;
 
 	shader_mapper shaders;
-	mesh_handler meshes;
-	entity_handler entities;
-	light_handler lights;
+	texture_mapper textures;
 
+	mesh_handler meshes;
+
+	entity_handler entities;
+
+	light_handler lights;
 	time_handler timer;
 
-	texture tex;
-
-	basic_renderer renderer;
+	layer main_layer;
 
 public:
 
@@ -40,5 +41,7 @@ private:
 	auto init_data(void) -> void;
 	auto init_meshes(void) -> void;
 	auto init_shaders(void) -> void;
+	auto init_textures(void) -> void;
+	auto init_layers(void) -> void;
 
 };

@@ -4,9 +4,13 @@
 #include "render_func.h"
 #include "../../api/api.h"
 
+class mesh_handler;
+
 class renderer
 {
 protected:
+	u32 mesh_id;
+
 	std::unique_ptr<render_func> draw;
 public:
 	renderer(void) = default;
@@ -15,7 +19,9 @@ public:
 	virtual auto submit(glm::mat4 const & model_matrix) -> void = 0;
 	virtual auto flush(void) -> void = 0;
 
-	inline auto set(std::unique_ptr<render_func> & func) -> void
+	auto set_mesh(u32 mesh_id, mesh_handler & mh) -> void;
+private:
+	inline auto set_rf(std::unique_ptr<render_func> & func) -> void
 	{
 		draw = std::move(func);
 	}

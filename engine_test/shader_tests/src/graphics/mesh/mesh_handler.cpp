@@ -17,7 +17,7 @@ auto mesh_handler::init(void) -> void
 	data_system.add_system<texture_component>(20);
 }
 
-auto mesh_handler::create_mesh(std::string const & name) -> void
+auto mesh_handler::create_mesh(std::string const & name) -> u32
 {
 	u32 index = models.vec_size();
 
@@ -26,38 +26,60 @@ auto mesh_handler::create_mesh(std::string const & name) -> void
 	models.add(mesh_prototype());
 
 	map_model_locs[name] = index;
+
+	return index;
 }
 
-auto mesh_handler::create_render_func(std::string const & name) -> std::unique_ptr<render_func>
+auto mesh_handler::create_render_func(u32 id) -> std::unique_ptr<render_func>
 {
-	auto & mesh = models[get_mesh_index(name)];
+	auto & mesh = models[id];
 
 	if (mesh.has_component<index_buffer_component>())
 	{
-		return std::unique_ptr<render_func>(new render_indices(name));
+		return std::unique_ptr<render_func>(new render_indices(id));
 	}
 	else
 	{
-		return std::unique_ptr<render_func>(new render_arrays(name));
+		return std::unique_ptr<render_func>(new render_arrays(id));
 	}
 }
 
-auto mesh_handler::get_data(std::string const & instance) -> mesh_data &
+auto mesh_handler::flush_renderers(void) -> void
 {
-	return models[get_mesh_index(instance)].get_data();
+	for (u32 i = 0; i < models.vec_size(); ++i)
+	{
+		models[i].get_data().mesh_renderer->flush();
+	}
 }
 
-auto mesh_handler::get_mesh_index(std::string const & name) -> u32
+auto mesh_handler::get_data(u32 id) -> mesh_data &
 {
-	if (!check_xcp) return map_model_locs.at(name);
-
-	if (auto model = map_model_locs.find(name); model != map_model_locs.end()) return model->second;
-	else throw xcp::model_access_error(name);
+	return models[id].get_data();
 }
 
-auto mesh_handler::load_mesh(std::string const & file_name, std::string const & name) -> shader_handle
+auto mesh_handler::get_mesh_id(std::string const & name) -> u32
 {
-	u32 instance = get_mesh_index(name);
+	return map_model_locs[name];
+}
+
+auto mesh_handler::create_shader_handle(u32 id) -> shader_handle
+{
+	shader_handle handle;
+
+	auto & mesh = models[id];
+
+	if (mesh.has_component<normal_buffer_component>()) handle.set(shader_property::vertex_normal);
+	else handle.set(shader_property::dynamic_normals, shader_property::linked_to_gsh);
+
+	if (mesh.has_component<texture_buffer_component>()) handle.set(shader_property::texture_coords);
+	else handle.set(shader_property::vertex_color);
+
+	return handle;
+}
+
+auto mesh_handler::load_mesh(std::string const & file_name, u32 id) -> shader_handle
+{
+	u32 instance = id;
 
 	std::ifstream file(file_name);
 

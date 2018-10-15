@@ -1,5 +1,7 @@
 #pragma once
 
+#include "texture/texture_mapper.h"
+
 #include "shader/shader_mapper.h"
 #include "shader/shader_properties.h"
 

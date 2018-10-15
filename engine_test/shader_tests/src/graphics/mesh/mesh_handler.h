@@ -62,6 +62,8 @@ constexpr auto operator"" _mid(char const * str, u32 size) -> mesh_id
 	return { str, detail::compile_hash(str, size) };
 }
 
+
+
 using mesh_name = u32;
 using mesh_prototype = cs::object<mesh_data>;
 
@@ -85,29 +87,33 @@ public:
 	mesh_handler(void);
 
 	auto init(void) -> void;
+	auto create_mesh(std::string const & name) -> u32;
+	auto get_data(u32 id) -> mesh_data &;
 
-	auto create_mesh(std::string const & name) -> void;
+	auto load_mesh(std::string const & file_name, u32 id) -> shader_handle;
 
-	auto get_data(std::string const & name) -> mesh_data &;
+	auto create_shader_handle(u32 id) -> shader_handle;
 
-	auto load_mesh(std::string const & file_name, std::string const & name) -> shader_handle;
+	auto create_render_func(u32 id) -> std::unique_ptr<render_func>; 
 
-	auto create_render_func(std::string const & name) -> std::unique_ptr<render_func>;
+	auto flush_renderers(void) -> void;
 
-	auto get_renderer(std::string const & name) -> renderer *
+	auto get_renderer(u32 id) -> renderer *
 	{
-		return get_data(name).mesh_renderer;
+		return models[id].get_data().mesh_renderer;
 	}
 
-	template <typename T, typename ... Ps> auto create_renderer(std::string const & name, Ps ... params) -> void
+	template <typename T, typename ... Ps> auto create_renderer(u32 id, Ps ... params) -> renderer *
 	{
-		auto & data = get_data(name);
+		auto & data = models[id].get_data();
 		data.mesh_renderer = new T(params...);
+		data.mesh_renderer->set_mesh(id, *this);
+		return data.mesh_renderer;
 	}
 
-	template <typename T> auto load_static_mesh(T const & shape, std::string const & name) -> void
+	template <typename T> auto load_static_mesh(T const & shape, u32 id) -> void
 	{
-		u32 instance = get_mesh_index(name);
+		u32 instance = id;
 
 		shape(*this, models[instance].get_data(), instance);
 	}
@@ -118,13 +124,6 @@ public:
 		return data_system.get_component<T>(obj.get_component_index<T>()).value.value;
 	}
 
-	template <typename T> auto get_buffer(std::string const & name) -> buffer &
-	{
-		u32 instance = get_mesh_index(name);
-
-		auto & obj = models[instance];
-		return data_system.get_component<T>(obj.get_component_index<T>()).value.value;
-	}
 private:
 	/* code for loading models from blender */
 	auto break_face_line(std::vector<std::string> const & face_line_words,
@@ -143,26 +142,23 @@ private:
 		std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, u32 index) -> void;
 
 	auto create_shader_handle(std::vector<glm::vec2> & texture_coords, std::vector<glm::vec3> & normals) -> shader_handle;
+
 public:
-	template <typename T, typename ... C> auto add_component(std::string const & model_name, C ... args) -> void
+
+	template <typename T, typename ... C> auto add_component(u32 id, C ... args) -> void
 	{
-		add_component(get_mesh_index(model_name), args...);
+		data_system.add_component<T>(models[id], id, T{ args... });
 	}
 
-	template <typename T, typename ... C> auto add_component(u32 index, C ... args) -> void
+	template <typename T> auto has_component(u32 id) -> std::pair<bool, mesh_data &>
 	{
-		data_system.add_component<T>(models[index], index, T{ args... });
-	}
-
-	template <typename T> auto has_component(std::string const & name) -> std::pair<bool, mesh_data &>
-	{
-		auto & object = models[get_mesh_index(name)];
+		auto & object = models[id];
 		return { object.has_component<T>(), object.data };
 	}
 
-	template <typename T> auto get_component(std::string const & model_name) -> T &
+	template <typename T> auto get_component(u32 id) -> T &
 	{
-		u32 instance = get_mesh_index(model_name);
+		u32 instance = id;
 
 		return data_system.get_component<T>(instance).value;
 	}
@@ -177,5 +173,10 @@ public:
 	}
 
 public:
-	auto get_mesh_index(std::string const & name)->u32;
+	auto get_mesh_id(std::string const & name) -> u32;
+
+	auto operator[](u32 index) -> mesh_data &
+	{
+		return models[index].get_data();
+	}
 };

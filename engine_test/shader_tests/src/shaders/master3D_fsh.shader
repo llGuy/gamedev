@@ -43,6 +43,8 @@ void main(void)
 
 #ifdef USES_TEXTURE
 	final_color = texture(diffuse, input_data.texture_coords);
+
+	final_color = vec4(input_data.vertex_normal, 1.0f);
 #endif
 
 #ifdef USES_COLOR

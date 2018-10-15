@@ -18,6 +18,7 @@ public:
 	   the vector of entities reallocates*/
 	auto submit_renderer(renderer * mesh_renderer) -> void;
 	auto submit_shader(shader_handle const & handle) -> void;
+	auto operator[](u32 index)->renderer *;
 
 	auto refresh(shader_mapper & shaders, mesh_handler & meshes) -> void;
 };

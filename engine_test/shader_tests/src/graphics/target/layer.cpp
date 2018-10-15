@@ -21,3 +21,8 @@ auto layer::refresh(shader_mapper & shaders, mesh_handler & meshes) -> void
 		mesh_renderer->render(shader_used, meshes);
 	}
 }
+
+auto layer::operator[](u32 index) -> renderer *
+{
+	return renderers[index];
+}
