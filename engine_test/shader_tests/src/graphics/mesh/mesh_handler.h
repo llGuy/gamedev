@@ -94,6 +94,17 @@ public:
 
 	auto create_render_func(std::string const & name) -> std::unique_ptr<render_func>;
 
+	auto get_renderer(std::string const & name) -> renderer *
+	{
+		return get_data(name).mesh_renderer;
+	}
+
+	template <typename T, typename ... Ps> auto create_renderer(std::string const & name, Ps ... params) -> void
+	{
+		auto & data = get_data(name);
+		data.mesh_renderer = new T(params...);
+	}
+
 	template <typename T> auto load_static_mesh(T const & shape, std::string const & name) -> void
 	{
 		u32 instance = get_mesh_index(name);
@@ -130,6 +141,8 @@ private:
 
 	auto create_mesh(std::vector<glm::vec3> & vertices, std::vector<glm::vec3> & normals,
 		std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, u32 index) -> void;
+
+	auto create_shader_handle(std::vector<glm::vec2> & texture_coords, std::vector<glm::vec3> & normals) -> shader_handle;
 public:
 	template <typename T, typename ... C> auto add_component(std::string const & model_name, C ... args) -> void
 	{
@@ -139,6 +152,12 @@ public:
 	template <typename T, typename ... C> auto add_component(u32 index, C ... args) -> void
 	{
 		data_system.add_component<T>(models[index], index, T{ args... });
+	}
+
+	template <typename T> auto has_component(std::string const & name) -> std::pair<bool, mesh_data &>
+	{
+		auto & object = models[get_mesh_index(name)];
+		return { object.has_component<T>(), object.data };
 	}
 
 	template <typename T> auto get_component(std::string const & model_name) -> T &

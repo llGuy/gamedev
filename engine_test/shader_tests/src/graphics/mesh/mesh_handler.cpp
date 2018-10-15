@@ -112,14 +112,14 @@ auto mesh_handler::load_mesh(std::string const & file_name, std::string const & 
 
 	create_mesh(vertices, normals, texture_coords, indices, instance);
 
-	/* setting shader handle properties for the shader of the mesh */
+	return create_shader_handle(texture_coords, normals);
+}
+
+auto mesh_handler::create_shader_handle(std::vector<glm::vec2> & texture_coords, std::vector<glm::vec3> & normals) -> shader_handle
+{
 	shader_handle handle;
 	if (normals.size() != 0) handle.set(shader_property::vertex_normal);
-	else
-	{
-		handle.set(shader_property::dynamic_normals);
-		handle.set(shader_property::linked_to_gsh);
-	}
+	else handle.set(shader_property::dynamic_normals, shader_property::linked_to_gsh);
 
 	if (texture_coords.size() != 0) handle.set(shader_property::texture_coords);
 	else handle.set(shader_property::vertex_color);

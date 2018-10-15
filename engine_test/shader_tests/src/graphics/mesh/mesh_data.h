@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 #include "../../api/api.h"
+#include "../../graphics/graphics.h"
 #include "../shader/shader_mapper.h"
 
 struct mesh_data
@@ -12,4 +13,5 @@ struct mesh_data
 	GLenum primitive;
 
 	shader_handle glsl_handle;
+	renderer * mesh_renderer{ nullptr };
 };

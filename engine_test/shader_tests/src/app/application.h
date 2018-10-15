@@ -10,6 +10,7 @@
 class application
 {
 private:
+
 	bool is_running;
 
 	window display;
@@ -24,7 +25,9 @@ private:
 	texture tex;
 
 	basic_renderer renderer;
+
 public:
+
 	application(void);
 
 	auto init(void) -> void;
@@ -33,7 +36,9 @@ public:
 	auto running(void) -> bool;
 
 private:
+
 	auto init_data(void) -> void;
 	auto init_meshes(void) -> void;
 	auto init_shaders(void) -> void;
+
 };

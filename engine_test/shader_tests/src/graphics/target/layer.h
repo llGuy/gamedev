@@ -1,14 +1,23 @@
 #pragma once
 
 #include "../renderer/renderer.h"
+#include "../shader/shader_mapper.h"
 
+/* all models that use the same shader */
 class layer
 {
 private:
 	glm::mat4 view_matrix;
 	glm::mat4 projection_matrix;
 
+	std::vector<renderer *> renderers;
 
+	shader_handle shader;
 public:
-	auto refresh(void) -> void;
+	/* renderers are on the heap so no need for concern as to whether
+	   the vector of entities reallocates*/
+	auto submit_renderer(renderer * mesh_renderer) -> void;
+	auto submit_shader(shader_handle const & handle) -> void;
+
+	auto refresh(shader_mapper & shaders, mesh_handler & meshes) -> void;
 };

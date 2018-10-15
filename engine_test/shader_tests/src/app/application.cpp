@@ -96,6 +96,7 @@ auto application::init_meshes(void) -> void
 	-  load the model which will return a "shader handle" 
 	-  set the name for the shader that you want to use for the handle 
 	-  create the program with the handle (which will have all the properties selected) */
+
 	meshes.create_mesh("icosphere");
 	/* loads contents of ico.obj to the mesh "icosphere" */
 	shader_handle handle = meshes.load_mesh("res/models/ico.obj", "icosphere");
