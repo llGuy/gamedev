@@ -31,7 +31,30 @@ vertex_out;
 
 #endif
 
+uniform struct material
+{
+	vec3 ambient_reflectivity;
+	vec3 diffuse_reflectivity;
+	vec3 specular_reflectivity;
+	float shininess_factor;
+} 
+material_info;
+
+uniform struct light
+{
+	vec3 light_position;
+	vec3 ambient_intensity;
+	vec3 diffuse_intensity;
+	vec3 specular_intensity;
+}
+light_info;
+
 uniform sampler2D diffuse;
+uniform vec3 light_position;
+uniform vec3 camera_position;
+
+uniform mat4 model_matrix;
+uniform mat4 view_matrix;
 
 void main(void)
 {
@@ -43,11 +66,12 @@ void main(void)
 
 #ifdef USES_TEXTURE
 	final_color = texture(diffuse, input_data.texture_coords);
-
-	final_color = vec4(input_data.vertex_normal, 1.0f);
 #endif
 
 #ifdef USES_COLOR
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
+
+
+	
 }

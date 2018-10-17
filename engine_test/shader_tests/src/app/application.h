@@ -35,6 +35,7 @@ public:
 	auto render(void) -> void;
 	auto update(void) -> void;
 	auto running(void) -> bool;
+	auto clean_up(void) -> void;
 
 private:
 

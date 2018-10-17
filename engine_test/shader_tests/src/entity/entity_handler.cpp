@@ -7,17 +7,26 @@ auto entity_handler::create(input_handler & ih) -> void
 	component_system.add_system<mouse_control>(4);
 	component_system.add_system<basic_key_control>(4);
 	create_main_player(ih);
+
+	pre_render_cam_pos.camera_position = glm::vec3(0.0f);
 }
 
 auto entity_handler::update(f32 td) -> void
 {
 	component_system.update(td, entities);
 	cam.update_view_matrix(entities);
+
+	pre_render_cam_pos.camera_position = cam.pos();
 }
 
 auto entity_handler::get_camera(void) -> camera &
 {
 	return cam;
+}
+
+auto entity_handler::get_pre_render_cam_pos(void) -> pre_render_camera_position &
+{
+	return pre_render_cam_pos;
 }
 
 auto entity_handler::create_main_player(input_handler & ih) -> void

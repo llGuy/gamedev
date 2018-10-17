@@ -11,4 +11,5 @@ public:
 	auto render(glsl_program & program, mesh_handler & mh) -> void;
 	auto submit(glm::mat4 const & model_matrix) -> void;
 	auto flush(void) -> void;
+	~basic_renderer(void);
 };

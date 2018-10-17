@@ -16,6 +16,10 @@ in input_prev vertex_out[];
 
 out input_prev geometry_out;
 
+uniform vec3 light_position;
+uniform vec3 camera_position;
+
+
 void main(void)
 {
 	for (int i = 0; i < 3; ++i)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "light_info.h"
+#include "../api/api.h"
 
 /* may handle night-day stuff */
 class light_handler
@@ -12,6 +13,8 @@ private:
 public:
 
 	light_handler(void);
+
+	auto prepare_shader(glsl_program & program) -> void;
 
 	inline auto light_position(void) -> glm::vec3 &
 	{

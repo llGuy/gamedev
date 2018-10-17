@@ -58,7 +58,6 @@ auto application::render(void) -> void
 	auto program = shaders[shader_handle("icosphere shader")];
 	program.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
 
-	//tex.bind(GL_TEXTURE_2D, 0);
 	main_layer.refresh(shaders, meshes);
 }
 
@@ -74,6 +73,8 @@ auto application::update(void) -> void
 	main_layer[0]->submit(detail::identity_matrix);
 
 	is_running = display.is_open();
+
+	unbind_all_textures(GL_TEXTURE_2D);
 }
 
 auto application::running(void) -> bool
@@ -133,15 +134,25 @@ auto application::init_shaders(void) -> void
 	auto & program = shaders[shader_handle("icosphere shader")];
 	program.bind();
 	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
+	/* send light information to shader */
+	lights.prepare_shader(program);
 }
 
 auto application::init_layers(void) -> void
 {
 	u32 mesh_id = meshes.get_mesh_id("icosphere");
 	auto renderer = meshes.create_renderer<basic_renderer>(mesh_id);
+	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
+	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.5f), 20.0f));
+	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 
 
 	main_layer.submit_renderer(renderer);
 	main_layer.submit_shader(shader_handle("icosphere shader"));
+}
+
+auto application::clean_up(void) -> void
+{
+
 }
