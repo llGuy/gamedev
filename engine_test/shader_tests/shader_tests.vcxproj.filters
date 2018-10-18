@@ -69,6 +69,12 @@
     <ClCompile Include="src\lighting\light_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\target\layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\xcp\exception.h">
@@ -182,11 +188,18 @@
     <ClInclude Include="src\graphics\target\layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\texture\texture_mapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\pre_render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master3D_vsh.shader" />
     <None Include="src\shaders\master2D_fsh.shader" />
     <None Include="src\shaders\master3D_fsh.shader" />
+    <None Include="src\shaders\master3D_gsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">

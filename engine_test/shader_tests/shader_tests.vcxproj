@@ -30,8 +30,10 @@
     <ClCompile Include="src\entity\entity_handler.cpp" />
     <ClCompile Include="src\graphics\mesh\mesh_handler.cpp" />
     <ClCompile Include="src\graphics\renderer\basic_renderer.cpp" />
+    <ClCompile Include="src\graphics\renderer\renderer.cpp" />
     <ClCompile Include="src\graphics\renderer\render_func.cpp" />
     <ClCompile Include="src\graphics\shader\shader_mapper.cpp" />
+    <ClCompile Include="src\graphics\target\layer.cpp" />
     <ClCompile Include="src\io\io.cpp" />
     <ClCompile Include="src\lighting\light_handler.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
@@ -59,11 +61,13 @@
     <ClInclude Include="src\graphics\mesh\mesh_data.h" />
     <ClInclude Include="src\graphics\mesh\mesh_handler.h" />
     <ClInclude Include="src\graphics\renderer\basic_renderer.h" />
+    <ClInclude Include="src\graphics\renderer\pre_render.h" />
     <ClInclude Include="src\graphics\renderer\renderer.h" />
     <ClInclude Include="src\graphics\renderer\render_func.h" />
     <ClInclude Include="src\graphics\shader\shader_properties.h" />
     <ClInclude Include="src\graphics\shader\shader_mapper.h" />
     <ClInclude Include="src\graphics\target\layer.h" />
+    <ClInclude Include="src\graphics\texture\texture_mapper.h" />
     <ClInclude Include="src\io\io.h" />
     <ClInclude Include="src\lighting\light_handler.h" />
     <ClInclude Include="src\lighting\light_info.h" />
@@ -80,6 +84,7 @@
   <ItemGroup>
     <None Include="src\shaders\master2D_fsh.shader" />
     <None Include="src\shaders\master3D_fsh.shader" />
+    <None Include="src\shaders\master3D_gsh.shader" />
     <None Include="src\shaders\master3D_vsh.shader" />
   </ItemGroup>
   <ItemGroup>

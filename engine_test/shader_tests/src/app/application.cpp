@@ -143,7 +143,7 @@ auto application::init_layers(void) -> void
 	u32 mesh_id = meshes.get_mesh_id("icosphere");
 	auto renderer = meshes.create_renderer<basic_renderer>(mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
-	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.5f), 20.0f));
+	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 10.0f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 

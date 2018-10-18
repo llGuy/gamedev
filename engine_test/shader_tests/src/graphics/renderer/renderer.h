@@ -12,7 +12,8 @@ struct pre_render_ptr
 	bool on_heap;
 	renderer_pre_render * pre_render;
 
-	~pre_render_ptr(void)
+
+	auto destroy(void) -> void
 	{
 		if (on_heap) delete pre_render;
 	}
@@ -31,7 +32,7 @@ public:
 	virtual auto render(glsl_program & program, mesh_handler & mh) -> void = 0;
 	virtual auto submit(glm::mat4 const & model_matrix) -> void = 0;
 	virtual auto flush(void) -> void = 0;
-	virtual ~renderer(void) = 0;
+	virtual ~renderer(void) {};
 
 	auto set_mesh(u32 mesh_id, mesh_handler & mh) -> void;
 

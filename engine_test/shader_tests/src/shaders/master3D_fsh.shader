@@ -50,11 +50,31 @@ uniform struct light
 light_info;
 
 uniform sampler2D diffuse;
-uniform vec3 light_position;
-uniform vec3 camera_position;
 
+uniform vec3 camera_position;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
+
+void apply_ambient(inout vec4 color)
+{
+	color = vec4(light_info.ambient_intensity, 1.0f) * vec4(material_info.ambient_reflectivity, 1.0f) * color;
+}
+
+void apply_diffuse(vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+{
+	float diffuse = clamp(dot(light_vector, vertex_normal), 0, 1);
+
+	color = vec4(diffuse) + vec4(light_info.diffuse_intensity, 1.0f) * vec4(material_info.diffuse_reflectivity, 1.0f) * color;
+}
+
+void apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+{
+	vec3 reflected_light = reflect(normalize(-light_vector), vertex_normal);
+	float specular = clamp(dot(reflected_light, normalize(eye_vector)), 0, 1);
+	specular = pow(specular, material_info.shininess_factor);
+
+	color = vec4(specular) + vec4(light_info.specular_intensity, 1.0f) * vec4(material_info.specular_reflectivity, 1.0f) * color;
+}
 
 void main(void)
 {
@@ -73,5 +93,11 @@ void main(void)
 #endif
 
 
+	vec3 light_vector = normalize(light_info.light_position - input_data.vertex_position);
+	vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
+
 	
+	apply_ambient(final_color);
+	apply_diffuse(light_vector, input_data.vertex_normal, final_color);
+	apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
 }
