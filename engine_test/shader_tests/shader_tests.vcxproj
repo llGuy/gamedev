@@ -30,6 +30,7 @@
     <ClCompile Include="src\app\application.cpp" />
     <ClCompile Include="src\entity\camera.cpp" />
     <ClCompile Include="src\entity\entity_handler.cpp" />
+    <ClCompile Include="src\graphics\mesh\mesh_comp\cube.cpp" />
     <ClCompile Include="src\graphics\mesh\mesh_handler.cpp" />
     <ClCompile Include="src\graphics\renderer\basic_renderer.cpp" />
     <ClCompile Include="src\graphics\renderer\renderer.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="src\time\timer.cpp" />
     <ClCompile Include="src\win\input_handler.cpp" />
     <ClCompile Include="src\win\window.cpp" />
+    <ClCompile Include="src\world\environment\environment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\api\api.h" />
@@ -65,6 +67,8 @@
     <ClInclude Include="src\graphics\mesh\mesh.h" />
     <ClInclude Include="src\graphics\mesh\mesh_data.h" />
     <ClInclude Include="src\graphics\mesh\mesh_handler.h" />
+    <ClInclude Include="src\graphics\mesh\mesh_comp\cube.h" />
+    <ClInclude Include="src\graphics\mesh\mesh_comp\mesh_comp.h" />
     <ClInclude Include="src\graphics\renderer\basic_renderer.h" />
     <ClInclude Include="src\graphics\renderer\pre_render.h" />
     <ClInclude Include="src\graphics\renderer\renderer.h" />
@@ -78,22 +82,31 @@
     <ClInclude Include="src\lighting\light_handler.h" />
     <ClInclude Include="src\lighting\light_info.h" />
     <ClInclude Include="src\math\math.h" />
-    <ClInclude Include="src\shaders\master2D_vsh.shader" />
+    <ClInclude Include="src\shaders\master\master2D_vsh.shader" />
     <ClInclude Include="src\time\timer.h" />
     <ClInclude Include="src\utils\detail.h" />
     <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\utils\types.h" />
     <ClInclude Include="src\win\input_handler.h" />
     <ClInclude Include="src\win\window.h" />
+    <ClInclude Include="src\world\environment\environment.h" />
     <ClInclude Include="src\xcp\exception.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\master2D_fsh.shader" />
-    <None Include="src\shaders\master3D_fsh.shader" />
-    <None Include="src\shaders\master3D_gsh.shader" />
-    <None Include="src\shaders\master3D_vsh.shader" />
+    <None Include="src\shaders\environment\environment_fsh.shader" />
+    <None Include="src\shaders\environment\environment_vsh.shader" />
+    <None Include="src\shaders\master\master2D_fsh.shader" />
+    <None Include="src\shaders\master\master3D_fsh.shader" />
+    <None Include="src\shaders\master\master3D_gsh.shader" />
+    <None Include="src\shaders\master\master3D_vsh.shader" />
+    <None Include="toto.md" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\textures\environment\sky\down.png" />
+    <Image Include="res\textures\environment\sky\forward.png" />
+    <Image Include="res\textures\environment\sky\left.png" />
+    <Image Include="res\textures\environment\sky\right.png" />
+    <Image Include="res\textures\environment\sky\up.png" />
     <Image Include="res\textures\low_poly.png" />
     <Image Include="res\textures\texture_test.png" />
   </ItemGroup>

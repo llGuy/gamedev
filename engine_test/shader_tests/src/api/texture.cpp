@@ -18,13 +18,11 @@ auto create_depth_texture(texture & t, int32_t w, int32_t h) -> void
 {
 	t.create();
 	t.bind(GL_TEXTURE_2D);
-	t.fill(GL_TEXTURE_2D, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr, w, h);
+	t.fill(GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr, w, h);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_COMPARE_R_TO_TEXTURE);
 }
 
 auto texture::create(void) -> void

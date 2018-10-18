@@ -17,11 +17,8 @@ private:
 
 	shader_mapper shaders;
 	texture_mapper textures;
-
 	mesh_handler meshes;
-
 	entity_handler entities;
-
 	light_handler lights;
 	time_handler timer;
 

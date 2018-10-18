@@ -84,6 +84,12 @@
     <ClCompile Include="src\graphics\target\target.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\mesh\mesh_comp\cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\environment\environment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\xcp\exception.h">
@@ -132,9 +138,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\math\math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\shaders\master2D_vsh.shader">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\api\texture.h">
@@ -212,18 +215,46 @@
     <ClInclude Include="src\graphics\target\target.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\mesh\mesh_comp\cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\mesh\mesh_comp\mesh_comp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaders\master\master2D_vsh.shader" />
+    <ClInclude Include="src\world\environment\environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\master3D_vsh.shader" />
-    <None Include="src\shaders\master2D_fsh.shader" />
-    <None Include="src\shaders\master3D_fsh.shader" />
-    <None Include="src\shaders\master3D_gsh.shader" />
+    <None Include="toto.md" />
+    <None Include="src\shaders\environment\environment_fsh.shader" />
+    <None Include="src\shaders\environment\environment_vsh.shader" />
+    <None Include="src\shaders\master\master2D_fsh.shader" />
+    <None Include="src\shaders\master\master3D_fsh.shader" />
+    <None Include="src\shaders\master\master3D_gsh.shader" />
+    <None Include="src\shaders\master\master3D_vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\textures\low_poly.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\environment\sky\down.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\environment\sky\forward.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\environment\sky\left.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\environment\sky\right.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\environment\sky\up.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

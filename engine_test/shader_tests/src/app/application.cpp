@@ -52,7 +52,6 @@ auto application::render(void) -> void
 {
 	main_target.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	main_target.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
-
 	main_target.render(meshes, shaders);
 }
 
@@ -101,12 +100,7 @@ auto application::init_textures(void) -> void
 	u32 low_poly_id = textures.create_texture("low poly");
 	auto & low_poly_colors = textures[low_poly_id];
 
-	low_poly_colors.create();
-	low_poly_colors.bind(GL_TEXTURE_2D);
-	low_poly_colors.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, image.data, image.w, image.h);
-
-	low_poly_colors.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	low_poly_colors.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	create_color_texture(low_poly_colors, image.w, image.h, image.data);
 }
 
 auto application::init_data(void) -> void
@@ -135,6 +129,7 @@ auto application::init_shaders(void) -> void
 auto application::init_layers(void) -> void
 {
 	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
+
 
 
 	u32 mesh_id = meshes.get_mesh_id("icosphere");

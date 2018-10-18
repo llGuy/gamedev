@@ -12,6 +12,5 @@ struct mesh_data
 	u32 count; 
 	GLenum primitive;
 
-	shader_handle glsl_handle;
 	renderer * mesh_renderer;
 };
