@@ -18,7 +18,10 @@ public:
 	   the vector of entities reallocates*/
 	auto submit_renderer(renderer * mesh_renderer) -> void;
 	auto submit_shader(shader_handle const & handle) -> void;
-	auto operator[](u32 index)->renderer *;
+	auto operator[](u32 index) -> renderer *;
 
 	auto refresh(shader_mapper & shaders, mesh_handler & meshes) -> void;
+
+	auto get_view_matrix(void) -> glm::mat4 &;
+	auto get_projection_matrix(void)->glm::mat4 &;
 };

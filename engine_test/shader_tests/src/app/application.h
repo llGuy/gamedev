@@ -25,7 +25,7 @@ private:
 	light_handler lights;
 	time_handler timer;
 
-	layer main_layer;
+	target main_target;
 
 public:
 

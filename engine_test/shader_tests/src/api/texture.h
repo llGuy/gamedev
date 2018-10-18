@@ -6,6 +6,10 @@
 
 class texture
 {
+protected:
+	u32 id;
+
+	int32_t w, h;
 public:
 	friend class framebuffer;
 
@@ -19,10 +23,6 @@ public:
 	auto enable_mipmap(GLenum target) -> void;
 	auto float_param(GLenum target, GLenum mode, f32 factor) -> void;
 	auto int_param(GLenum target, GLenum mode, GLenum factor) -> void;
-protected:
-	u32 id;
-
-	int32_t w, h;
 };
 
 extern auto unbind_all_textures(GLenum target) -> void;

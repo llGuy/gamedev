@@ -1,13 +1,13 @@
 #include <GL/glew.h>
 
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "application.h"
-#include "../io/io.h"
 #include <fstream>
+#include "../io/io.h"
+#include "application.h"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 
 application::application(void)
-	: display(1000, 600, "Shader Tests")
+	: display(1000, 600, "Game Engine")
 {
 }
 
@@ -50,15 +50,10 @@ auto application::init(void) -> void
 
 auto application::render(void) -> void
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	main_target.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	main_target.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
 
-	auto view_matrix = entities.get_camera().matrix();
-
-	auto program = shaders[shader_handle("icosphere shader")];
-	program.send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
-
-	main_layer.refresh(shaders, meshes);
+	main_target.render(meshes, shaders);
 }
 
 auto application::update(void) -> void
@@ -70,7 +65,9 @@ auto application::update(void) -> void
 
 	meshes.flush_renderers();
 
-	main_layer[0]->submit(detail::identity_matrix);
+	main_target[0][0]->submit(detail::identity_matrix);
+	/* update view matrix of the camera */
+	main_target[0].get_view_matrix() = entities.get_camera().matrix();
 
 	is_running = display.is_open();
 
@@ -129,17 +126,17 @@ auto application::init_shaders(void) -> void
 
 
 
-	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
-
 	auto & program = shaders[shader_handle("icosphere shader")];
 	program.bind();
-	program.send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
 	/* send light information to shader */
 	lights.prepare_shader(program);
 }
 
 auto application::init_layers(void) -> void
 {
+	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (f32)display.pixel_width() / display.pixel_height(), 0.1f, 1000.0f);
+
+
 	u32 mesh_id = meshes.get_mesh_id("icosphere");
 	auto renderer = meshes.create_renderer<basic_renderer>(mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
@@ -148,8 +145,12 @@ auto application::init_layers(void) -> void
 
 
 
+	layer main_layer;
 	main_layer.submit_renderer(renderer);
 	main_layer.submit_shader(shader_handle("icosphere shader"));
+	main_layer.get_projection_matrix() = projection;
+
+	main_target.add_layer("main layer", main_layer);
 }
 
 auto application::clean_up(void) -> void
