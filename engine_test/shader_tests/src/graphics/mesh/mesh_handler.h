@@ -8,6 +8,7 @@
 #include <iostream>
 #include <unordered_map>
 
+#include "mesh_comp/cube.h"
 #include "../../data/vec_dd.h"
 #include "../../utils/detail.h"
 #include "../renderer/render_func.h"
@@ -91,6 +92,9 @@ public:
 	auto get_data(u32 id) -> mesh_data &;
 
 	auto load_mesh(std::string const & file_name, u32 id) -> shader_handle;
+	auto compute_mesh(mesh_computation & computation, u32 id) -> void;
+
+	auto copy_mesh(u32 from, u32 to) -> void;
 
 	auto create_shader_handle(u32 id) -> shader_handle;
 

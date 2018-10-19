@@ -34,7 +34,7 @@ auto entity_handler::create_main_player(input_handler & ih) -> void
 	entity main;
 	auto & data = main.get_data();
 
-	data.speed = 20;
+	data.speed = 10;
 	data.pos = glm::vec3(0.0f);
 	data.vel = glm::vec3(0.0f);
 	data.dir = glm::vec3(1.0f, 0.0f, 0.0f);

@@ -225,6 +225,9 @@
     <ClInclude Include="src\world\environment\environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\world\world_objects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="toto.md" />

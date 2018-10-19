@@ -1,7 +1,7 @@
 #include "cube.h"
 #include "../mesh_handler.h"
 
-auto cube_mesh_computation::operator()(u32 mesh_index, mesh_handler & meshes) -> void
+auto cube_mesh_computation::compute(u32 mesh_index, mesh_handler & meshes) -> void
 {
 	std::vector<f32> vertices = create_vertices();
 

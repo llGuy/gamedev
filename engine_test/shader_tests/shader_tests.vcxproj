@@ -90,6 +90,7 @@
     <ClInclude Include="src\win\input_handler.h" />
     <ClInclude Include="src\win\window.h" />
     <ClInclude Include="src\world\environment\environment.h" />
+    <ClInclude Include="src\world\world_objects.h" />
     <ClInclude Include="src\xcp\exception.h" />
   </ItemGroup>
   <ItemGroup>

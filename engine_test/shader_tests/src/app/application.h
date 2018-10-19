@@ -4,6 +4,7 @@
 #include "../time/timer.h"
 #include "../win/window.h"
 #include "../graphics/graphics.h"
+#include "../world/world_objects.h"
 #include "../entity/entity_handler.h"
 #include "../lighting/light_handler.h"
 
@@ -21,6 +22,8 @@ private:
 	entity_handler entities;
 	light_handler lights;
 	time_handler timer;
+
+	world_objects world;
 
 	target main_target;
 

@@ -15,7 +15,7 @@ constexpr std::array<char const *, static_cast<u32>(shader_property::invalid)> p
 	"#define USES_COLOR\n", 
 	"#define USES_STATIC_NORMALS\n", 
 	"#define USES_TEXTURE\n", 
-	"#define USES_DYNAMIC_NORMALS\n", 
+	"#define DYNAMIC_NORMALS\n", 
 	"#define LINKED_TO_GSH\n",
 	"#define SHARP_NORMALS\n"
 };

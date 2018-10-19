@@ -52,6 +52,11 @@ auto mesh_handler::flush_renderers(void) -> void
 	}
 }
 
+auto mesh_handler::copy_mesh(u32 from, u32 to) -> void
+{
+	models[to].get_data() = models[from].get_data();
+}
+
 auto mesh_handler::get_data(u32 id) -> mesh_data &
 {
 	return models[id].get_data();
@@ -222,4 +227,9 @@ auto mesh_handler::create_mesh(std::vector<glm::vec3> & vertices, std::vector<gl
 	models[instance].get_data().primitive = GL_TRIANGLES;
 
 	unbind_vertex_layouts();
+}
+
+auto mesh_handler::compute_mesh(mesh_computation & computation, u32 id) -> void
+{
+	computation.compute(id, *this);
 }

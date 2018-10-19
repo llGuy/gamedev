@@ -8,7 +8,7 @@
 
 struct mesh_data
 {
-	vertex_layout vao; 
+	vertex_layout vao;
 	u32 count; 
 	GLenum primitive;
 
