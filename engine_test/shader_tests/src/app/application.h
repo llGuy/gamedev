@@ -8,11 +8,15 @@
 #include "../entity/entity_handler.h"
 #include "../lighting/light_handler.h"
 
+#include "../gui/font/font.h"
+
 class application
 {
 private:
 
 	bool is_running;
+
+	font consolas;
 
 	window display;
 

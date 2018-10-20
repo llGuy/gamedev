@@ -93,6 +93,15 @@
     <ClCompile Include="src\graphics\mesh\mesh_comp\quad2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\font\font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\font\font_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\font\font_stream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\xcp\exception.h">
@@ -240,6 +249,15 @@
     <ClInclude Include="src\graphics\mesh\mesh_comp\quad2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\font\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\font\font_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\font\font_stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="toto.md" />
@@ -249,6 +267,10 @@
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
+    <None Include="src\shaders\pfx\blur_fsh.shader" />
+    <None Include="src\shaders\pfx\hblur_vsh.shader" />
+    <None Include="src\shaders\pfx\vblur_vsh.shader" />
+    <None Include="res\font\consolas.fnt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">
@@ -273,6 +295,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\textures\environment\sky\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\consolas.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

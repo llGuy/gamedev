@@ -1,13 +1,12 @@
-#include <GL/glew.h>
-
 #include <fstream>
+#include <GL/glew.h>
 #include "../io/io.h"
 #include "application.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
 application::application(void)
-	: display(1500, 800, "Game Engine")
+	: display(1500, 800, "Game Engine"), consolas("consolas")
 {
 }
 
@@ -34,6 +33,8 @@ auto application::init(void) -> void
 		init_shaders();
 		init_targets();
 		init_layers();
+
+		consolas.load_font(textures, "res/font/consolas");
 
 		is_running = true;
 
@@ -97,7 +98,7 @@ auto application::running(void) -> bool
 auto application::init_meshes(void) -> void
 {
 	meshes.init();
-
+	 
 	/* process to creating a mesh : 
 	-  create the handle for the mesh e.g. name ...
 	-  load the model which will return a "shader handle" 
@@ -172,7 +173,7 @@ auto application::init_layers(void) -> void
 	auto renderer = meshes.create_renderer<basic_renderer>(icosphere_mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.lowpoly"));
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "texture.environment"));
-	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 0.3f));
+	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 0.0f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 

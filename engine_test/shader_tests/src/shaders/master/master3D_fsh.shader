@@ -1,4 +1,6 @@
 layout(location = 0) out vec4 final_color;
+/* for bloom effect */
+layout(location = 1) out vec4 final_bright_colors;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -91,6 +93,11 @@ void apply_reflection(float specular, vec3 eye_vector, vec3 light_vector, vec3 v
 	color = mix(color, envi_color, material_info.reflect_factor);
 }
 
+float brightness(vec4 color)
+{
+	return (color.r * 0.2126) + (color.g * 0.7152) + (color.b * 0.0722);
+}
+
 void main(void)
 {
 #ifdef LINKED_TO_GSH
@@ -118,4 +125,6 @@ void main(void)
 	float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
 
 	apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+
+	final_bright_colors = final_color * brightness(final_color);
 }
