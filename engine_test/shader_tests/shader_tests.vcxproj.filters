@@ -260,5 +260,8 @@
     <Image Include="res\textures\environment\sky\up.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\environment\sky\back.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

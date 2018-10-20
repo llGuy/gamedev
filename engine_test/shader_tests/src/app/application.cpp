@@ -115,7 +115,7 @@ auto application::init_data(void) -> void
 {
 	entities.create(display.user_inputs());
 
-	world.env.init_texture(textures, "res/textures/environment");
+	world.env.init_texture(textures, "res/textures/environment/sky");
 }
 
 auto application::init_shaders(void) -> void
@@ -123,7 +123,7 @@ auto application::init_shaders(void) -> void
 	shaders.init();
 
 	shader_handle low_poly_shader = meshes.create_shader_handle(meshes.get_mesh_id("icosphere"));
-//	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::dynamic_normals);
+	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	low_poly_shader.set_name("icosphere shader");
 
 	shaders.create_program(low_poly_shader, "3D");
@@ -147,7 +147,8 @@ auto application::init_layers(void) -> void
 	u32 icosphere_mesh_id = meshes.get_mesh_id("icosphere");
 	auto renderer = meshes.create_renderer<basic_renderer>(icosphere_mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
-	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.7f), 4.0f));
+	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "environment"));
+	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 4.0f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 

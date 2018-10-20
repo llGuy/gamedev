@@ -103,6 +103,7 @@
     <None Include="toto.md" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\textures\environment\sky\back.png" />
     <Image Include="res\textures\environment\sky\down.png" />
     <Image Include="res\textures\environment\sky\forward.png" />
     <Image Include="res\textures\environment\sky\left.png" />

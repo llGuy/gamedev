@@ -50,6 +50,7 @@ uniform struct light
 light_info;
 
 uniform sampler2D diffuse;
+uniform samplerCube environment;
 
 uniform vec3 camera_position;
 uniform mat4 model_matrix;
@@ -62,18 +63,29 @@ void apply_ambient(inout vec4 color)
 
 void apply_diffuse(vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
-	float diffuse = clamp(dot(light_vector, vertex_normal), 0, 1);
+	float diffuse = clamp(dot(-light_vector, vertex_normal), 0, 1);
 
 	color = vec4(diffuse) + vec4(light_info.diffuse_intensity, 1.0f) * vec4(material_info.diffuse_reflectivity, 1.0f) * color;
 }
 
-void apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+float apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
 	vec3 reflected_light = reflect(normalize(-light_vector), vertex_normal);
 	float specular = clamp(dot(reflected_light, normalize(eye_vector)), 0, 1);
 	specular = pow(specular, material_info.shininess_factor);
 
 	color = vec4(specular) + vec4(light_info.specular_intensity, 1.0f) * vec4(material_info.specular_reflectivity, 1.0f) * color;
+
+	return specular;
+}
+
+void apply_reflection(float specular, vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+{
+	vec3 result = reflect(-eye_vector, vertex_normal);
+
+	vec4 envi_color = texture(environment, result);
+
+	color = mix(color, envi_color, 0.6);// , specular / 2.0f);
 }
 
 void main(void)
@@ -99,5 +111,7 @@ void main(void)
 	
 	apply_ambient(final_color);
 	apply_diffuse(light_vector, input_data.vertex_normal, final_color);
-	apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
+	float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
+
+	apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
 }
