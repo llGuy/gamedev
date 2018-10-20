@@ -33,7 +33,7 @@ auto render_arrays::draw(mesh_handler & mh) -> void
 
 	data.vao.bind();
 
-	glDrawArrays(GL_TRIANGLES, 0, data.count);
+	glDrawArrays(data.primitive, 0, data.count);
 
 	unbind_vertex_layouts();
 }

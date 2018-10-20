@@ -174,11 +174,17 @@ auto mesh_handler::process_vertex(std::vector<std::string> const & vertex_data,
 	i32 current_vertex = std::stoi(vertex_data[0]) - 1;
 	indices.push_back(current_vertex);
 
-	glm::vec2 current_tex = raw_textures[std::stoi(vertex_data[1]) - 1];
-	textures[current_vertex] = current_tex;
+	if (raw_textures.size() > 0)
+	{
+		glm::vec2 current_tex = raw_textures[std::stoi(vertex_data[1]) - 1];
+		textures[current_vertex] = current_tex;
+	}
 
-	glm::vec3 current_normal = raw_normals[std::stoi(vertex_data[2]) - 1];
-	normals[current_vertex] = current_normal;
+	if (raw_normals.size() > 0)
+	{
+		glm::vec3 current_normal = raw_normals[std::stoi(vertex_data[2]) - 1];
+		normals[current_vertex] = current_normal;
+	}
 }
 auto mesh_handler::split(std::string const & str, char const splitter) -> std::vector<std::string>
 {
@@ -193,31 +199,35 @@ auto mesh_handler::split(std::string const & str, char const splitter) -> std::v
 auto mesh_handler::create_mesh(std::vector<glm::vec3> & vertices, std::vector<glm::vec3> & normals,
 	std::vector<glm::vec2> & texture_coords, std::vector<u32> & indices, u32 instance) -> void
 {
-	buffer vertex_buffer = create_buffer(vertices, GL_ARRAY_BUFFER);
-	buffer normal_buffer = create_buffer(normals, GL_ARRAY_BUFFER);
-	buffer texture_buffer = create_buffer(texture_coords, GL_ARRAY_BUFFER);
-
-	add_component<vertex_buffer_component>(instance, vertex_buffer);
-	add_component<normal_buffer_component>(instance, normal_buffer);
-	add_component<texture_buffer_component>(instance, texture_buffer);
-
 	vertex_layout & layout = models[instance].get_data().vao;
-
-	attribute v_attrib{ 0, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
-	attribute t_attrib{ 1, GL_FLOAT, 2, GL_FALSE, sizeof glm::vec2, nullptr };
-	attribute n_attrib{ 2, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
 
 	layout.create();
 	layout.bind();
 
+
+	buffer vertex_buffer = create_buffer(vertices, GL_ARRAY_BUFFER);
+	add_component<vertex_buffer_component>(instance, vertex_buffer);
+	attribute v_attrib{ 0, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
 	vertex_buffer.bind(GL_ARRAY_BUFFER);
 	layout.attach(vertex_buffer, v_attrib);
 
-	normal_buffer.bind(GL_ARRAY_BUFFER);
-	layout.attach(normal_buffer, n_attrib);
-
-	texture_buffer.bind(GL_ARRAY_BUFFER);
-	layout.attach(texture_buffer, t_attrib);
+	if (normals.size() > 0)
+	{
+		buffer normal_buffer = create_buffer(normals, GL_ARRAY_BUFFER);
+		add_component<normal_buffer_component>(instance, normal_buffer);
+		attribute n_attrib{ 2, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
+		normal_buffer.bind(GL_ARRAY_BUFFER);
+		layout.attach(normal_buffer, n_attrib);
+	}
+ 
+	if (texture_coords.size() > 0)
+	{
+		buffer texture_buffer = create_buffer(texture_coords, GL_ARRAY_BUFFER);
+		add_component<texture_buffer_component>(instance, texture_buffer);
+		attribute t_attrib{ 1, GL_FLOAT, 2, GL_FALSE, sizeof glm::vec2, nullptr };
+		texture_buffer.bind(GL_ARRAY_BUFFER);
+		layout.attach(texture_buffer, t_attrib);
+	}
 
 	buffer index_buffer = create_buffer(indices, GL_ELEMENT_ARRAY_BUFFER);
 

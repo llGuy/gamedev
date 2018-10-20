@@ -36,6 +36,11 @@ auto framebuffer::resolve(framebuffer & other) -> void
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
+auto framebuffer::add_texture(u32 id) -> void
+{
+	outs.push_back(id);
+}
+
 auto framebuffer::attach(texture & obj, u32 attachment, u32 level) -> void
 {
 	glFramebufferTexture(GL_FRAMEBUFFER, attachment, obj.id, level);

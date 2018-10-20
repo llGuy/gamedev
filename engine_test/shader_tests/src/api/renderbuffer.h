@@ -19,3 +19,9 @@ public:
 	auto set_storage_ms(i32 samples, GLenum format, i32 w, i32 h) -> void;
 	auto set_storage(GLenum component, u32 w, u32 h) -> void;
 };
+
+extern auto create_depth_renderbuffer(renderbuffer & rnd, i32 w, i32 h) -> void;
+extern auto create_depth_renderbuffer_ms(renderbuffer & rnd, i32 samples, i32 w, i32 h) -> void;
+
+extern auto create_color_renderbuffer(renderbuffer & rnd, i32 w, i32 h) -> void;
+extern auto create_color_renderbuffer_ms(renderbuffer & rnd, i32 samples, i32 w, i32 h) -> void;

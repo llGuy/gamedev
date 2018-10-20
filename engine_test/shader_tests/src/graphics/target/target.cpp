@@ -16,6 +16,11 @@ auto target::add_layer(std::string const & name, layer const & layr) -> u32
 	return index;
 }
 
+auto target::bind(void) -> void
+{
+	render_target.bind(GL_FRAMEBUFFER);
+}
+
 auto target::clear(u32 bits) -> void
 {
 	glClear(bits);

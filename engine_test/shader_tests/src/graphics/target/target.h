@@ -20,6 +20,7 @@ public:
 
 	auto add_layer(std::string const & name, layer const &) -> u32;
 
+	auto bind(void) -> void;
 	auto clear(u32 bits) -> void;
 	auto clear_color(f32 r, f32 g, f32 b, f32 a) -> void;
 	auto render(mesh_handler & meshes, shader_mapper & shaders) -> void;

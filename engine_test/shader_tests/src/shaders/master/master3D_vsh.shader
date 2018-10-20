@@ -13,7 +13,7 @@ out struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
-} 
+}
 vertex_out;
 
 uniform mat4 projection_matrix;

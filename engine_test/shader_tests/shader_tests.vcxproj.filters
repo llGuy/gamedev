@@ -90,6 +90,9 @@
     <ClCompile Include="src\world\environment\environment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\mesh\mesh_comp\quad2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\xcp\exception.h">
@@ -226,6 +229,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\world\world_objects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\postfx\postfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\postfx\pipeline\postfx_pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\mesh\mesh_comp\quad2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

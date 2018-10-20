@@ -25,7 +25,9 @@ private:
 
 	world_objects world;
 
-	target main_target;
+	target first_out;
+	/* targets in the middle for pfx */
+	target final_out;
 
 public:
 
@@ -43,6 +45,7 @@ private:
 	auto init_meshes(void) -> void;
 	auto init_shaders(void) -> void;
 	auto init_textures(void) -> void;
+	auto init_targets(void) -> void;
 	auto init_layers(void) -> void;
 
 };

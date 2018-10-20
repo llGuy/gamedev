@@ -11,3 +11,5 @@
 
 #include "target/layer.h"
 #include "target/target.h"
+
+#include "mesh/mesh_comp/quad2D.h"

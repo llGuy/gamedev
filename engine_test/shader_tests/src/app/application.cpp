@@ -7,7 +7,7 @@
 #include <glm/gtx/transform.hpp>
 
 application::application(void)
-	: display(1000, 600, "Game Engine")
+	: display(1500, 800, "Game Engine")
 {
 }
 
@@ -32,6 +32,7 @@ auto application::init(void) -> void
 		init_textures();
 		init_meshes();
 		init_shaders();
+		init_targets();
 		init_layers();
 
 		is_running = true;
@@ -50,9 +51,17 @@ auto application::init(void) -> void
 
 auto application::render(void) -> void
 {
-	main_target.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	main_target.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
-	main_target.render(meshes, shaders);
+	first_out.bind();
+	first_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	first_out.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
+	first_out.render(meshes, shaders);
+
+
+
+	final_out.bind();
+	final_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	final_out.clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+	final_out.render(meshes, shaders);
 }
  
 auto application::update(void) -> void
@@ -64,13 +73,15 @@ auto application::update(void) -> void
 
 	meshes.flush_renderers();
 
-	main_target[0][0]->submit(detail::identity_matrix);
-	main_target[1][0]->submit(world.env.calculate_translation(entities.get_camera().pos()));
+	first_out[0][0]->submit(detail::identity_matrix);
+	first_out[1][0]->submit(world.env.calculate_translation(entities.get_camera().pos()));
 
 	/* update view matrix of the camera */
 	glm::mat4 view_matrix = entities.get_camera().matrix();
-	main_target[0].get_view_matrix() = view_matrix;
-	main_target[1].get_view_matrix() = world.env.calculate_view_matrix(view_matrix);
+	first_out[0].get_view_matrix() = view_matrix;
+	first_out[1].get_view_matrix() = world.env.calculate_view_matrix(view_matrix);
+
+	final_out[0][0]->submit(detail::identity_matrix);
 
 	is_running = display.is_open();
 
@@ -94,11 +105,15 @@ auto application::init_meshes(void) -> void
 
 	u32 icosphere_mesh_id = meshes.create_mesh("icosphere");
 	/* loads contents of ico.obj to the mesh "icosphere" */
-	meshes.load_mesh("res/models/ico.obj", icosphere_mesh_id);
+	meshes.load_mesh("res/models/icosphere_blue.obj", icosphere_mesh_id);
 
 	u32 cube_mesh_id = meshes.create_mesh("sky box");
 	cube_mesh_computation computation;
 	meshes.compute_mesh(computation, cube_mesh_id);
+
+	u32 quad2D_mesh_id = meshes.create_mesh("quad2D");
+	quad2D_mesh_computation quad_computation;
+	meshes.compute_mesh(quad_computation, quad2D_mesh_id);
 }
 
 auto application::init_textures(void) -> void
@@ -122,6 +137,10 @@ auto application::init_shaders(void) -> void
 {
 	shaders.init();
 
+	shader_handle quad2D_shader("shader.quad2D.simple");
+	quad2D_shader.set(shader_property::texture_coords);
+	shaders.create_program(quad2D_shader, "2D");
+
 	shader_handle low_poly_shader = meshes.create_shader_handle(meshes.get_mesh_id("icosphere"));
 	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	low_poly_shader.set_name("icosphere shader");
@@ -129,6 +148,10 @@ auto application::init_shaders(void) -> void
 	shaders.create_program(low_poly_shader, "3D");
 
 
+
+	auto & quad2D_program = shaders[shader_handle("shader.quad2D.simple")];
+	quad2D_program.bind();
+	quad2D_program.send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
 
 	auto & program = shaders[shader_handle("icosphere shader")];
 	program.bind();
@@ -148,7 +171,7 @@ auto application::init_layers(void) -> void
 	auto renderer = meshes.create_renderer<basic_renderer>(icosphere_mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "environment"));
-	renderer->submit_pre_render(new material(glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 4.0f));
+	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 1.0f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 
@@ -157,6 +180,11 @@ auto application::init_layers(void) -> void
 	auto sky_renderer = meshes.create_renderer<basic_renderer>(sky_box_mesh_id);
 	sky_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "environment"));
 
+	
+
+	u32 quad2D_mesh_id = meshes.get_mesh_id("quad2D");
+	auto quad2D_renderer = meshes.create_renderer<basic_renderer>(quad2D_mesh_id);
+	quad2D_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "final in"));
 
 
 	layer main_layer;
@@ -170,10 +198,44 @@ auto application::init_layers(void) -> void
 	sky_layer.submit_shader(sky_shader_handle);
 	sky_layer.get_projection_matrix() = projection;
 
-	main_target.add_layer("main layer", main_layer);
-	main_target.add_layer("sky layer", sky_layer);
+	first_out.add_layer("main layer", main_layer);
+	first_out.add_layer("sky layer", sky_layer);
+
+	/* just a quad */
+	layer final_main_layer;
+	final_main_layer.submit_renderer(quad2D_renderer);
+	final_main_layer.submit_shader(shader_handle("shader.quad2D.simple"));
+	final_main_layer.get_projection_matrix() = detail::identity_matrix;
+
+	final_out.add_layer("layer.quad2Dlayer", final_main_layer);
+}
+
+auto application::init_targets(void) -> void
+{
+	i32 display_width = display.pixel_width();
+	i32 display_height = display.pixel_height();
+
+	final_out.get_fbo().width() = display_width;
+	final_out.get_fbo().height() = display_height;
+
+	framebuffer & first_out_fbo = first_out.get_fbo();
+	first_out_fbo.create(display_width, display_height);
+	first_out_fbo.bind(GL_FRAMEBUFFER);
+
+	u32 first_out_color = textures.create_texture("final in");
+	texture & first_out_tex_color = textures[first_out_color];
+	create_color_texture(first_out_tex_color, display_width, display_height, nullptr);
+
+	renderbuffer first_out_depthbuffer;
+	create_depth_renderbuffer(first_out_depthbuffer, display_width, display_height);
+
+	first_out_fbo.attach(first_out_tex_color, GL_COLOR_ATTACHMENT0, 0);
+	first_out_fbo.attach(first_out_depthbuffer, GL_DEPTH_ATTACHMENT);
+
+	first_out_fbo.select_color_buffer(GL_COLOR_ATTACHMENT0);
 }
 
 auto application::clean_up(void) -> void
 {
+
 }

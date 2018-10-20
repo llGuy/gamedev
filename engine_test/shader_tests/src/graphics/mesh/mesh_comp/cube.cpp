@@ -19,7 +19,7 @@ auto cube_mesh_computation::compute(u32 mesh_index, mesh_handler & meshes) -> vo
 	vertex_layout layout;
 	layout.create();
 	layout.bind();
-
+	
 	layout.attach(vertex_buffer, vertex_attribute);
 
 	meshes.add_component<vertex_buffer_component>(mesh_index, vertex_buffer);
