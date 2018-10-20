@@ -14,6 +14,9 @@ private:
 
 	shader_handle shader;
 public:
+	/* wrapper function for submit renderer, submit shader and set projection */
+	auto init(renderer * mesh_renderer, shader_handle const & handle, glm::mat4 const & projection) -> void;
+
 	/* renderers are on the heap so no need for concern as to whether
 	   the vector of entities reallocates*/
 	auto submit_renderer(renderer * mesh_renderer) -> void;

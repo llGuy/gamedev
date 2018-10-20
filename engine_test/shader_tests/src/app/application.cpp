@@ -63,7 +63,7 @@ auto application::render(void) -> void
 	final_out.clear_color(0.0f, 0.0f, 0.0f, 1.0f);
 	final_out.render(meshes, shaders);
 }
- 
+
 auto application::update(void) -> void
 {
 	display.refresh();
@@ -86,6 +86,7 @@ auto application::update(void) -> void
 	is_running = display.is_open();
 
 	unbind_all_textures(GL_TEXTURE_2D);
+	unbind_all_textures(GL_TEXTURE_CUBE_MAP);
 }
 
 auto application::running(void) -> bool
@@ -103,15 +104,15 @@ auto application::init_meshes(void) -> void
 	-  set the name for the shader that you want to use for the handle 
 	-  create the program with the handle (which will have all the properties selected) */
 
-	u32 icosphere_mesh_id = meshes.create_mesh("icosphere");
+	u32 icosphere_mesh_id = meshes.create_mesh("mesh.icosphere");
 	/* loads contents of ico.obj to the mesh "icosphere" */
 	meshes.load_mesh("res/models/icosphere_blue.obj", icosphere_mesh_id);
 
-	u32 cube_mesh_id = meshes.create_mesh("sky box");
+	u32 cube_mesh_id = meshes.create_mesh("mesh.cube.sky");
 	cube_mesh_computation computation;
 	meshes.compute_mesh(computation, cube_mesh_id);
 
-	u32 quad2D_mesh_id = meshes.create_mesh("quad2D");
+	u32 quad2D_mesh_id = meshes.create_mesh("mesh.quad2D");
 	quad2D_mesh_computation quad_computation;
 	meshes.compute_mesh(quad_computation, quad2D_mesh_id);
 }
@@ -120,7 +121,7 @@ auto application::init_textures(void) -> void
 {
 	auto image = extract_png("res/textures/low_poly.png");
 
-	u32 low_poly_id = textures.create_texture("low poly");
+	u32 low_poly_id = textures.create_texture("texture.lowpoly");
 	auto & low_poly_colors = textures[low_poly_id];
 
 	create_color_texture(low_poly_colors, image.w, image.h, image.data);
@@ -141,9 +142,9 @@ auto application::init_shaders(void) -> void
 	quad2D_shader.set(shader_property::texture_coords);
 	shaders.create_program(quad2D_shader, "2D");
 
-	shader_handle low_poly_shader = meshes.create_shader_handle(meshes.get_mesh_id("icosphere"));
+	shader_handle low_poly_shader = meshes.create_shader_handle(meshes.get_mesh_id("mesh.icosphere"));
 	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
-	low_poly_shader.set_name("icosphere shader");
+	low_poly_shader.set_name("shader.icosphere");
 
 	shaders.create_program(low_poly_shader, "3D");
 
@@ -153,7 +154,7 @@ auto application::init_shaders(void) -> void
 	quad2D_program.bind();
 	quad2D_program.send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
 
-	auto & program = shaders[shader_handle("icosphere shader")];
+	auto & program = shaders[shader_handle("shader.icosphere")];
 	program.bind();
 	/* send light information to shader */
 	lights.prepare_shader(program);
@@ -167,47 +168,41 @@ auto application::init_layers(void) -> void
 
 
 
-	u32 icosphere_mesh_id = meshes.get_mesh_id("icosphere");
+	u32 icosphere_mesh_id = meshes.get_mesh_id("mesh.icosphere");
 	auto renderer = meshes.create_renderer<basic_renderer>(icosphere_mesh_id);
-	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "low poly"));
-	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "environment"));
-	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 1.0f));
+	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.lowpoly"));
+	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "texture.environment"));
+	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 0.3f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 
 
-	u32 sky_box_mesh_id = meshes.get_mesh_id("sky box");
+	u32 sky_box_mesh_id = meshes.get_mesh_id("mesh.cube.sky");
 	auto sky_renderer = meshes.create_renderer<basic_renderer>(sky_box_mesh_id);
-	sky_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "environment"));
+	sky_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "texture.environment"));
 
 	
 
-	u32 quad2D_mesh_id = meshes.get_mesh_id("quad2D");
+	u32 quad2D_mesh_id = meshes.get_mesh_id("mesh.quad2D");
 	auto quad2D_renderer = meshes.create_renderer<basic_renderer>(quad2D_mesh_id);
-	quad2D_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "final in"));
+	quad2D_renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.rendered.final"));
+
 
 
 	layer main_layer;
-	main_layer.submit_renderer(renderer);
-	main_layer.submit_shader(shader_handle("icosphere shader"));
-	main_layer.get_projection_matrix() = projection;
+	main_layer.init(renderer, shader_handle("shader.icosphere"), projection);
 
 	layer sky_layer;
-	shader_handle sky_shader_handle{ "environment shader" };
-	sky_layer.submit_renderer(sky_renderer);
-	sky_layer.submit_shader(sky_shader_handle);
-	sky_layer.get_projection_matrix() = projection;
+	sky_layer.init(sky_renderer, shader_handle("shader.environment"), projection);
 
-	first_out.add_layer("main layer", main_layer);
-	first_out.add_layer("sky layer", sky_layer);
+	first_out.add_layer("layer.main", main_layer);
+	first_out.add_layer("layer.sky", sky_layer);
 
 	/* just a quad */
 	layer final_main_layer;
-	final_main_layer.submit_renderer(quad2D_renderer);
-	final_main_layer.submit_shader(shader_handle("shader.quad2D.simple"));
-	final_main_layer.get_projection_matrix() = detail::identity_matrix;
+	final_main_layer.init(quad2D_renderer, shader_handle("shader.quad2D.simple"), detail::identity_matrix);
 
-	final_out.add_layer("layer.quad2Dlayer", final_main_layer);
+	final_out.add_layer("layer.quad2D", final_main_layer);
 }
 
 auto application::init_targets(void) -> void
@@ -222,7 +217,7 @@ auto application::init_targets(void) -> void
 	first_out_fbo.create(display_width, display_height);
 	first_out_fbo.bind(GL_FRAMEBUFFER);
 
-	u32 first_out_color = textures.create_texture("final in");
+	u32 first_out_color = textures.create_texture("texture.rendered.final");
 	texture & first_out_tex_color = textures[first_out_color];
 	create_color_texture(first_out_tex_color, display_width, display_height, nullptr);
 

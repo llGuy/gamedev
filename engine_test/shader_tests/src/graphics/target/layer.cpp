@@ -1,5 +1,12 @@
 #include "layer.h"
 
+auto layer::init(renderer * mesh_renderer, shader_handle const & handle, glm::mat4 const & projection) -> void
+{
+	submit_renderer(mesh_renderer);
+	submit_shader(handle);
+	projection_matrix = projection;
+}
+
 auto layer::submit_renderer(renderer * mesh_renderer) -> void
 {
 	renderers.push_back(mesh_renderer);

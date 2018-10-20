@@ -5,7 +5,7 @@
 
 auto environment::init_shader(shader_mapper & shaders) -> void
 {
-	shader_handle sky_shader{ "environment shader" };
+	shader_handle sky_shader{ "shader.environment" };
 	glsl_shader sky_vs = shaders.create_shader(GL_VERTEX_SHADER, sky_shader, extract_file("src/shaders/environment/environment_vsh.shader"));
 	glsl_shader sky_fs = shaders.create_shader(GL_FRAGMENT_SHADER, sky_shader, extract_file("src/shaders/environment/environment_fsh.shader"));
 	glsl_program sky_program = shaders.combine(sky_shader, sky_vs, sky_fs);
@@ -13,7 +13,7 @@ auto environment::init_shader(shader_mapper & shaders) -> void
 
 auto environment::init_texture(texture_mapper & textures, std::string const & base_dir) -> void
 {
-	u32 environment_texture_id = textures.create_texture("environment");
+	u32 environment_texture_id = textures.create_texture("texture.environment");
 	texture & cubemap_texture = textures[environment_texture_id];
 
 	cubemap_texture.create();
