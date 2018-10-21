@@ -70,3 +70,9 @@ auto framebuffer::height(void) -> i32 &
 {
 	return h;
 }
+
+auto unbind_all_framebuffers(i32 w, i32 h) -> void
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, w, h);
+}

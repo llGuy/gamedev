@@ -32,9 +32,10 @@ public:
 	/* provide just the prefix of the name in the direction e.g. "res/font/consolas" */
 	auto load_font(texture_mapper & textures, std::string const & dir) -> void;
 
+	auto get_data(char type) -> character &;
 private:
-	auto load_fnt(std::string const & dir) -> void;
-	auto load_image(texture_mapper & textures, std::string const & dir) -> void;
+	auto load_fnt(std::string const & dir, i32 image_w, i32 image_h) -> void;
+	auto load_image(texture_mapper & textures, std::string const & dir) -> std::pair<i32, i32>;
 	auto split(std::string const & str, char const splitter)->std::vector<std::string>;
 	auto remove_spaces(std::vector<std::string> & words) -> void;
 };

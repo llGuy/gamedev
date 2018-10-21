@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\renderer\2D\renderer_2D.cpp" />
+    <ClCompile Include="src\graphics\renderer\2D\sprite_batch.cpp" />
     <ClCompile Include="src\gui\font\font_handler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\api\buffer.cpp" />
@@ -34,14 +36,16 @@
     <ClCompile Include="src\graphics\mesh\mesh_comp\cube.cpp" />
     <ClCompile Include="src\graphics\mesh\mesh_comp\quad2D.cpp" />
     <ClCompile Include="src\graphics\mesh\mesh_handler.cpp" />
-    <ClCompile Include="src\graphics\renderer\basic_renderer.cpp" />
-    <ClCompile Include="src\graphics\renderer\renderer.cpp" />
+    <ClCompile Include="src\graphics\renderer\3D\basic_renderer.cpp" />
+    <ClCompile Include="src\graphics\renderer\3D\renderer.cpp" />
     <ClCompile Include="src\graphics\renderer\render_func.cpp" />
     <ClCompile Include="src\graphics\shader\shader_mapper.cpp" />
     <ClCompile Include="src\graphics\target\layer.cpp" />
     <ClCompile Include="src\graphics\target\target.cpp" />
     <ClCompile Include="src\gui\font\font.cpp" />
     <ClCompile Include="src\gui\font\font_stream.cpp" />
+    <ClCompile Include="src\gui\gui.cpp" />
+    <ClCompile Include="src\gui\panel.cpp" />
     <ClCompile Include="src\io\io.cpp" />
     <ClCompile Include="src\lighting\light_handler.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
@@ -50,6 +54,8 @@
     <ClCompile Include="src\world\environment\environment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\renderer\2D\renderer_2D.h" />
+    <ClInclude Include="src\graphics\renderer\2D\sprite_batch.h" />
     <ClInclude Include="src\gui\font\font_handler.h" />
     <ClInclude Include="src\api\api.h" />
     <ClInclude Include="src\api\buffer.h" />
@@ -75,9 +81,9 @@
     <ClInclude Include="src\graphics\mesh\mesh_handler.h" />
     <ClInclude Include="src\graphics\mesh\mesh_comp\cube.h" />
     <ClInclude Include="src\graphics\mesh\mesh_comp\mesh_comp.h" />
-    <ClInclude Include="src\graphics\renderer\basic_renderer.h" />
+    <ClInclude Include="src\graphics\renderer\3D\basic_renderer.h" />
     <ClInclude Include="src\graphics\renderer\pre_render.h" />
-    <ClInclude Include="src\graphics\renderer\renderer.h" />
+    <ClInclude Include="src\graphics\renderer\3D\renderer.h" />
     <ClInclude Include="src\graphics\renderer\render_func.h" />
     <ClInclude Include="src\graphics\shader\shader_properties.h" />
     <ClInclude Include="src\graphics\shader\shader_mapper.h" />
@@ -86,6 +92,8 @@
     <ClInclude Include="src\graphics\texture\texture_mapper.h" />
     <ClInclude Include="src\gui\font\font.h" />
     <ClInclude Include="src\gui\font\font_stream.h" />
+    <ClInclude Include="src\gui\gui.h" />
+    <ClInclude Include="src\gui\panel.h" />
     <ClInclude Include="src\io\io.h" />
     <ClInclude Include="src\lighting\light_handler.h" />
     <ClInclude Include="src\lighting\light_info.h" />

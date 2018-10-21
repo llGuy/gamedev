@@ -5,8 +5,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "../gui/panel.h"
+#include "../gui/font/font_stream.h"
+
 application::application(void)
-	: display(1500, 800, "Game Engine"), consolas("consolas")
+	: display(1500, 750, "Game Engine")
 {
 }
 
@@ -33,8 +36,42 @@ auto application::init(void) -> void
 		init_shaders();
 		init_targets();
 		init_layers();
+		init_gui();
 
-		consolas.load_font(textures, "res/font/consolas");
+
+
+		renderer = new sprite_batch_renderer(100);
+		renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.font.consolas"));
+		renderer->set_mesh(meshes.get_mesh_id("mesh.quad2D"), meshes);
+
+		renderer_green = new sprite_batch_renderer(30);
+		renderer_green->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.green"));
+		renderer_green->set_mesh(meshes.get_mesh_id("mesh.quad2D"), meshes);
+
+		gui_vertices_cache vertices_parent;
+		vertices_parent.coord.position = glm::vec2(300.0f, 500.0f);
+		vertices_parent.coord.texture_coords = glm::vec2(0.0f);
+		vertices_parent.size.position = glm::vec2(130.0f, 60.0f);
+		vertices_parent.size.texture_coords = glm::vec2(1.0f);
+
+		gui_vertices_cache vertices_child;
+		vertices_child.coord.position = glm::vec2(10.0f, 10.0f);
+		vertices_child.coord.texture_coords = glm::vec2(0.0f);
+		vertices_child.size.position = glm::vec2(80.0f, 34.0f);
+		vertices_child.size.texture_coords = glm::vec2(1.0f);
+
+		text_test = new font_stream(fonts.get_font_index("consolas"), 500.0f, 20.0f);
+		text_test->submit_text("|%");
+		text_test->update(fonts);
+
+		text_parent = new panel(vertices_parent);
+
+		text_parent->add_child(text_test);
+
+		text_test->bind_renderer(renderer);
+		text_parent->bind_renderer(renderer_green);
+		text_test->submit_to_renderer(display.pixel_width(), display.pixel_height());
+		text_parent->submit_to_renderer(display.pixel_width(), display.pixel_height());
 
 		is_running = true;
 
@@ -52,17 +89,30 @@ auto application::init(void) -> void
 
 auto application::render(void) -> void
 {
+	glEnable(GL_DEPTH_TEST);
+
 	first_out.bind();
 	first_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	first_out.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
 	first_out.render(meshes, shaders);
 
+	unbind_all_framebuffers(display.pixel_width(), display.pixel_height());
 
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	final_out.bind();
 	final_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	final_out.clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+	final_out.clear_color(1.0f, 1.0f, 1.0f, 1.0f);
 	final_out.render(meshes, shaders);
+
+	auto & program = shaders[shader_handle("shader.quad2D.simple")];
+	program.send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	program.bind();
+	renderer_green->render(program, meshes);
+	renderer->render(program, meshes);
+
 }
 
 auto application::update(void) -> void
@@ -124,8 +174,17 @@ auto application::init_textures(void) -> void
 
 	u32 low_poly_id = textures.create_texture("texture.lowpoly");
 	auto & low_poly_colors = textures[low_poly_id];
+	create_color_texture(low_poly_colors, image.w, image.h, image.data, GL_LINEAR);
 
-	create_color_texture(low_poly_colors, image.w, image.h, image.data);
+	auto image_gui = extract_png("res/textures/gui/gui_test.png");
+	u32 gui_test_id = textures.create_texture("texture.gui_test");
+	auto & gui_test_colors = textures[gui_test_id];
+	create_color_texture(gui_test_colors, image_gui.w, image_gui.h, image_gui.data, GL_NEAREST);
+
+	auto image_green = extract_png("res/textures/gui/green.png");
+	u32 green = textures.create_texture("texture.green");
+	auto & green_tex = textures[green];
+	create_color_texture(green_tex, image_green.w, image_green.h, image_green.data, GL_NEAREST);
 }
 
 auto application::init_data(void) -> void
@@ -173,7 +232,7 @@ auto application::init_layers(void) -> void
 	auto renderer = meshes.create_renderer<basic_renderer>(icosphere_mesh_id);
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.lowpoly"));
 	renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_CUBE_MAP, 0, "texture.environment"));
-	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 0.0f));
+	renderer->submit_pre_render(new material(glm::vec3(0.8f), glm::vec3(0.7f), glm::vec3(0.1f), 4.0f, 1.0f));
 	renderer->submit_pre_render(&entities.get_pre_render_cam_pos(), false);
 
 
@@ -220,7 +279,7 @@ auto application::init_targets(void) -> void
 
 	u32 first_out_color = textures.create_texture("texture.rendered.final");
 	texture & first_out_tex_color = textures[first_out_color];
-	create_color_texture(first_out_tex_color, display_width, display_height, nullptr);
+	create_color_texture(first_out_tex_color, display_width, display_height, nullptr, GL_LINEAR);
 
 	renderbuffer first_out_depthbuffer;
 	create_depth_renderbuffer(first_out_depthbuffer, display_width, display_height);
@@ -229,6 +288,11 @@ auto application::init_targets(void) -> void
 	first_out_fbo.attach(first_out_depthbuffer, GL_DEPTH_ATTACHMENT);
 
 	first_out_fbo.select_color_buffer(GL_COLOR_ATTACHMENT0);
+}
+
+auto application::init_gui(void) -> void
+{
+	u32 consolas_id = fonts.create_font(textures, "consolas", "res/font/consolas");
 }
 
 auto application::clean_up(void) -> void

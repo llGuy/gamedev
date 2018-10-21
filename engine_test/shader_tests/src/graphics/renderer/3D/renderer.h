@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "pre_render.h"
-#include "render_func.h"
-#include "../../api/api.h"
+#include "../pre_render.h"
+#include "../render_func.h"
+#include "../../../api/api.h"
 
 class mesh_handler;
 

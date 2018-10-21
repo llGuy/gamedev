@@ -5,13 +5,13 @@ auto unbind_all_textures(GLenum target) -> void
 	glBindTexture(target, 0);
 }
 
-auto create_color_texture(texture & t, int32_t w, int32_t h, void * data) -> void
+auto create_color_texture(texture & t, int32_t w, int32_t h, void * data, GLenum magmin_filter) -> void
 {
 	t.create();
 	t.bind(GL_TEXTURE_2D);
 	t.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, data, w, h);
-	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magmin_filter);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, magmin_filter);
 }
 
 auto create_depth_texture(texture & t, int32_t w, int32_t h) -> void

@@ -10,8 +10,8 @@ auto quad2D_mesh_computation::compute(u32 mesh_index, mesh_handler & meshes) -> 
 	vertex_buffer.create();
 	vertex_buffer.fill(vertices.size() * sizeof(f32), vertices.data(), GL_STATIC_DRAW, GL_ARRAY_BUFFER);
 
-	attribute vertex_attribute{ 0, GL_FLOAT, 3, GL_FALSE, 5 * sizeof(f32), nullptr };
-	attribute texture_attribute{ 1, GL_FLOAT, 2, GL_FALSE, 5 * sizeof(f32), (void *)(sizeof(f32) * 3) };
+	attribute vertex_attribute{ 0, GL_FLOAT, 2, GL_FALSE, 4 * sizeof(f32), nullptr };
+	attribute texture_attribute{ 1, GL_FLOAT, 2, GL_FALSE, 4 * sizeof(f32), (void *)(sizeof(f32) * 2) };
 
 	vertex_layout layout;
 	layout.create();
@@ -30,9 +30,9 @@ auto quad2D_mesh_computation::create_vertices(void) -> std::vector<f32>
 {
 	return std::vector<f32>
 	{
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		-1.0f, +1.0f, 0.0f, 0.0f, 1.0f,
-		+1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-		+1.0f, +1.0f, 0.0f, 1.0f, 1.0f
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		-1.0f, +1.0f, 0.0f, 1.0f,
+		+1.0f, -1.0f, 1.0f, 0.0f,
+		+1.0f, +1.0f, 1.0f, 1.0f
 	};
 }

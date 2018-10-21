@@ -4,7 +4,7 @@
 
 #include "../../api/api.h"
 #include "../shader/shader_mapper.h"
-#include "../renderer/basic_renderer.h"
+#include "../renderer/3D/renderer.h"
 
 struct mesh_data
 {

@@ -31,3 +31,5 @@ public:
 	auto width(void) -> i32 &;
 	auto height(void) -> i32 &;
 };
+
+extern auto unbind_all_framebuffers(i32 w, i32 h) -> void;

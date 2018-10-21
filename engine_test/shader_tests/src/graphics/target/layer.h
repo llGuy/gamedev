@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../renderer/renderer.h"
 #include "../shader/shader_mapper.h"
+#include "../renderer/3D/renderer.h"
 
 /* all models that use the same shader */
 class layer
