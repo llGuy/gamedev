@@ -80,7 +80,7 @@ auto font::get_data(char type) -> character &
 
 auto font::load_image(texture_mapper & textures, std::string const & dir) -> std::pair<i32, i32>
 {
-	auto image = extract_png(dir + ".png");
+	auto image = extract_png(dir + ".png", true);
 
 	u32 texture_id = textures.create_texture("texture.font." + font_name);
 	texture & font_texture = textures[texture_id];

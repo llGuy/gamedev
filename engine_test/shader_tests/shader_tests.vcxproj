@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\font\consolas.fnt" />
+    <None Include="res\font\verdana.fnt" />
     <None Include="src\shaders\environment\environment_fsh.shader" />
     <None Include="src\shaders\environment\environment_vsh.shader" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
@@ -126,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\consolas.png" />
+    <Image Include="res\font\verdana.png" />
     <Image Include="res\textures\environment\sky\back.png" />
     <Image Include="res\textures\environment\sky\down.png" />
     <Image Include="res\textures\environment\sky\forward.png" />

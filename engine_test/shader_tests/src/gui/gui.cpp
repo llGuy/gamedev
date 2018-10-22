@@ -90,9 +90,9 @@ auto convert_cache_to_vertices(gui_vertices_cache const & cache) -> gui_vertices
 	vertices[3].pos = cache.coord.position + glm::vec2(cache.size.position.x, -cache.size.position.y);
 
 	vertices[0].tex_coord = cache.coord.texture_coords;
-	(vertices[1].tex_coord = cache.coord.texture_coords).y += cache.size.texture_coords.y;
+	(vertices[1].tex_coord = cache.coord.texture_coords).y -= cache.size.texture_coords.y;
 	(vertices[2].tex_coord = cache.coord.texture_coords).x += cache.size.texture_coords.x;
-	vertices[3].tex_coord = cache.coord.texture_coords + glm::vec2(cache.size.texture_coords.x, +cache.size.texture_coords.y);
+	vertices[3].tex_coord = cache.coord.texture_coords + glm::vec2(cache.size.texture_coords.x, -cache.size.texture_coords.y);
 
 	return vertices;
 }

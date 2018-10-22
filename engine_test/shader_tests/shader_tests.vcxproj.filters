@@ -295,6 +295,7 @@
     <None Include="src\shaders\pfx\hblur_vsh.shader" />
     <None Include="src\shaders\pfx\vblur_vsh.shader" />
     <None Include="res\font\consolas.fnt" />
+    <None Include="res\font\verdana.fnt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">
@@ -322,6 +323,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\font\consolas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\verdana.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

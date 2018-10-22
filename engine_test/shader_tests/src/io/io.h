@@ -14,4 +14,4 @@ struct image
 	i32 w, h;
 };
 
-extern auto extract_png(std::string const & dir) -> image;
+extern auto extract_png(std::string const & dir, bool flipvert = false) -> image;

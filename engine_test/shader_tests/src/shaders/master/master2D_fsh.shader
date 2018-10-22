@@ -10,6 +10,8 @@ vertex_out;
 
 uniform sampler2D diffuse;
 
+uniform vec3 color;
+
 vec4 calculate_color(void)
 {
 #ifdef USES_COLOR
@@ -17,8 +19,14 @@ vec4 calculate_color(void)
 #endif
 
 #ifdef USES_TEXTURE
+
+#ifdef FONT
+	return vec4(color, texture(diffuse, vertex_out.texture_coords).a);
+#endif
+
 	return texture(diffuse, vertex_out.texture_coords);
 #endif
+
 }
 
 void main(void)

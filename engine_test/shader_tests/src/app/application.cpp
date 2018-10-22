@@ -40,7 +40,7 @@ auto application::init(void) -> void
 
 
 
-		renderer = new sprite_batch_renderer(100);
+		renderer = new sprite_batch_renderer(1000);
 		renderer->submit_pre_render(new renderer_pre_render_texture_bind(textures, GL_TEXTURE_2D, 0, "texture.font.consolas"));
 		renderer->set_mesh(meshes.get_mesh_id("mesh.quad2D"), meshes);
 
@@ -49,20 +49,12 @@ auto application::init(void) -> void
 		renderer_green->set_mesh(meshes.get_mesh_id("mesh.quad2D"), meshes);
 
 		gui_vertices_cache vertices_parent;
-		vertices_parent.coord.position = glm::vec2(300.0f, 500.0f);
+		vertices_parent.coord.position = glm::vec2(30.0f, 30.0f);
 		vertices_parent.coord.texture_coords = glm::vec2(0.0f);
-		vertices_parent.size.position = glm::vec2(130.0f, 60.0f);
+		vertices_parent.size.position = glm::vec2(300.0f, 100.0f);
 		vertices_parent.size.texture_coords = glm::vec2(1.0f);
 
-		gui_vertices_cache vertices_child;
-		vertices_child.coord.position = glm::vec2(10.0f, 10.0f);
-		vertices_child.coord.texture_coords = glm::vec2(0.0f);
-		vertices_child.size.position = glm::vec2(80.0f, 34.0f);
-		vertices_child.size.texture_coords = glm::vec2(1.0f);
-
-		text_test = new font_stream(fonts.get_font_index("consolas"), 500.0f, 20.0f);
-		text_test->submit_text("|%");
-		text_test->update(fonts);
+		text_test = new font_stream(fonts.get_font_index("consolas"), glm::vec2(120.0f), 20.0f);
 
 		text_parent = new panel(vertices_parent);
 
@@ -107,11 +99,17 @@ auto application::render(void) -> void
 	final_out.clear_color(1.0f, 1.0f, 1.0f, 1.0f);
 	final_out.render(meshes, shaders);
 
-	auto & program = shaders[shader_handle("shader.quad2D.simple")];
-	program.send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	glm::vec3 black(0.0f);
+
+	auto & program = shaders[shader_handle("shader.font")];
 	program.bind();
-	renderer_green->render(program, meshes);
+	program.send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	program.send_uniform_vec3("color", glm::value_ptr(black), 1);
 	renderer->render(program, meshes);
+
+
+
+//	renderer_green->render(program, meshes);
 
 }
 
@@ -120,7 +118,6 @@ auto application::update(void) -> void
 	display.refresh();
 
 	entities.update(timer.elapsed());
-	timer.reset();
 
 	meshes.flush_renderers();
 
@@ -133,6 +130,16 @@ auto application::update(void) -> void
 	first_out[1].get_view_matrix() = world.env.calculate_view_matrix(view_matrix);
 
 	final_out[0][0]->submit(detail::identity_matrix);
+
+
+	renderer->flush();
+	text_test->clear();
+	text_test->submit_text("fps ");
+	text_test->submit_text(1.0f / timer.elapsed());
+	text_test->update(fonts);
+	text_test->submit_to_renderer(display.pixel_width(), display.pixel_height());
+
+	timer.reset();
 
 	is_running = display.is_open();
 
@@ -201,6 +208,10 @@ auto application::init_shaders(void) -> void
 	shader_handle quad2D_shader("shader.quad2D.simple");
 	quad2D_shader.set(shader_property::texture_coords);
 	shaders.create_program(quad2D_shader, "2D");
+
+	shader_handle font_shader("shader.font");
+	font_shader.set(shader_property::texture_coords, shader_property::font);
+	shaders.create_program(font_shader, "2D");
 
 	shader_handle low_poly_shader = meshes.create_shader_handle(meshes.get_mesh_id("mesh.icosphere"));
 	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
@@ -292,7 +303,8 @@ auto application::init_targets(void) -> void
 
 auto application::init_gui(void) -> void
 {
-	u32 consolas_id = fonts.create_font(textures, "consolas", "res/font/consolas");
+	fonts.create_font(textures, "consolas", "res/font/consolas");
+	fonts.create_font(textures, "verdana", "res/font/verdana");
 }
 
 auto application::clean_up(void) -> void
