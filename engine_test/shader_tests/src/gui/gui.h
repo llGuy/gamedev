@@ -30,6 +30,8 @@ struct gui_vertices
 	}
 };
 
+enum origin { top_left, top_right, left_bottom, right_bottom, center };
+
 /* from top left of screen */
 class gui
 {
@@ -57,6 +59,8 @@ public:
 	auto get_coordinates_relative_to_display_indexed(u32 index = 0) -> glm::vec2;
 
 	auto get_parent_coord(u32 index = 0) -> glm::vec2;
+
+	auto get_renderer(void) -> renderer_2D *;
 
 	auto convert_to_screen_space(f32 display_w, f32 display_h, gui_vertices_cache const & pixel_vertices) -> gui_vertices_cache;
 

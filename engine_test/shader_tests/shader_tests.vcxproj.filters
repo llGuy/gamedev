@@ -114,6 +114,12 @@
     <ClCompile Include="src\gui\panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\renderer\handler\renderer_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\xcp\exception.h">
@@ -282,6 +288,27 @@
     <ClInclude Include="src\gui\panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\renderer\handler\renderer_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\component\render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\component\model_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\game_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\component_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="toto.md" />
@@ -296,6 +323,9 @@
     <None Include="src\shaders\pfx\vblur_vsh.shader" />
     <None Include="res\font\consolas.fnt" />
     <None Include="res\font\verdana.fnt" />
+    <None Include="res\font\superscript.fnt" />
+    <None Include="res\font\droid.fnt" />
+    <None Include="res\font\comic.fnt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">
@@ -326,6 +356,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\font\verdana.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\superscript.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\droid.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\comic.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

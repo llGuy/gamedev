@@ -16,10 +16,16 @@ auto font_stream::update(font_handler & fonts) -> void
 	new_caches.clear();
 	new_caches.reserve(text.size());
 
-	font & font_used = fonts[font_id];
+	font & font_used = fonts.get_font(font_id);
 
 	for (u32 i = 0; i < text.size(); ++i)
 	{
+		if (text[i] == '\n')
+		{
+			line_y += line_height;
+			x = 0.0f;
+		}
+
 		character & ch = font_used.get_data(text[i]);
 
 		gui_vertices_cache new_char;

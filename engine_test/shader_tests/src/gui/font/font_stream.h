@@ -25,10 +25,10 @@ public:
 
 	auto clear(void) -> void;
 
-	template <typename T> auto submit_text(T && element) -> void
+	template <typename ... T> auto submit_text(T && ... element) -> void
 	{
 		std::stringstream stream;
-		stream << element;
+		(stream << ... << element);
 		text += stream.str();
 	}
 

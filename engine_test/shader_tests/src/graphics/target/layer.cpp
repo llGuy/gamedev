@@ -1,23 +1,29 @@
 #include "layer.h"
 
-auto layer::init(renderer * mesh_renderer, shader_handle const & handle, glm::mat4 const & projection) -> void
+layer_3D::layer_3D(renderer_handler & renderers)
+	: rnds_handler(&renderers)
 {
-	submit_renderer(mesh_renderer);
+}
+
+auto layer_3D::init(std::string const & renderer_name, shader_handle const & handle, glm::mat4 const & projection) -> void
+{
+	submit_renderer(renderer_name);
 	submit_shader(handle);
 	projection_matrix = projection;
 }
 
-auto layer::submit_renderer(renderer * mesh_renderer) -> void
+auto layer_3D::submit_renderer(std::string const & renderer_name) -> void
 {
-	renderers.push_back(mesh_renderer);
+	u32 renderer_id = rnds_handler->get_renderer_3D_index(renderer_name);
+	renderers.push_back(renderer_id);
 }
 
-auto layer::submit_shader(shader_handle const & handle) -> void
+auto layer_3D::submit_shader(shader_handle const & handle) -> void
 {
 	shader = handle;
 }
 
-auto layer::refresh(shader_mapper & shaders, mesh_handler & meshes) -> void
+auto layer_3D::refresh(shader_mapper & shaders, mesh_handler & meshes) -> void
 {
 	auto & shader_used = shaders[shader];
 
@@ -28,21 +34,17 @@ auto layer::refresh(shader_mapper & shaders, mesh_handler & meshes) -> void
 
 	for (auto & mesh_renderer : renderers)
 	{
-		mesh_renderer->render(shader_used, meshes);
+		renderer_3D * renderer = rnds_handler->get_renderer_3D(mesh_renderer);
+		renderer->render(shader_used, meshes);
 	}
 }
 
-auto layer::operator[](u32 index) -> renderer *
-{
-	return renderers[index];
-}
-
-auto layer::get_view_matrix(void) -> glm::mat4 &
+auto layer_3D::get_view_matrix(void) -> glm::mat4 &
 {
 	return view_matrix;
 }
 
-auto layer::get_projection_matrix(void) -> glm::mat4 &
+auto layer_3D::get_projection_matrix(void) -> glm::mat4 &
 {
 	return projection_matrix;
 }

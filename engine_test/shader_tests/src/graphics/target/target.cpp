@@ -5,11 +5,11 @@ auto target::get_fbo(void) -> framebuffer &
 	return render_target;
 }
 
-auto target::add_layer(std::string const & name, layer const & layr) -> u32
+auto target::add_layer(std::string const & name, layer_3D const & layr) -> u32
 {
-	u32 index = layers.size();
+	u32 index = layers_3D.size();
 
-	layers.push_back(layr);
+	layers_3D.push_back(layr);
 
 	index_map[name] = index;
 
@@ -33,7 +33,7 @@ auto target::clear_color(f32 r, f32 g, f32 b, f32 a) -> void
 
 auto target::render(mesh_handler & meshes, shader_mapper & shaders) -> void
 {
-	for (auto & render_layer : layers)
+	for (auto & render_layer : layers_3D)
 	{
 		render_layer.refresh(shaders, meshes);
 	}
@@ -44,7 +44,7 @@ auto target::get_layer_index(std::string const & name) -> u32
 	return index_map[name];
 }
 
-auto target::operator[](u32 index) -> layer &
+auto target::operator[](u32 index) -> layer_3D &
 {
-	return layers[index];
+	return layers_3D[index];
 }

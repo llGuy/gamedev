@@ -17,6 +17,11 @@ auto gui::get_coordinates_relative_to_display_indexed(u32 index) -> glm::vec2
 	}
 }
 
+auto gui::get_renderer(void) -> renderer_2D *
+{
+	return renderer;
+}
+
 auto gui::get_parent_coord(u32 index) -> glm::vec2
 {
 	return parent->get_coordinates_relative_to_parent(0);

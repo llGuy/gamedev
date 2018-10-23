@@ -95,7 +95,9 @@ private:
 		std::unordered_map<GLenum, std::string> srcs;
 	} master3D_srcs;
 
-	std::unordered_map<shader_handle, glsl_program> program_map;
+	std::unordered_map<shader_handle, u32> program_index_map;
+
+	std::vector<glsl_program> programs;
 public:
 	shader_mapper(void) = default;
 
@@ -164,13 +166,27 @@ public:
 		(program.attach(shaders), ...);
 		program.link();
 
-		program_map[handle] = program;
+		u32 id = programs.size();
+
+		program_index_map[handle] = id;
+
+		programs.push_back(program);
 
 		return program;
 	}
 
+	auto get_index(shader_handle const & handle) -> u32
+	{
+		return program_index_map[handle];
+	}
+
 	auto operator[](shader_handle const & handle) -> glsl_program &
 	{
-		return program_map.at(handle);
+		return programs[program_index_map.at(handle)];
+	}
+
+	auto operator[](u32 index) -> glsl_program &
+	{
+		return programs[index];
 	}
 };

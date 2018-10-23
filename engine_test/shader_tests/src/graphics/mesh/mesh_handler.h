@@ -100,20 +100,7 @@ public:
 
 	auto create_render_func(u32 id) -> std::unique_ptr<render_func>; 
 
-	auto flush_renderers(void) -> void;
-
-	auto get_renderer(u32 id) -> renderer *
-	{
-		return models[id].get_data().mesh_renderer;
-	}
-
-	template <typename T, typename ... Ps> auto create_renderer(u32 id, Ps ... params) -> renderer *
-	{
-		auto & data = models[id].get_data();
-		data.mesh_renderer = new T(params...);
-		data.mesh_renderer->set_mesh(id, *this);
-		return data.mesh_renderer;
-	}
+	auto init_renderer(u32 mesh_id, renderer_3D * renderer) -> void;
 
 	template <typename T> auto load_static_mesh(T const & shape, u32 id) -> void
 	{

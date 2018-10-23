@@ -44,7 +44,18 @@ auto environment::calculate_view_matrix(glm::mat4 const & view_matrix) -> glm::m
 	return result;
 }
 
-auto environment::calculate_translation(glm::vec3 const & pos) -> glm::mat4
+auto environment::calculate_translation(void) -> glm::mat4
 {
 	return glm::scale(glm::vec3(1000.0f));
+}
+
+auto environment::submit_to_renderer(renderer_handler & renderers) -> void
+{
+	auto renderer = renderers.get_renderer_3D(renderer_id);
+	renderer->submit(calculate_translation());
+}
+
+auto environment::renderer(void) -> u32 &
+{
+	return renderer_id;
 }

@@ -19,7 +19,7 @@ struct pre_render_ptr
 	}
 };
 
-class renderer
+class renderer_3D
 {
 protected:
 	u32 mesh_id;
@@ -27,12 +27,12 @@ protected:
 	std::unique_ptr<render_func> draw;
 	std::vector<pre_render_ptr> pre_renders;
 public:
-	renderer(void) = default;
+	renderer_3D(void) = default;
 
 	virtual auto render(glsl_program & program, mesh_handler & mh) -> void = 0;
 	virtual auto submit(glm::mat4 const & model_matrix) -> void = 0;
 	virtual auto flush(void) -> void = 0;
-	virtual ~renderer(void) {};
+	virtual ~renderer_3D(void) {};
 
 	auto set_mesh(u32 mesh_id, mesh_handler & mh) -> void;
 

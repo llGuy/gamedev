@@ -1,12 +1,12 @@
 #include "basic_renderer.h"
 #include "../../../math/math.h"
 
-auto basic_renderer::submit(glm::mat4 const & model_matrix) -> void
+auto basic_renderer_3D::submit(glm::mat4 const & model_matrix) -> void
 {
 	model_matrices.push_back(model_matrix);
 }
 
-auto basic_renderer::render(glsl_program & program, mesh_handler & mh) -> void
+auto basic_renderer_3D::render(glsl_program & program, mesh_handler & mh) -> void
 {
 	program.bind();
 
@@ -23,11 +23,11 @@ auto basic_renderer::render(glsl_program & program, mesh_handler & mh) -> void
 	}
 }
 
-auto basic_renderer::flush(void) -> void
+auto basic_renderer_3D::flush(void) -> void
 {
 	model_matrices.clear();
 }
 
-basic_renderer::~basic_renderer(void)
+basic_renderer_3D::~basic_renderer_3D(void)
 {
 }

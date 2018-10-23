@@ -9,6 +9,7 @@
 #include "../world/world_objects.h"
 #include "../entity/entity_handler.h"
 #include "../lighting/light_handler.h"
+#include "../graphics/renderer/handler/renderer_handler.h"
 
 #include "../graphics/renderer/2D/sprite_batch.h"
 
@@ -30,6 +31,7 @@ private:
 	light_handler lights;
 	time_handler timer;
 	font_handler fonts;
+	renderer_handler renderers;
 
 	world_objects world;
 
@@ -38,10 +40,8 @@ private:
 	target final_out;
 
 	gui * text_parent;
-	font_stream * text_test;
 
-	sprite_batch_renderer * renderer;
-	sprite_batch_renderer * renderer_green;
+//	sprite_batch_renderer * renderer;
 
 public:
 
@@ -61,6 +61,7 @@ private:
 	auto init_textures(void) -> void;
 	auto init_targets(void) -> void;
 	auto init_layers(void) -> void;
+	auto init_entities(void) -> void;
 	auto init_gui(void) -> void;
 
 };

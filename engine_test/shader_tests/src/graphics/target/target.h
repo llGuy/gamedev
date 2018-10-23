@@ -12,13 +12,13 @@ class target
 private:
 	framebuffer render_target;
 
-	std::vector<layer> layers;
+	std::vector<layer_3D> layers_3D;
 
 	std::unordered_map<std::string, u32> index_map;
 public:
 	auto get_fbo(void) -> framebuffer &;
 
-	auto add_layer(std::string const & name, layer const &) -> u32;
+	auto add_layer(std::string const & name, layer_3D const &) -> u32;
 
 	auto bind(void) -> void;
 	auto clear(u32 bits) -> void;
@@ -26,5 +26,5 @@ public:
 	auto render(mesh_handler & meshes, shader_mapper & shaders) -> void;
 
 	auto get_layer_index(std::string const & name) -> u32;
-	auto operator[](u32 index) -> layer &;
+	auto operator[](u32 index) -> layer_3D &;
 };

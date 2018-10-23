@@ -77,3 +77,5 @@ public:
 		--size;
 	}
 };
+
+template <typename T> using vector_dyndel = vec_dd<T>;

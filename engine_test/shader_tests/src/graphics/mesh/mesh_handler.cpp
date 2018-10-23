@@ -44,14 +44,6 @@ auto mesh_handler::create_render_func(u32 id) -> std::unique_ptr<render_func>
 	}
 }
 
-auto mesh_handler::flush_renderers(void) -> void
-{
-	for (u32 i = 0; i < models.vec_size(); ++i)
-	{
-		models[i].get_data().mesh_renderer->flush();
-	}
-}
-
 auto mesh_handler::copy_mesh(u32 from, u32 to) -> void
 {
 	models[to].get_data() = models[from].get_data();
@@ -194,6 +186,11 @@ auto mesh_handler::split(std::string const & str, char const splitter) -> std::v
 	while (std::getline(iss, current, splitter)) words.push_back(current);
 
 	return words;
+}
+
+auto mesh_handler::init_renderer(u32 mesh_id, renderer_3D * renderer) -> void
+{
+	renderer->set_mesh(mesh_id, *this);
 }
 
 auto mesh_handler::create_mesh(std::vector<glm::vec3> & vertices, std::vector<glm::vec3> & normals,
