@@ -58,7 +58,7 @@ auto application::render(void) -> void
 {
 	glEnable(GL_DEPTH_TEST);
 
-	final_out.bind();
+	first_out.bind();
 	first_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	first_out.clear_color(0.1f, 0.1f, 0.1f, 1.0f);
 	first_out.render(meshes, shaders);
@@ -70,8 +70,8 @@ auto application::render(void) -> void
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	final_out.bind();
-	//final_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//final_out.clear_color(1.0f, 1.0f, 1.0f, 1.0f);
+	final_out.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	final_out.clear_color(1.0f, 1.0f, 1.0f, 1.0f);
 	final_out.render(meshes, shaders);
 
 	glm::vec3 black(0.0f);
@@ -111,6 +111,9 @@ auto application::update(void) -> void
 	fontstream->submit_text(1.0f / elapsed);
 	fontstream->update(fonts);
 	fontstream->submit_to_renderer(display.pixel_width(), display.pixel_height());
+
+	auto renderer = renderers.get_renderer_3D(renderers.get_renderer_3D_index("renderer.quad2D"));
+	renderer->submit(detail::identity_matrix);
 
 	is_running = display.is_open();
 

@@ -309,6 +309,18 @@
     <ClInclude Include="src\scene\component_log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\animation\joint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animated_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="toto.md" />
@@ -326,6 +338,8 @@
     <None Include="res\font\superscript.fnt" />
     <None Include="res\font\droid.fnt" />
     <None Include="res\font\comic.fnt" />
+    <None Include="src\shaders\animation\animated_vsh.shader" />
+    <None Include="src\shaders\animation\animated_fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\texture_test.png">

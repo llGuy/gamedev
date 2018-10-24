@@ -56,6 +56,10 @@
     <ClCompile Include="src\world\environment\environment.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\animated_model.h" />
+    <ClInclude Include="src\animation\animation.h" />
+    <ClInclude Include="src\animation\animator.h" />
+    <ClInclude Include="src\animation\joint.h" />
     <ClInclude Include="src\entity\component\model_matrix.h" />
     <ClInclude Include="src\entity\component\render.h" />
     <ClInclude Include="src\graphics\renderer\2D\renderer_2D.h" />
@@ -126,6 +130,8 @@
     <None Include="res\font\droid.fnt" />
     <None Include="res\font\superscript.fnt" />
     <None Include="res\font\verdana.fnt" />
+    <None Include="src\shaders\animation\animated_fsh.shader" />
+    <None Include="src\shaders\animation\animated_vsh.shader" />
     <None Include="src\shaders\environment\environment_fsh.shader" />
     <None Include="src\shaders\environment\environment_vsh.shader" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
