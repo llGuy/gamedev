@@ -40,6 +40,7 @@ private:
 	target final_out;
 
 	gui * text_parent;
+	gui * text_parent2;
 
 //	sprite_batch_renderer * renderer;
 

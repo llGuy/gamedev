@@ -10,9 +10,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "src/scene/scene.h"
-#include "src/scene/component_log.h"
-
 auto main(i32 argc, char * argv[]) -> i32
 {
 	application app;

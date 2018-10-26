@@ -10,7 +10,7 @@
 #include "../entity/component/render.h"
 
 application::application(void)
-	: display(1500, 750, "Game Engine")
+	: display(2900, 1500, "Game Engine")
 {
 }
 
@@ -111,6 +111,12 @@ auto application::update(void) -> void
 	fontstream->submit_text(1.0f / elapsed);
 	fontstream->update(fonts);
 	fontstream->submit_to_renderer(display.pixel_width(), display.pixel_height());
+
+	font_stream * welcome_font = fonts.get_font_stream(fonts.get_font_stream_index("font.stream.welcome"));
+	welcome_font->clear();
+	welcome_font->submit_text("Welcome to My Game Engine!");
+	welcome_font->update(fonts);
+	welcome_font->submit_to_renderer(display.pixel_width(), display.pixel_height());
 
 	auto renderer = renderers.get_renderer_3D(renderers.get_renderer_3D_index("renderer.quad2D"));
 	renderer->submit(detail::identity_matrix);
@@ -317,13 +323,20 @@ auto application::init_gui(void) -> void
 
 	gui_vertices_cache vertices_parent;
 	vertices_parent.coord.position = glm::vec2(30.0f, 30.0f);
-	vertices_parent.size.position = glm::vec2(300.0f, 100.0f);
+	vertices_parent.size.position = glm::vec2(600.0f, 300.0f);
 
-	fonts.create_font_stream("font.stream.fps_counter", "comic", glm::vec2(120.0f), 20.0f, renderer.first);
+	gui_vertices_cache vertices_parent2;
+	vertices_parent2.coord.position = glm::vec2(500.0f, 500.0f);
+	vertices_parent2.size.position = glm::vec2(600.0f, 1000.0f);
+
+	fonts.create_font_stream("font.stream.fps_counter", "comic", glm::vec2(320.0f), 30.0f, renderer.first);
+	fonts.create_font_stream("font.stream.welcome", "comic", glm::vec2(600.0f), 30.0f, renderer.first);
 	
 	text_parent = new panel(vertices_parent);
+	text_parent2 = new panel(vertices_parent2);
 
 	text_parent->add_child(fonts.get_font_stream(fonts.get_font_stream_index("font.stream.fps_counter")));
+	text_parent2->add_child(fonts.get_font_stream(fonts.get_font_stream_index("font.stream.welcome")));
 
 	
 }

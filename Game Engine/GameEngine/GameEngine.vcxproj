@@ -19,15 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\entity\camera.cpp" />
-    <ClCompile Include="src\entity\entity_handler.cpp" />
-    <ClCompile Include="src\graphics\mesh\mesh_comp\cube.cpp" />
-    <ClCompile Include="src\graphics\mesh\mesh_comp\quad2D.cpp" />
-    <ClCompile Include="src\graphics\mesh\mesh_handler.cpp" />
-    <ClCompile Include="src\graphics\renderer\2D\renderer_2D.cpp" />
-    <ClCompile Include="src\graphics\renderer\2D\sprite_batch.cpp" />
-    <ClCompile Include="src\graphics\renderer\handler\renderer_handler.cpp" />
-    <ClCompile Include="src\gui\font\font_handler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\api\buffer.cpp" />
     <ClCompile Include="src\api\framebuffer.cpp" />
@@ -37,47 +28,22 @@
     <ClCompile Include="src\api\texture.cpp" />
     <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\app\application.cpp" />
-    <ClCompile Include="src\graphics\renderer\3D\basic_renderer.cpp" />
-    <ClCompile Include="src\graphics\renderer\3D\renderer.cpp" />
-    <ClCompile Include="src\graphics\renderer\render_func.cpp" />
-    <ClCompile Include="src\graphics\shader\shader_mapper.cpp" />
-    <ClCompile Include="src\graphics\target\layer.cpp" />
-    <ClCompile Include="src\graphics\target\target.cpp" />
-    <ClCompile Include="src\gui\font\font.cpp" />
-    <ClCompile Include="src\gui\font\font_stream.cpp" />
-    <ClCompile Include="src\gui\gui.cpp" />
-    <ClCompile Include="src\gui\panel.cpp" />
+    <ClCompile Include="src\graphics\2D\batch_renderer2D.cpp" />
+    <ClCompile Include="src\graphics\2D\renderable2D.cpp" />
+    <ClCompile Include="src\graphics\3D\model_comp\cube.cpp" />
+    <ClCompile Include="src\graphics\3D\model_handler.cpp" />
+    <ClCompile Include="src\graphics\3D\material\material.cpp" />
+    <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
+    <ClCompile Include="src\graphics\texture\texture_handler.cpp" />
     <ClCompile Include="src\io\io.cpp" />
-    <ClCompile Include="src\lighting\light_handler.cpp" />
+    <ClCompile Include="src\light\light_handler.cpp" />
+    <ClCompile Include="src\scene\camera.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
-    <ClCompile Include="src\win\input_handler.cpp" />
-    <ClCompile Include="src\win\window.cpp" />
-    <ClCompile Include="src\world\environment\environment.cpp" />
+    <ClCompile Include="src\window\input.cpp" />
+    <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\animation\animated_model.h" />
-    <ClInclude Include="src\animation\animation.h" />
-    <ClInclude Include="src\animation\animator.h" />
-    <ClInclude Include="src\animation\joint.h" />
-    <ClInclude Include="src\entity\camera.h" />
-    <ClInclude Include="src\entity\component\model_matrix.h" />
-    <ClInclude Include="src\entity\component\render.h" />
-    <ClInclude Include="src\entity\ecs.h" />
-    <ClInclude Include="src\entity\entity_handler.h" />
-    <ClInclude Include="src\entity\key_control.h" />
-    <ClInclude Include="src\entity\mouse_control.h" />
-    <ClInclude Include="src\graphics\mesh\component_types.h" />
-    <ClInclude Include="src\graphics\mesh\mesh.h" />
-    <ClInclude Include="src\graphics\mesh\mesh_comp\cube.h" />
-    <ClInclude Include="src\graphics\mesh\mesh_comp\mesh_comp.h" />
-    <ClInclude Include="src\graphics\mesh\mesh_comp\quad2D.h" />
-    <ClInclude Include="src\graphics\mesh\mesh_data.h" />
-    <ClInclude Include="src\graphics\mesh\mesh_handler.h" />
-    <ClInclude Include="src\graphics\renderer\2D\renderer_2D.h" />
-    <ClInclude Include="src\graphics\renderer\2D\sprite_batch.h" />
-    <ClInclude Include="src\graphics\renderer\handler\renderer_handler.h" />
-    <ClInclude Include="src\gui\font\font_handler.h" />
     <ClInclude Include="src\api\api.h" />
     <ClInclude Include="src\api\buffer.h" />
     <ClInclude Include="src\api\framebuffer.h" />
@@ -87,89 +53,50 @@
     <ClInclude Include="src\api\texture.h" />
     <ClInclude Include="src\api\vertex_layout.h" />
     <ClInclude Include="src\app\application.h" />
-    <ClInclude Include="src\data\component_system.h" />
+    <ClInclude Include="src\data\components.h" />
     <ClInclude Include="src\data\vec_dd.h" />
-    <ClInclude Include="src\graphics\graphics.h" />
-    <ClInclude Include="src\graphics\model\component_types.h" />
-    <ClInclude Include="src\graphics\model\mesh.h" />
-    <ClInclude Include="src\graphics\model\model_data.h" />
-    <ClInclude Include="src\graphics\model\model_handler.h" />
-    <ClInclude Include="src\graphics\model\model_comp\cube.h" />
-    <ClInclude Include="src\graphics\model\model_comp\mesh_comp.h" />
-    <ClInclude Include="src\graphics\renderer\3D\basic_renderer.h" />
-    <ClInclude Include="src\graphics\renderer\pre_render.h" />
-    <ClInclude Include="src\graphics\renderer\3D\renderer.h" />
-    <ClInclude Include="src\graphics\renderer\render_func.h" />
+    <ClInclude Include="src\graphics\2D\batch_renderer2D.h" />
+    <ClInclude Include="src\graphics\2D\renderable2D.h" />
+    <ClInclude Include="src\graphics\3D\component_types.h" />
+    <ClInclude Include="src\graphics\3D\mesh.h" />
+    <ClInclude Include="src\graphics\3D\model_comp\cube.h" />
+    <ClInclude Include="src\graphics\3D\model_comp\mesh_comp.h" />
+    <ClInclude Include="src\graphics\3D\model_data.h" />
+    <ClInclude Include="src\graphics\3D\model_handler.h" />
+    <ClInclude Include="src\graphics\3D\material\material.h" />
+    <ClInclude Include="src\graphics\3D\renderer\renderer3D.h" />
     <ClInclude Include="src\graphics\shader\shader_properties.h" />
-    <ClInclude Include="src\graphics\shader\shader_mapper.h" />
-    <ClInclude Include="src\graphics\target\layer.h" />
-    <ClInclude Include="src\graphics\target\target.h" />
-    <ClInclude Include="src\graphics\texture\texture_mapper.h" />
-    <ClInclude Include="src\gui\font\font.h" />
-    <ClInclude Include="src\gui\font\font_stream.h" />
-    <ClInclude Include="src\gui\gui.h" />
-    <ClInclude Include="src\gui\panel.h" />
+    <ClInclude Include="src\graphics\shader\shader_handler.h" />
+    <ClInclude Include="src\graphics\texture\texture_handler.h" />
     <ClInclude Include="src\io\io.h" />
-    <ClInclude Include="src\lighting\light_handler.h" />
-    <ClInclude Include="src\lighting\light_info.h" />
-    <ClInclude Include="src\math\math.h" />
-    <ClInclude Include="src\postfx\pipeline\postfx_pipeline.h" />
-    <ClInclude Include="src\postfx\postfx.h" />
+    <ClInclude Include="src\light\light_handler.h" />
     <ClInclude Include="src\scene\camera.h" />
     <ClInclude Include="src\scene\component\behavior.h" />
     <ClInclude Include="src\scene\component\component.h" />
     <ClInclude Include="src\scene\component\log.h" />
     <ClInclude Include="src\scene\game_object.h" />
     <ClInclude Include="src\scene\scene.h" />
-    <ClInclude Include="src\shaders\master\master2D_vsh.shader" />
     <ClInclude Include="src\time\timer.h" />
     <ClInclude Include="src\utils\detail.h" />
-    <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\utils\types.h" />
-    <ClInclude Include="src\win\input_handler.h" />
-    <ClInclude Include="src\win\window.h" />
-    <ClInclude Include="src\world\environment\environment.h" />
-    <ClInclude Include="src\world\world_objects.h" />
+    <ClInclude Include="src\window\input.h" />
+    <ClInclude Include="src\window\window.h" />
     <ClInclude Include="src\xcp\exception.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\font\comic.fnt" />
-    <None Include="res\font\consolas.fnt" />
-    <None Include="res\font\droid.fnt" />
-    <None Include="res\font\superscript.fnt" />
-    <None Include="res\font\verdana.fnt" />
-    <None Include="src\shaders\animation\animated_fsh.shader" />
-    <None Include="src\shaders\animation\animated_vsh.shader" />
-    <None Include="src\shaders\environment\environment_fsh.shader" />
-    <None Include="src\shaders\environment\environment_vsh.shader" />
+    <None Include="src\glsl_shaders\2D\fsh.shader" />
+    <None Include="src\glsl_shaders\2D\vsh.shader" />
+    <None Include="src\io\TODO.md" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
+    <None Include="src\shaders\master\master2D_vsh.shader" />
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
-    <None Include="src\shaders\pfx\blur_fsh.shader" />
-    <None Include="src\shaders\pfx\hblur_vsh.shader" />
-    <None Include="src\shaders\pfx\vblur_vsh.shader" />
-    <None Include="toto.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\font\comic.png" />
-    <Image Include="res\font\consolas.png" />
-    <Image Include="res\font\droid.png" />
-    <Image Include="res\font\superscript.png" />
-    <Image Include="res\font\verdana.png" />
-    <Image Include="res\textures\environment\sky\back.png" />
-    <Image Include="res\textures\environment\sky\down.png" />
-    <Image Include="res\textures\environment\sky\forward.png" />
-    <Image Include="res\textures\environment\sky\left.png" />
-    <Image Include="res\textures\environment\sky\right.png" />
-    <Image Include="res\textures\environment\sky\up.png" />
-    <Image Include="res\textures\low_poly.png" />
-    <Image Include="res\textures\texture_test.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{f967e734-ab26-42da-b9d6-7d8030e7add9}</ProjectGuid>
-    <RootNamespace>shader_tests</RootNamespace>
+    <ProjectGuid>{eecea32a-d65c-4c4a-beb7-a95c34284707}</ProjectGuid>
+    <RootNamespace>GameEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

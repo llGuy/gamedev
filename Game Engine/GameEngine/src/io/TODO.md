@@ -1,0 +1,3 @@
+-  create model system
+-  create rendering system
+-  create shaders system
