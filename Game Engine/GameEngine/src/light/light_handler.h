@@ -10,6 +10,8 @@ struct material_light_info
 	glm::vec3 specular_reflectivity;
 	f32 shininess_factor;
 	f32 reflect_factor;
+
+	material_light_info(void) = default;
 };
 
 struct light_info
@@ -18,6 +20,8 @@ struct light_info
 	glm::vec3 ambient_intensity;
 	glm::vec3 diffuse_intensity;
 	glm::vec3 specular_intensity;
+
+	light_info(void) = default;
 };
 
 class light_handler

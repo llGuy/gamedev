@@ -28,8 +28,6 @@ public:
 	auto destroy(void) -> void;
 
 	auto get_id(void) const->u32;
-	auto get_file_name(void) const->std::string const &;
 private:
-	auto extract_source(std::string const &)->std::string;
 	auto check_status(std::string const & dbg_name) -> void;
 };

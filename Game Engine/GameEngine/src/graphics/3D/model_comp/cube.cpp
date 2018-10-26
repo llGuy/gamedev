@@ -16,19 +16,17 @@ auto cube_model_computation::compute(object<model_data> & obj) -> void
 	index_buffer.create();
 	index_buffer.fill(indices.size() * sizeof(u32), indices.data(), GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);
 
-	vertex_layout layout;
-	layout.create();
-	layout.bind();
+	obj->vao.create();
+	obj->vao.bind();
 	
-	layout.attach(vertex_buffer, vertex_attribute);
+	obj->vao.attach(vertex_buffer, vertex_attribute);
 
 	component<vertex_buffer_component, model_data> vcomp{ vertex_buffer_component{vertex_buffer} };
-	component<index_buffer_component, model_data> icomp{ index_buffer_component{vertex_buffer} };
+	component<index_buffer_component, model_data> icomp{ index_buffer_component{index_buffer} };
 	obj.add_component(vcomp);
 	obj.add_component(icomp);
 
 	obj->count = indices.size();
-	obj->vao = layout;
 }
 
 auto cube_model_computation::create_vertices(void) -> std::vector<f32>

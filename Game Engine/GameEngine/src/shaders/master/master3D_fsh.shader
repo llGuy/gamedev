@@ -118,12 +118,11 @@ void main(void)
 	vec3 light_vector = normalize(-light_info.light_position);
 	vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
 
-	
 	apply_ambient(final_color);
 	apply_diffuse(light_vector, input_data.vertex_normal, final_color);
 	float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
 
-//	apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+	apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
 
 //	final_bright_colors = final_color * brightness(final_color);
 }

@@ -1,3 +1,4 @@
+#include <array>
 #include "../../io/io.h"
 #include "texture_handler.h"
 
@@ -10,10 +11,35 @@ auto texture_handler::init_texture(std::string const & texture_name) -> texture 
 	return textures.back();
 }
 
+auto texture_handler::load_3D_texture_png(std::string const & from, texture * to) -> void
+{
+	to->create();
+	to->bind(GL_TEXTURE_CUBE_MAP);
+
+	std::array<std::string, 6> files{ "left", "right", "up", "down", "back", "forward" };
+
+	for (u32 i = 0; i < files.size(); ++i)
+	{
+		auto image = extract_png(from + '/' + files[i] + ".png");
+		to->fill(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, image.data, image.w, image.h);
+	}
+
+	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
 auto texture_handler::load_texture_png(std::string const & from, texture * to) -> void
 {
 	image png_data = extract_png(from);
 
 	//to->fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, png_data.data, png_data.w, png_data.h);
 	create_color_texture(*to, png_data.w, png_data.h, png_data.data, GL_LINEAR);
+}
+
+auto texture_handler::get_texture(std::string const & name) -> texture * 
+{
+	return textures[index_map[name]];
 }

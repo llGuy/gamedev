@@ -41,3 +41,8 @@ auto renderer3D::flush(void) -> void
 {
 	materials.clear();
 }
+
+auto renderer3D::get_shader(void) -> glsl_program *
+{
+	return material_type.get_shader();
+}

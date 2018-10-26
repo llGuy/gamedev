@@ -14,5 +14,9 @@ private:
 public:
 	auto init_texture(std::string const & name) -> texture *;
 
+	auto load_3D_texture_png(std::string const & from, texture * to) -> void;
+
 	auto load_texture_png(std::string const & from, texture * to) -> void;
+
+	auto get_texture(std::string const & name) -> texture *;
 };

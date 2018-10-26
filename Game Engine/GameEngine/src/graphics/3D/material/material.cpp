@@ -1,28 +1,50 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "material.h"
 
+auto material_prototype::toggle_lighting(void) -> void
+{
+	enabled_lighting ^= 0b0001;
+}
+
 auto material_prototype::prepare(void) -> void
 {
 	shader->bind();
 
 	/* TOTO !!! Replace this stuff with uniform buffers */
-	shader->send_uniform_vec3("material_info.ambient_reflectivity", glm::value_ptr(light_info_receive.ambient_reflectivity), 1);
-	shader->send_uniform_vec3("material_info.diffuse_reflectivity", glm::value_ptr(light_info_receive.diffuse_reflectivity), 1);
-	shader->send_uniform_vec3("material_info.specular_reflectivity", glm::value_ptr(light_info_receive.specular_reflectivity), 1);
-	shader->send_uniform_float("material_info.shininess_factor", light_info_receive.shininess_factor);
-	shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);
-
-	lights->prepare_shader(*shader);
-
-	for (u32 i = 0; i < textures.size(); ++i)
+	if (enabled_lighting)
 	{
-		textures[i]->bind(GL_TEXTURE_2D, i); 
+		shader->send_uniform_vec3("material_info.ambient_reflectivity", glm::value_ptr(light_info_receive.ambient_reflectivity), 1);
+		shader->send_uniform_vec3("material_info.diffuse_reflectivity", glm::value_ptr(light_info_receive.diffuse_reflectivity), 1);
+		shader->send_uniform_vec3("material_info.specular_reflectivity", glm::value_ptr(light_info_receive.specular_reflectivity), 1);
+		shader->send_uniform_float("material_info.shininess_factor", light_info_receive.shininess_factor);
+		shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);
+		lights->prepare_shader(*shader);
+	}
+
+	for (u32 i = 0; i < textures2D.size(); ++i)
+	{
+		textures2D[i]->bind(GL_TEXTURE_2D, i); 
+	}
+
+	for (u32 i = 0; i < textures_cubemap.size(); ++i)
+	{
+		textures_cubemap[i]->bind(GL_TEXTURE_CUBE_MAP, i);
 	}
 }
 
 auto material_prototype::get_shader(void) -> glsl_program * &
 {
 	return shader;
+}
+
+auto material_prototype::get_textures_2D(void)->std::vector<texture *> &
+{
+	return textures2D;
+}
+
+auto material_prototype::get_textures_cubemap(void)->std::vector<texture *> &
+{
+	return textures_cubemap;
 }
 
 material::material(model const & renderable, glm::mat4 const & transform)

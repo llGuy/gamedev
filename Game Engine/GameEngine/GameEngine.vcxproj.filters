@@ -150,6 +150,15 @@
     <ClInclude Include="src\light\light_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\scene\environment\environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\component\render_color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\component\model_matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\glsl_shaders\2D\vsh.shader" />
@@ -160,5 +169,7 @@
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master2D_vsh.shader" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
+    <None Include="src\shaders\environment\vsh.shader" />
+    <None Include="src\shaders\environment\fsh.shader" />
   </ItemGroup>
 </Project>

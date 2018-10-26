@@ -58,8 +58,3 @@ auto glsl_shader::get_id(void) const -> u32
 {
 	return id;
 }
-
-auto glsl_shader::get_file_name(void) const -> std::string const &
-{
-	return "";
-}

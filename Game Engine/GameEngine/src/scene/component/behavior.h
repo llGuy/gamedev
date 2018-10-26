@@ -50,7 +50,7 @@ public:
 
 		if (movements > 0)
 		{
-			result = glm::normalize(result) * 20.0f * td;
+			result = result * 7.0f * td;
 
 			object->position += result;
 		}

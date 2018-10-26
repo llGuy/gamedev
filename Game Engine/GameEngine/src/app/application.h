@@ -4,7 +4,6 @@
 #include "../time/timer.h"
 #include "../scene/scene.h"
 #include "../window/window.h"
-#include "../graphics/3D/model_handler.h"
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
 
@@ -24,10 +23,13 @@ private:
 	light_handler lights;
 
 	renderer3D renderer;
+	renderer3D sky_renderer;
 
-	glsl_program * low_poly_shader;
 	model monkey_model;
+	model cube_model;
+
 	texture * low_poly_texture;
+	texture * sky_texture;
 public:
 	application(void);
 
@@ -39,4 +41,7 @@ public:
 private:
 	auto init_game_objects(void) -> void;
 	auto init_3D_test(void) -> void;
+	auto init_models(void) -> void;
+	auto init_shaders(void) -> void;
+	auto init_textures(void) -> void;
 };

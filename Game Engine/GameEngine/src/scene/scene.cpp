@@ -4,7 +4,9 @@ auto scene::init(void) -> void
 {
 	/* creates all the systems */
 	components.add_system<component_log>(20);
+	components.add_system<component_render>(20);
 	components.add_system<component_behavior_key>(20);
+	components.add_system<component_model_matrix>(20);
 	components.add_system<component_behavior_mouse>(20);
 }
 
@@ -16,8 +18,14 @@ auto scene::init_game_object(game_object_data const & data) -> game_object &
 
 	/* object id is used for updating the components */
 	objects[at].object_id() = at;
+	index_map[data.name] = at;
 
 	return objects[at];
+}
+
+auto scene::get_game_object(std::string const & name) -> game_object &
+{
+	return objects[index_map[name]];
 }
 
 auto scene::operator[](u32 index) -> game_object &

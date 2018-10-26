@@ -19,4 +19,6 @@ public:
 	auto render(void) -> void;
 
 	auto flush(void) -> void;
+
+	auto get_shader(void) -> glsl_program *;
 };
