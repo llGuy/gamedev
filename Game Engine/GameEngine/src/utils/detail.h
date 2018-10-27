@@ -58,6 +58,7 @@ namespace detail {
 		return ((size ? compile_hash(str, size - 1) : 2166136261u) ^ str[size]) * 16777619u;
 	}
 
+
 	namespace {
 
 		glm::mat4 identity_matrix(1);
@@ -72,6 +73,16 @@ namespace detail {
 			{
 				do_nothing();
 			}
+		}
+
+		auto convert_u32b_to_vec4_color(u32 color) -> glm::vec4
+		{
+			f32 r = static_cast<f32>((color >> 24) & 0xff) / 255.0f;
+			f32 g = static_cast<f32>((color >> 16) & 0xff) / 255.0f;
+			f32 b = static_cast<f32>((color >> 8) & 0xff) / 255.0f;
+			f32 a = static_cast<f32>((color >> 0) & 0xff) / 255.0f;
+			
+			return glm::vec4(r, g, b, a);
 		}
 	}
 

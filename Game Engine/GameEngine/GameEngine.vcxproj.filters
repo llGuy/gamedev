@@ -25,8 +25,6 @@
     <ClCompile Include="src\api\texture.cpp" />
     <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\scene\camera.cpp" />
-    <ClCompile Include="src\graphics\2D\renderable2D.cpp" />
-    <ClCompile Include="src\graphics\2D\batch_renderer2D.cpp" />
     <ClCompile Include="src\io\io.cpp" />
     <ClCompile Include="src\graphics\3D\model_handler.cpp" />
     <ClCompile Include="src\graphics\3D\model_comp\cube.cpp" />
@@ -34,6 +32,7 @@
     <ClCompile Include="src\graphics\3D\material\material.cpp" />
     <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
     <ClCompile Include="src\light\light_handler.cpp" />
+    <ClCompile Include="src\graphics\2D\renderer\batch_renderer2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -105,12 +104,6 @@
     <ClInclude Include="src\scene\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\2D\batch_renderer2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\2D\renderable2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\io\io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -159,6 +152,9 @@
     <ClInclude Include="src\scene\component\model_matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\2D\renderer\batch_renderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\glsl_shaders\2D\vsh.shader" />
@@ -171,5 +167,27 @@
     <None Include="src\shaders\master\master2D_fsh.shader" />
     <None Include="src\shaders\environment\vsh.shader" />
     <None Include="src\shaders\environment\fsh.shader" />
+    <None Include="res\font\comic.fnt" />
+    <None Include="res\font\consolas.fnt" />
+    <None Include="res\font\droid.fnt" />
+    <None Include="res\font\superscript.fnt" />
+    <None Include="res\font\verdana.fnt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\font\comic.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\consolas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\droid.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\superscript.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\font\verdana.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

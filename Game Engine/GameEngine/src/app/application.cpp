@@ -31,9 +31,13 @@ auto application::init(void) -> void
 		init_models();
 		init_shaders();
 		init_3D_test();
+		init_2D_test();
 
 		time_handler.start();
 		is_running = true;
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	catch(xcp::gl_xcp const & exception)
 	{
@@ -88,6 +92,9 @@ auto application::render(void) -> void
 	renderer.render();
 
 	sky_renderer.render();
+
+	glDisable(GL_DEPTH_TEST);
+	gui_renderer.render();
 }
 
 auto application::running(void) -> bool
@@ -105,7 +112,7 @@ auto application::init_game_objects(void) -> void
 {
 	world.init();
 
-	game_object & player = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f), "game_object.player" });
+	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(1.0f), "game_object.player" });
 	component<component_behavior_key, game_object_data> key_comp{
 		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
 	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs() };
@@ -138,10 +145,10 @@ auto application::init_3D_test(void) -> void
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
 
-	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 1.0f };
+	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.1f };
 	material_prototype monkey_skin{ light, shaders[shader_handle("shader.low_poly")], lights };
-	monkey_skin.get_textures_2D().push_back(low_poly_texture);
-	monkey_skin.get_textures_cubemap().push_back(sky_texture);
+	monkey_skin.get_textures_2D().push_back(textures.get_texture("texture.low_poly"));
+	monkey_skin.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
 	renderer.set_material_prototype(monkey_skin);
 
 	game_object & monkey = world.get_game_object("game_object.monkey");
@@ -154,13 +161,31 @@ auto application::init_3D_test(void) -> void
 
 	/* initializing sky renderer */
 	material_prototype sky_material{ material_light_info(), shaders[shader_handle("shader.sky")], lights };
-	sky_material.get_textures_cubemap().push_back(sky_texture);
+	sky_material.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
 	sky_material.toggle_lighting();
 	sky_renderer.set_material_prototype(sky_material);
 
 	material sky{ cube_model, glm::scale(glm::vec3(1000.0f)) };
 	sky_renderer.submit_material(sky);
 	sky_renderer.set_projection(projection_matrix);
+}
+
+auto application::init_2D_test(void) -> void
+{
+	/* initializing gui shader's uniform data and gui renderer */
+	glsl_program * gui_shader = shaders[shader_handle("shader.gui")];
+	gui_shader->bind();
+	gui_shader->send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	gui_renderer.init(gui_shader);
+
+	texture * gui_test_texture = textures.get_texture("texture.gui_test");
+	gui_test_texture->set_texture_number(0);
+	quad2D quad;
+	quad.vertices[0] = vertex2D{ glm::vec2(-1.0f, +1.0f), glm::vec2(0.0f, 1.0f) };
+	quad.vertices[1] = vertex2D{ glm::vec2(-1.0f, -1.0f), glm::vec2(0.0f, 0.0f) };
+	quad.vertices[2] = vertex2D{ glm::vec2(+1.0f, +1.0f), glm::vec2(1.0f, 1.0f) }; 
+	quad.vertices[3] = vertex2D{ glm::vec2(+1.0f, -1.0f), glm::vec2(1.0f, 0.0f) };
+	gui_renderer.submit(quad, gui_test_texture);
 }
 
 auto application::init_shaders(void) -> void
@@ -176,13 +201,19 @@ auto application::init_shaders(void) -> void
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));
 	glsl_shader sky_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, sky_shader_handle, extract_file("src/shaders/environment/fsh.shader"));
 	shaders.combine(sky_shader_handle, sky_vsh, sky_fsh);
+
+	shader_handle gui_shader("shader.gui");
+	shaders.create_program(gui_shader, "2D");
 }
 
 auto application::init_textures(void) -> void
 {
-	low_poly_texture = textures.init_texture("texture.low_poly");
-	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture);
+	auto * low_poly_texture = textures.init_texture("texture.low_poly");
+	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR);
 
-	sky_texture = textures.init_texture("texture.sky");
+	auto * test_gui_texture = textures.init_texture("texture.gui_test");
+	textures.load_texture_png("res/textures/gui_test.png", test_gui_texture, GL_NEAREST, flip_vertically);
+
+	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);
 }

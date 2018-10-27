@@ -7,8 +7,7 @@
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
 
-#include "../graphics/2D/batch_renderer2D.h"
-#include "../graphics/3D/renderer/renderer3D.h"
+#include "../graphics/2D/renderer/batch_renderer2D.h"
 
 class application
 {
@@ -24,12 +23,10 @@ private:
 
 	renderer3D renderer;
 	renderer3D sky_renderer;
+	batch_renderer2D gui_renderer;
 
 	model monkey_model;
 	model cube_model;
-
-	texture * low_poly_texture;
-	texture * sky_texture;
 public:
 	application(void);
 
@@ -41,6 +38,7 @@ public:
 private:
 	auto init_game_objects(void) -> void;
 	auto init_3D_test(void) -> void;
+	auto init_2D_test(void) -> void;
 	auto init_models(void) -> void;
 	auto init_shaders(void) -> void;
 	auto init_textures(void) -> void;

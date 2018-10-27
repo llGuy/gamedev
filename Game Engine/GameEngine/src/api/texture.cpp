@@ -31,12 +31,21 @@ auto texture::create(void) -> void
 }
 auto texture::bind(GLenum target, u32 slot) -> void
 {
+	u32 number = slot;
+
 	if (slot == -1)
 	{
-		glBindTexture(target, id);
-		return;
+		if (texture_number == -1)
+		{
+			glBindTexture(target, id);
+			return;
+		}
+		else
+		{
+			number = texture_number;
+		}
 	}
-	glActiveTexture(GL_TEXTURE0 + slot);
+	glActiveTexture(GL_TEXTURE0 + number);
 	glBindTexture(target, id);
 }
 auto texture::fill(GLenum target, GLenum internal_format, GLenum format, GLenum type, void const * data, int32_t w, int32_t h) -> void
@@ -64,4 +73,14 @@ auto texture::enable_mipmap(GLenum target) -> void
 auto texture::clean_up(void) -> void
 {
 	glDeleteTextures(1, &id);
+}
+
+auto texture::set_texture_number(i32 number) -> void
+{
+	texture_number = number;
+}
+
+auto texture::get_texture_number(void) -> i32
+{
+	return texture_number;
 }

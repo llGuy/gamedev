@@ -8,6 +8,7 @@ class texture
 {
 protected:
 	u32 id;
+	i32 texture_number{ -1 };
 
 	int32_t w, h;
 public:
@@ -23,6 +24,9 @@ public:
 	auto enable_mipmap(GLenum target) -> void;
 	auto float_param(GLenum target, GLenum mode, f32 factor) -> void;
 	auto int_param(GLenum target, GLenum mode, GLenum factor) -> void;
+
+	auto set_texture_number(i32 number) -> void;
+	auto get_texture_number(void) -> i32;
 };
 
 extern auto unbind_all_textures(GLenum target) -> void;

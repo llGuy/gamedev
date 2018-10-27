@@ -28,8 +28,7 @@
     <ClCompile Include="src\api\texture.cpp" />
     <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\app\application.cpp" />
-    <ClCompile Include="src\graphics\2D\batch_renderer2D.cpp" />
-    <ClCompile Include="src\graphics\2D\renderable2D.cpp" />
+    <ClCompile Include="src\graphics\2D\renderer\batch_renderer2D.cpp" />
     <ClCompile Include="src\graphics\3D\model_comp\cube.cpp" />
     <ClCompile Include="src\graphics\3D\model_handler.cpp" />
     <ClCompile Include="src\graphics\3D\material\material.cpp" />
@@ -55,8 +54,7 @@
     <ClInclude Include="src\app\application.h" />
     <ClInclude Include="src\data\components.h" />
     <ClInclude Include="src\data\vec_dd.h" />
-    <ClInclude Include="src\graphics\2D\batch_renderer2D.h" />
-    <ClInclude Include="src\graphics\2D\renderable2D.h" />
+    <ClInclude Include="src\graphics\2D\renderer\batch_renderer2D.h" />
     <ClInclude Include="src\graphics\3D\component_types.h" />
     <ClInclude Include="src\graphics\3D\mesh.h" />
     <ClInclude Include="src\graphics\3D\model_comp\cube.h" />
@@ -87,6 +85,11 @@
     <ClInclude Include="src\xcp\exception.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\font\comic.fnt" />
+    <None Include="res\font\consolas.fnt" />
+    <None Include="res\font\droid.fnt" />
+    <None Include="res\font\superscript.fnt" />
+    <None Include="res\font\verdana.fnt" />
     <None Include="src\glsl_shaders\2D\fsh.shader" />
     <None Include="src\glsl_shaders\2D\vsh.shader" />
     <None Include="src\io\TODO.md" />
@@ -97,6 +100,13 @@
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\font\comic.png" />
+    <Image Include="res\font\consolas.png" />
+    <Image Include="res\font\droid.png" />
+    <Image Include="res\font\superscript.png" />
+    <Image Include="res\font\verdana.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

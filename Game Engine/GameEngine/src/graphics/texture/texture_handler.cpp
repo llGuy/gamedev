@@ -31,12 +31,11 @@ auto texture_handler::load_3D_texture_png(std::string const & from, texture * to
 	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-auto texture_handler::load_texture_png(std::string const & from, texture * to) -> void
+auto texture_handler::load_texture_png(std::string const & from, texture * to, GLenum mag_filt, flip_vertically_bool flip) -> void
 {
-	image png_data = extract_png(from);
+	image png_data = extract_png(from, flip);
 
-	//to->fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, png_data.data, png_data.w, png_data.h);
-	create_color_texture(*to, png_data.w, png_data.h, png_data.data, GL_LINEAR);
+	create_color_texture(*to, png_data.w, png_data.h, png_data.data, mag_filt);
 }
 
 auto texture_handler::get_texture(std::string const & name) -> texture * 
