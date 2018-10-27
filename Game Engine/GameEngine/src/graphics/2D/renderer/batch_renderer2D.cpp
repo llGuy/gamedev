@@ -1,6 +1,7 @@
 #include <array>
 #include <numeric>
 #include "batch_renderer2D.h"
+#include <glm/gtc/type_ptr.hpp>
 
 #define QUADS_MAX 100
 
@@ -15,18 +16,18 @@ auto batch_renderer2D::init(glsl_program * shader) -> void
 
 	/* initializing gpu side texture id buffer */
 	texture_batch.create();
-	texture_batch.fill<void>(quads.capacity() * sizeof(i32), nullptr, GL_DYNAMIC_DRAW, GL_ARRAY_BUFFER);
+	texture_batch.fill<void>(quads.capacity() * sizeof(i32) * 4, nullptr, GL_DYNAMIC_DRAW, GL_ARRAY_BUFFER);
 
 	/* initializing vertex attributes for the quads and VAO */
 	attribute vertex_attribute{ 0, GL_FLOAT, 2, GL_FALSE, sizeof(vertex2D), nullptr };
 	attribute uv_attribute{ 1, GL_FLOAT, 2, GL_FALSE, sizeof(vertex2D), (void *)(sizeof(glm::vec2)) };
-	attribute texture_attribute{ 2, GL_FLOAT, 1, GL_FALSE, sizeof(f32), nullptr, 1 };
+	attribute texture_attribute{ 2, GL_FLOAT, 1, GL_FALSE, sizeof(vertex2D), (void *)(sizeof(glm::vec4)) };
 
 	vao.create();
 	vao.bind();
 
-	vao.attach(gpu_batch, vertex_attribute, uv_attribute);
-	vao.attach(texture_batch, texture_attribute);
+	vao.attach(gpu_batch, vertex_attribute, uv_attribute, texture_attribute);
+	//vao.attach(texture_batch, texture_attribute);
 
 	/* initializing indices on gpu which stay for rest of the runtime of the program */
 	u32 indices_data[QUADS_MAX * 6];
@@ -56,12 +57,41 @@ auto batch_renderer2D::init(glsl_program * shader) -> void
 
 auto batch_renderer2D::submit(quad2D const & quad,  texture * diffuse) -> void
 {
-	f32 slot = static_cast<f32>(diffuse->get_texture_number());
-	gpu_batch.partial_fill(sizeof(quad2D) * quads.size(), sizeof(quad2D), &quad, GL_ARRAY_BUFFER);
-	texture_batch.partial_fill(sizeof(f32) * textures.size(), sizeof(f32), &slot, GL_ARRAY_BUFFER);
+	bool need_to_add_texture = true;
 
-	textures.push_back(diffuse);
-	quads.push_back(quad);
+	u32 slot;
+
+	for (u32 i = 0; i < textures.size(); ++i)
+	{
+		if (textures[i]->get_id() == diffuse->get_id())
+		{
+			slot = i;
+			need_to_add_texture = false;
+			break;
+		}
+	}
+
+	if (need_to_add_texture)
+	{
+		/* TODO : Reorganize this part, dont "set texture number"` */
+		slot = textures.size();
+		textures.push_back(diffuse);
+	}
+
+	quad2D q = quad;
+
+	for (u32 i = 0; i < 4; ++i)
+	{
+		q[i].texture_id = slot;
+	}
+
+	gpu_batch.partial_fill(sizeof(quad2D) * quads.size(), sizeof(quad2D), &q, GL_ARRAY_BUFFER);
+
+	//f32 slot = static_cast<f32>(diffuse->get_texture_number());
+	//glm::vec4 tids(slot);
+	//texture_batch.partial_fill(sizeof(f32) * 4 * textures.size(), sizeof(glm::vec4), glm::value_ptr(tids), GL_ARRAY_BUFFER);
+
+	quads.push_back(q);
 }
 
 auto batch_renderer2D::render(void) -> void
@@ -71,9 +101,9 @@ auto batch_renderer2D::render(void) -> void
 	vao.bind();
 	indices.bind(GL_ELEMENT_ARRAY_BUFFER);
 
-	for (auto diffuse : textures)
+	for (u32 i = 0; i < textures.size(); ++i)
 	{
-		diffuse->bind(GL_TEXTURE_2D);
+		textures[i]->bind(GL_TEXTURE_2D, i);
 	}
 
 	glDrawElements(GL_TRIANGLES, quads.size() * 6, GL_UNSIGNED_INT, nullptr);

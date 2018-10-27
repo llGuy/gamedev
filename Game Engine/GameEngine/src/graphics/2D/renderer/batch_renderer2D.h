@@ -8,11 +8,17 @@ struct vertex2D
 {
 	glm::vec2 pos;
 	glm::vec2 uv;
+	f32 texture_id;
 };
 
 struct quad2D
 {
 	vertex2D vertices[4];
+
+	auto operator[](u32 index) -> vertex2D &
+	{
+		return vertices[index];
+	}
 };
 
 /* used to render guis */

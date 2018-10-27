@@ -33,6 +33,11 @@
     <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
     <ClCompile Include="src\light\light_handler.cpp" />
     <ClCompile Include="src\graphics\2D\renderer\batch_renderer2D.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\gui.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\panel\panel.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font_handler.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font_stream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -153,6 +158,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\2D\renderer\batch_renderer2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\2D\gui\gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\2D\gui\panel\panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\2D\gui\font\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\2D\gui\font\font_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\2D\gui\font\font_stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

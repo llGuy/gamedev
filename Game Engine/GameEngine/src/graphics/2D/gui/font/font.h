@@ -1,0 +1,44 @@
+#pragma once
+
+#include <string>
+#include <glm/glm.hpp>
+#include <unordered_map>
+#include "../../../../utils/types.h"
+#include "../../../texture/texture_handler.h"
+
+struct character
+{
+	char character_val;
+
+	glm::vec2 texture_coord;
+	glm::vec2 max_texture_coord;
+
+	glm::vec2 offset;
+	glm::vec2 size;
+
+	f32 advance_x;
+};
+
+class font
+{
+private:
+	texture * diffuse;
+	std::string font_name;
+
+	std::unordered_map<char, character> character_info_map;
+public:
+
+	font(std::string const & name);
+
+	/* provide just the prefix of the name in the direction e.g. "res/font/consolas" */
+	auto load_font(texture_handler & textures, std::string const & dir) -> void;
+
+	auto get_data(char type)->character &;
+
+	auto get_texture(void) -> texture *;
+private:
+	auto load_fnt(std::string const & dir, i32 image_w, i32 image_h) -> void;
+	auto load_image(texture_handler & textures, std::string const & dir)->std::pair<i32, i32>;
+	auto split(std::string const & str, char const splitter)->std::vector<std::string>;
+	auto remove_spaces(std::vector<std::string> & words) -> void;
+};

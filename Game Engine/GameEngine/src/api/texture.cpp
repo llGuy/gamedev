@@ -35,15 +35,8 @@ auto texture::bind(GLenum target, u32 slot) -> void
 
 	if (slot == -1)
 	{
-		if (texture_number == -1)
-		{
-			glBindTexture(target, id);
-			return;
-		}
-		else
-		{
-			number = texture_number;
-		}
+		glBindTexture(target, id);
+		return;
 	}
 	glActiveTexture(GL_TEXTURE0 + number);
 	glBindTexture(target, id);
@@ -75,12 +68,27 @@ auto texture::clean_up(void) -> void
 	glDeleteTextures(1, &id);
 }
 
-auto texture::set_texture_number(i32 number) -> void
+/*auto texture::set_texture_number(i32 number) -> void
 {
 	texture_number = number;
-}
+}*/
 
-auto texture::get_texture_number(void) -> i32
+/*auto texture::get_texture_number(void) -> i32
 {
 	return texture_number;
+}*/
+
+auto texture::get_width(void)->i32
+{
+	return w;
+}
+
+auto texture::get_height(void)->i32
+{
+	return h;
+}
+
+auto texture::get_id(void)->u32
+{
+	return id;
 }

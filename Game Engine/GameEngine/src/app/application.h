@@ -4,8 +4,10 @@
 #include "../time/timer.h"
 #include "../scene/scene.h"
 #include "../window/window.h"
+#include "../graphics/2D/gui/panel/panel.h"
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
+#include "../graphics/2D/gui/font/font_handler.h"
 
 #include "../graphics/2D/renderer/batch_renderer2D.h"
 
@@ -20,6 +22,7 @@ private:
 	shader_handler shaders;
 	texture_handler textures;
 	light_handler lights;
+	font_handler fonts;
 
 	renderer3D renderer;
 	renderer3D sky_renderer;
@@ -27,6 +30,11 @@ private:
 
 	model monkey_model;
 	model cube_model;
+
+	gui * gui_panel;
+
+	font_stream * text;
+	font_stream * text2;
 public:
 	application(void);
 
@@ -42,4 +50,5 @@ private:
 	auto init_models(void) -> void;
 	auto init_shaders(void) -> void;
 	auto init_textures(void) -> void;
+	auto init_fonts(void) -> void;
 };

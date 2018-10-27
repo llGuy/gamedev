@@ -8,9 +8,8 @@ class texture
 {
 protected:
 	u32 id;
-	i32 texture_number{ -1 };
 
-	int32_t w, h;
+	i32 w, h;
 public:
 	friend class framebuffer;
 
@@ -19,14 +18,18 @@ public:
 
 	auto bind(GLenum target, u32 slot = -1) -> void;
 	auto fill(GLenum target, GLenum internal_format,
-		GLenum format, GLenum type, void const * data, int32_t w, int32_t h) -> void;
+		GLenum format, GLenum type, void const * data, i32 w, i32 h) -> void;
 
 	auto enable_mipmap(GLenum target) -> void;
 	auto float_param(GLenum target, GLenum mode, f32 factor) -> void;
 	auto int_param(GLenum target, GLenum mode, GLenum factor) -> void;
 
-	auto set_texture_number(i32 number) -> void;
-	auto get_texture_number(void) -> i32;
+//	auto set_texture_number(i32 number) -> void;
+//	auto get_texture_number(void) -> i32;
+
+	auto get_width(void) -> i32;
+	auto get_height(void) -> i32;
+	auto get_id(void) -> u32;
 };
 
 extern auto unbind_all_textures(GLenum target) -> void;

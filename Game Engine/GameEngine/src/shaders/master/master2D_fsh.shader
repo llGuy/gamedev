@@ -13,6 +13,7 @@ uniform sampler2D diffuse[32];
 vec4 calculate_color(void)
 {
 	return texture(diffuse[int(vertex_out.texture_slot)], vertex_out.texture_coords);
+//	return texture(diffuse[1], vertex_out.texture_coords);
 }
 
 void main(void)

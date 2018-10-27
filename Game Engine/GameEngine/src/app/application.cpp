@@ -27,6 +27,7 @@ auto application::init(void) -> void
 		glew_init();
 
 		init_game_objects();
+		init_fonts();
 		init_textures();
 		init_models();
 		init_shaders();
@@ -179,13 +180,30 @@ auto application::init_2D_test(void) -> void
 	gui_renderer.init(gui_shader);
 
 	texture * gui_test_texture = textures.get_texture("texture.gui_test");
-	gui_test_texture->set_texture_number(0);
-	quad2D quad;
-	quad.vertices[0] = vertex2D{ glm::vec2(-1.0f, +1.0f), glm::vec2(0.0f, 1.0f) };
-	quad.vertices[1] = vertex2D{ glm::vec2(-1.0f, -1.0f), glm::vec2(0.0f, 0.0f) };
-	quad.vertices[2] = vertex2D{ glm::vec2(+1.0f, +1.0f), glm::vec2(1.0f, 1.0f) }; 
-	quad.vertices[3] = vertex2D{ glm::vec2(+1.0f, -1.0f), glm::vec2(1.0f, 0.0f) };
-	gui_renderer.submit(quad, gui_test_texture);
+
+	gui_cache vertices;
+	vertices.position = vertex2D{ glm::vec2(30.0f, 50.0f), glm::vec2(0.0f, 0.0f) };
+	vertices.size = vertex2D{ glm::vec2(100.0f, 50.0f), glm::vec2(1.0f, 1.0f) };
+
+	gui_panel = new panel(vertices, gui_test_texture);
+
+	gui_cache vertices2;
+	vertices2.position = vertex2D{ glm::vec2(30.0f, 500.0f), glm::vec2(0.0f, 0.0f) };
+	vertices2.size = vertex2D{ glm::vec2(100.0f, 50.0f), glm::vec2(1.0f, 1.0f) };
+
+	gui * gui_panel2 = new panel(vertices2, gui_test_texture);
+
+	gui_panel->add_child(text);
+	texture * comic = textures.get_texture("texture.font.comic");
+	text->submit_text("Some Text!");
+	text->update(fonts);
+	text->submit_to_renderer(display.pixel_width(), display.pixel_height());
+
+	gui_panel2->add_child(text2);
+	texture * consolas = textures.get_texture("texture.font.consolas");
+	text2->submit_text("Font Name : Droid");
+	text2->update(fonts);
+	text2->submit_to_renderer(display.pixel_width(), display.pixel_height());
 }
 
 auto application::init_shaders(void) -> void
@@ -216,4 +234,13 @@ auto application::init_textures(void) -> void
 
 	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);
+}
+
+auto application::init_fonts(void) -> void
+{
+	fonts.create_font(textures, "comic", "res/font/comic");
+	text = fonts.create_font_stream("font.stream.text", "comic", glm::vec2(320.0f), 30.0f, &gui_renderer);
+
+	fonts.create_font(textures, "droid", "res/font/droid");
+	text2 = fonts.create_font_stream("font.stream.text2", "droid", glm::vec2(320.0f), 30.0f, &gui_renderer);
 }
