@@ -1,5 +1,6 @@
 #include "model_handler.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <xml_parser/rapidxml.hpp>
 
 model_handler::model_handler(void)
 	: check_xcp(true)
@@ -38,7 +39,69 @@ auto model_handler::create_shader_handle(model & object) -> shader_handle
 	return handle;
 }
 
-auto model_handler::load_model_from_obj(std::string const & file_name, model & object) -> shader_handle
+auto model_handler::get_float_array_str(rapidxml::xml_node<> * source) -> std::string
+{
+	return source->value();
+}
+
+auto model_handler::load_model_from_dae(model & obj, std::string const & file_name
+	, std::pair<rapidxml::xml_document<> *, std::string *> parsed) -> std::pair<rapidxml::xml_document<> *, std::string *>
+{
+	using namespace rapidxml;
+
+	xml_document<> * doc = parsed.first;
+
+	if (!parsed.first)
+	{
+		parsed.second = new std::string(extract_file(file_name));
+		doc = new xml_document<>();
+		doc->parse<0>(const_cast<char *>(parsed.second->c_str()));
+	}
+
+	xml_node<> * first_node = doc->first_node("COLLADA");
+
+	/* load mesh data of model */
+	xml_node<> * mesh         = first_node->first_node("library_geometries")->first_node()->first_node();
+	char const * mesh_name = mesh->name();
+	xml_node<> * src_vertices = mesh->first_node();
+	char const * vertices_name = src_vertices->name();
+	xml_node<> * src_normals  = src_vertices->next_sibling();
+	xml_node<> * src_uvs      = src_normals->next_sibling();
+
+	std::string vertices_raw = get_float_array_str(src_vertices->first_node());
+	std::string normals_raw  = get_float_array_str(src_normals->first_node());
+	std::string uvs_raw      = get_float_array_str(src_uvs->first_node());
+
+	u32 vertices_count = std::stoi(src_vertices->first_node()->last_attribute()->value());
+	u32 normals_count = std::stoi(src_normals->first_node()->last_attribute()->value());	
+	u32 uvs_count = std::stoi(src_uvs->first_node()->last_attribute()->value());
+
+	std::vector<glm::vec3> vertices = extract_vertices_from_line<3>(vertices_raw
+		, vertices_count, true);
+	std::vector<glm::vec3> normals = extract_vertices_from_line<3>(normals_raw
+		, normals_count, false);
+	std::vector<glm::vec2> uvs = extract_vertices_from_line<2>(uvs_raw
+		, uvs_count, false);
+
+	/* load indices of model */
+	xml_node<> * indices_node = mesh->last_node();
+	xml_node<> * arr          = indices_node->last_node()->last_node();
+
+	std::vector<glm::vec3> normals_in_order;
+	std::vector<glm::vec2> uvs_in_order;
+
+	normals_in_order.resize(vertices.size());
+	uvs_in_order.resize(vertices.size());
+
+	std::vector<u32> indices = organize_vertices(arr->value(), normals, uvs, normals_in_order, uvs_in_order
+		, std::stoi(indices_node->last_attribute()->value()));
+
+	create_model(vertices, normals_in_order, uvs_in_order, indices, obj);
+
+	return std::pair(doc, parsed.second);
+}
+
+auto model_handler::load_model_from_obj(std::string const & file_name, model & object) -> void
 {
 	std::ifstream file(file_name);
 
@@ -92,8 +155,6 @@ auto model_handler::load_model_from_obj(std::string const & file_name, model & o
 	}
 
 	create_model(vertices, normals, texture_coords, indices, object);
-
-	return create_shader_handle(texture_coords, normals);
 }
 
 auto model_handler::create_shader_handle(std::vector<glm::vec2> & texture_coords, std::vector<glm::vec3> & normals) -> shader_handle

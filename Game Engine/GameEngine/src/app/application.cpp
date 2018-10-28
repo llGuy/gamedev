@@ -122,7 +122,7 @@ auto application::init_game_objects(void) -> void
 
 	world.bind_camera_to_object(player);
 
-	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(4.0f), "game_object.monkey" });
+	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f), "game_object.monkey" });
 	component<component_model_matrix, game_object_data> model_matrix_comp;
 	monkey.add_component(model_matrix_comp);
 }
@@ -133,6 +133,9 @@ auto application::init_models(void) -> void
 
 	monkey_model = models.init_model();
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
+
+	player_model = models.init_model();
+	models.load_model_from_dae(player_model, "res/model/model.dae");
 
 	cube_model_computation comp;
 	cube_model = models.init_model();
@@ -148,12 +151,12 @@ auto application::init_3D_test(void) -> void
 
 	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.1f };
 	material_prototype monkey_skin{ light, shaders[shader_handle("shader.low_poly")], lights };
-	monkey_skin.get_textures_2D().push_back(textures.get_texture("texture.low_poly"));
+	monkey_skin.get_textures_2D().push_back(textures.get_texture("texture.player"));
 	monkey_skin.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
 	renderer.set_material_prototype(monkey_skin);
 
 	game_object & monkey = world.get_game_object("game_object.monkey");
-	component<component_render, game_object_data> monkey_render_compnonent{ monkey_model, renderer };
+	component<component_render, game_object_data> monkey_render_compnonent{ player_model, renderer };
 	monkey.add_component(monkey_render_compnonent);
 
 	renderer.set_projection(projection_matrix);
@@ -180,6 +183,7 @@ auto application::init_2D_test(void) -> void
 	gui_cache vertices;
 	vertices.position = vertex2D{ glm::vec2(30.0f, 50.0f), glm::vec2(0.0f, 0.0f) };
 	vertices.size = vertex2D{ glm::vec2(100.0f, 50.0f), glm::vec2(1.0f, 1.0f) };
+
 	stream_panel->init(vertices, nullptr);
 
 	font_stream * stream = guis.init_font_stream("gui.panel.font_test", "gui.font.stream.font_test", "comic", glm::vec2(320.0f), 20.0f);
@@ -210,6 +214,9 @@ auto application::init_textures(void) -> void
 
 	auto * test_gui_texture = textures.init_texture("texture.gui_test");
 	textures.load_texture_png("res/textures/gui_test.png", test_gui_texture, GL_NEAREST, flip_vertically);
+
+	auto * player_texture = textures.init_texture("texture.player");
+	textures.load_texture_png("res/model/model.png", player_texture, GL_LINEAR, flip_vertically);
 
 	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);

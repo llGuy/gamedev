@@ -30,7 +30,8 @@ private:
 	u32 movements{ 0 };
 public:
 	component(key_bind const & keys, input_handler & inputs)
-		: keys_affected(keys), input(&inputs)
+		: keys_affected(keys)
+		, input(&inputs)
 	{
 	}
 
@@ -76,7 +77,8 @@ private:
 	bool initialized{ false };
 public:
 	component(input_handler & inputs)
-		: input(&inputs), previous_cursor_position(0.0f)
+		: input(&inputs)
+		, previous_cursor_position(0.0f)
 	{
 	}
 

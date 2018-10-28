@@ -23,20 +23,14 @@ private:
 	shader_handler shaders;
 	texture_handler textures;
 	light_handler lights;
-	//font_handler fonts;
 	gui_handler guis;
 
 	renderer3D renderer;
 	renderer3D sky_renderer;
-	//batch_renderer2D gui_renderer;
 
 	model monkey_model;
 	model cube_model;
-
-	//gui * gui_panel;
-
-	//font_stream * text;
-	//font_stream * text2;
+	model player_model;
 public:
 	application(void);
 

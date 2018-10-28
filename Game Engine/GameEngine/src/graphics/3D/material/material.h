@@ -22,7 +22,9 @@ public:
 
 	/* T ... must be pointers */
 	material_prototype(material_light_info const & light_info, glsl_program * shader, light_handler & lights)
-		: shader(shader), lights(&lights), light_info_receive(light_info)
+		: shader(shader)
+		, lights(&lights)
+		, light_info_receive(light_info)
 	{
 	}
 

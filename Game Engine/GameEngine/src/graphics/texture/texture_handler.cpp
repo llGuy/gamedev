@@ -31,7 +31,7 @@ auto texture_handler::load_3D_texture_png(std::string const & from, texture * to
 	to->int_param(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-auto texture_handler::load_texture_png(std::string const & from, texture * to, GLenum mag_filt, flip_vertically_bool flip) -> void
+auto texture_handler::load_texture_png(std::string const & from, texture * to, GLenum mag_filt , flip_bool flip) -> void
 {
 	image png_data = extract_png(from, flip);
 

@@ -14,7 +14,8 @@ private:
 	renderer3D * renderer;
 public:
 	component(model const & renderable, renderer3D & renderer)
-		: renderable(renderable), renderer(&renderer)
+		: renderable(renderable)
+		, renderer(&renderer)
 	{
 	}
 

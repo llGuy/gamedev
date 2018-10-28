@@ -26,7 +26,9 @@ namespace xcp {
 		std::string compile_error;
 	public:
 		shader_compile_error(std::string const & name, std::string const & err)
-			: name(name), compile_error(err), gl_xcp::gl_xcp("shader compile error")
+			: name(name)
+			, compile_error(err)
+			, gl_xcp::gl_xcp("shader compile error")
 		{
 		}
 
@@ -53,7 +55,8 @@ namespace xcp {
 		std::string link_error;
 	public:
 		shader_link_error(std::string const & err, std::string const & name)
-			: link_error(err), gl_xcp::gl_xcp("program link error")
+			: link_error(err)
+			, gl_xcp::gl_xcp("program link error")
 		{
 		}
 
@@ -79,7 +82,8 @@ namespace xcp {
 		std::string file_name;
 	public:
 		file_open_error(std::string const & dir)
-			: file_name(dir), gl_xcp::gl_xcp("unable to open file")
+			: file_name(dir)
+			, gl_xcp::gl_xcp("unable to open file")
 		{
 		}
 

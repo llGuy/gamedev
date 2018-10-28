@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,110 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rapidxml.hpp" />
+    <ClInclude Include="rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml_utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\animation\animation_handler.cpp" />
-    <ClCompile Include="src\api\buffer.cpp" />
-    <ClCompile Include="src\api\framebuffer.cpp" />
-    <ClCompile Include="src\api\program.cpp" />
-    <ClCompile Include="src\api\renderbuffer.cpp" />
-    <ClCompile Include="src\api\shader.cpp" />
-    <ClCompile Include="src\api\texture.cpp" />
-    <ClCompile Include="src\api\vertex_layout.cpp" />
-    <ClCompile Include="src\app\application.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\font\font.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\font\font_handler.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\font\font_stream.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\gui.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\gui_handler.cpp" />
-    <ClCompile Include="src\graphics\2D\gui\panel\panel.cpp" />
-    <ClCompile Include="src\graphics\2D\renderer\batch_renderer2D.cpp" />
-    <ClCompile Include="src\graphics\3D\model_comp\cube.cpp" />
-    <ClCompile Include="src\graphics\3D\model_handler.cpp" />
-    <ClCompile Include="src\graphics\3D\material\material.cpp" />
-    <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
-    <ClCompile Include="src\graphics\texture\texture_handler.cpp" />
-    <ClCompile Include="src\io\io.cpp" />
-    <ClCompile Include="src\light\light_handler.cpp" />
-    <ClCompile Include="src\scene\camera.cpp" />
-    <ClCompile Include="src\scene\scene.cpp" />
-    <ClCompile Include="src\time\timer.cpp" />
-    <ClCompile Include="src\window\input.cpp" />
-    <ClCompile Include="src\window\window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\animation\animation_handler.h" />
-    <ClInclude Include="src\api\api.h" />
-    <ClInclude Include="src\api\buffer.h" />
-    <ClInclude Include="src\api\framebuffer.h" />
-    <ClInclude Include="src\api\program.h" />
-    <ClInclude Include="src\api\renderbuffer.h" />
-    <ClInclude Include="src\api\shader.h" />
-    <ClInclude Include="src\api\texture.h" />
-    <ClInclude Include="src\api\vertex_layout.h" />
-    <ClInclude Include="src\app\application.h" />
-    <ClInclude Include="src\data\components.h" />
-    <ClInclude Include="src\data\vec_dd.h" />
-    <ClInclude Include="src\graphics\2D\gui\font\font.h" />
-    <ClInclude Include="src\graphics\2D\gui\font\font_handler.h" />
-    <ClInclude Include="src\graphics\2D\gui\font\font_stream.h" />
-    <ClInclude Include="src\graphics\2D\gui\gui.h" />
-    <ClInclude Include="src\graphics\2D\gui\gui_handler.h" />
-    <ClInclude Include="src\graphics\2D\gui\panel\panel.h" />
-    <ClInclude Include="src\graphics\2D\renderer\batch_renderer2D.h" />
-    <ClInclude Include="src\graphics\3D\component_types.h" />
-    <ClInclude Include="src\graphics\3D\mesh.h" />
-    <ClInclude Include="src\graphics\3D\model_comp\cube.h" />
-    <ClInclude Include="src\graphics\3D\model_comp\mesh_comp.h" />
-    <ClInclude Include="src\graphics\3D\model_data.h" />
-    <ClInclude Include="src\graphics\3D\model_handler.h" />
-    <ClInclude Include="src\graphics\3D\material\material.h" />
-    <ClInclude Include="src\graphics\3D\renderer\renderer3D.h" />
-    <ClInclude Include="src\graphics\shader\shader_properties.h" />
-    <ClInclude Include="src\graphics\shader\shader_handler.h" />
-    <ClInclude Include="src\graphics\texture\texture_handler.h" />
-    <ClInclude Include="src\io\io.h" />
-    <ClInclude Include="src\light\light_handler.h" />
-    <ClInclude Include="src\scene\camera.h" />
-    <ClInclude Include="src\scene\component\behavior.h" />
-    <ClInclude Include="src\scene\component\component.h" />
-    <ClInclude Include="src\scene\component\log.h" />
-    <ClInclude Include="src\scene\component\model_matrix.h" />
-    <ClInclude Include="src\scene\component\render_color.h" />
-    <ClInclude Include="src\scene\environment\environment.h" />
-    <ClInclude Include="src\scene\game_object.h" />
-    <ClInclude Include="src\scene\scene.h" />
-    <ClInclude Include="src\time\timer.h" />
-    <ClInclude Include="src\utils\detail.h" />
-    <ClInclude Include="src\utils\types.h" />
-    <ClInclude Include="src\window\input.h" />
-    <ClInclude Include="src\window\window.h" />
-    <ClInclude Include="src\xcp\exception.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\font\comic.fnt" />
-    <None Include="res\font\consolas.fnt" />
-    <None Include="res\font\droid.fnt" />
-    <None Include="res\font\superscript.fnt" />
-    <None Include="res\font\verdana.fnt" />
-    <None Include="src\shaders\environment\fsh.shader" />
-    <None Include="src\shaders\environment\vsh.shader" />
-    <None Include="src\shaders\master\master2D_fsh.shader" />
-    <None Include="src\shaders\master\master2D_vsh.shader" />
-    <None Include="src\shaders\master\master3D_fsh.shader" />
-    <None Include="src\shaders\master\master3D_gsh.shader" />
-    <None Include="src\shaders\master\master3D_vsh.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\font\comic.png" />
-    <Image Include="res\font\consolas.png" />
-    <Image Include="res\font\droid.png" />
-    <Image Include="res\font\superscript.png" />
-    <Image Include="res\font\verdana.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{eecea32a-d65c-4c4a-beb7-a95c34284707}</ProjectGuid>
-    <RootNamespace>GameEngine</RootNamespace>
+    <ProjectGuid>{008f886f-09a3-4efe-84e7-71104f13a157}</ProjectGuid>
+    <RootNamespace>XmlLoadingTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -177,8 +85,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

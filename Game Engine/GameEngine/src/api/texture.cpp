@@ -12,6 +12,8 @@ auto create_color_texture(texture & t, int32_t w, int32_t h, void * data, GLenum
 	t.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, data, w, h);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magmin_filter);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, magmin_filter);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
 auto create_depth_texture(texture & t, int32_t w, int32_t h) -> void

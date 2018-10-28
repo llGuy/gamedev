@@ -39,6 +39,7 @@
     <ClCompile Include="src\graphics\2D\gui\font\font_handler.cpp" />
     <ClCompile Include="src\graphics\2D\gui\font\font_stream.cpp" />
     <ClCompile Include="src\graphics\2D\gui\gui_handler.cpp" />
+    <ClCompile Include="src\animation\animation_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -179,9 +180,11 @@
     <ClInclude Include="src\graphics\2D\gui\gui_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\animation\animation_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\io\TODO.md" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
     <None Include="src\shaders\master\master3D_fsh.shader" />
