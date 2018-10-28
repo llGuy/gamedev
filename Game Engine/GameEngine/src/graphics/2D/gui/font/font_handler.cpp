@@ -6,7 +6,9 @@ auto font_handler::create_font_stream(std::string const & stream_name, std::stri
 
 	font_stream_index_map[stream_name] = font_stream_id;
 
-	streams.push_back(new font_stream(get_font(name), size, line_height));
+	streams.push_back(new font_stream);
+
+	streams.back()->init(get_font(name), size, line_height);
 
 	streams.back()->bind_renderer(*renderer);
 

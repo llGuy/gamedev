@@ -29,6 +29,7 @@ auto texture::create(void) -> void
 {
 	glGenTextures(1, &id);
 }
+
 auto texture::bind(GLenum target, u32 slot) -> void
 {
 	u32 number = slot;
@@ -41,6 +42,7 @@ auto texture::bind(GLenum target, u32 slot) -> void
 	glActiveTexture(GL_TEXTURE0 + number);
 	glBindTexture(target, id);
 }
+
 auto texture::fill(GLenum target, GLenum internal_format, GLenum format, GLenum type, void const * data, int32_t w, int32_t h) -> void
 {
 	glTexImage2D(target, 0, internal_format, w, h, 0, format, type, data);
@@ -67,16 +69,6 @@ auto texture::clean_up(void) -> void
 {
 	glDeleteTextures(1, &id);
 }
-
-/*auto texture::set_texture_number(i32 number) -> void
-{
-	texture_number = number;
-}*/
-
-/*auto texture::get_texture_number(void) -> i32
-{
-	return texture_number;
-}*/
 
 auto texture::get_width(void)->i32
 {

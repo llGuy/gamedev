@@ -5,5 +5,7 @@
 class panel : public gui
 {
 public:
-	panel(gui_cache const & cache, texture * diffuse);
+	panel(void) = default;
+
+	auto init(gui_cache const & cache, texture * diffuse) -> void;
 };

@@ -24,9 +24,6 @@ public:
 	auto float_param(GLenum target, GLenum mode, f32 factor) -> void;
 	auto int_param(GLenum target, GLenum mode, GLenum factor) -> void;
 
-//	auto set_texture_number(i32 number) -> void;
-//	auto get_texture_number(void) -> i32;
-
 	auto get_width(void) -> i32;
 	auto get_height(void) -> i32;
 	auto get_id(void) -> u32;

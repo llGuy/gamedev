@@ -26,7 +26,6 @@ class batch_renderer2D
 {
 private:
 	buffer gpu_batch;
-	buffer texture_batch;
 	buffer indices;
 
 	vertex_layout vao;

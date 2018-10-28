@@ -9,6 +9,7 @@
 #include "../graphics/texture/texture_handler.h"
 #include "../graphics/2D/gui/font/font_handler.h"
 
+#include "../graphics/2D/gui/gui_handler.h"
 #include "../graphics/2D/renderer/batch_renderer2D.h"
 
 class application
@@ -22,19 +23,20 @@ private:
 	shader_handler shaders;
 	texture_handler textures;
 	light_handler lights;
-	font_handler fonts;
+	//font_handler fonts;
+	gui_handler guis;
 
 	renderer3D renderer;
 	renderer3D sky_renderer;
-	batch_renderer2D gui_renderer;
+	//batch_renderer2D gui_renderer;
 
 	model monkey_model;
 	model cube_model;
 
-	gui * gui_panel;
+	//gui * gui_panel;
 
-	font_stream * text;
-	font_stream * text2;
+	//font_stream * text;
+	//font_stream * text2;
 public:
 	application(void);
 

@@ -38,11 +38,11 @@ auto gui::convert_to_screen_space(f32 display_w, f32 display_h, gui_vertices_cac
 	cache.coord.position.y = 1.0f - cache.coord.position.y;
 	/* convert to screen space OpenGL coordinates */
 	cache.coord.position = cache.coord.position * 2.0f - glm::vec2(1.0f);
-	
+
 	cache.size.position *= 2.0f;
-	
+
 	cache.coord.texture_coords.y = 1.0f - cache.coord.texture_coords.y;
-	
+
 	return cache;
 }
 

@@ -20,7 +20,7 @@ protected:
 	/* gui struct can have multiple quads e.g. fonts */
 	std::vector<gui_cache> vertices;
 
-	batch_renderer2D * renderer;
+	batch_renderer2D * renderer{ nullptr };
 public:
 	virtual ~gui(void) = default;
 
@@ -37,6 +37,8 @@ public:
 	auto get_renderer(void) -> batch_renderer2D *;
 
 	auto convert_to_screen_space(f32 display_w, f32 display_h, gui_cache const & pixel_vertices) -> gui_cache;
+
+	virtual auto update(void) -> void;
 
 	virtual auto submit_to_renderer(i32 display_w, i32 display_h) -> void;
 private:

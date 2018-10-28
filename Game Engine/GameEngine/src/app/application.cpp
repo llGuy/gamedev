@@ -95,7 +95,7 @@ auto application::render(void) -> void
 	sky_renderer.render();
 
 	glDisable(GL_DEPTH_TEST);
-	gui_renderer.render();
+	guis.render();
 }
 
 auto application::running(void) -> bool
@@ -173,37 +173,19 @@ auto application::init_3D_test(void) -> void
 
 auto application::init_2D_test(void) -> void
 {
-	/* initializing gui shader's uniform data and gui renderer */
-	glsl_program * gui_shader = shaders[shader_handle("shader.gui")];
-	gui_shader->bind();
-	gui_shader->send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
-	gui_renderer.init(gui_shader);
+	guis.init(shaders);
 
-	texture * gui_test_texture = textures.get_texture("texture.gui_test");
+	panel * stream_panel = guis.init_gui_set<panel>("gui.panel.font_test", dont_render_gui);
 
 	gui_cache vertices;
 	vertices.position = vertex2D{ glm::vec2(30.0f, 50.0f), glm::vec2(0.0f, 0.0f) };
 	vertices.size = vertex2D{ glm::vec2(100.0f, 50.0f), glm::vec2(1.0f, 1.0f) };
+	stream_panel->init(vertices, nullptr);
 
-	gui_panel = new panel(vertices, gui_test_texture);
+	font_stream * stream = guis.init_font_stream("gui.panel.font_test", "gui.font.stream.font_test", "comic", glm::vec2(320.0f), 20.0f);
+	stream->submit_text("Font name : Comic");
 
-	gui_cache vertices2;
-	vertices2.position = vertex2D{ glm::vec2(30.0f, 500.0f), glm::vec2(0.0f, 0.0f) };
-	vertices2.size = vertex2D{ glm::vec2(100.0f, 50.0f), glm::vec2(1.0f, 1.0f) };
-
-	gui * gui_panel2 = new panel(vertices2, gui_test_texture);
-
-	gui_panel->add_child(text);
-	texture * comic = textures.get_texture("texture.font.comic");
-	text->submit_text("Some Text!");
-	text->update(fonts);
-	text->submit_to_renderer(display.pixel_width(), display.pixel_height());
-
-	gui_panel2->add_child(text2);
-	texture * consolas = textures.get_texture("texture.font.consolas");
-	text2->submit_text("Font Name : Droid");
-	text2->update(fonts);
-	text2->submit_to_renderer(display.pixel_width(), display.pixel_height());
+	guis.update(display.pixel_width(), display.pixel_height());
 }
 
 auto application::init_shaders(void) -> void
@@ -219,9 +201,6 @@ auto application::init_shaders(void) -> void
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));
 	glsl_shader sky_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, sky_shader_handle, extract_file("src/shaders/environment/fsh.shader"));
 	shaders.combine(sky_shader_handle, sky_vsh, sky_fsh);
-
-	shader_handle gui_shader("shader.gui");
-	shaders.create_program(gui_shader, "2D");
 }
 
 auto application::init_textures(void) -> void
@@ -238,9 +217,6 @@ auto application::init_textures(void) -> void
 
 auto application::init_fonts(void) -> void
 {
-	fonts.create_font(textures, "comic", "res/font/comic");
-	text = fonts.create_font_stream("font.stream.text", "comic", glm::vec2(320.0f), 30.0f, &gui_renderer);
-
-	fonts.create_font(textures, "droid", "res/font/droid");
-	text2 = fonts.create_font_stream("font.stream.text2", "droid", glm::vec2(320.0f), 30.0f, &gui_renderer);
+	guis.init_font_type(textures, "comic", "res/font/comic");
+	guis.init_font_type(textures, "droid", "res/font/droid");
 }

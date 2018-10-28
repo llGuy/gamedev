@@ -69,19 +69,35 @@ auto gui::get_coordinates_relative_to_display(u32 index) -> glm::vec2
 	}
 }
 
+auto gui::update(void) -> void
+{
+	for (auto child : children)
+	{
+		child->update();
+	}
+}
+
 auto gui::submit_to_renderer(i32 display_w, i32 display_h) -> void
 {
-	for (u32 i = 0; i < vertices.size(); ++i)
+	if (renderer)
 	{
-		gui_cache cache = vertices[i];
+		for (u32 i = 0; i < vertices.size(); ++i)
+		{
+			gui_cache cache = vertices[i];
 
-		glm::vec2 global_pos = get_coordinates_relative_to_display(i);
+			glm::vec2 global_pos = get_coordinates_relative_to_display(i);
 
-		cache.position.pos = global_pos;
+			cache.position.pos = global_pos;
 
-		auto real_vertices_cache = convert_to_screen_space(display_w, display_h, cache);
-		auto real_vertices_array = convert_cache_to_vertices(real_vertices_cache);
-		renderer->submit(real_vertices_array, diffuse);
+			auto real_vertices_cache = convert_to_screen_space((f32)display_w, (f32)display_h, cache);
+			auto real_vertices_array = convert_cache_to_vertices(real_vertices_cache);
+			renderer->submit(real_vertices_array, diffuse);
+		}
+	}
+
+	for (auto child : children)
+	{
+		child->submit_to_renderer(display_w, display_h);
 	}
 }
 

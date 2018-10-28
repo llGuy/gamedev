@@ -16,9 +16,11 @@ private:
 
 	f32 line_height;
 public:
-	font_stream(font * bound_font, glm::vec2 const & font_size, f32 line_height);
+	font_stream(void) = default;
 
-	auto update(font_handler & fonts) -> void;
+	auto init(font * bound_font, glm::vec2 const & font_size, f32 line_height) -> void;
+
+	auto update(void) -> void override;
 
 	auto clear(void) -> void;
 

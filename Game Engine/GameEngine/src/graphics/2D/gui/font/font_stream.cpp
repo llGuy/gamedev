@@ -1,12 +1,15 @@
 #include "font_stream.h"
 
-font_stream::font_stream(font * bound_font, glm::vec2 const & font_size, f32 line_height)
-	: bound_font(bound_font), font_size(font_size), line_height(line_height)
+auto font_stream::init(font * bound_font, glm::vec2 const & font_size, f32 line_height) -> void
 {
+	this->bound_font = bound_font;
+	this->font_size = font_size;
+	this->line_height = line_height;
+
 	diffuse = bound_font->get_texture();
 }
 
-auto font_stream::update(font_handler & fonts) -> void
+auto font_stream::update(void) -> void
 {
 	f32 line_y = line_height;
 	f32 x = 0.0f;
