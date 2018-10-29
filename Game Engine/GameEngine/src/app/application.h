@@ -12,6 +12,8 @@
 #include "../graphics/2D/gui/gui_handler.h"
 #include "../graphics/2D/renderer/batch_renderer2D.h"
 
+#include "../animation/animation_handler.h"
+
 class application
 {
 private:
@@ -24,6 +26,7 @@ private:
 	texture_handler textures;
 	light_handler lights;
 	gui_handler guis;
+	skeletal_animation_handler animations;
 
 	renderer3D renderer;
 	renderer3D sky_renderer;

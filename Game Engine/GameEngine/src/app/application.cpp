@@ -135,7 +135,7 @@ auto application::init_models(void) -> void
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
 	player_model = models.init_model();
-	models.load_model_from_dae(player_model, "res/model/model.dae");
+	animations.load_animation(models.load_model_from_dae(player_model, "res/model/model.dae"));
 
 	cube_model_computation comp;
 	cube_model = models.init_model();
