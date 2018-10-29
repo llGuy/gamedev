@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\animation_handler.h" />
+    <ClInclude Include="src\animation\joint.h" />
+    <ClInclude Include="src\animation\key_frame.h" />
     <ClInclude Include="src\api\api.h" />
     <ClInclude Include="src\api\buffer.h" />
     <ClInclude Include="src\api\framebuffer.h" />

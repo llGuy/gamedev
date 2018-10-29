@@ -12,6 +12,8 @@ auto main(void) -> int32_t
 	}
 	app.clean_up();
 
+	glm::mat4 test(1.0f);
+
 	std::cin.get();
 
 	return 0;

@@ -62,8 +62,8 @@ using model = object<model_data>;
 
 namespace rapidxml { 
 	
-	template <typename Ch = char> class xml_document; 
-	template <typename Ch = char> class xml_node;
+	template <typename Ch> class xml_document; 
+	template <typename Ch> class xml_node;
 
 }
 
@@ -87,7 +87,7 @@ public:
 	auto load_model_from_obj(std::string const & file_name, model & object) -> void;
 
 	auto load_model_from_dae(model & obj, std::string const & file_name
-		, std::pair<rapidxml::xml_document<> *, std::string *> parsed = std::pair(nullptr, nullptr)) -> std::pair<rapidxml::xml_document<> *, std::string *>;
+		, std::pair<rapidxml::xml_document<char> *, std::string *> parsed = std::pair(nullptr, nullptr)) -> std::pair<rapidxml::xml_document<char> *, std::string *>;
 
 	auto create_shader_handle(model & object) -> shader_handle;
 
@@ -111,7 +111,7 @@ private:
 
 	auto create_shader_handle(std::vector<glm::vec2> & texture_coords, std::vector<glm::vec3> & normals) -> shader_handle;
 
-	auto get_float_array_str(rapidxml::xml_node<> * source) -> std::string;
+	auto get_float_array_str(rapidxml::xml_node<char> * source) -> std::string;
 
 	template <u32 Dimension> auto extract_vertices_from_line(std::string const & raw, u32 float_count, bool flip) -> std::vector<glm::vec<Dimension, f32, glm::highp>>
 	{

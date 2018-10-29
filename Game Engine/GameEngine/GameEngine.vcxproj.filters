@@ -183,6 +183,9 @@
     <ClInclude Include="src\animation\animation_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\animation\joint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />

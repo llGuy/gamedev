@@ -113,7 +113,7 @@ auto application::init_game_objects(void) -> void
 {
 	world.init();
 
-	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(1.0f), "game_object.player" });
+	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(0.4f), "game_object.player" });
 	component<component_behavior_key, game_object_data> key_comp{
 		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
 	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs() };
