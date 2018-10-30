@@ -4,6 +4,8 @@
 #include <fstream>
 #include "joint.h"
 #include "key_frame.h"
+#include "animation.h"
+#include "../graphics/3D/model_handler.h"
 
 namespace rapidxml { 
 	
@@ -14,10 +16,20 @@ namespace rapidxml {
 
 class skeletal_animation_handler
 {
+private:
+
+	std::unordered_map<std::string, animation *> animations;
+
 public:
+	/* to separate later */
+	auto load_model_animation_data(model & subject, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+
+	auto load_animation_data(std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+
 	/* requires the parsed version of the same document which was used to load the mesh from the model_handler */
 	auto load_animation(std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
 
+	auto get_animation(std::string const & name) -> animation *;
 private:
 	auto get_joint_weights(rapidxml::xml_node<char> * weights_source) -> std::vector<f32>;
 	auto get_inverse_bind_transforms(rapidxml::xml_node<char> * src) -> std::vector<glm::mat4>;

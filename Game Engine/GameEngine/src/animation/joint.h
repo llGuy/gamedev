@@ -13,8 +13,6 @@ struct joint_transform
 class joint
 {
 private:
-	/* joints are accessible arbitratilly through an external unordered map
-	   therefore the children and all joints must be on the heap*/
 	std::vector<joint *> children;
 	joint * parent;
 
@@ -23,39 +21,20 @@ private:
 	std::string name;
 
 	glm::mat4 local_bind_transform;
+	glm::mat4 inverse_bind_transform;
+
+	glm::mat4 animated_transform;
 public:
-	joint(std::string const & name, u32 id)
-		: id(id), name(name)
-	{
-	}
+	joint(std::string const & name, u32 id);
 
-	auto add_child(joint * child) -> void
-	{
-		children.push_back(child);
-	}
+	auto add_child(joint * child) -> void;
+	auto operator[](u32 index) -> joint * &;
 
-	auto operator[](u32 index) -> joint * &
-	{
-		return children[index];
-	}
-
-	auto get_id(void) -> u32 &
-	{
-		return id;
-	}
-
-	auto get_name(void) -> std::string &
-	{
-		return name;
-	}
-
-	auto get_local_bind_transform(void) -> glm::mat4 &
-	{
-		return local_bind_transform;
-	}
-
-	auto get_parent(void) ->  joint * &
-	{
-		return parent;
-	}
+	auto get_id(void) -> u32 &;
+	auto get_name(void) -> std::string &;
+	auto get_local_bind_transform(void) -> glm::mat4 &;
+	auto get_inverse_bind_transform(void) -> glm::mat4 &;
+	auto get_parent(void) -> joint * &;
+	auto get_animated_transform(void) -> glm::mat4 &;
+	auto get_child_count(void) const -> u32;
 };

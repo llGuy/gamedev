@@ -10,18 +10,19 @@ private:
 
 	std::unordered_map<std::string, joint_transform> joint_transforms;
 public:
-	key_frame(f32 time_stamp)
-		: time_stamp(time_stamp)
+	key_frame(f32 time_stamp);
+
+	auto get_time_stamp(void) -> f32;
+
+	auto operator[](std::string const & name) -> joint_transform &;
+
+	auto begin(void)
 	{
+		return joint_transforms.begin();
 	}
 
-	auto get_time_stamp(void) -> f32
+	auto end(void)
 	{
-		return time_stamp;
-	}
-
-	auto operator[](std::string const & name) -> joint_transform &
-	{
-		return joint_transforms[name];
+		return joint_transforms.end();
 	}
 };

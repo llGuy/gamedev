@@ -40,6 +40,10 @@
     <ClCompile Include="src\graphics\2D\gui\font\font_stream.cpp" />
     <ClCompile Include="src\graphics\2D\gui\gui_handler.cpp" />
     <ClCompile Include="src\animation\animation_handler.cpp" />
+    <ClCompile Include="src\animation\joint.cpp" />
+    <ClCompile Include="src\animation\key_frame.cpp" />
+    <ClCompile Include="src\animation\animation.cpp" />
+    <ClCompile Include="src\animation\animation_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -186,6 +190,18 @@
     <ClInclude Include="src\animation\joint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\animation\key_frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />
@@ -200,6 +216,9 @@
     <None Include="res\font\droid.fnt" />
     <None Include="res\font\superscript.fnt" />
     <None Include="res\font\verdana.fnt" />
+    <None Include="src\shaders\animation3D\master3D_fsh.shader" />
+    <None Include="src\shaders\animation3D\master3D_gsh.shader" />
+    <None Include="src\shaders\animation3D\master3D_vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

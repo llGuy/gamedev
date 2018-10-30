@@ -1,6 +1,4 @@
 layout(location = 0) out vec4 final_color;
-/* for bloom effect */
-//layout(location = 1) out vec4 final_bright_colors;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -8,8 +6,6 @@ layout(location = 0) out vec4 final_color;
 in struct input_prev
 {
 	vec3 vertex_position;
-
-	vec3 vertex_color;
 
 	vec2 texture_coords;
 
@@ -22,8 +18,6 @@ geometry_out;
 in struct input_prev
 {
 	vec3 vertex_position;
-
-	vec3 vertex_color;
 
 	vec2 texture_coords;
 
@@ -108,10 +102,6 @@ void main(void)
 
 #ifdef USES_TEXTURE
 	final_color = texture(diffuse, input_data.texture_coords);
-#endif
-
-#ifdef USES_COLOR
-	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
 
 	vec3 light_vector = normalize(-light_info.light_position);

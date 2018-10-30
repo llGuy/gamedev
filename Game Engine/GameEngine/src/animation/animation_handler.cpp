@@ -57,6 +57,8 @@ auto skeletal_animation_handler::load_animation(std::pair<rapidxml::xml_document
 	std::vector<key_frame> key_frames = get_key_frames(first_joint_animation_node->first_node()->first_node()/* float array */);
 
 	load_key_frame(library_animations->first_node(), key_frames);
+
+	/* TODO : load animation into game! */
 }
 
 auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames) -> void
@@ -270,4 +272,9 @@ auto skeletal_animation_handler::get_joint_weights(rapidxml::xml_node<char> * we
 	}
 
 	return weights;
+}
+
+auto skeletal_animation_handler::get_animation(std::string const & name) -> animation *
+{
+	return animations[name];
 }
