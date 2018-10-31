@@ -26,6 +26,10 @@ auto application::init(void) -> void
 
 		glew_init();
 
+		shaders.init();
+		world.init();
+		models.init();
+
 		init_game_objects();
 		init_fonts();
 		init_textures();
@@ -55,8 +59,9 @@ auto application::update(void) -> void
 	display.refresh();
 
 	renderer.flush();
+	auto & animation_renderer = animations.get_renderer();
+	animation_renderer.flush();
 
-	world.update(time_handler.elapsed());
 
 	auto camera = world.get_scene_camera();
 	glm::mat4 view_matrix = camera.get_view_matrix();
@@ -66,6 +71,11 @@ auto application::update(void) -> void
 	low_poly_shader->send_uniform_vec3("camera_position", glm::value_ptr(camera.get_position()), 1);
 	low_poly_shader->send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
 
+
+	glsl_program * animation_shader = animation_renderer.get_shader();
+	animation_shader->bind();
+	animation_shader->send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
+	animation_shader->send_uniform_mat4("camera_position", glm::value_ptr(camera.get_position()), 1);
 
 
 	glsl_program * sky_shader = sky_renderer.get_shader();
@@ -77,6 +87,7 @@ auto application::update(void) -> void
 
 
 
+	world.update(time_handler.elapsed());
 	time_handler.reset();
 
 
@@ -93,6 +104,8 @@ auto application::render(void) -> void
 	renderer.render();
 
 	sky_renderer.render();
+
+	animations.get_renderer().render();
 
 	glDisable(GL_DEPTH_TEST);
 	guis.render();
@@ -111,8 +124,6 @@ auto application::clean_up(void) -> void
 
 auto application::init_game_objects(void) -> void
 {
-	world.init();
-
 	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(0.4f), "game_object.player" });
 	component<component_behavior_key, game_object_data> key_comp{
 		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
@@ -129,13 +140,15 @@ auto application::init_game_objects(void) -> void
 
 auto application::init_models(void) -> void
 {
-	models.init();
+	animations.init(shaders, lights);
 
 	monkey_model = models.init_model();
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
 	player_model = models.init_model();
-	animations.load_animation(models.load_model_from_dae(player_model, "res/model/model.dae"));
+	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
+
+	animations.load_animation("animation.running", xml_doc, player_model, world.get_game_object("game_object.monkey"));
 
 	cube_model_computation comp;
 	cube_model = models.init_model();
@@ -155,9 +168,9 @@ auto application::init_3D_test(void) -> void
 	monkey_skin.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
 	renderer.set_material_prototype(monkey_skin);
 
-	game_object & monkey = world.get_game_object("game_object.monkey");
-	component<component_render, game_object_data> monkey_render_compnonent{ player_model, renderer };
-	monkey.add_component(monkey_render_compnonent);
+	//game_object & monkey = world.get_game_object("game_object.monkey");
+	//component<component_render, game_object_data> monkey_render_compnonent{ player_model, renderer };
+	//monkey.add_component(monkey_render_compnonent);
 
 	renderer.set_projection(projection_matrix);
 	
@@ -169,9 +182,18 @@ auto application::init_3D_test(void) -> void
 	sky_material.toggle_lighting();
 	sky_renderer.set_material_prototype(sky_material);
 
-	material sky{ cube_model, glm::scale(glm::vec3(1000.0f)) };
+	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)) };
 	sky_renderer.submit_material(sky);
 	sky_renderer.set_projection(projection_matrix);
+
+	/* initializing animation material_prototype */
+	auto & mat_type = animations.get_material_type();
+	mat_type.init(light, lights);
+	mat_type.get_textures_2D().push_back(textures.get_texture("texture.player"));
+	auto & animation_renderer = animations.get_renderer();
+
+	animation_renderer.set_projection(projection_matrix);
+	animation_renderer.set_material_prototype(mat_type);
 }
 
 auto application::init_2D_test(void) -> void
@@ -194,8 +216,6 @@ auto application::init_2D_test(void) -> void
 
 auto application::init_shaders(void) -> void
 {
-	shaders.init();
-
 	shader_handle shader = models.create_shader_handle(monkey_model);
 	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	shader.set_name("shader.low_poly");

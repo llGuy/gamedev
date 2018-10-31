@@ -6,9 +6,9 @@ class animation_wrapper
 {
 private:
 	animation * current_animation;
-	f32 current_time;
+	f32 current_time{ 0.0f };
 public:
-	auto set_current_animation(animation * new_current);
+	auto set_current_animation(animation * new_current) -> void;
 
 	auto update(f32 td, joint * root, u32 joint_count) -> std::vector<glm::mat4>;
 private:

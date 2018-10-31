@@ -8,11 +8,37 @@
 #include "animation_handler.h"
 /* using the xmlrapid library to parse .dae files */
 #include <xml_parser/rapidxml.hpp>
+#include "animation_component.h"
+#include "animation_render_component.h"
 
 #include "joint.h"
 #include "key_frame.h"
 
-auto skeletal_animation_handler::load_animation(std::pair<rapidxml::xml_document<> *, std::string *> parsed) -> void
+#define CORRECTION glm::rotate()
+
+auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights) -> void
+{
+	shader_handle animation_shader("shader.animation3D");
+
+	animation_shader.set(shader_property::linked_to_gsh
+		, shader_property::sharp_normals
+		, shader_property::texture_coords);
+
+	glsl_shader vsh = shaders.create_shader(GL_VERTEX_SHADER, animation_shader, extract_file("src/shaders/animation3D/vsh.shader"));
+	glsl_shader gsh = shaders.create_shader(GL_GEOMETRY_SHADER, animation_shader, extract_file("src/shaders/animation3D/gsh.shader"));
+	glsl_shader fsh = shaders.create_shader(GL_FRAGMENT_SHADER, animation_shader, extract_file("src/shaders/animation3D/fsh.shader"));
+
+	glsl_program * shader = shaders.combine(animation_shader, vsh, gsh, fsh);
+
+	animated_material_type.get_shader() = shader;
+	/* rest of the animated material must be initialized outside this class in the animation for customizability */
+
+	animation_renderer.set_material_prototype(animated_material_type);
+}
+
+auto skeletal_animation_handler::load_animation(std::string const & animation_name
+	, std::pair<rapidxml::xml_document<> *, std::string *> parsed
+	, model & renderable, game_object & entity) -> void
 {
 	using namespace rapidxml;
 
@@ -47,7 +73,7 @@ auto skeletal_animation_handler::load_animation(std::pair<rapidxml::xml_document
 
 	xml_node<> * head = armature->first_node("node");
 
-	load_hierarchy(head, joint_map, nullptr);
+	joint * root = load_hierarchy(head, joint_map, nullptr);
 
 	/* FINAL : loading the animation */
 
@@ -59,6 +85,36 @@ auto skeletal_animation_handler::load_animation(std::pair<rapidxml::xml_document
 	load_key_frame(library_animations->first_node(), key_frames);
 
 	/* TODO : load animation into game! */
+	renderable->vao.bind();
+
+	buffer weights_buffer;
+	weights_buffer.create();
+	weights_buffer.fill(weights.size() * sizeof(glm::vec3), weights.data(), GL_STATIC_DRAW, GL_ARRAY_BUFFER);
+	attribute weights_attribute{ 4, GL_FLOAT, 3, GL_FALSE, sizeof glm::vec3, nullptr };
+	renderable->vao.attach(weights_buffer, weights_attribute);
+
+	buffer joint_ids_buffer;
+	joint_ids_buffer.create();
+	joint_ids_buffer.fill(joint_ids.size() * sizeof(glm::ivec3), joint_ids.data(), GL_STATIC_DRAW, GL_ARRAY_BUFFER);
+	attribute joint_ids_attribute{ 3, GL_INT, 3, GL_FALSE, sizeof glm::ivec3, nullptr };
+	renderable->vao.attach(joint_ids_buffer, joint_ids_attribute);
+
+	component<weights_buffer_component, model_data> weights_component(weights_buffer_component{ weights_buffer });
+	renderable.add_component(weights_component);
+
+	component<joint_ids_buffer_component, model_data> joint_ids_component(joint_ids_buffer_component{ joint_ids_buffer });
+	renderable.add_component(joint_ids_component);
+
+	/* load animation */
+	animations[animation_name] = new animation(key_frames, key_frames.back().get_time_stamp());
+
+	/* load animated entity */
+	component<component_animation3D, game_object_data> entity_animation_component{ this, *root, index_joint_map.size(), animation_name };
+	skeletal_material mat{ renderable, glm::mat4(1.0f) };
+	component<component_animation3D_render, game_object_data> entity_animation_render_component{ this, mat, animation_renderer };
+
+	entity.add_component(entity_animation_component);
+	entity.add_component(entity_animation_render_component);
 }
 
 auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames) -> void
@@ -79,11 +135,17 @@ auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * anima
 		std::string current_word;
 		u32 count = 0;
 		while (std::getline(stream, current_word, '_'))
-			if (count++ == 1)
+		{
+			if (current_word == "pose")
 			{
-				joint_name = current_word;
+				joint_name.pop_back();
 				break;
 			}
+			else if (count++ >= 1)
+			{
+				joint_name += current_word + '_';
+			}
+		}
 
 		/* get float array */
 		xml_node<> * float_array = src->first_node();
@@ -128,7 +190,7 @@ auto skeletal_animation_handler::get_key_frames(rapidxml::xml_node<char> * anima
 }
 
 auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
-	, std::unordered_map<std::string, joint *> & joint_map, joint * parent) -> void
+	, std::unordered_map<std::string, joint *> & joint_map, joint * parent) -> joint *
 {
 	using namespace rapidxml;
 
@@ -146,7 +208,7 @@ auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
 	while (std::getline(stream, current_float, ' '))
 		bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
 
-	current_joint->get_local_bind_transform() = bone_space_transform;
+	current_joint->get_inverse_bind_transform() = bone_space_transform;
 
 	/* load for children */
 	auto * first = current->first_node("node");
@@ -157,6 +219,11 @@ auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
 		{
 			load_hierarchy(child, joint_map, current_joint);
 		}
+	}
+
+	if (!parent)
+	{
+		return current_joint;
 	}
 }
 
@@ -277,4 +344,14 @@ auto skeletal_animation_handler::get_joint_weights(rapidxml::xml_node<char> * we
 auto skeletal_animation_handler::get_animation(std::string const & name) -> animation *
 {
 	return animations[name];
+}
+
+auto skeletal_animation_handler::get_renderer(void) -> renderer3D &
+{
+	return animation_renderer;
+}
+
+auto skeletal_animation_handler::get_material_type(void) -> material_prototype &
+{
+	return animated_material_type;
 }

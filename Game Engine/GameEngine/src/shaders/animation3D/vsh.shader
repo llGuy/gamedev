@@ -14,6 +14,8 @@ out struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec3 weights;
 }
 vertex_out;
 
@@ -47,8 +49,10 @@ void main(void)
 	}
 
 	vertex_out.vertex_position = vec3(model_matrix * accumulated_local);
+	//vertex_out.vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0f));
 	vertex_out.texture_coords = vertex_uvs;
-	vertex_out.vertex_normal = vertex_normal;
+	vertex_out.vertex_normal = vec3(accumulated_normal);
+	vertex_out.weights = weights;
 
-	gl_Position = projection_matrix * view_matrix * vertex_out.vertex_position;
+	gl_Position = projection_matrix * view_matrix * vec4(vertex_out.vertex_position, 1.0f);
 }

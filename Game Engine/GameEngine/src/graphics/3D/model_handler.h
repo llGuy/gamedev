@@ -115,7 +115,7 @@ private:
 
 	template <u32 Dimension> auto extract_vertices_from_line(std::string const & raw, u32 float_count, bool flip) -> std::vector<glm::vec<Dimension, f32, glm::highp>>
 	{
-		glm::mat3 rotation = glm::mat3(glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+//		glm::mat3 rotation = glm::mat3(glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 		std::vector<glm::vec<Dimension, f32, glm::highp>> vertices;
 		vertices.resize(float_count / Dimension);
@@ -134,7 +134,7 @@ private:
 			{
 				if (flip && (counter + 1) % 3 == 0 && counter != 0)
 				{
-					vertices[(counter + 1) / 3 - 1] = rotation * vertices[(counter + 1) / 3 - 1];
+					vertices[(counter + 1) / 3 - 1] = /*rotation * */vertices[(counter + 1) / 3 - 1];
 				}
 			}
 			++counter;

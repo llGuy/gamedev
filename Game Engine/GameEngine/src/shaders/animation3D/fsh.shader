@@ -10,6 +10,8 @@ in struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec3 weights;
 }
 geometry_out;
 
@@ -22,6 +24,8 @@ in struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec3 weights;
 } 
 vertex_out;
 

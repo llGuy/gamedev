@@ -1,6 +1,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "material.h"
 
+auto material_prototype::init(material_light_info const & light_info, light_handler & lights) -> void
+{
+	this->lights = &lights;
+	this->light_info_receive = light_info;
+}
+
 auto material_prototype::toggle_lighting(void) -> void
 {
 	enabled_lighting ^= 0b0001;

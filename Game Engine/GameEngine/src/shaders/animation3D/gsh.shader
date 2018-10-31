@@ -8,6 +8,8 @@ struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec3 weights;
 };
 
 in input_prev vertex_out[];
@@ -43,6 +45,8 @@ void main(void)
 #ifdef USES_TEXTURE
 		geometry_out.texture_coords = vertex_out[i].texture_coords;
 #endif
+
+		geometry_out.weights = vertex_out[i].weights;
 
 		gl_Position = gl_in[i].gl_Position;
 

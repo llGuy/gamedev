@@ -9,6 +9,8 @@ model_handler::model_handler(void)
 
 auto model_handler::init(void) -> void
 {
+	components.add_system<joint_ids_buffer_component>(20);
+	components.add_system<weights_buffer_component>(20);
 	components.add_system<texture_buffer_component>(20);
 	components.add_system<vertex_buffer_component>(20);
 	components.add_system<normal_buffer_component>(20);

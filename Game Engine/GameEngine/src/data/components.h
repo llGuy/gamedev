@@ -48,6 +48,10 @@ public:
 	{
 		return component_systems->get_component<T>(components[component_type<T, Data>::value]);
 	}
+	template <typename T> auto get_component(u32 index) -> component<T, Data> &
+	{
+		return component_systems->get_component<T>(index);
+	}
 	template <typename T> auto add_component(component<T, Data> & comp) -> void
 	{
 		comp.entity_index = id;

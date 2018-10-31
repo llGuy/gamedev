@@ -2,7 +2,7 @@
 #include "animation_wrapper.h"
 #include <glm/gtx/transform.hpp>
 
-auto animation_wrapper::set_current_animation(animation * new_current)
+auto animation_wrapper::set_current_animation(animation * new_current) -> void
 {
 	current_animation = new_current;
 }
@@ -49,11 +49,15 @@ auto animation_wrapper::get_surrounding_frames(void) -> std::pair<u32, u32>
 {
 	for (u32 i = 0; i < current_animation->get_frame_count() - 1; ++i)
 	{
-		if (current_animation[i].get_length() < current_time && current_animation[i + 1].get_length() > current_time)
+		f32 time_stamp_prev = current_animation->operator[](i).get_time_stamp();
+		f32 time_stamp_next = current_animation->operator[](i + 1).get_time_stamp();
+
+		if (time_stamp_prev < current_time && time_stamp_next > current_time)
 		{
 			return std::pair(i, i + 1);
 		}
 	}
+	return std::pair(0, 1);
 }
 
 auto animation_wrapper::interpolate(u32 prev, u32 next, f32 progress

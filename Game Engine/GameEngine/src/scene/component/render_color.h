@@ -12,10 +12,13 @@ private:
 	model renderable;
 
 	renderer3D * renderer;
+
+	material * mat;
 public:
 	component(model const & renderable, renderer3D & renderer)
 		: renderable(renderable)
 		, renderer(&renderer)
+		, mat(new material(renderable, glm::mat4(1.0f)))
 	{
 	}
 
@@ -25,7 +28,7 @@ public:
 
 		auto & model_matrix_component = object.get_component<component_model_matrix>();
 
-		material mat{ renderable, model_matrix_component.get_trs() };
+		mat->get_transform() = model_matrix_component.get_trs();
 
 		renderer->submit_material(mat);
 	}

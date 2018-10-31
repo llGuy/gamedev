@@ -5,10 +5,11 @@
 #include "../../3D/model_handler.h"
 #include "../../../light/light_handler.h"
 
-/* describes exactly how to render a model */
+/* describes exactly how to render a model 
+   not necessarilly just for lighting */
 class material_prototype
 {
-private:
+protected:
 	glsl_program * shader;
 	material_light_info light_info_receive;
 	light_handler * lights;
@@ -28,7 +29,9 @@ public:
 	{
 	}
 
-	auto prepare(void) -> void;
+	auto init(material_light_info const & light_info, light_handler & lights) -> void;
+
+	virtual auto prepare(void) -> void;
 
 	auto get_shader(void) -> glsl_program * &;
 
@@ -42,7 +45,7 @@ public:
 /* controled probably by an entity (game object) */
 class material
 {
-private:
+protected:
 	friend class renderer3D;
 
 	model renderable;
@@ -52,7 +55,7 @@ private:
 public:
 	material(model const & renderable, glm::mat4 const & transform);
 
-	auto render(void) -> void;
+	virtual auto render(void) -> void;
 
 	inline auto get_transform(void) -> glm::mat4 &
 	{

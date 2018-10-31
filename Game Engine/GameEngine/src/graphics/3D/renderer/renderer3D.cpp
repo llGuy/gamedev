@@ -6,11 +6,11 @@ auto renderer3D::set_material_prototype(material_prototype const & prototype) ->
 	this->material_type = std::move(prototype);
 }
 
-auto renderer3D::submit_material(material const & mat) -> void
+auto renderer3D::submit_material(material * mat) -> void
 {
 	materials.push_back(mat);
 
-	materials.back().prototype = &material_type;
+	materials.back()->prototype = &material_type;
 }
 
 auto renderer3D::set_projection(glm::mat4 & projection) -> void
@@ -33,7 +33,7 @@ auto renderer3D::render(void) -> void
 
 	for (auto & mat : materials)
 	{
-		mat.render();
+		mat->render();
 	}
 }
 

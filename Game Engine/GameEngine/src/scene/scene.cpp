@@ -1,4 +1,6 @@
 #include "scene.h"
+#include "../animation/animation_component.h"
+#include "../animation/animation_render_component.h"
 
 auto scene::init(void) -> void
 {
@@ -8,6 +10,8 @@ auto scene::init(void) -> void
 	components.add_system<component_behavior_key>(20);
 	components.add_system<component_model_matrix>(20);
 	components.add_system<component_behavior_mouse>(20);
+	components.add_system<component_animation3D>(20);
+	components.add_system<component_animation3D_render>(20);
 }
 
 auto scene::init_game_object(game_object_data const & data) -> game_object &

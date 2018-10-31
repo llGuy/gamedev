@@ -48,7 +48,14 @@ public:
 		glEnableVertexAttribArray(a.number);
 		if (a.divisor.has_value())
 			glVertexAttribDivisor(a.number, a.divisor.value());
-		glVertexAttribPointer(a.number, a.s, a.t, a.n, a.st, a.p);
+		if (a.t == GL_INT)
+		{
+			glVertexAttribIPointer(a.number, a.s, a.t, a.s, a.p);
+		}
+		else
+		{
+			glVertexAttribPointer(a.number, a.s, a.t, a.n, a.st, a.p);
+		}
 	};
 private:
 	u32 count;
