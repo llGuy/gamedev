@@ -22,6 +22,6 @@ private:
 		, std::unordered_map<std::string, glm::mat4> & transforms) -> void;
 
 	auto update_joints(std::unordered_map<std::string, glm::mat4> & transforms_map
-		, joint & parent, glm::mat4 const & parent_transform
+		, joint & current_joint, glm::mat4 const & parent_transform
 		, std::vector<glm::mat4> & final_matrices) -> void;
 };

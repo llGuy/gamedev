@@ -38,9 +38,9 @@ void main(void)
 		geometry_out.vertex_normal = vertex_out[i].vertex_normal;
 #endif
 
-#ifndef DYNAMIC_NORMALS
-		geometry_out.vertex_normal = calculate_normal(i, (i + 1) % 3, (i + 2) % 3); 
-#endif
+//#ifndef DYNAMIC_NORMALS
+//		geometry_out.vertex_normal = calculate_normal(i, (i + 1) % 3, (i + 2) % 3); 
+//#endif
 
 #ifdef USES_TEXTURE
 		geometry_out.texture_coords = vertex_out[i].texture_coords;

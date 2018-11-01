@@ -65,6 +65,9 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 
 	auto inverse_transforms = get_inverse_bind_transforms(bind_poses_source);
 
+	for (u32 i = 0; i < index_joint_map.size(); ++i)
+		index_joint_map[i]->get_inverse_bind_transform() = inverse_transforms[i];
+
 	/* load joint hierarchy */
 	xml_node<> * library_visual_scenes = parsed.first->last_node("COLLADA")->last_node("library_visual_scenes");
 	xml_node<> * visual_scene = library_visual_scenes->first_node();
@@ -205,10 +208,10 @@ auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
 	std::string current_float;
 	u32 count = 0;
 
-	while (std::getline(stream, current_float, ' '))
-		bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
+	//while (std::getline(stream, current_float, ' '))
+	//	bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
 
-	current_joint->get_inverse_bind_transform() = bone_space_transform;
+	//current_joint->get_inverse_bind_transform() = bone_space_transform;
 
 	/* load for children */
 	auto * first = current->first_node("node");
@@ -306,7 +309,7 @@ auto skeletal_animation_handler::load_joint_weights_and_ids(rapidxml::xml_node<c
 			, [](std::pair<u32, f32> & lhs, std::pair<u32, f32> & rhs) -> bool { return lhs.second > rhs.second; });
 
 		/* fill glm::ivec3 and glm::vec3 */
-		glm::ivec3 joint_ids(-1);
+		glm::ivec3 joint_ids(0);
 		glm::vec3 weights(0.0f);
 		for (u32 i = 0; i < 3 && i < current_weight_and_joint.size(); ++i)
 		{

@@ -34,7 +34,7 @@ auto animation_wrapper::increase_time(f32 td) -> void
 	f32 animation_length = current_animation->get_length();
 
 	if (current_time > current_animation->get_length())
-		current_time = std::modf(current_time, &animation_length);
+		current_time = 0.0f;
 }
 
 auto animation_wrapper::get_progress(u32 prev, u32 next) -> f32
@@ -42,7 +42,9 @@ auto animation_wrapper::get_progress(u32 prev, u32 next) -> f32
 	key_frame & prev_frame = current_animation->operator[](prev);
 	key_frame & next_frame = current_animation->operator[](next);
 
-	return (current_time - prev_frame.get_time_stamp()) / (next_frame.get_time_stamp() - prev_frame.get_time_stamp());
+	f32 progress = (current_time - prev_frame.get_time_stamp()) / (next_frame.get_time_stamp() - prev_frame.get_time_stamp());
+
+	return progress;
 }
 
 auto animation_wrapper::get_surrounding_frames(void) -> std::pair<u32, u32>
@@ -74,26 +76,26 @@ auto animation_wrapper::interpolate(u32 prev, u32 next, f32 progress
 		joint_transform & next_transform = next_frame[transform_prev.first];
 
 		glm::vec3 translation = prev_transform.position + (next_transform.position - prev_transform.position) * progress;
-		glm::quat rotation = glm::mix(prev_transform.rotation, prev_transform.rotation, progress);
+		glm::quat rotation = glm::slerp(prev_transform.rotation, next_transform.rotation, progress);
 
 		result = glm::translate(translation) * glm::toMat4(rotation);
 	}
 }
 
 auto animation_wrapper::update_joints(std::unordered_map<std::string, glm::mat4> & transforms_map
-	, joint & parent, glm::mat4 const & parent_transform
+	, joint & current_joint, glm::mat4 const & parent_transform
 	, std::vector<glm::mat4> & final_matrices) -> void
 {
-	glm::mat4 transform = transforms_map[parent.get_name()];
-	glm::mat4 current_transform = parent_transform * transform;
-	for (u32 i = 0; i < parent.get_child_count(); ++i)
+	glm::mat4 local_transform = transforms_map[current_joint.get_name()];
+	glm::mat4 current_transform = parent_transform * local_transform;
+	for (u32 i = 0; i < current_joint.get_child_count(); ++i)
 	{
-		update_joints(transforms_map, *parent[i], current_transform, final_matrices);
+		update_joints(transforms_map, *current_joint[i], current_transform, final_matrices);
 	}
 
-	glm::mat4 model_space_transform = current_transform * parent.get_inverse_bind_transform();
+	glm::mat4 model_space_transform = current_transform * current_joint.get_inverse_bind_transform();
 
-	parent.get_animated_transform() = model_space_transform;
+	current_joint.get_animated_transform() = model_space_transform;
 
-	final_matrices[parent.get_id()] = model_space_transform;
+	final_matrices[current_joint.get_id()] = model_space_transform;
 }
