@@ -1,5 +1,6 @@
 #include <iostream>
 #include "src/app/application.h"
+#include <glm/gtc/quaternion.hpp>
 
 auto main(void) -> int32_t
 {
@@ -11,8 +12,6 @@ auto main(void) -> int32_t
 		app.render();
 	}
 	app.clean_up();
-
-	glm::mat4 test(1.0f);
 
 	std::cin.get();
 

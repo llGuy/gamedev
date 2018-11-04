@@ -44,6 +44,7 @@
     <ClCompile Include="src\animation\key_frame.cpp" />
     <ClCompile Include="src\animation\animation.cpp" />
     <ClCompile Include="src\animation\animation_wrapper.cpp" />
+    <ClCompile Include="src\animation\animated_material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -202,6 +203,12 @@
     <ClInclude Include="src\animation\animation_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\animation\animated_material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\animation_render_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />
@@ -216,9 +223,10 @@
     <None Include="res\font\droid.fnt" />
     <None Include="res\font\superscript.fnt" />
     <None Include="res\font\verdana.fnt" />
-    <None Include="src\shaders\animation3D\master3D_fsh.shader" />
-    <None Include="src\shaders\animation3D\master3D_gsh.shader" />
-    <None Include="src\shaders\animation3D\master3D_vsh.shader" />
+    <None Include="src\shaders\animation3D\fsh.shader" />
+    <None Include="src\shaders\animation3D\gsh.shader" />
+    <None Include="src\shaders\animation3D\vsh.shader" />
+    <None Include="res\model\model_test.dae" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

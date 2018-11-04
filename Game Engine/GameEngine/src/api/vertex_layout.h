@@ -50,7 +50,7 @@ public:
 			glVertexAttribDivisor(a.number, a.divisor.value());
 		if (a.t == GL_INT)
 		{
-			glVertexAttribIPointer(a.number, a.s, a.t, a.s, a.p);
+			glVertexAttribIPointer(a.number, a.s, a.t, a.st, a.p);
 		}
 		else
 		{

@@ -2,6 +2,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <xml_parser/rapidxml.hpp>
 
+
+
 model_handler::model_handler(void)
 	: check_xcp(true)
 {

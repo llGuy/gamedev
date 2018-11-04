@@ -14,7 +14,8 @@
 #include "joint.h"
 #include "key_frame.h"
 
-#define CORRECTION glm::rotate()
+#define CORRECTION glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f))
+//#define CORRECTION detail::identity_matrix
 
 auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights) -> void
 {
@@ -68,6 +69,7 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 	for (u32 i = 0; i < index_joint_map.size(); ++i)
 		index_joint_map[i]->get_inverse_bind_transform() = inverse_transforms[i];
 
+
 	/* load joint hierarchy */
 	xml_node<> * library_visual_scenes = parsed.first->last_node("COLLADA")->last_node("library_visual_scenes");
 	xml_node<> * visual_scene = library_visual_scenes->first_node();
@@ -78,6 +80,7 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 
 	joint * root = load_hierarchy(head, joint_map, nullptr);
 
+	root->calculate_inverses();
 	/* FINAL : loading the animation */
 
 	xml_node<> * library_animations = parsed.first->last_node("COLLADA")->last_node("library_animations");
@@ -89,6 +92,8 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 
 	/* TODO : load animation into game! */
 	renderable->vao.bind();
+	auto ibo = renderable.get_component<index_buffer_component>();
+	ibo->value.bind(GL_ELEMENT_ARRAY_BUFFER);
 
 	buffer weights_buffer;
 	weights_buffer.create();
@@ -159,8 +164,14 @@ auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * anima
 		glm::mat4 current_matrix;
 		while (std::getline(stream_floats, current_float, ' '))
 		{
+			current_matrix[(float_count / 4) % 4][float_count % 4] = std::stof(current_float);
+
+			++float_count;
+
 			if (float_count % 16 == 0 && float_count != 0)
 			{
+				current_matrix = CORRECTION * glm::transpose(current_matrix);
+
 				/* convert to position and quaternion */
 				glm::vec3 position = glm::vec3(current_matrix[3][0], current_matrix[3][1], current_matrix[3][2]);
 				glm::quat rotation = glm::quat_cast(current_matrix);
@@ -169,10 +180,6 @@ auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * anima
 				transform.position = position;
 				transform.rotation = rotation;
 			}
-
-			current_matrix[(float_count / 4) % 4][float_count % 4] = std::stof(current_float);
-
-			++float_count;
 		}
 	}
 }
@@ -208,10 +215,10 @@ auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
 	std::string current_float;
 	u32 count = 0;
 
-	//while (std::getline(stream, current_float, ' '))
-	//	bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
+	while (std::getline(stream, current_float, ' '))
+		bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
 
-	//current_joint->get_inverse_bind_transform() = bone_space_transform;
+	current_joint->get_local_bind_transform() = CORRECTION * glm::transpose(bone_space_transform);
 
 	/* load for children */
 	auto * first = current->first_node("node");
@@ -251,6 +258,8 @@ auto skeletal_animation_handler::get_inverse_bind_transforms(rapidxml::xml_node<
 
 		++count;
 	}
+
+	std::for_each(matrices.begin(), matrices.end(), [](glm::mat4 & matrix) -> void { matrix = glm::transpose(matrix); });
 
 	return matrices;
 }
@@ -308,16 +317,20 @@ auto skeletal_animation_handler::load_joint_weights_and_ids(rapidxml::xml_node<c
 			, current_weight_and_joint.end()
 			, [](std::pair<u32, f32> & lhs, std::pair<u32, f32> & rhs) -> bool { return lhs.second > rhs.second; });
 
-		/* fill glm::ivec3 and glm::vec3 */
 		glm::ivec3 joint_ids(0);
 		glm::vec3 weights(0.0f);
+		f32 total = 0.0f;
 		for (u32 i = 0; i < 3 && i < current_weight_and_joint.size(); ++i)
 		{
 			joint_ids[i] = current_weight_and_joint[i].first;
 			weights[i] = current_weight_and_joint[i].second;
+			total += weights[i];
 		}
 
-		weights_dest.push_back(glm::normalize(weights));
+		/* get total and make elemnts of weights add up to 1 */
+		for (u32 i = 0; i < 3; ++i)
+			weights[i] = std::min(weights[i] / total, 1.0f);
+		weights_dest.push_back(weights);
 		joint_ids_dest.push_back(joint_ids);
 	}
 }

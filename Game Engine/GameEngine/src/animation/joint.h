@@ -30,6 +30,26 @@ public:
 	auto add_child(joint * child) -> void;
 	auto operator[](u32 index) -> joint * &;
 
+	auto calculate_inverse_bind(glm::mat4 const & inverse_parent = glm::mat4(1.0f)) -> void
+	{
+		inverse_bind_transform = inverse_parent * inverse_bind_transform;
+
+		for (auto & child : children)
+		{
+			child->calculate_inverse_bind(inverse_bind_transform);
+		}
+	}
+
+	auto calculate_inverses(glm::mat4 const & bind_parent = glm::mat4(1.0f)) -> void
+	{
+		glm::mat4 bind_transform = bind_parent * local_bind_transform;
+		inverse_bind_transform = glm::inverse(bind_transform);
+		for (auto child : children)
+		{
+			child->calculate_inverses(bind_transform);
+		}
+	}
+
 	auto get_id(void) -> u32 &;
 	auto get_name(void) -> std::string &;
 	auto get_local_bind_transform(void) -> glm::mat4 &;
