@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <type_traits>
 #include <algorithm>
+#include <glm/gtc/quaternion.hpp>
 
 namespace detail {
 
@@ -58,7 +59,6 @@ namespace detail {
 		return ((size ? compile_hash(str, size - 1) : 2166136261u) ^ str[size]) * 16777619u;
 	}
 
-
 	namespace {
 
 		glm::mat4 identity_matrix(1);
@@ -83,6 +83,46 @@ namespace detail {
 			f32 a = static_cast<f32>((color >> 0) & 0xff) / 255.0f;
 			
 			return glm::vec4(r, g, b, a);
+		}
+
+		auto from_matrix(glm::mat4 const & matrix) -> glm::quat
+		{
+			f32 w, x, y, z;
+
+			f32 diagonal = matrix[0][0] + matrix[1][1] + matrix[2][2];
+			if (diagonal > 0) 
+			{
+				float w4 = (float)(sqrtf(diagonal + 1.0f) * 2.0f);
+				w = w4 / 4.0f;
+				x = (matrix[2][1] - matrix[1][2]) / w4;
+				y = (matrix[0][2] - matrix[2][0]) / w4;
+				z = (matrix[1][0] - matrix[0][1]) / w4;
+			}
+			else if ((matrix[0][0] > matrix[1][1]) && (matrix[0][0] > matrix[2][2])) 
+			{
+				float x4 = (float)(sqrtf(1.0f + matrix[0][0] - matrix[1][1] - matrix[2][2]) * 2.0f);
+				w = (matrix[2][1] - matrix[1][2]) / x4;
+				x = x4 / 4.0f;
+				y = (matrix[0][1] + matrix[1][0]) / x4;
+				z = (matrix[0][2] + matrix[2][0]) / x4;
+			}
+			else if (matrix[1][1] > matrix[2][2]) 
+			{
+				float y4 = (float)(sqrtf(1.0f + matrix[1][1] - matrix[0][0] - matrix[2][2]) * 2.0f);
+				w = (matrix[0][2] - matrix[2][0]) / y4;
+				x = (matrix[0][1] + matrix[1][0]) / y4;
+				y = y4 / 4.0f;
+				z = (matrix[1][2] + matrix[2][1]) / y4;
+			}
+			else 
+			{
+				float z4 = (float)(sqrtf(1.0f + matrix[2][2] - matrix[0][0] - matrix[1][1]) * 2.0f);
+				w = (matrix[1][0] - matrix[0][1]) / z4;
+				x = (matrix[0][2] + matrix[2][0]) / z4;
+				y = (matrix[1][2] + matrix[2][1]) / z4;
+				z = z4 / 4.0f;
+			}
+			return glm::quat{ w, x, y, z };
 		}
 	}
 

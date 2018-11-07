@@ -42,6 +42,7 @@ public:
 
 	auto calculate_inverses(glm::mat4 const & bind_parent = glm::mat4(1.0f)) -> void
 	{
+
 		glm::mat4 bind_transform = bind_parent * local_bind_transform;
 		inverse_bind_transform = glm::inverse(bind_transform);
 		for (auto child : children)

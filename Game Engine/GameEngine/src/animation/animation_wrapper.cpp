@@ -70,15 +70,13 @@ auto animation_wrapper::interpolate(u32 prev, u32 next, f32 progress
 
 	for (auto transform_prev : prev_frame)
 	{
-		glm::mat4 & result = transforms[transform_prev.first];
-
 		joint_transform & prev_transform = transform_prev.second;
 		joint_transform & next_transform = next_frame[transform_prev.first];
 
 		glm::vec3 translation = prev_transform.position + (next_transform.position - prev_transform.position) * progress;
 		glm::quat rotation = glm::slerp(prev_transform.rotation, next_transform.rotation, progress);
 
-		result = glm::translate(translation) * glm::toMat4(rotation);
+		transforms[transform_prev.first] = glm::translate(translation) * glm::mat4_cast(rotation);
 	}
 }
 
@@ -86,7 +84,8 @@ auto animation_wrapper::update_joints(std::unordered_map<std::string, glm::mat4>
 	, joint & current_joint, glm::mat4 const & parent_transform
 	, std::vector<glm::mat4> & final_matrices) -> void
 { 
- 	glm::mat4 local_transform = transforms_map[current_joint.get_name()];
+	std::string joint_name = current_joint.get_name();
+ 	glm::mat4 local_transform = transforms_map[joint_name];
 	glm::mat4 current_transform = parent_transform * local_transform;
 	for (u32 i = 0; i < current_joint.get_child_count(); ++i)
 	{

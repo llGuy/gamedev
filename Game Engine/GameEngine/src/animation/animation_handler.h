@@ -60,5 +60,5 @@ private:
 		, std::unordered_map<std::string, joint *> & joint_map
 		, joint * parent) -> joint *;
 
-	auto load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames) -> void;
+	auto load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames, joint * root) -> void;
 };

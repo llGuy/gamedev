@@ -1,6 +1,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include "../utils/detail.h"
 #include "../io/io.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
@@ -80,6 +81,11 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 
 	joint * root = load_hierarchy(head, joint_map, nullptr);
 
+	for (auto j : joint_map)
+	{
+		std::cout << j.second->get_name() << " : " << j.second->get_id() << std::endl;
+	}
+	
 	root->calculate_inverses();
 	/* FINAL : loading the animation */
 
@@ -88,7 +94,12 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 
 	std::vector<key_frame> key_frames = get_key_frames(first_joint_animation_node->first_node()->first_node()/* float array */);
 
-	load_key_frame(library_animations->first_node(), key_frames);
+	load_key_frame(library_animations->first_node(), key_frames, root);
+
+	//for (key_frame & kf : key_frames)
+	//{
+	//	kf[index_joint_map[0]->get_name()].
+	//}
 
 	/* TODO : load animation into game! */
 	renderable->vao.bind();
@@ -125,7 +136,7 @@ auto skeletal_animation_handler::load_animation(std::string const & animation_na
 	entity.add_component(entity_animation_render_component);
 }
 
-auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames) -> void
+auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * animation, std::vector<key_frame> & frames, joint * root) -> void
 {
 	using namespace rapidxml;
 
@@ -170,7 +181,11 @@ auto skeletal_animation_handler::load_key_frame(rapidxml::xml_node<char> * anima
 
 			if (float_count % 16 == 0 && float_count != 0)
 			{
-				current_matrix = CORRECTION * glm::transpose(current_matrix);
+				if (joint_name == root->get_name())
+				{
+					current_matrix = CORRECTION * glm::transpose(current_matrix);
+				}
+				else current_matrix = glm::transpose(current_matrix);
 
 				/* convert to position and quaternion */
 				glm::vec3 position = glm::vec3(current_matrix[3][0], current_matrix[3][1], current_matrix[3][2]);
@@ -218,7 +233,10 @@ auto skeletal_animation_handler::load_hierarchy(rapidxml::xml_node<> * current
 	while (std::getline(stream, current_float, ' '))
 		bone_space_transform[(count / 4) % 4][count++ % 4] = std::stof(current_float);
 
-	current_joint->get_local_bind_transform() = CORRECTION * glm::transpose(bone_space_transform);
+	if (!parent)
+		current_joint->get_local_bind_transform() = CORRECTION * glm::transpose(bone_space_transform);
+	else 
+		current_joint->get_local_bind_transform() = glm::transpose(bone_space_transform);
 
 	/* load for children */
 	auto * first = current->first_node("node");
