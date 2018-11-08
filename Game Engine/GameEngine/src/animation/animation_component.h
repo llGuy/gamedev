@@ -20,10 +20,15 @@ template <> struct component<struct component_animation3D, game_object_data> : c
 
 	component(skeletal_animation_handler * animations
 		, joint const & root, u32 joint_count
-		, std::string const & first_animation)
+		, std::string const & first_animation = "")
 		: animations(animations), root(root), joint_count(joint_count)
 	{
-		animation_handler.set_current_animation(animations->get_animation(first_animation));
+		if (first_animation != "")
+			animation_handler.set_current_animation(animations->get_animation(first_animation));
+	}
+	auto set_animation(std::string const & animation_name) -> void
+	{
+		animation_handler.set_current_animation(animations->get_animation(animation_name));
 	}
 
 	auto update(f32 time, vec_dd<game_object> & objects) -> void override

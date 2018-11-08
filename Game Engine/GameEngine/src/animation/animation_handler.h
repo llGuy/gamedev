@@ -28,14 +28,15 @@ private:
 public:
 	auto init(shader_handler & shaders, light_handler & lights) -> void; 
 
-	/* to separate later */
+	/* loads the bones to a animation component and animation render component */
+	auto load_skeleton(game_object & entity, model & renderable, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+
+	/* loads the weights and joint ids for each vertex */
 	auto load_model_animation_data(model & subject, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
 
-	auto load_animation_data(std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
-
-	/* requires the parsed version of the same document which was used to load the mesh from the model_handler */
-	auto load_animation(std::string const & animation_name, std::pair<rapidxml::xml_document<char> *
-		, std::string *> parsed, model & renderable, game_object & entity) -> void;
+	/* requires the skeleton to be loaded and loads the animation data itself */
+	auto load_animation_data(std::string const & animation_name, game_object & entity
+		, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
 
 	auto get_animation(std::string const & name) -> animation *;
 

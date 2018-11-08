@@ -3,6 +3,7 @@
 #include "application.h"
 #include "../xcp/exception.h"
 #include "../graphics/3D/model_comp/cube.h"
+#include "../animation/animation_component.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -148,7 +149,15 @@ auto application::init_models(void) -> void
 	player_model = models.init_model();
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
 
-	animations.load_animation("animation.running", xml_doc, player_model, world.get_game_object("game_object.monkey"));
+	game_object & player = world.get_game_object("game_object.monkey");
+
+	/* load all animation data for player */
+	animations.load_model_animation_data(player_model, xml_doc);
+	animations.load_skeleton(player, player_model, xml_doc);
+	animations.load_animation_data("animation.running", player, xml_doc);
+
+	auto & animation_comp = player.get_component<component_animation3D>();
+	animation_comp.set_animation("animation.running");
 
 	cube_model_computation comp;
 	cube_model = models.init_model();
@@ -162,15 +171,11 @@ auto application::init_3D_test(void) -> void
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
 
-	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.1f };
+	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.2f };
 	material_prototype monkey_skin{ light, shaders[shader_handle("shader.low_poly")], lights };
 	monkey_skin.get_textures_2D().push_back(textures.get_texture("texture.player"));
 	monkey_skin.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
 	renderer.set_material_prototype(monkey_skin);
-
-	//game_object & monkey = world.get_game_object("game_object.monkey");
-	//component<component_render, game_object_data> monkey_render_compnonent{ player_model, renderer };
-	//monkey.add_component(monkey_render_compnonent);
 
 	renderer.set_projection(projection_matrix);
 	
@@ -236,7 +241,7 @@ auto application::init_textures(void) -> void
 	textures.load_texture_png("res/textures/gui_test.png", test_gui_texture, GL_NEAREST, flip_vertically);
 
 	auto * player_texture = textures.init_texture("texture.player");
-	textures.load_texture_png("res/model/model.png", player_texture, GL_LINEAR, flip_vertically);
+	textures.load_texture_png("res/textures/player_color.png", player_texture, GL_LINEAR, flip_vertically);
 
 	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);
