@@ -8,6 +8,7 @@
 #include "../scene/game_object.h"
 #include "../graphics/3D/model_handler.h"
 #include "../graphics/3D/renderer/renderer3D.h"
+#include "../graphics/3D/material/material_handler.h"
 
 namespace rapidxml { 
 	
@@ -21,12 +22,11 @@ class skeletal_animation_handler
 private:
 
 	renderer3D animation_renderer;
-	material_prototype animated_material_type;
 
 	std::unordered_map<std::string, animation *> animations;
 
 public:
-	auto init(shader_handler & shaders, light_handler & lights) -> void; 
+	auto init(shader_handler & shaders, light_handler & lights, material_handler & materials) -> void; 
 
 	/* loads the bones to a animation component and animation render component */
 	auto load_skeleton(game_object & entity, model & renderable, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
@@ -41,8 +41,6 @@ public:
 	auto get_animation(std::string const & name) -> animation *;
 
 	auto get_renderer(void) -> renderer3D &;
-
-	auto get_material_type(void) -> material_prototype &;
 private:
 	auto get_joint_weights(rapidxml::xml_node<char> * weights_source) -> std::vector<f32>;
 	auto get_inverse_bind_transforms(rapidxml::xml_node<char> * src) -> std::vector<glm::mat4>;

@@ -3,6 +3,7 @@
 #include "application.h"
 #include "../xcp/exception.h"
 #include "../graphics/3D/model_comp/cube.h"
+#include "../graphics/3D/model_comp/quad3D.h"
 #include "../animation/animation_component.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -32,9 +33,9 @@ auto application::init(void) -> void
 		models.init();
 
 		init_game_objects();
+		init_models();
 		init_fonts();
 		init_textures();
-		init_models();
 		init_shaders();
 		init_3D_test();
 		init_2D_test();
@@ -126,27 +127,33 @@ auto application::clean_up(void) -> void
 auto application::init_game_objects(void) -> void
 {
 	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(0.4f), "game_object.player" });
+
 	component<component_behavior_key, game_object_data> key_comp{
 		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
+
 	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs() };
+
 	player.add_component(key_comp);
 	player.add_component(mouse_comp);
-
 	world.bind_camera_to_object(player);
 
-	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f), "game_object.monkey" });
+	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.7f, 1.0f), "game_object.monkey" });
+
 	component<component_model_matrix, game_object_data> model_matrix_comp;
+	//component<component_render, game_object_data> render_comp{ monkey_model, renderer };
+
 	monkey.add_component(model_matrix_comp);
+	//monkey.add_component(render_comp);
 }
 
 auto application::init_models(void) -> void
 {
-	animations.init(shaders, lights);
+	animations.init(shaders, lights, materials);
 
-	monkey_model = models.init_model();
+	monkey_model = models.init_model("model.monkey");
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
-	player_model = models.init_model();
+	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
 
 	game_object & player = world.get_game_object("game_object.monkey");
@@ -160,8 +167,12 @@ auto application::init_models(void) -> void
 	animation_comp.set_animation("animation.running");
 
 	cube_model_computation comp;
-	cube_model = models.init_model();
+	cube_model = models.init_model("model.cube");
 	models.compute_model(comp, cube_model);
+
+	quad3D_model_computation quad3D_comp;
+	quad3D_model = models.init_model("model.quad3D");
+	models.compute_model(quad3D_comp, quad3D_model);
 }
 
 auto application::init_3D_test(void) -> void
@@ -172,9 +183,12 @@ auto application::init_3D_test(void) -> void
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
 
 	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.2f };
-	material_prototype monkey_skin{ light, shaders[shader_handle("shader.low_poly")], lights };
-	monkey_skin.get_textures_2D().push_back(textures.get_texture("texture.player"));
-	monkey_skin.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
+
+	auto monkey_skin = materials.add_material("material.skin", light, shaders[shader_handle("shader.low_poly")], lights);
+
+	monkey_skin->set_texture_2D(textures.get_texture("texture.player"));
+	monkey_skin->set_texture_3D(textures.get_texture("texture.sky"));
+
 	renderer.set_material_prototype(monkey_skin);
 
 	renderer.set_projection(projection_matrix);
@@ -182,9 +196,10 @@ auto application::init_3D_test(void) -> void
 
 
 	/* initializing sky renderer */
-	material_prototype sky_material{ material_light_info(), shaders[shader_handle("shader.sky")], lights };
-	sky_material.get_textures_cubemap().push_back(textures.get_texture("texture.sky"));
-	sky_material.toggle_lighting();
+	auto sky_material = materials.add_material("material.sky", material_light_info(), shaders[shader_handle("shader.sky")], lights);
+
+	sky_material->set_texture_3D(textures.get_texture("texture.sky"));
+	sky_material->toggle_lighting();
 	sky_renderer.set_material_prototype(sky_material);
 
 	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)) };
@@ -192,9 +207,9 @@ auto application::init_3D_test(void) -> void
 	sky_renderer.set_projection(projection_matrix);
 
 	/* initializing animation material_prototype */
-	auto & mat_type = animations.get_material_type();
-	mat_type.init(light, lights);
-	mat_type.get_textures_2D().push_back(textures.get_texture("texture.player"));
+	auto mat_type = materials.get_material_type("material.animated");
+	mat_type->init(light, lights);
+	mat_type->set_texture_2D(textures.get_texture("texture.player"));
 	auto & animation_renderer = animations.get_renderer();
 
 	animation_renderer.set_projection(projection_matrix);

@@ -82,7 +82,8 @@ namespace memory {
 	{
 		uint32_t length = *((uint32_t *)(array) - 1);
 
-		for (uint32_t i = 0; i < length; ++i) array[i].~T();
+		for (uint32_t i = 0; i < length; ++i)
+			array[i].~T();
 
 
 	}

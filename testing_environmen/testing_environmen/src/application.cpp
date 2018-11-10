@@ -98,11 +98,11 @@ auto application::init(void) -> void
 
 		terrain_dimensions = 20;
 
-		model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
-			perlin_noise_generator(terrain_dimensions, terrain_dimensions, 5.f, 1.0f)), "mesh");
+		//model_loader.load_static_model(shape<mesh, perlin_noise_generator>(terrain_dimensions, terrain_dimensions, 
+			//perlin_noise_generator(terrain_dimensions, terrain_dimensions, 5.f, 1.0f)), "mesh");
 
-		//model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
-			//static_noise_generator()), "mesh");
+		model_loader.load_static_model(shape<mesh, static_noise_generator>(terrain_dimensions, terrain_dimensions,
+			static_noise_generator()), "mesh");
 
 		model_loader.load_static_model(shape<textured_quad_2D>(), "2D quad");
 
@@ -114,25 +114,25 @@ auto application::init(void) -> void
 		add_entity(glm::vec3(-50.0f, 0.0f, -50.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(4.0f), "tree3");
 		add_entity(glm::vec3(-50.0f, 0.0f, 55.0f), glm::vec3(0.2f, 0.0f, 1.0f), glm::vec3(15.0f), "tree1");
 		/* even more trees */
-		add_entity(glm::vec3(-100.0f, 0.0f, -80.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f), "tree1");
+		/*add_entity(glm::vec3(-100.0f, 0.0f, -80.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f), "tree1");
 		add_entity(glm::vec3(80.0f, 0.0f, 95.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(4.0f), "tree4");
 		add_entity(glm::vec3(-50.0f, 0.0f, 90.0f), glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(4.0f), "tree3");
 		add_entity(glm::vec3(-50.0f, 0.0f, -95.0f), glm::vec3(0.2f, 0.0f, 1.0f), glm::vec3(6.0f), "tree4");
-		/* rocks */
+
 		add_entity(glm::vec3(-8.0f, 0.0f, 7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock1");
 		add_entity(glm::vec3(8.0f, 0.0f, -7.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(3.0f), "rock2");
 		add_entity(glm::vec3(-2.0f, 0.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(4.0f, 3.0f, 3.0f), "rock2");
 		add_entity(glm::vec3(-15.0f, 0.0f, -11.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(2.0f), "rock2");
-		/* more rocks */
+
 		add_entity(glm::vec3(-28.0f, 0.0f, 27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(6.0f), "rock1");
 		add_entity(glm::vec3(28.0f, 0.0f, -27.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(8.0f), "rock2");
 		add_entity(glm::vec3(-22.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f, 3.0f, 3.0f), "rock2");
 		add_entity(glm::vec3(-95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock1");
-		/* even more rocks */
+
 		add_entity(glm::vec3(-48.0f, 0.0f, 47.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(6.0f, 4.0f, 5.0f), "rock1");
 		add_entity(glm::vec3(48.0f, 0.0f, -47.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(8.0f, 4.0f, 6.0f), "rock2");
 		add_entity(glm::vec3(-22.0f, 0.0f, -52.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(10.0f, 5.0f, 7.0f), "rock2");
-		add_entity(glm::vec3(+95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock2");
+		add_entity(glm::vec3(+95.0f, 0.0f, -12.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(15.0f), "rock2");*/
 
 		create_textures();
 
@@ -249,6 +249,8 @@ auto application::render(void) -> void
 		auto & tex2 = dof_stage.output();
 		tex2.bind(GL_TEXTURE_2D, 0);
 		guis.render(model_loader);
+
+		//render_depth_gui();
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -391,7 +393,7 @@ auto application::is_running(void) -> bool
 auto application::destroy(void) -> void
 {
 	appl_window.destroy();
-}
+} 
 
 auto application::render_depth(void) -> void
 {

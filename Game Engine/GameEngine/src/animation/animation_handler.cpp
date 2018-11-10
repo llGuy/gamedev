@@ -17,7 +17,7 @@
 
 #define CORRECTION glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f))
 
-auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights) -> void
+auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights, material_handler & materials) -> void
 {
 	shader_handle animation_shader("shader.animation3D");
 
@@ -31,10 +31,12 @@ auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & 
 
 	glsl_program * shader = shaders.combine(animation_shader, vsh, gsh, fsh);
 
-	animated_material_type.get_shader() = shader;
+	auto animated_material = materials.add_material("material.animated", material_light_info(), shader, lights);
+
+	animated_material->get_shader() = shader;
 	/* rest of the animated material must be initialized outside this class in the animation for customizability */
 
-	animation_renderer.set_material_prototype(animated_material_type);
+	animation_renderer.set_material_prototype(animated_material);
 }
 
 auto skeletal_animation_handler::load_skeleton(game_object & entity, model & renderable, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void
@@ -372,9 +374,4 @@ auto skeletal_animation_handler::get_animation(std::string const & name) -> anim
 auto skeletal_animation_handler::get_renderer(void) -> renderer3D &
 {
 	return animation_renderer;
-}
-
-auto skeletal_animation_handler::get_material_type(void) -> material_prototype &
-{
-	return animated_material_type;
 }

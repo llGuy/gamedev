@@ -77,12 +77,14 @@ private:
 
 	/* models don't need any data */
 	component_system<model_data> components;
+
+	std::unordered_map<std::string, model> models;
 public:
 	model_handler(void);
 
 	auto init(void) -> void;
 
-	auto init_model(void) -> model;
+	auto init_model(std::string const & model_name) -> model;
 
 	auto load_model_from_obj(std::string const & file_name, model & object) -> void;
 
@@ -115,10 +117,7 @@ private:
 
 	template <u32 Dimension> auto extract_vertices_from_line(std::string const & raw, u32 float_count, bool flip) -> std::vector<glm::vec<Dimension, f32, glm::highp>>
 	{
-//		glm::mat3 rotation = glm::mat3(glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 #define CORRECTION glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f))
-//#define CORRECTION detail::identity_matrix
-		
 
 		std::vector<glm::vec<Dimension, f32, glm::highp>> vertices;
 		vertices.resize(float_count / Dimension);

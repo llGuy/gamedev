@@ -45,6 +45,9 @@
     <ClCompile Include="src\animation\animation.cpp" />
     <ClCompile Include="src\animation\animation_wrapper.cpp" />
     <ClCompile Include="src\animation\animated_material.cpp" />
+    <ClCompile Include="src\graphics\target\target.cpp" />
+    <ClCompile Include="src\graphics\3D\model_comp\quad3D.cpp" />
+    <ClCompile Include="src\graphics\3D\material\material_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -207,6 +210,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\animation_render_component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\target\target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\3D\model_comp\quad3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\target\depth_target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\3D\material\material_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\tps_camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\component\third_person_mouse_movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

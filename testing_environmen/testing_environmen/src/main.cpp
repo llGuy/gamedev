@@ -2,7 +2,7 @@
 
 auto main(i32 argc, char * argv[]) -> i32
 {
-	application app { (i32)(1440), (i32)(850) };
+	application app { (i32)(1500), (i32)(800) };
 
 	app.set_max_framerate(80.0f);
 

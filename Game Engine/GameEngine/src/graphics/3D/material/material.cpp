@@ -24,7 +24,12 @@ auto material_prototype::prepare(void) -> void
 		shader->send_uniform_vec3("material_info.specular_reflectivity", glm::value_ptr(light_info_receive.specular_reflectivity), 1);
 		shader->send_uniform_float("material_info.shininess_factor", light_info_receive.shininess_factor);
 		shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);
+		shader->send_uniform_int("lighting", 1);
 		lights->prepare_shader(*shader);
+	}
+	else
+	{
+		shader->send_uniform_int("lighting", 0);
 	}
 
 	for (u32 i = 0; i < textures2D.size(); ++i)

@@ -8,6 +8,7 @@
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
 #include "../graphics/2D/gui/font/font_handler.h"
+#include "../graphics/3D/material/material_handler.h"
 
 #include "../graphics/2D/gui/gui_handler.h"
 #include "../graphics/2D/renderer/batch_renderer2D.h"
@@ -18,6 +19,7 @@ class application
 {
 private:
 	bool is_running;
+
 	window display;
 	scene world;
 	timer time_handler;
@@ -26,6 +28,7 @@ private:
 	texture_handler textures;
 	light_handler lights;
 	gui_handler guis;
+	material_handler materials;
 	skeletal_animation_handler animations;
 
 	renderer3D renderer;
@@ -34,6 +37,7 @@ private:
 	model monkey_model;
 	model cube_model;
 	model player_model;
+	model quad3D_model;
 public:
 	application(void);
 

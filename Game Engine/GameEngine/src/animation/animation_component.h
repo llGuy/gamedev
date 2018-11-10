@@ -33,6 +33,6 @@ template <> struct component<struct component_animation3D, game_object_data> : c
 
 	auto update(f32 time, vec_dd<game_object> & objects) -> void override
 	{
-		final_matrices = animation_handler.update(time, &root, joint_count);
+		final_matrices = animation_handler.update(time * 2.0f, &root, joint_count);
 	}
 };

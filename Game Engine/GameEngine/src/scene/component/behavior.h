@@ -76,7 +76,7 @@ private:
 
 	bool initialized{ false };
 public:
-	component(input_handler & inputs)
+	component(input_handler & inputs, bool third_person = false)
 		: input(&inputs)
 		, previous_cursor_position(0.0f)
 	{

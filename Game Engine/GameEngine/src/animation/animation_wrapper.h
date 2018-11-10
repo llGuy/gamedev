@@ -5,7 +5,7 @@
 class animation_wrapper
 {
 private:
-	animation * current_animation;
+	animation * current_animation{ nullptr };
 	f32 current_time{ 0.0f };
 public:
 	auto set_current_animation(animation * new_current) -> void;

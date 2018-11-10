@@ -11,16 +11,16 @@ struct attribute
 	attribute(void) = default;
 	attribute(u32 n, u32 type, GLenum size,
 		GLenum normalized, u32 stride, void * ptr, std::optional<i32> d = {})
-		: number(n), t(type), s(size), n(normalized), st(stride), p(ptr), divisor(d)
+		: number(n), type(type), size(size), normalized(normalized), stride(stride), pointer(ptr), divisor(d)
 	{
 	}
 
 	u32 number;
-	u32 t;
-	GLenum s;
-	GLenum n;
-	u32 st;
-	void * p;
+	u32 type;
+	GLenum size;
+	GLenum normalized;
+	u32 stride;
+	void * pointer;
 	std::optional<i32> divisor;
 };
 
@@ -48,13 +48,13 @@ public:
 		glEnableVertexAttribArray(a.number);
 		if (a.divisor.has_value())
 			glVertexAttribDivisor(a.number, a.divisor.value());
-		if (a.t == GL_INT)
+		if (a.type == GL_INT)
 		{
-			glVertexAttribIPointer(a.number, a.s, a.t, a.st, a.p);
+			glVertexAttribIPointer(a.number, a.size, a.type, a.stride, a.pointer);
 		}
 		else
 		{
-			glVertexAttribPointer(a.number, a.s, a.t, a.n, a.st, a.p);
+			glVertexAttribPointer(a.number, a.size, a.type, a.normalized, a.stride, a.pointer);
 		}
 	};
 private:

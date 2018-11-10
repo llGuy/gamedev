@@ -22,7 +22,7 @@ auto model_handler::init(void) -> void
 	components.add_system<texture_component>(20);
 }
 
-auto model_handler::init_model(void) -> model
+auto model_handler::init_model(std::string const & model_name) -> model
 {
 	model new_object;
 	components.ready_object(new_object);

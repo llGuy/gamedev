@@ -58,6 +58,7 @@ uniform samplerCube environment;
 uniform vec3 camera_position;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
+uniform int lighting;
 
 void apply_ambient(inout vec4 color)
 {
@@ -105,7 +106,6 @@ void main(void)
 #else
 	input_prev input_data = vertex_out;
 #endif
-
 #ifdef USES_TEXTURE
 	final_color = texture(diffuse, input_data.texture_coords);
 #endif
@@ -113,13 +113,15 @@ void main(void)
 #ifdef USES_COLOR
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
+	if (lighting == 1)
+	{
+		vec3 light_vector = normalize(-light_info.light_position);
+		vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
 
-	vec3 light_vector = normalize(-light_info.light_position);
-	vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
+		apply_ambient(final_color);
+		apply_diffuse(light_vector, input_data.vertex_normal, final_color);
+		float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
 
-	apply_ambient(final_color);
-	apply_diffuse(light_vector, input_data.vertex_normal, final_color);
-	float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
-
-	apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+		apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+	}
 }

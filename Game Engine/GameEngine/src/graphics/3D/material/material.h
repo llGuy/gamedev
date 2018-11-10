@@ -40,6 +40,16 @@ public:
 	auto get_textures_cubemap(void) -> std::vector<texture *> &;
 
 	auto toggle_lighting(void) -> void;
+
+	template <typename ... T> auto set_texture_2D(T ... textures) -> void
+	{
+		(textures2D.push_back(textures), ...);
+	}
+
+	template <typename ... T> auto set_texture_3D(T ... textures) -> void
+	{
+		(textures_cubemap.push_back(textures), ...);
+	}
 };
 
 /* controled probably by an entity (game object) */

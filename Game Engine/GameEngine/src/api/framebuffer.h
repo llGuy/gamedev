@@ -11,7 +11,7 @@ protected:
 	u32 id;
 	i32 w, h;
 
-	std::vector<u32 /* texture ids */> outs;
+	std::vector<texture *> outs;
 public:
 	framebuffer(void);
 
@@ -21,7 +21,7 @@ public:
 
 	auto resolve(framebuffer & other) -> void;
 
-	auto add_texture(u32 id) -> void;
+	auto add_texture(texture * tx) -> void;
     auto attach(texture & obj, u32 attachment, u32 level) -> void;
 	auto attach(renderbuffer & obj, u32 attachment) -> void;
 
