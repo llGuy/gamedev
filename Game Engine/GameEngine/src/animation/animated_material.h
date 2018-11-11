@@ -8,9 +8,9 @@ private:
 	/* joint transforms that will be sent to the shader */
 	std::vector<glm::mat4> joint_transforms;
 public:
-	skeletal_material(model const & renderable, glm::mat4 const & model_matrix);
+	skeletal_material(model const & renderable, glm::mat4 const & model_matrix, u32 material_type_id);
 
-	auto render(void) -> void override;
+	auto render(glsl_program * shader) -> void override;
 
 	auto get_transforms_array(void) -> std::vector<glm::mat4> &;
 };

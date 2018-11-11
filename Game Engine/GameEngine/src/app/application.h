@@ -31,9 +31,6 @@ private:
 	material_handler materials;
 	skeletal_animation_handler animations;
 
-	renderer3D renderer;
-	renderer3D sky_renderer;
-
 	model monkey_model;
 	model cube_model;
 	model player_model;

@@ -13,15 +13,18 @@ template <> struct component<struct component_animation3D_render, game_object_da
 {
 	/* allow to select animations */
 	skeletal_animation_handler * animations;
-	renderer3D * animation_renderer;
 
+	material_handler * materials;
 	skeletal_material * mat;
 	i32 animation_component;
 
 	component(skeletal_animation_handler * animations
 		, skeletal_material const & mat
-		, renderer3D & renderer)
-		: animations(animations), mat(new skeletal_material(mat)), animation_renderer(&renderer), animation_component(-1)
+		, material_handler & materials)
+		: animations(animations)
+		, mat(new skeletal_material(mat))
+		, animation_component(-1)
+		, materials(&materials)
 	{
 	}
 
@@ -40,6 +43,6 @@ template <> struct component<struct component_animation3D_render, game_object_da
 
 		mat->get_transforms_array() = std::move(anim_component.final_matrices);
 
-		animation_renderer->submit_material(mat);
+		materials->submit(mat);
 	}
 };

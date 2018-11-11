@@ -3,6 +3,7 @@
 #include "../game_object.h"
 #include "../../graphics/3D/material/material.h"
 #include "../../graphics/3D/renderer/renderer3D.h"
+#include "../../graphics/3D/material/material_handler.h"
 
 #include "model_matrix.h"
 
@@ -11,14 +12,14 @@ template <> class component <struct component_render, game_object_data> : public
 private:
 	model renderable;
 
-	renderer3D * renderer;
+	material_handler * materials;
 
 	material * mat;
 public:
-	component(model const & renderable, renderer3D & renderer)
+	component(model const & renderable, u32 material_type, renderer3D & renderer, material_handler & materials)
 		: renderable(renderable)
-		, renderer(&renderer)
-		, mat(new material(renderable, glm::mat4(1.0f)))
+		, mat(new material(renderable, glm::mat4(1.0f), material_type))
+		, materials(&materials)
 	{
 	}
 
@@ -30,6 +31,6 @@ public:
 
 		mat->get_transform() = model_matrix_component.get_trs();
 
-		renderer->submit_material(mat);
+		materials->submit(mat);
 	}
 };

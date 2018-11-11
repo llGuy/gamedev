@@ -10,6 +10,7 @@ class camera
 {
 private:
 	glm::mat4 view_matrix;
+	glm::mat4 projection_matrix;
 
 	glm::vec3 position;
 	glm::vec3 direction;
@@ -23,7 +24,9 @@ public:
 	/* needs vector of objects to access object with index */
 	auto update_view_matrix(vector_dyndel<game_object> & objects) -> void;
 
+	auto get_projection_matrix(void) -> glm::mat4 &;
 	auto get_view_matrix(void) -> glm::mat4 &;
+	auto get_view_matrix_without_translation(void) const -> glm::mat4;
 	auto get_position(void) -> glm::vec3 &;
 	auto get_direction(void) -> glm::vec3 &;
 	auto get_bound_object(void)-> i32 &;

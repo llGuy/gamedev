@@ -21,15 +21,13 @@ class skeletal_animation_handler
 {
 private:
 
-	renderer3D animation_renderer;
-
 	std::unordered_map<std::string, animation *> animations;
 
 public:
-	auto init(shader_handler & shaders, light_handler & lights, material_handler & materials) -> void; 
+	auto init(shader_handler & shaders, light_handler & lights, material_handler & materials, camera * mat_cam) -> void; 
 
 	/* loads the bones to a animation component and animation render component */
-	auto load_skeleton(game_object & entity, model & renderable, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+	auto load_skeleton(game_object & entity, model & renderable, u32 mat_id, material_handler & materials, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
 
 	/* loads the weights and joint ids for each vertex */
 	auto load_model_animation_data(model & subject, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
@@ -39,8 +37,6 @@ public:
 		, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
 
 	auto get_animation(std::string const & name) -> animation *;
-
-	auto get_renderer(void) -> renderer3D &;
 private:
 	auto get_joint_weights(rapidxml::xml_node<char> * weights_source) -> std::vector<f32>;
 	auto get_inverse_bind_transforms(rapidxml::xml_node<char> * src) -> std::vector<glm::mat4>;

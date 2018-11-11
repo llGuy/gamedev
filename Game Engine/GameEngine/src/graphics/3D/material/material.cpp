@@ -1,10 +1,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "material.h"
 
-auto material_prototype::init(material_light_info const & light_info, light_handler & lights) -> void
+auto material_prototype::init(material_light_info const & light_info, light_handler & lights, camera * bound_cam) -> void
 {
 	this->lights = &lights;
 	this->light_info_receive = light_info;
+	this->bound_cam = bound_cam;
 }
 
 auto material_prototype::toggle_lighting(void) -> void
@@ -41,6 +42,38 @@ auto material_prototype::prepare(void) -> void
 	{
 		textures_cubemap[i]->bind(GL_TEXTURE_CUBE_MAP, i);
 	}
+
+	glm::mat4 no_translation = bound_cam->get_view_matrix_without_translation();
+
+	shader->send_uniform_mat4("view_matrix", glm::value_ptr(bound_cam->get_view_matrix()), 1);
+	shader->send_uniform_mat4("view_matrix_no_translation", glm::value_ptr(no_translation), 1);
+	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(bound_cam->get_projection_matrix()), 1);
+	shader->send_uniform_vec3("camera_position", glm::value_ptr(bound_cam->get_position()), 1);
+}
+
+auto material_prototype::submit_material(material * mat) -> void
+{
+	materials.push_back(mat);
+}
+
+auto material_prototype::render(void) -> void
+{
+	prepare();
+
+	for (auto & mat : materials)
+	{
+		mat->render(shader);
+	}
+}
+
+auto material_prototype::flush(void) -> void
+{
+	materials.clear();
+}
+
+auto material_prototype::get_name(void) -> std::string &
+{
+	return material_type_name;
 }
 
 auto material_prototype::get_shader(void) -> glsl_program * &
@@ -58,15 +91,13 @@ auto material_prototype::get_textures_cubemap(void)->std::vector<texture *> &
 	return textures_cubemap;
 }
 
-material::material(model const & renderable, glm::mat4 const & transform)
-	: renderable(renderable), transform_matrix(transform)
+material::material(model const & renderable, glm::mat4 const & transform, u32 material_type_id)
+	: renderable(renderable), transform_matrix(transform), material_type_id(material_type_id)
 {
 }
 
-auto material::render(void) -> void
+auto material::render(glsl_program * shader) -> void
 {
-	glsl_program * shader = prototype->get_shader();
-
 	shader->bind();
 	
 	shader->send_uniform_mat4("model_matrix", glm::value_ptr(transform_matrix), 1);

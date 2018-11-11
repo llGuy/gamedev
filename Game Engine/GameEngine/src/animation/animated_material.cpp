@@ -1,15 +1,13 @@
 #include "animated_material.h"
 #include <glm/gtc/type_ptr.hpp>
 
-skeletal_material::skeletal_material(model const & renderable, glm::mat4 const & model_matrix)
-	: material::material(renderable, model_matrix)
+skeletal_material::skeletal_material(model const & renderable, glm::mat4 const & model_matrix, u32 material_type_id)
+	: material::material(renderable, model_matrix, material_type_id)
 {
 }
 
-auto skeletal_material::render(void) -> void
+auto skeletal_material::render(glsl_program * shader) -> void
 {
-	glsl_program * shader = prototype->get_shader();
-
 	shader->bind();
 
 	shader->send_uniform_mat4("model_matrix", glm::value_ptr(transform_matrix), 1);

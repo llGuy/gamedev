@@ -51,7 +51,7 @@ public:
 
 		if (movements > 0)
 		{
-			result = result * 7.0f * td;
+			result = result * 15.0f * td;
 
 			object->position += result;
 		}

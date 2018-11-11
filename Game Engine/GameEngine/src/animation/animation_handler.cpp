@@ -17,7 +17,7 @@
 
 #define CORRECTION glm::rotate(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f))
 
-auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights, material_handler & materials) -> void
+auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & lights, material_handler & materials, camera * mat_cam) -> void
 {
 	shader_handle animation_shader("shader.animation3D");
 
@@ -31,15 +31,14 @@ auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & 
 
 	glsl_program * shader = shaders.combine(animation_shader, vsh, gsh, fsh);
 
-	auto animated_material = materials.add_material("material.animated", material_light_info(), shader, lights);
+	//auto animated_material = materials.add_material("material.animated", material_light_info(), shader, lights, mat_cam);
 
-	animated_material->get_shader() = shader;
+	//animated_material->get_shader() = shader;
+
 	/* rest of the animated material must be initialized outside this class in the animation for customizability */
-
-	animation_renderer.set_material_prototype(animated_material);
 }
 
-auto skeletal_animation_handler::load_skeleton(game_object & entity, model & renderable, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void
+auto skeletal_animation_handler::load_skeleton(game_object & entity, model & renderable, u32 mat_id, material_handler & materials, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void
 {
 	using namespace rapidxml;
 
@@ -63,8 +62,8 @@ auto skeletal_animation_handler::load_skeleton(game_object & entity, model & ren
 	root->calculate_inverses();
 
 	component<component_animation3D, game_object_data> entity_animation_component{ this, *root, index_joint_map.size() };
-	skeletal_material mat{ renderable, glm::mat4(1.0f) };
-	component<component_animation3D_render, game_object_data> entity_animation_render_component{ this, mat, animation_renderer };
+	skeletal_material mat{ renderable, glm::mat4(1.0f), mat_id };
+	component<component_animation3D_render, game_object_data> entity_animation_render_component{ this, mat, materials };
 
 	entity.add_component(entity_animation_component);
 	entity.add_component(entity_animation_render_component);
@@ -369,9 +368,4 @@ auto skeletal_animation_handler::get_joint_weights(rapidxml::xml_node<char> * we
 auto skeletal_animation_handler::get_animation(std::string const & name) -> animation *
 {
 	return animations[name];
-}
-
-auto skeletal_animation_handler::get_renderer(void) -> renderer3D &
-{
-	return animation_renderer;
 }

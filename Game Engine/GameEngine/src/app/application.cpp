@@ -8,8 +8,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1500
-#define DISPLAY_HEIGHT 800
+#define DISPLAY_WIDTH 1000
+#define DISPLAY_HEIGHT 600
 
 application::application(void)
 	: display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Game Engine")
@@ -60,33 +60,10 @@ auto application::update(void) -> void
 {
 	display.refresh();
 
-	renderer.flush();
-	auto & animation_renderer = animations.get_renderer();
-	animation_renderer.flush();
 
-
-	auto camera = world.get_scene_camera();
-	glm::mat4 view_matrix = camera.get_view_matrix();
-
-	glsl_program * low_poly_shader = renderer.get_shader();
-	low_poly_shader->bind();
-	low_poly_shader->send_uniform_vec3("camera_position", glm::value_ptr(camera.get_position()), 1);
-	low_poly_shader->send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
-
-
-	glsl_program * animation_shader = animation_renderer.get_shader();
-	animation_shader->bind();
-	animation_shader->send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
-	animation_shader->send_uniform_mat4("camera_position", glm::value_ptr(camera.get_position()), 1);
-
-
-	glsl_program * sky_shader = sky_renderer.get_shader();
-	view_matrix[3][0] = 0.0f;
-	view_matrix[3][1] = 0.0f;
-	view_matrix[3][2] = 0.0f;
-	sky_shader->bind();
-	sky_shader->send_uniform_mat4("view_matrix", glm::value_ptr(view_matrix), 1);
-
+	/* reset animation renderer */
+	material_prototype * mat_type = materials["material.animated"];
+	mat_type->flush();
 
 
 	world.update(time_handler.elapsed());
@@ -103,11 +80,7 @@ auto application::render(void) -> void
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
 
-	renderer.render();
-
-	sky_renderer.render();
-
-	animations.get_renderer().render();
+	materials.render_all();
 
 	glDisable(GL_DEPTH_TEST);
 	guis.render();
@@ -140,15 +113,13 @@ auto application::init_game_objects(void) -> void
 	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.7f, 1.0f), "game_object.monkey" });
 
 	component<component_model_matrix, game_object_data> model_matrix_comp;
-	//component<component_render, game_object_data> render_comp{ monkey_model, renderer };
 
 	monkey.add_component(model_matrix_comp);
-	//monkey.add_component(render_comp);
 }
 
 auto application::init_models(void) -> void
 {
-	animations.init(shaders, lights, materials);
+	animations.init(shaders, lights, materials, &world.get_scene_camera());
 
 	monkey_model = models.init_model("model.monkey");
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
@@ -159,8 +130,14 @@ auto application::init_models(void) -> void
 	game_object & player = world.get_game_object("game_object.monkey");
 
 	/* load all animation data for player */
+	materials.add_material("material.animated"
+		, MATERIAL_HIGHLY_REFLECTIVE
+		, shaders[shader_handle("shader.animation3D")]
+		, lights
+		, &world.get_scene_camera());
+
 	animations.load_model_animation_data(player_model, xml_doc);
-	animations.load_skeleton(player, player_model, xml_doc);
+	animations.load_skeleton(player, player_model, materials.get_material_id("material.animated"), materials, xml_doc);
 	animations.load_animation_data("animation.running", player, xml_doc);
 
 	auto & animation_comp = player.get_component<component_animation3D>();
@@ -182,38 +159,25 @@ auto application::init_3D_test(void) -> void
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
 
-	material_light_info light{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.2f };
-
-	auto monkey_skin = materials.add_material("material.skin", light, shaders[shader_handle("shader.low_poly")], lights);
-
-	monkey_skin->set_texture_2D(textures.get_texture("texture.player"));
-	monkey_skin->set_texture_3D(textures.get_texture("texture.sky"));
-
-	renderer.set_material_prototype(monkey_skin);
-
-	renderer.set_projection(projection_matrix);
-	
+	world.get_scene_camera().get_projection_matrix() = projection_matrix;
 
 
-	/* initializing sky renderer */
-	auto sky_material = materials.add_material("material.sky", material_light_info(), shaders[shader_handle("shader.sky")], lights);
+	/* initialize sky renderer and material */
+	auto sky_material = materials.add_material("material.sky"
+		, material_light_info() /* no lighting */
+		, shaders[shader_handle("shader.sky")]
+		, lights
+		, &world.get_scene_camera());
 
 	sky_material->set_texture_3D(textures.get_texture("texture.sky"));
 	sky_material->toggle_lighting();
-	sky_renderer.set_material_prototype(sky_material);
 
-	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)) };
-	sky_renderer.submit_material(sky);
-	sky_renderer.set_projection(projection_matrix);
+	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)), materials.get_material_id("material.sky") };
 
-	/* initializing animation material_prototype */
-	auto mat_type = materials.get_material_type("material.animated");
-	mat_type->init(light, lights);
-	mat_type->set_texture_2D(textures.get_texture("texture.player"));
-	auto & animation_renderer = animations.get_renderer();
+	materials.submit(sky);
 
-	animation_renderer.set_projection(projection_matrix);
-	animation_renderer.set_material_prototype(mat_type);
+	/* initializing animation material_prototype textures */
+	materials["material.animated"]->set_texture_2D(textures.get_texture("texture.player"));
 }
 
 auto application::init_2D_test(void) -> void

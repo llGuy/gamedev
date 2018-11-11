@@ -76,7 +76,7 @@ auto batch_renderer2D::submit(quad2D const & quad,  texture * diffuse) -> void
 
 	for (u32 i = 0; i < 4; ++i)
 	{
-		q[i].texture_id = slot;
+		q[i].texture_id = static_cast<f32>(slot);
 	}
 
 	gpu_batch.partial_fill(sizeof(quad2D) * quads.size(), sizeof(quad2D), &q, GL_ARRAY_BUFFER);

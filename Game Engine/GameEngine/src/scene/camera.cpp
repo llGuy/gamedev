@@ -24,9 +24,25 @@ auto camera::update_view_matrix(vector_dyndel<game_object> & objects) -> void
 	}
 }
 
+auto camera::get_projection_matrix(void)->glm::mat4 &
+{
+	return projection_matrix;
+}
+
 auto camera::get_view_matrix(void)->glm::mat4 &
 {
 	return view_matrix;
+}
+
+auto camera::get_view_matrix_without_translation(void) const -> glm::mat4
+{
+	glm::mat4 vmatrix = view_matrix;
+
+	vmatrix[3][0] = 0.0f;
+	vmatrix[3][1] = 0.0f;
+	vmatrix[3][2] = 0.0f;
+
+	return vmatrix;
 }
 
 auto camera::get_position(void)->glm::vec3 &
