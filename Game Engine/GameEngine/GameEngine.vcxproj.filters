@@ -48,6 +48,10 @@
     <ClCompile Include="src\graphics\target\target.cpp" />
     <ClCompile Include="src\graphics\3D\model_comp\quad3D.cpp" />
     <ClCompile Include="src\graphics\3D\material\material_handler.cpp" />
+    <ClCompile Include="src\utils\log.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage3D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage2D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\pipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -228,6 +232,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\component\third_person_mouse_movement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\pipeline\pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\pipeline\render_stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\pipeline\render_stage3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\pipeline\render_stage2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

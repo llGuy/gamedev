@@ -27,7 +27,7 @@ auto renderer3D::set_view(glm::mat4 & view) -> void
 
 auto renderer3D::render(void) -> void
 {
-	material_type->prepare();
+	//material_type->prepare();
 
 	for (auto & mat : materials)
 	{

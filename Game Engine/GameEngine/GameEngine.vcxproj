@@ -47,6 +47,9 @@
     <ClCompile Include="src\graphics\3D\model_handler.cpp" />
     <ClCompile Include="src\graphics\3D\material\material.cpp" />
     <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\pipeline.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage2D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage3D.cpp" />
     <ClCompile Include="src\graphics\target\target.cpp" />
     <ClCompile Include="src\graphics\texture\texture_handler.cpp" />
     <ClCompile Include="src\io\io.cpp" />
@@ -54,6 +57,7 @@
     <ClCompile Include="src\scene\camera.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
+    <ClCompile Include="src\utils\log.cpp" />
     <ClCompile Include="src\window\input.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
@@ -94,6 +98,10 @@
     <ClInclude Include="src\graphics\3D\model_handler.h" />
     <ClInclude Include="src\graphics\3D\material\material.h" />
     <ClInclude Include="src\graphics\3D\renderer\renderer3D.h" />
+    <ClInclude Include="src\graphics\pipeline\pipeline.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage2D.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage3D.h" />
     <ClInclude Include="src\graphics\shader\shader_properties.h" />
     <ClInclude Include="src\graphics\shader\shader_handler.h" />
     <ClInclude Include="src\graphics\target\depth_target.h" />
@@ -113,6 +121,7 @@
     <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\scene\tps_camera.h" />
     <ClInclude Include="src\time\timer.h" />
+    <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\utils\detail.h" />
     <ClInclude Include="src\utils\types.h" />
     <ClInclude Include="src\window\input.h" />
@@ -202,7 +211,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameEngine\vendor\spdlog\include;C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

@@ -39,6 +39,9 @@ public:
 	auto init(glsl_program * shader) -> void;
 
 	auto submit(quad2D const & quad, texture * diffuse) -> void;
+
 	auto render(void) -> void;
+	auto render_first(glsl_program * shader = nullptr) -> void;
+
 	auto flush(void) -> void;
 };

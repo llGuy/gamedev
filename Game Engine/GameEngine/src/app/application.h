@@ -4,6 +4,7 @@
 #include "../time/timer.h"
 #include "../scene/scene.h"
 #include "../window/window.h"
+#include "../graphics/pipeline/pipeline.h"
 #include "../graphics/2D/gui/panel/panel.h"
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
@@ -31,6 +32,9 @@ private:
 	material_handler materials;
 	skeletal_animation_handler animations;
 
+	pipeline render_pipeline;
+
+	model platform_model;
 	model monkey_model;
 	model cube_model;
 	model player_model;
@@ -51,4 +55,5 @@ private:
 	auto init_shaders(void) -> void;
 	auto init_textures(void) -> void;
 	auto init_fonts(void) -> void;
+	auto init_pipeline(void) -> void;
 };

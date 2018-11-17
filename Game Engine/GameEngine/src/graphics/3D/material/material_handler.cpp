@@ -1,19 +1,19 @@
 #include "material_handler.h"
 
 auto material_handler::add_material(std::string mat_name, material_light_info const & light_info
-	, glsl_program * shader, light_handler & lights, camera * cam) -> material_prototype *
+	, glsl_program * shader, light_handler & lights) -> material_prototype *
 {
 	u32 material_type_index = materials.size();
-	materials.push_back(new material_prototype(light_info, shader, lights, mat_name, cam));
+	materials.push_back(new material_prototype(light_info, shader, lights, mat_name));
 	material_indices[mat_name] = material_type_index;
 	return materials.back();
 }
 
-auto material_handler::render_all(void) -> void
+auto material_handler::render_all(camera & scene_camera) -> void
 {
 	for (auto renderer : materials)
 	{
-		renderer->render();
+		renderer->render(scene_camera);
 	}
 }
 

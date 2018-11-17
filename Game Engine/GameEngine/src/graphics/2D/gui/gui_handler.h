@@ -35,6 +35,7 @@ public:
 
 	/* updates and submits to renderer */
 	auto update(u32 display_w, u32 dislay_h) -> void;
+	auto render_one(glsl_program * shader) -> void;
 	auto render(void) -> void;
 
 	/* gui set = hierarchies of guis */

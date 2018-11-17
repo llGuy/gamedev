@@ -16,7 +16,7 @@ private:
 
 	material * mat;
 public:
-	component(model const & renderable, u32 material_type, renderer3D & renderer, material_handler & materials)
+	component(model const & renderable, u32 material_type, material_handler & materials)
 		: renderable(renderable)
 		, mat(new material(renderable, glm::mat4(1.0f), material_type))
 		, materials(&materials)

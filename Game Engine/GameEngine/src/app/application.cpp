@@ -8,7 +8,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1000
+#define DISPLAY_WIDTH 1100
 #define DISPLAY_HEIGHT 600
 
 application::application(void)
@@ -39,6 +39,7 @@ auto application::init(void) -> void
 		init_shaders();
 		init_3D_test();
 		init_2D_test();
+		init_pipeline();
 
 		time_handler.start();
 		is_running = true;
@@ -61,13 +62,20 @@ auto application::update(void) -> void
 	display.refresh();
 
 
+
 	/* reset animation renderer */
 	material_prototype * mat_type = materials["material.animated"];
 	mat_type->flush();
 
+	/* reset low poly renderer */
+	material_prototype * mat_type_lp = materials["material.low_poly"];
+	mat_type_lp->flush();
+
+
 
 	world.update(time_handler.elapsed());
 	time_handler.reset();
+
 
 
 	is_running = display.is_open();
@@ -75,14 +83,8 @@ auto application::update(void) -> void
 
 auto application::render(void) -> void
 {
-	glEnable(GL_DEPTH_TEST);
+	render_pipeline.execute_stages();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
-
-	materials.render_all();
-
-	glDisable(GL_DEPTH_TEST);
 	guis.render();
 }
 
@@ -99,7 +101,11 @@ auto application::clean_up(void) -> void
 
 auto application::init_game_objects(void) -> void
 {
-	game_object & player = world.init_game_object({ glm::vec3(10.0f), glm::vec3(-1.0f), glm::vec3(0.4f), "game_object.player" });
+	game_object & player = world.init_game_object({ 
+		glm::vec3(10.0f)
+		, glm::vec3(-1.0f)
+		, glm::vec3(0.4f)
+		, "game_object.player" });
 
 	component<component_behavior_key, game_object_data> key_comp{
 		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
@@ -110,11 +116,25 @@ auto application::init_game_objects(void) -> void
 	player.add_component(mouse_comp);
 	world.bind_camera_to_object(player);
 
-	game_object & monkey = world.init_game_object({ glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.7f, 1.0f), "game_object.monkey" });
+	game_object & monkey = world.init_game_object({ 
+		glm::vec3(0.0f)
+		, glm::vec3(1.0f)
+		, glm::vec3(1.0f, 0.7f, 1.0f)
+		, "game_object.monkey" });
 
 	component<component_model_matrix, game_object_data> model_matrix_comp;
 
 	monkey.add_component(model_matrix_comp);
+
+	game_object & platform = world.init_game_object({ 
+		glm::vec3(0.0f, -8.0f, 0.0f)
+		, glm::vec3(2.0f)
+		, glm::vec3(1.0f, 0.0f, 0.0f)
+		, "game_object.platform" });
+
+	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
+
+	platform.add_component(model_matrix_comp_platform);
 }
 
 auto application::init_models(void) -> void
@@ -123,6 +143,9 @@ auto application::init_models(void) -> void
 
 	monkey_model = models.init_model("model.monkey");
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
+
+	platform_model = models.init_model("model.platform");
+	models.load_model_from_obj("res/model/platform.obj", platform_model);
 
 	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
@@ -133,8 +156,7 @@ auto application::init_models(void) -> void
 	materials.add_material("material.animated"
 		, MATERIAL_HIGHLY_REFLECTIVE
 		, shaders[shader_handle("shader.animation3D")]
-		, lights
-		, &world.get_scene_camera());
+		, lights);
 
 	animations.load_model_animation_data(player_model, xml_doc);
 	animations.load_skeleton(player, player_model, materials.get_material_id("material.animated"), materials, xml_doc);
@@ -159,15 +181,32 @@ auto application::init_3D_test(void) -> void
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
 
+
 	world.get_scene_camera().get_projection_matrix() = projection_matrix;
 
+	/* initializing low poly material */
+
+	auto low_poly_material = materials.add_material("material.low_poly"
+		, MATERIAL_HIGHLY_REFLECTIVE
+		, shaders[shader_handle("shader.low_poly")]
+		, lights);
+
+	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
+	low_poly_material->set_texture_3D(textures.get_texture("texture.sky"));
+
+//	material * platform = new material{ platform_model, glm::scale(glm::vec3(1.0f)), materials.get_material_id("material.low_poly") };
+
+	component<component_render, game_object_data> render_comp_platform{ platform_model
+		, materials.get_material_id("material.low_poly")
+        , materials};
+
+	world.get_game_object("game_object.platform").add_component(render_comp_platform);
 
 	/* initialize sky renderer and material */
 	auto sky_material = materials.add_material("material.sky"
 		, material_light_info() /* no lighting */
 		, shaders[shader_handle("shader.sky")]
-		, lights
-		, &world.get_scene_camera());
+		, lights);
 
 	sky_material->set_texture_3D(textures.get_texture("texture.sky"));
 	sky_material->toggle_lighting();
@@ -193,7 +232,7 @@ auto application::init_2D_test(void) -> void
 	stream_panel->init(vertices, nullptr);
 
 	font_stream * stream = guis.init_font_stream("gui.panel.font_test", "gui.font.stream.font_test", "comic", glm::vec2(320.0f), 20.0f);
-	stream->submit_text("Font name : Comic");
+	stream->submit_text("Super Awesome new Rendering System!!!");
 
 	guis.update(display.pixel_width(), display.pixel_height());
 }
@@ -224,10 +263,40 @@ auto application::init_textures(void) -> void
 
 	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);
+
+	auto * scene_color = textures.init_texture("texture.scene_color");
+	create_color_texture(*scene_color, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
 {
 	guis.init_font_type(textures, "comic", "res/font/comic");
 	guis.init_font_type(textures, "droid", "res/font/droid");
+}
+
+auto application::init_pipeline(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage3D * stage = new render_stage3D(&materials, &world.get_scene_camera());
+
+	stage->init(display_w, display_h);
+
+	stage->attach_texture(*textures.get_texture("texture.scene_color"), GL_COLOR_ATTACHMENT0, 0);
+
+	renderbuffer depth;
+	create_depth_renderbuffer(depth, display_w, display_h);
+
+	stage->attach_renderbuffer(depth, GL_DEPTH_ATTACHMENT);
+
+	render_pipeline.add_render_stage("render_stage.init", stage);
+
+	render_stage2D * final_stage = new render_stage2D(nullptr, &guis);
+
+	final_stage->set_to_default(display_w, display_h);
+
+	final_stage->add_texture2D_bind(textures.get_texture("texture.scene_color"));
+
+	render_pipeline.add_render_stage("render_stage.final", final_stage);
 }

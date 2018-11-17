@@ -13,9 +13,9 @@ private:
 	std::vector<material_prototype *> materials;
 public:
 	auto add_material(std::string mat_name, material_light_info const & light_info
-		, glsl_program * shader, light_handler & lights, camera * cam) -> material_prototype *;
+		, glsl_program * shader, light_handler & lights) -> material_prototype *;
 
-	auto render_all(void) -> void;
+	auto render_all(camera & scene_camera /* view matrix */) -> void;
 
 	auto submit(material * mat) -> void;
 

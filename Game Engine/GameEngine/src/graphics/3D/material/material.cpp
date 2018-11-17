@@ -13,7 +13,7 @@ auto material_prototype::toggle_lighting(void) -> void
 	enabled_lighting ^= 0b0001;
 }
 
-auto material_prototype::prepare(void) -> void
+auto material_prototype::prepare(camera & scene_camera) -> void
 {
 	shader->bind();
 
@@ -43,12 +43,12 @@ auto material_prototype::prepare(void) -> void
 		textures_cubemap[i]->bind(GL_TEXTURE_CUBE_MAP, i);
 	}
 
-	glm::mat4 no_translation = bound_cam->get_view_matrix_without_translation();
+	glm::mat4 no_translation = scene_camera.get_view_matrix_without_translation();
 
-	shader->send_uniform_mat4("view_matrix", glm::value_ptr(bound_cam->get_view_matrix()), 1);
+	shader->send_uniform_mat4("view_matrix", glm::value_ptr(scene_camera.get_view_matrix()), 1);
 	shader->send_uniform_mat4("view_matrix_no_translation", glm::value_ptr(no_translation), 1);
-	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(bound_cam->get_projection_matrix()), 1);
-	shader->send_uniform_vec3("camera_position", glm::value_ptr(bound_cam->get_position()), 1);
+	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(scene_camera.get_projection_matrix()), 1);
+	shader->send_uniform_vec3("camera_position", glm::value_ptr(scene_camera.get_position()), 1);
 }
 
 auto material_prototype::submit_material(material * mat) -> void
@@ -56,9 +56,9 @@ auto material_prototype::submit_material(material * mat) -> void
 	materials.push_back(mat);
 }
 
-auto material_prototype::render(void) -> void
+auto material_prototype::render(camera & scene_camera) -> void
 {
-	prepare();
+	prepare(scene_camera);
 
 	for (auto & mat : materials)
 	{

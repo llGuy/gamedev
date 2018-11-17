@@ -29,23 +29,21 @@ protected:
 public:
 	material_prototype(void) = default;
 
-	/* T ... must be pointers */
-	material_prototype(material_light_info const & light_info, glsl_program * shader, light_handler & lights, std::string const & name, camera * bound_cam)
+	material_prototype(material_light_info const & light_info, glsl_program * shader, light_handler & lights, std::string const & name)
 		: shader(shader)
 		, lights(&lights)
 		, light_info_receive(light_info)
 		, material_type_name(name)
-		, bound_cam(bound_cam)
 	{
 	}
 
 	auto init(material_light_info const & light_info, light_handler & lights, camera * bound_cam) -> void;
 
 	auto submit_material(material * mat) -> void;
-	auto render(void) -> void;
+	auto render(camera & scene_camera) -> void;
 	auto flush(void) -> void;
 
-	virtual auto prepare(void) -> void;
+	virtual auto prepare(camera & scene_camera) -> void;
 	
 	auto get_shader(void) -> glsl_program * &;
 	auto get_name(void) -> std::string &;

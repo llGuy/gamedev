@@ -48,6 +48,14 @@ auto batch_renderer2D::init(glsl_program * shader) -> void
 	this->shader = shader;
 	this->shader->bind();
 	this->shader->send_uniform_intv("diffuse", texture_slot_inits.data(), 32);
+
+	quad2D default_quad;
+	default_quad[0] = vertex2D{ glm::vec2(-1.0f, +1.0f), glm::vec2(0.0f, 1.0f), 0 };
+	default_quad[1] = vertex2D{ glm::vec2(-1.0f, -1.0f), glm::vec2(0.0f, 0.0f), 0 };
+	default_quad[2] = vertex2D{ glm::vec2(+1.0f, +1.0f), glm::vec2(1.0f, 1.0f), 0 };
+	default_quad[3] = vertex2D{ glm::vec2(+1.0f, -1.0f), glm::vec2(1.0f, 0.0f), 0 };
+
+	gpu_batch.partial_fill(0, sizeof(quad2D), &default_quad, GL_ARRAY_BUFFER);
 }
 
 auto batch_renderer2D::submit(quad2D const & quad,  texture * diffuse) -> void
@@ -79,7 +87,7 @@ auto batch_renderer2D::submit(quad2D const & quad,  texture * diffuse) -> void
 		q[i].texture_id = static_cast<f32>(slot);
 	}
 
-	gpu_batch.partial_fill(sizeof(quad2D) * quads.size(), sizeof(quad2D), &q, GL_ARRAY_BUFFER);
+	gpu_batch.partial_fill(sizeof(quad2D) * (quads.size() + 1), sizeof(quad2D), &q, GL_ARRAY_BUFFER);
 
 	quads.push_back(q);
 }
@@ -96,7 +104,21 @@ auto batch_renderer2D::render(void) -> void
 		textures[i]->bind(GL_TEXTURE_2D, i);
 	}
 
-	glDrawElements(GL_TRIANGLES, quads.size() * 6, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, quads.size() * 6, GL_UNSIGNED_INT, (void *)(6 * sizeof(u32)));
+
+	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
+	unbind_vertex_layouts();
+}
+
+auto batch_renderer2D::render_first(glsl_program * ext_shader) -> void
+{
+	if (ext_shader) ext_shader->bind();
+	else shader->bind();
+
+	vao.bind();
+	indices.bind(GL_ELEMENT_ARRAY_BUFFER);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();

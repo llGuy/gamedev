@@ -41,3 +41,8 @@ auto gui_handler::render(void) -> void
 {
 	renderer.render();
 }
+
+auto gui_handler::render_one(glsl_program * shader) -> void
+{
+	renderer.render_first(shader);
+}
