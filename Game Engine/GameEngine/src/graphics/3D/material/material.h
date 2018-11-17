@@ -85,5 +85,5 @@ public:
 };
 
 #define MATERIAL_ONLY_REFLECTION    material_light_info{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 10.0f, 1.0f }
-#define MATERIAL_HIGHLY_REFLECTIVE  material_light_info{ glm::vec3(1.0f), glm::vec3(0.7f), glm::vec3(0.5f), 20.0f, 0.2f }
+#define MATERIAL_HIGHLY_REFLECTIVE  material_light_info{ glm::vec3(1.0f), glm::vec3(0.5f), glm::vec3(0.3f), 20.0f, 0.2f }
 #define MATERIAL_NOT_TOO_REFLECTIVE material_light_info{ glm::vec3(7.0f), glm::vec3(0.5f), glm::vec3(0.2f), 30.0f, 0.2f }

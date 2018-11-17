@@ -21,6 +21,13 @@ auto render_stage2D::execute(void) -> void
 		textures2D[i]->bind(GL_TEXTURE_2D, i);
 	}
 
+	if (shader) shader->bind();
+
+	std::for_each(extra_commands.begin(), extra_commands.end()
+		, [](uniform_command * command) -> void { 
+		command->execute(); 
+	});
+
 	guis->render_one(shader);
 }
 
