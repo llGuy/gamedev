@@ -16,7 +16,10 @@ class material_prototype
 protected:
 	camera * bound_cam;
 	glsl_program * shader;
+
+	uniform_buffer material_block;
 	material_light_info light_info_receive;
+
 	light_handler * lights;
 	std::string material_type_name;
 
@@ -37,7 +40,7 @@ public:
 	{
 	}
 
-	auto init(material_light_info const & light_info, light_handler & lights, camera * bound_cam) -> void;
+	auto init(void) -> void;
 
 	auto submit_material(material * mat) -> void;
 	auto render(camera & scene_camera) -> void;
@@ -60,6 +63,8 @@ public:
 	{
 		(textures_cubemap.push_back(textures), ...);
 	}
+private:
+	auto update_uniform_block(void) -> void;
 };
 
 /* controled probably by an entity (game object) */

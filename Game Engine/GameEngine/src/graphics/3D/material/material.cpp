@@ -1,11 +1,39 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "material.h"
 
-auto material_prototype::init(material_light_info const & light_info, light_handler & lights, camera * bound_cam) -> void
+struct material_info_shader_data
 {
-	this->lights = &lights;
-	this->light_info_receive = light_info;
-	this->bound_cam = bound_cam;
+	glm::vec4 ambient_reflectivity;
+	glm::vec4 diffuse_reflectivity;
+	glm::vec4 specular_reflectivity;
+	f32 shininess_factor;
+	f32 reflect_factor;
+};
+
+auto material_prototype::init(void) -> void
+{
+	material_block.create();
+	material_block.fill<void>(sizeof(material_info_shader_data), nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
+
+	update_uniform_block();
+}
+
+auto material_prototype::update_uniform_block(void) -> void
+{
+	material_block.bind(GL_UNIFORM_BUFFER);
+
+	u8 * ptr = (u8 *)(material_block.map(GL_UNIFORM_BUFFER, GL_READ_ONLY));
+
+	material_info_shader_data data {
+	  glm::vec4(light_info_receive.ambient_reflectivity, 1.0f)
+	, glm::vec4(light_info_receive.diffuse_reflectivity, 1.0f)
+	, glm::vec4(light_info_receive.specular_reflectivity, 1.0f)
+	, light_info_receive.shininess_factor
+	, light_info_receive.reflect_factor };
+
+	memcpy(ptr, &data, sizeof(material_info_shader_data));
+
+	unmap_buffers(GL_UNIFORM_BUFFER);
 }
 
 auto material_prototype::toggle_lighting(void) -> void
@@ -17,14 +45,15 @@ auto material_prototype::prepare(camera & scene_camera) -> void
 {
 	shader->bind();
 
-	/* TOTO !!! Replace this stuff with uniform buffers */
 	if (enabled_lighting)
 	{
-		shader->send_uniform_vec3("material_info.ambient_reflectivity", glm::value_ptr(light_info_receive.ambient_reflectivity), 1);
+		/*shader->send_uniform_vec3("material_info.ambient_reflectivity", glm::value_ptr(light_info_receive.ambient_reflectivity), 1);
 		shader->send_uniform_vec3("material_info.diffuse_reflectivity", glm::value_ptr(light_info_receive.diffuse_reflectivity), 1);
 		shader->send_uniform_vec3("material_info.specular_reflectivity", glm::value_ptr(light_info_receive.specular_reflectivity), 1);
 		shader->send_uniform_float("material_info.shininess_factor", light_info_receive.shininess_factor);
-		shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);
+		shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);*/
+
+		shader->bind_uniform_block(material_block, "material");
 		shader->send_uniform_int("lighting", 1);
 		lights->prepare_shader(*shader);
 	}

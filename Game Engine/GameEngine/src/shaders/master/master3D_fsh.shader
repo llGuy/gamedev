@@ -33,24 +33,24 @@ vertex_out;
 
 #endif
 
-uniform struct material
+layout(std140, row_major) uniform light
 {
-	vec3 ambient_reflectivity;
-	vec3 diffuse_reflectivity;
-	vec3 specular_reflectivity;
+    vec4 light_position;
+	vec4 ambient_intensity;
+	vec4 diffuse_intensity;
+	vec4 specular_intensity;
+} 
+light_info;
+
+layout(std140, row_major) uniform material
+{
+	vec4 ambient_reflectivity;
+	vec4 diffuse_reflectivity;
+	vec4 specular_reflectivity;
 	float shininess_factor;
 	float reflect_factor;
-} 
-material_info;
-
-uniform struct light
-{
-	vec3 light_position;
-	vec3 ambient_intensity;
-	vec3 diffuse_intensity;
-	vec3 specular_intensity;
 }
-light_info;
+material_info;
 
 uniform sampler2D diffuse;
 uniform samplerCube environment;
@@ -62,14 +62,14 @@ uniform int lighting;
 
 void apply_ambient(inout vec4 color)
 {
-	color = vec4(light_info.ambient_intensity, 1.0f) * vec4(material_info.ambient_reflectivity, 1.0f) * color;
+	color = light_info.ambient_intensity * material_info.ambient_reflectivity * color;
 }
 
 void apply_diffuse(vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
 	float diffuse = clamp(dot(light_vector, vertex_normal), 0, 1);
 
-	color = vec4(diffuse) * vec4(light_info.diffuse_intensity, 1.0f) * vec4(material_info.diffuse_reflectivity, 1.0f) + color;
+	color = vec4(diffuse) * light_info.diffuse_intensity * material_info.diffuse_reflectivity + color;
 }
 
 float apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
@@ -78,7 +78,7 @@ float apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, ino
 	float specular = clamp(dot(reflected_light, normalize(eye_vector)), 0, 1);
 	specular = pow(specular, material_info.shininess_factor);
 
-	color = vec4(specular) * vec4(light_info.specular_intensity, 1.0f) * vec4(material_info.specular_reflectivity, 1.0f) + color;
+	color = vec4(specular) * light_info.specular_intensity * material_info.specular_reflectivity + color;
 
 	return specular;
 }
@@ -115,7 +115,7 @@ void main(void)
 #endif
 	if (lighting == 1)
 	{
-		vec3 light_vector = normalize(-light_info.light_position);
+		vec3 light_vector = normalize(vec3(light_info.light_position));
 		vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
 
 		apply_ambient(final_color);

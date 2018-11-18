@@ -53,16 +53,6 @@ void main(void)
 		vec4 original_pos = vec4(vertex_position, 1.0f);
 
 		mat4 joint = joint_transforms[joint_ids[i]];
-		if (joint_ids[i] == lower_arm_left || joint_ids[i] == upper_arm_left || joint_ids[i] == hand_left)
-		{
-			/*joint = mat4(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				joint[3][0], joint[3][1], joint[3][2], 1
-			);
-			original_pos.w = 0.0f;*/
-		}
 		
 		vec4 pose_position = joint * original_pos;
 
@@ -74,11 +64,6 @@ void main(void)
 	
     vertex_out.vertex_position = vec3(model_matrix * accumulated_local);
 
-	//vertex_out.vertex_position = vec3(joint_transforms[joint_ids[0]] * vec4(vertex_position, 1.0f));
-	//mat4 t = joint_transforms[joint_ids[0]];
-	//vec3 translation = vec3(t[3][0], t[3][1], t[3][2]);
-	//vertex_out.vertex_position = vertex_position + translation * weights[0];
-	//vertex_out.vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0f));
 	vertex_out.texture_coords = vertex_uvs;
 	vertex_out.vertex_normal = vec3(accumulated_normal);
 	vertex_out.weights = weights;

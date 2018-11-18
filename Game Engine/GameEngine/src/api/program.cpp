@@ -1,4 +1,5 @@
 #include "program.h"
+#include "uniform_buffer.h"
 
 auto glsl_program::attach_shaders(void) -> void
 {
@@ -77,6 +78,15 @@ auto glsl_program::send_uniform_int(std::string const & name, i32 v) -> void
 	glUniform1i(get_uniform_location(name), v);
 }
 
+auto glsl_program::bind_uniform_block(uniform_buffer & uniform_block, std::string const & name) -> void
+{
+	auto index = get_uniform_block_index(name);
+
+	uniform_block.bind_base(GL_UNIFORM_BUFFER);
+
+	glUniformBlockBinding(id, index, uniform_block.get_index());
+}
+
 auto glsl_program::get_uniform_location(std::string const & name) -> i32
 {
 	if (auto location = uloc_cache.find(name); location != uloc_cache.end())
@@ -85,6 +95,16 @@ auto glsl_program::get_uniform_location(std::string const & name) -> i32
 	}
 
 	return (uloc_cache[name] = glGetUniformLocation(id, name.c_str()));
+}
+
+auto glsl_program::get_uniform_block_index(std::string const & name) -> i32
+{
+	if (auto location = block_indices_cache.find(name); location != block_indices_cache.end())
+	{
+		return location->second;
+	}
+
+	return (block_indices_cache[name] = glGetUniformBlockIndex(id, name.c_str()));
 }
 
 auto glsl_program::send_uniform_intv(std::string const & name, i32 * v, i32 amount) -> void

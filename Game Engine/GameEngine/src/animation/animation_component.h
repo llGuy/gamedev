@@ -17,11 +17,12 @@ template <> struct component<struct component_animation3D, game_object_data> : c
 
 	joint root;
 	u32 joint_count;
+	f32 play_speed;
 
 	component(skeletal_animation_handler * animations
 		, joint const & root, u32 joint_count
 		, std::string const & first_animation = "")
-		: animations(animations), root(root), joint_count(joint_count)
+		: animations(animations), root(root), joint_count(joint_count), play_speed(1.5f)
 	{
 		if (first_animation != "")
 			animation_handler.set_current_animation(animations->get_animation(first_animation));
@@ -33,6 +34,6 @@ template <> struct component<struct component_animation3D, game_object_data> : c
 
 	auto update(f32 time, vec_dd<game_object> & objects) -> void override
 	{
-		final_matrices = animation_handler.update(time * 2.0f, &root, joint_count);
+		final_matrices = animation_handler.update(time * play_speed, &root, joint_count);
 	}
 };

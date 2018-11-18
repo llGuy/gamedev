@@ -4,6 +4,7 @@
 #include "../utils/types.h"
 
 extern auto unbind_buffers(GLenum point) -> void;
+extern auto unmap_buffers(GLenum point) -> void;
 
 class buffer
 {
@@ -13,6 +14,7 @@ public:
 	auto create(void)->u32;
 	auto destroy(void) -> void;
 	auto bind(GLenum binding_point) -> void;
+	auto map(GLenum binding_point, GLenum access) -> void *;
 
 	template <typename T> auto fill(u32 size, T * data, GLenum usage, GLenum binding_point) -> void
 	{
@@ -25,6 +27,8 @@ public:
 		bind(binding_point);
 		glBufferSubData(binding_point, offset, size, data);
 	}
-private:
+protected:
+	friend class glsl_program;
+
 	u32 id;
 };

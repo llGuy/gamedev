@@ -32,6 +32,7 @@
     <ClCompile Include="src\api\renderbuffer.cpp" />
     <ClCompile Include="src\api\shader.cpp" />
     <ClCompile Include="src\api\texture.cpp" />
+    <ClCompile Include="src\api\uniform_buffer.cpp" />
     <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\app\application.cpp" />
     <ClCompile Include="src\graphics\2D\gui\font\font.cpp" />
@@ -77,6 +78,7 @@
     <ClInclude Include="src\api\renderbuffer.h" />
     <ClInclude Include="src\api\shader.h" />
     <ClInclude Include="src\api\texture.h" />
+    <ClInclude Include="src\api\uniform_buffer.h" />
     <ClInclude Include="src\api\vertex_layout.h" />
     <ClInclude Include="src\app\application.h" />
     <ClInclude Include="src\data\components.h" />
@@ -145,6 +147,9 @@
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
+    <None Include="src\shaders\post_processing\gaussian_blur\fsh.shader" />
+    <None Include="src\shaders\post_processing\gaussian_blur\h_vsh.shader" />
+    <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png" />

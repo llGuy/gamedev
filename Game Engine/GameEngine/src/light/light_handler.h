@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "../utils/types.h"
+#include "../api/uniform_buffer.h"
 
 struct material_light_info
 {
@@ -16,6 +17,7 @@ struct material_light_info
 
 struct light_info
 {
+	/* vec4 for uniform block */
 	glm::vec3 light_position;
 	glm::vec3 ambient_intensity;
 	glm::vec3 diffuse_intensity;
@@ -30,9 +32,15 @@ private:
 
 	light_info light;
 
+	uniform_buffer light_uniform_block;
+
 public:
 
 	light_handler(void);
+
+	auto create(void) -> void;
+
+	auto update_buffer(void) -> void;
 
 	auto prepare_shader(glsl_program & program) -> void;
 

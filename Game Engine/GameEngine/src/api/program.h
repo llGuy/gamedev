@@ -6,11 +6,15 @@
 #include "shader.h"
 #include "../xcp/exception.h"
 
+class uniform_buffer;
+
 class glsl_program
 {
 private:
 	std::vector<glsl_shader> shaders;
 	std::unordered_map<std::string, i32> uloc_cache;
+
+	std::unordered_map<std::string, i32> block_indices_cache;
 
 	u32 id;
 public:
@@ -18,6 +22,8 @@ public:
 
 	auto attach(glsl_shader const & sh) -> void;
 public:
+	auto bind_uniform_block(uniform_buffer & uniform_block, std::string const & name) -> void;
+
 	auto send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void;
 	auto send_uniform_vec3(std::string const & name, float * ptr, u32 count) -> void;
 	auto send_uniform_vec4(std::string const & name, float * ptr, u32 count) -> void;
@@ -45,7 +51,8 @@ private:
 
 	auto check_status(void) -> void;
 
-	auto get_uniform_location(std::string const & name)->i32;
+	auto get_uniform_location(std::string const & name) -> i32;
+	auto get_uniform_block_index(std::string const & name) -> i32;
 private:
 	template <typename ... T> auto bind_attribs(T ... attribs) -> void
 	{

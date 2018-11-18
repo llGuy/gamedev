@@ -6,6 +6,7 @@ auto material_handler::add_material(std::string mat_name, material_light_info co
 	u32 material_type_index = materials.size();
 	materials.push_back(new material_prototype(light_info, shader, lights, mat_name));
 	material_indices[mat_name] = material_type_index;
+	materials.back()->init();
 	return materials.back();
 }
 

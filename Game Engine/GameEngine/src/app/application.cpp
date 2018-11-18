@@ -8,8 +8,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1100
-#define DISPLAY_HEIGHT 600
+#define DISPLAY_WIDTH 1500
+#define DISPLAY_HEIGHT 800
 
 application::application(void)
 	: display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Game Engine")
@@ -31,6 +31,7 @@ auto application::init(void) -> void
 		shaders.init();
 		world.init();
 		models.init();
+		lights.create();
 
 		init_game_objects();
 		init_models();
@@ -61,8 +62,6 @@ auto application::update(void) -> void
 {
 	display.refresh();
 
-
-
 	/* reset animation renderer */
 	material_prototype * mat_type = materials["material.animated"];
 	mat_type->flush();
@@ -71,12 +70,8 @@ auto application::update(void) -> void
 	material_prototype * mat_type_lp = materials["material.low_poly"];
 	mat_type_lp->flush();
 
-
-
 	world.update(time_handler.elapsed());
 	time_handler.reset();
-
-
 
 	is_running = display.is_open();
 }
@@ -127,9 +122,9 @@ auto application::init_game_objects(void) -> void
 	monkey.add_component(model_matrix_comp);
 
 	game_object & platform = world.init_game_object({ 
-		glm::vec3(0.0f, -8.0f, 0.0f)
+		glm::vec3(0.0f, -4.0f, 0.0f)
 		, glm::vec3(1.0f, 0.0f, 0.0f)
-		, glm::vec3(2.0f)
+		, glm::vec3(3.0f)
 		, "game_object.platform" });
 
 	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
@@ -305,7 +300,6 @@ auto application::init_pipeline(void) -> void
 		render_pipeline.add_render_stage("render_stage.init", stage);
 	}
 
-	
 	{
 		/* create blur stages */
 		render_stage2D * vblur1 = new render_stage2D(shaders[shader_handle("shader.vertical_blur")], &guis);

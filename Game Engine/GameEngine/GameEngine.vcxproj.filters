@@ -52,6 +52,7 @@
     <ClCompile Include="src\graphics\pipeline\render_stage3D.cpp" />
     <ClCompile Include="src\graphics\pipeline\render_stage2D.cpp" />
     <ClCompile Include="src\graphics\pipeline\pipeline.cpp" />
+    <ClCompile Include="src\api\uniform_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -249,6 +250,9 @@
     <ClInclude Include="src\graphics\pipeline\render_stage2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\api\uniform_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />
@@ -267,6 +271,9 @@
     <None Include="src\shaders\animation3D\gsh.shader" />
     <None Include="src\shaders\animation3D\vsh.shader" />
     <None Include="res\model\model_test.dae" />
+    <None Include="src\shaders\post_processing\gaussian_blur\h_vsh.shader" />
+    <None Include="src\shaders\post_processing\gaussian_blur\fsh.shader" />
+    <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">
