@@ -47,12 +47,6 @@ auto material_prototype::prepare(camera & scene_camera) -> void
 
 	if (enabled_lighting)
 	{
-		/*shader->send_uniform_vec3("material_info.ambient_reflectivity", glm::value_ptr(light_info_receive.ambient_reflectivity), 1);
-		shader->send_uniform_vec3("material_info.diffuse_reflectivity", glm::value_ptr(light_info_receive.diffuse_reflectivity), 1);
-		shader->send_uniform_vec3("material_info.specular_reflectivity", glm::value_ptr(light_info_receive.specular_reflectivity), 1);
-		shader->send_uniform_float("material_info.shininess_factor", light_info_receive.shininess_factor);
-		shader->send_uniform_float("material_info.reflect_factor", light_info_receive.reflect_factor);*/
-
 		shader->bind_uniform_block(material_block, "material");
 		shader->send_uniform_int("lighting", 1);
 		lights->prepare_shader(*shader);

@@ -5,13 +5,16 @@
 class uniform_buffer : public buffer
 {
 public:
-	uniform_buffer(void);
+	uniform_buffer(u32 index);
 
 	auto get_index(void) -> u32 &;
 
 	auto bind_base(GLenum binding_point) -> void;
 private:
-	static u32 index_count;
-
 	u32 index;
 };
+
+/* user defined block indices */
+#define LIGHT_BLOCK_INDEX 0
+#define MATERIAL_PROTOTYPE_BLOCK_INDEX 1
+#define ANIMATION_BLOCK_INDEX 2

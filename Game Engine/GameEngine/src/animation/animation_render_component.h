@@ -5,6 +5,7 @@
 #include "animation_wrapper.h"
 #include "animated_material.h"
 #include "animation_component.h"
+#include "../api/uniform_buffer.h"
 #include "../scene/component/component.h"
 #include "../graphics/3D/renderer/renderer3D.h"
 
@@ -36,12 +37,11 @@ template <> struct component<struct component_animation3D_render, game_object_da
 			animation_component = obj.get_component_index<component_animation3D>();
 
 		auto & anim_component = obj.get_component<component_animation3D>(animation_component);
-
 		auto & model_matrix_component = obj.get_component<component_model_matrix>();
 
 		mat->get_transform() = model_matrix_component.get_trs();
-
 		mat->get_transforms_array() = std::move(anim_component.final_matrices);
+//		mat->get_uniform_block() = anim_component.animation_uniform_block;
 
 		materials->submit(mat);
 	}

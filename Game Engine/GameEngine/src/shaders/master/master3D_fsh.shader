@@ -1,6 +1,4 @@
 layout(location = 0) out vec4 final_color;
-/* for bloom effect */
-//layout(location = 1) out vec4 final_bright_colors;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH

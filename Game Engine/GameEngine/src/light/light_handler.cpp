@@ -15,6 +15,7 @@ light_handler::light_handler(void)
 	, glm::vec3(1.0f)
 	, glm::vec3(1.0f)
 	, glm::vec3(1.0f) }
+	, light_uniform_block(LIGHT_BLOCK_INDEX)
 {
 }
 

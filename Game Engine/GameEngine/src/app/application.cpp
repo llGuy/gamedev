@@ -103,7 +103,7 @@ auto application::init_game_objects(void) -> void
 		, "game_object.player" });
 
 	component<component_behavior_key, game_object_data> key_comp{
-		key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }, display.user_inputs() };
+		DEFAULT_KEY_BINDINGS, display.user_inputs() };
 
 	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs() };
 
@@ -175,7 +175,6 @@ auto application::init_3D_test(void) -> void
 	/* just initializing uniform variables */
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
 		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000.0f);
-
 
 	world.get_scene_camera().get_projection_matrix() = projection_matrix;
 
@@ -291,50 +290,62 @@ auto application::init_pipeline(void) -> void
 	u32 display_h = display.pixel_height();
 
 	{
-		render_stage3D * stage = new render_stage3D(&materials, &world.get_scene_camera());
-		stage->init(display_w, display_h);
-		stage->attach_texture(*textures.get_texture("texture.scene_color"), GL_COLOR_ATTACHMENT0, 0);
-		renderbuffer depth;
-		create_depth_renderbuffer(depth, display_w, display_h);
-		stage->attach_renderbuffer(depth, GL_DEPTH_ATTACHMENT);
-		render_pipeline.add_render_stage("render_stage.init", stage);
+		auto depth = renderbuffers.add_renderbuffer("renderbuffer.first_stage");
+		create_depth_renderbuffer(*depth, display_w, display_h);
+
+		render_stage_create_info info;
+		info.width = display_w;
+		info.height = display_h;
+		info.color_name = "texture.scene_color";
+		info.depth_name = "renderbuffer.scene_depth";
+		info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+			| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+		render_pipeline.add_render_stage<render_stage3D>("render_stage.init", &materials, &world.get_scene_camera());
+		render_pipeline.create_render_stage("render_stage.init", info, renderbuffers, textures);
 	}
 
 	{
-		/* create blur stages */
-		render_stage2D * vblur1 = new render_stage2D(shaders[shader_handle("shader.vertical_blur")], &guis);
-		//render_stage2D * vblur1 = new render_stage2D(nullptr, &guis);
-		vblur1->init(display_w / 2, display_h/ 2);
-		vblur1->add_texture2D_bind(textures.get_texture("texture.scene_color"));
-		vblur1->attach_texture(*textures.get_texture("texture.vblur1"), GL_COLOR_ATTACHMENT0, 0);
+		auto depth_vblur1 = renderbuffers.add_renderbuffer("renderbuffer.vblur1");
+		create_depth_renderbuffer(*depth_vblur1, display_w / 2, display_h / 2);
 
-		renderbuffer depth_vblur1;
-		create_depth_renderbuffer(depth_vblur1, display_w / 2, display_h / 2);
-		vblur1->attach_renderbuffer(depth_vblur1, GL_DEPTH_ATTACHMENT);
-		vblur1->add_uniform_command(new uniform_float("target_height", DISPLAY_HEIGHT / 2));
-		render_pipeline.add_render_stage("render_stage.vblur1", vblur1);
+		render_stage_create_info info;
+		info.width = display_w / 2;
+		info.height = display_h / 2;
+		info.color_name = "texture.vblur1";
+		info.depth_name = "renderbuffer.vblur1_depth";
+		info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+			| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+		auto stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.vblur1", shaders[shader_handle("shader.vertical_blur")], &guis);
+		render_pipeline.create_render_stage("render_stage.vblur1", info, renderbuffers, textures);
+
+		stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
+		stage->add_uniform_command(new uniform_float("target_height", DISPLAY_HEIGHT / 2));
 	}
 
 	{
-		/* create blur stages */
-		render_stage2D * hblur1 = new render_stage2D(shaders[shader_handle("shader.horizontal_blur")], &guis);
-		//render_stage2D * vblur1 = new render_stage2D(nullptr, &guis);
-		hblur1->init(display_w / 2, display_h / 2);
-		hblur1->add_texture2D_bind(textures.get_texture("texture.vblur1"));
-		hblur1->attach_texture(*textures.get_texture("texture.hblur1"), GL_COLOR_ATTACHMENT0, 0);
+		auto depth_hblur1 = renderbuffers.add_renderbuffer("renderbuffer.hblur1");
+		create_depth_renderbuffer(*depth_hblur1, display_w / 2, display_h / 2);
 
-		renderbuffer depth_hblur1;
-		create_depth_renderbuffer(depth_hblur1, display_w / 2, display_h / 2);
-		hblur1->attach_renderbuffer(depth_hblur1, GL_DEPTH_ATTACHMENT);
-		hblur1->add_uniform_command(new uniform_float("target_width", DISPLAY_WIDTH / 2));
-		render_pipeline.add_render_stage("render_stage.hblur1", hblur1);
+		render_stage_create_info info;
+		info.width = display_w / 2;
+		info.height = display_h / 2;
+		info.color_name = "texture.hblur1";
+		info.depth_name = "renderbuffer.hblur1_depth";
+		info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+			| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+		auto stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.hblur1", shaders[shader_handle("shader.horizontal_blur")], &guis);
+		render_pipeline.create_render_stage("render_stage.hblur1", info, renderbuffers, textures);
+
+		stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
+		stage->add_uniform_command(new uniform_float("target_width", DISPLAY_WIDTH / 2));
 	}
 
-
 	{
-		render_stage2D * final_stage = new render_stage2D(nullptr, &guis);
+		auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 		final_stage->set_to_default(display_w, display_h);
 		final_stage->add_texture2D_bind(textures.get_texture("texture.scene_color"));
-		render_pipeline.add_render_stage("render_stage.final", final_stage);
 	}
 }

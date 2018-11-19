@@ -20,6 +20,8 @@ struct key_bind
 	u32 down;
 };
 
+#define DEFAULT_KEY_BINDINGS key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }
+
 template <> struct component<struct component_behavior_key, game_object_data> : component_base
 {
 private:

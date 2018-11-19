@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\graphics\renderbuffers\renderbuffer_handler.cpp" />
     <ClCompile Include="src\animation\animated_material.cpp" />
     <ClCompile Include="src\animation\animation.cpp" />
     <ClCompile Include="src\animation\animation_handler.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h" />
     <ClInclude Include="src\animation\animated_material.h" />
     <ClInclude Include="src\animation\animation_render_component.h" />
     <ClInclude Include="src\animation\animation_wrapper.h" />

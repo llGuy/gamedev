@@ -25,13 +25,6 @@ uniform mat4 view_matrix;
 
 uniform mat4 joint_transforms[MAX_JOINTS];
 
-const int upper_arm_left = 4;
-const int lower_arm_left = 5; 
-const int upper_arm_right = 7;
-const int lower_arm_right = 8;
-const int hand_right = 9;
-const int hand_left = 6;
-
 void main(void)
 {
 #ifdef USES_TEXTURE

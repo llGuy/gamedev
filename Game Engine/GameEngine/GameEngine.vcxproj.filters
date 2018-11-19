@@ -53,6 +53,7 @@
     <ClCompile Include="src\graphics\pipeline\render_stage2D.cpp" />
     <ClCompile Include="src\graphics\pipeline\pipeline.cpp" />
     <ClCompile Include="src\api\uniform_buffer.cpp" />
+    <ClCompile Include="src\graphics\renderbuffers\renderbuffer_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -251,6 +252,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\api\uniform_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

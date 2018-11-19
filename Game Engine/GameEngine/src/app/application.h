@@ -10,6 +10,7 @@
 #include "../graphics/texture/texture_handler.h"
 #include "../graphics/2D/gui/font/font_handler.h"
 #include "../graphics/3D/material/material_handler.h"
+#include "../graphics/renderbuffers/renderbuffer_handler.h"
 
 #include "../graphics/2D/gui/gui_handler.h"
 #include "../graphics/2D/renderer/batch_renderer2D.h"
@@ -30,6 +31,7 @@ private:
 	light_handler lights;
 	gui_handler guis;
 	material_handler materials;
+	renderbuffer_handler renderbuffers;
 	skeletal_animation_handler animations;
 
 	pipeline render_pipeline;

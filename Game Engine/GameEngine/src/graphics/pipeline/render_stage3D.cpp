@@ -10,7 +10,7 @@ auto render_stage3D::init(u32 w, u32 h) -> void
 	fbo.create(w, h);
 }
 
-auto render_stage3D::execute(void) -> void
+auto render_stage3D::execute(u32 current_id, std::vector<render_stage *> & stages) -> void
 {
 	glEnable(GL_DEPTH_TEST);
 

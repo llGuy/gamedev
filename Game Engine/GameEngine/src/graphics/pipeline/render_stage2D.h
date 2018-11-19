@@ -47,7 +47,7 @@ public:
 
 	auto init(u32 w, u32 h) -> void override;
 
-	auto execute(void) -> void override;
+	auto execute(u32 current_id, std::vector<render_stage *> & stages) -> void override;
 
 	auto add_texture2D_bind(texture * tex) -> void;
 

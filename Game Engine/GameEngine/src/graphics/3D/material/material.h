@@ -5,6 +5,7 @@
 #include "../../../scene/camera.h"
 #include "../../3D/model_handler.h"
 #include "../../../light/light_handler.h"
+#include "../../../api/uniform_buffer.h"
 
 class material;
 
@@ -37,6 +38,7 @@ public:
 		, lights(&lights)
 		, light_info_receive(light_info)
 		, material_type_name(name)
+		, material_block(MATERIAL_PROTOTYPE_BLOCK_INDEX)
 	{
 	}
 

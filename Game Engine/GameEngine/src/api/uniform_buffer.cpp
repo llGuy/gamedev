@@ -1,10 +1,8 @@
 #include "uniform_buffer.h"
 
-u32 uniform_buffer::index_count = 0;
-
-uniform_buffer::uniform_buffer(void)
+uniform_buffer::uniform_buffer(u32 index)
+	: index(index)
 {
-	index = index_count++;
 }
 
 auto uniform_buffer::get_index(void) -> u32 &

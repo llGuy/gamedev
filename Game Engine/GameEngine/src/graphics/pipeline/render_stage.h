@@ -11,10 +11,18 @@ protected:
 	framebuffer fbo;
 	/* could be a post processing stage or a 3D scene stage */
 
+	std::vector<texture *> output_textures;
+
 public:
 
 	virtual auto init(u32 w, u32 h) -> void = 0;
-	virtual auto execute(void) -> void = 0;
+	virtual auto execute(u32 current_id, std::vector<render_stage *> & stages) -> void = 0;
+
+	inline
+	auto get_fbo(void) -> framebuffer &
+	{
+		return fbo;
+	}
 
 	inline
 	auto set_to_default(u32 w, u32 h) -> void
@@ -37,6 +45,8 @@ public:
 	{
 		fbo.bind(GL_FRAMEBUFFER);
 		fbo.attach(tex, attachment, level);
+
+		output_textures.push_back(&tex);
 	}
 
 	inline
@@ -44,6 +54,11 @@ public:
 	{
 		fbo.bind(GL_FRAMEBUFFER);
 		fbo.attach(buff, attachment);
+	}
+
+	auto get_output_textures(void) -> std::vector<texture *> &
+	{
+		return output_textures;
 	}
 
 };
