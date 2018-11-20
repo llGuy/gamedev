@@ -32,10 +32,14 @@ public:
 	}
 
 	inline
-	auto clear(f32 r, f32 g, f32 b, f32 a, u32 flags) -> void
+	auto bind(void) -> void 
 	{
 		fbo.bind(GL_FRAMEBUFFER);
+	}
 
+	inline
+	auto clear(f32 r, f32 g, f32 b, f32 a, u32 flags) -> void
+	{
 		glClear(flags);
 		glClearColor(r, g, b, a);
 	}

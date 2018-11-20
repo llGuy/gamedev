@@ -37,7 +37,7 @@ private:
 
 public:
 
-	auto execute_stages(void) -> void;
+	auto execute_stages(u32 display_w, u32 display_h) -> void;
 
 	/* function to make life easier */
 	auto create_render_stage(std::string const & stage_name

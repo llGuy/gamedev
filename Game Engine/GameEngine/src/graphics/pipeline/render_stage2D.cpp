@@ -14,8 +14,6 @@ auto render_stage2D::execute(u32 current_id, std::vector<render_stage *> & stage
 {
 	glDisable(GL_DEPTH_TEST);
 
-	fbo.bind(GL_FRAMEBUFFER);
-
 	for (u32 i = 0; i < textures2D.size(); ++i)
 	{
 		if (!textures2D[i])

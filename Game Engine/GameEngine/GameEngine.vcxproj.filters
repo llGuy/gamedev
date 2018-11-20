@@ -257,6 +257,9 @@
     <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\visual\shadow_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />

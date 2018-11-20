@@ -14,7 +14,5 @@ auto render_stage3D::execute(u32 current_id, std::vector<render_stage *> & stage
 {
 	glEnable(GL_DEPTH_TEST);
 
-	fbo.bind(GL_FRAMEBUFFER);
-
 	materials->render_all(*scene_camera);
 }

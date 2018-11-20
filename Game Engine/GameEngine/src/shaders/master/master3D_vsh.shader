@@ -19,6 +19,7 @@ vertex_out;
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
+uniform mat4 shadow_bias;
 
 void main(void)
 {
@@ -35,6 +36,8 @@ void main(void)
 #ifdef USES_STATIC_NORMALS
 	vertex_out.vertex_normal = vec3(model_matrix* vec4(vertex_normal, 0.0f));
 #endif
+
+	//shadow_coord = shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
 
 	gl_Position = projection_matrix * view_matrix * vec4(vertex_out.vertex_position, 1.0f);
 }

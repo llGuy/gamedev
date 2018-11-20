@@ -111,6 +111,7 @@
     <ClInclude Include="src\graphics\target\depth_target.h" />
     <ClInclude Include="src\graphics\target\target.h" />
     <ClInclude Include="src\graphics\texture\texture_handler.h" />
+    <ClInclude Include="src\graphics\visual\shadow_handler.h" />
     <ClInclude Include="src\io\io.h" />
     <ClInclude Include="src\light\light_handler.h" />
     <ClInclude Include="src\scene\camera.h" />

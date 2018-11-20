@@ -92,6 +92,38 @@ void apply_reflection(float specular, vec3 eye_vector, vec3 light_vector, vec3 v
 	color = mix(color, envi_color, material_info.reflect_factor);
 }
 
+float get_shadow_value(in vec3 world_pos)
+{
+	/*float dist = distance(world_pos, camera_position);
+
+	dist = dist - (shadow_distance - transition_distance);
+	dist = dist / transition_distance;
+	dist = clamp(1.0 - dist, 0.0, 1.0);
+
+	float texel_size = 1.0f / map_size;
+	float total = 0.0f;
+
+	if (shadow.x <= 1.0f && shadow.y <= 1.0f && shadow.z <= 1.0f)
+	{
+		for (int x = -pcf_count; x <= pcf_count; ++x)
+		{
+			for (int y = -pcf_count; y <= pcf_count; ++y)
+			{
+				float object_nearest_light = texture(shadow_map, shadow.xy + vec2(x, y) * texel_size).x;
+				if (shadow.z > object_nearest_light + 0.002f)
+				{
+					total += 0.5f;
+				}
+			}
+		}
+		total /= total_texels;
+	}
+
+	float light_factor = 1.0f - (total * dist);*/
+
+	return 0;
+}
+
 float brightness(vec4 color)
 {
 	return (color.r * 0.2126) + (color.g * 0.7152) + (color.b * 0.0722);

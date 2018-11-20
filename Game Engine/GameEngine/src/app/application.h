@@ -6,6 +6,7 @@
 #include "../window/window.h"
 #include "../graphics/pipeline/pipeline.h"
 #include "../graphics/2D/gui/panel/panel.h"
+#include "../graphics/visual/shadow_handler.h"
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
 #include "../graphics/2D/gui/font/font_handler.h"
@@ -31,6 +32,7 @@ private:
 	light_handler lights;
 	gui_handler guis;
 	material_handler materials;
+	shadow_handler shadows;
 	renderbuffer_handler renderbuffers;
 	skeletal_animation_handler animations;
 
