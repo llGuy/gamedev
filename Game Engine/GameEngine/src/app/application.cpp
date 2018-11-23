@@ -31,12 +31,14 @@ auto application::init(void) -> void
 		shaders.init();
 		world.init();
 		models.init();
-		lights.create();
 
 		init_game_objects();
 		init_models();
 		init_fonts();
 		init_textures();
+
+		lights.create(textures.get_texture("texture.shadow_map"));
+
 		init_shaders();
 		init_3D_test();
 		init_2D_test();
@@ -73,8 +75,10 @@ auto application::update(void) -> void
 	f32 aspect = (f32)display.pixel_width() / (f32)display.pixel_height();
 
 	camera & scene_camera = world.get_scene_camera();
-	shadows.update_light_view(lights.light_position());
-	shadows.update(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
+//	shadows.update_light_view(lights.light_position());
+//	shadows.update(200.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
+
+	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 
 	world.update(time_handler.elapsed());
 	time_handler.reset();
@@ -118,7 +122,7 @@ auto application::init_game_objects(void) -> void
 	world.bind_camera_to_object(player);
 
 	game_object & monkey = world.init_game_object({ 
-		glm::vec3(0.0f)
+		glm::vec3(-1.5f)
 		, glm::vec3(1.0f)
 		, glm::vec3(1.0f, 0.7f, 1.0f)
 		, "game_object.monkey" });
@@ -177,7 +181,7 @@ auto application::init_models(void) -> void
 
 auto application::init_3D_test(void) -> void
 {
-	shadows.create(lights.light_position());
+//	shadows.create(lights.light_position());
 
 	/* initializing normal 3D renderer */
 	/* just initializing uniform variables */
@@ -243,7 +247,10 @@ auto application::init_shaders(void) -> void
 	shader_handle shader = models.create_shader_handle(platform_model);
 	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	shader.set_name("shader.low_poly");
-	shaders.create_program(shader, "3D");
+	auto program = shaders.create_program(shader, "3D");
+	program->bind();
+	program->send_uniform_int("diffuse", 0);
+	program->send_uniform_int("shadow_map", 1);
 
 	shader_handle sky_shader_handle("shader.sky");
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));
@@ -310,7 +317,7 @@ auto application::init_pipeline(void) -> void
 	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_NONE
 		| RENDER_STAGE_CREATE_INFO_DEPTH_TEXTURE;
 
-	render_pipeline.add_render_stage<render_stage3D>("render_stage.shadow_pass", &materials, &shadows.get_shadow_camera());
+	render_pipeline.add_render_stage<render_stage3D>("render_stage.shadow_pass", &materials, &lights.get_shadow_handler().get_shadow_camera());
 	render_pipeline.create_render_stage("render_stage.shadow_pass", info, renderbuffers, textures);
 
 	auto depth = renderbuffers.add_renderbuffer("renderbuffer.first_stage");

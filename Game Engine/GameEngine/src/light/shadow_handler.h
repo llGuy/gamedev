@@ -1,11 +1,24 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "../../api/api.h"
-#include "../../utils/types.h"
-#include "../../utils/detail.h"
-#include "../../scene/camera.h"
+#include "../api/api.h"
+#include "../utils/types.h"
+#include "../utils/detail.h"
+#include "../scene/camera.h"
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "../api/uniform_buffer.h"
+
+struct shadow_uniform_block_data
+{
+	f32 transition_distance;
+	f32 shadow_distance;
+	f32 shadow_map_size;
+
+	f32 pad;
+
+	glm::mat4 shadow_bias;
+};
 
 class shadow_handler
 {
@@ -40,8 +53,14 @@ private:
 	glm::vec3 light_dir;
 
 	camera shadow_camera;
+
+	uniform_buffer shadow_uniform_block;
+	texture * shadow_map;
 public:
-	shadow_handler(void) = default;
+	shadow_handler(void)
+		: shadow_uniform_block(SHADOW_BLOCK_INDEX)
+	{
+	}
 	shadow_handler(shadow_handler const &) = delete;
 public:
 	auto get_projection(void) -> glm::mat4 & { return projection_matrix; }
@@ -51,11 +70,40 @@ public:
 
 	static constexpr auto get_shadow_map_size(void) -> u32 { return shadow_map_size; };
 public:
-	auto create(glm::vec3 const & light_pos) -> void
+	auto create(glm::vec3 const & light_pos, texture * shadow_map) -> void
 	{
+		this->shadow_map = shadow_map;
+
 		create_shadow_bias_matrix();
 		create_light_view_matrix(light_dir = glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
+
+		/* create uniform buffer */
+		shadow_uniform_block.create();
+		shadow_uniform_block.bind(GL_UNIFORM_BUFFER);
+		shadow_uniform_block.fill<void>(sizeof shadow_uniform_block_data, nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
+
+		auto ptr = shadow_uniform_block.map(GL_UNIFORM_BUFFER, GL_READ_ONLY);
+
+		shadow_uniform_block_data data;
+		data.shadow_distance = 200.0f;
+		data.shadow_map_size = 4096.0f;
+		data.transition_distance = 20.0f;
+		data.shadow_bias = shadow_bias;
+		data.pad = 0.0f;
+
+		*((shadow_uniform_block_data *)ptr) = data;
+
+		unmap_buffers(GL_UNIFORM_BUFFER);
 	}
+
+	auto prepare_shader(glsl_program & program) -> void
+	{
+		//program.bind_uniform_block(shadow_uniform_block, "shadow_data");
+		glm::mat4 bias = shadow_bias * shadow_camera.get_projection_matrix() * shadow_camera.get_view_matrix();
+		program.send_uniform_mat4("shadow_bias", glm::value_ptr(bias), 1);
+		shadow_map->bind(GL_TEXTURE_2D, 1);
+	}
+
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void
 	{
 		calculate_frustum_dimensions(far, near, aspect, fov);

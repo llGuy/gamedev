@@ -12,6 +12,8 @@ in struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec4 shadow_coord;
 }
 geometry_out;
 
@@ -26,6 +28,8 @@ in struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec4 shadow_coord;
 } 
 vertex_out;
 
@@ -50,7 +54,18 @@ layout(std140, row_major) uniform material
 }
 material_info;
 
+/*layout(std140, row_major) uniform shadow_data
+{
+	float transition_distance;
+	float shadow_distance;
+	float map_size;
+
+	mat4 shadow_bias;
+}
+shadow_info;*/
+
 uniform sampler2D diffuse;
+uniform sampler2D shadow_map;
 uniform samplerCube environment;
 
 uniform vec3 camera_position;
@@ -63,38 +78,51 @@ void apply_ambient(inout vec4 color)
 	color = light_info.ambient_intensity * material_info.ambient_reflectivity * color;
 }
 
-void apply_diffuse(vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+void apply_diffuse(float light_factor, vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
 	float diffuse = clamp(dot(light_vector, vertex_normal), 0, 1);
 
-	color = vec4(diffuse) * light_info.diffuse_intensity * material_info.diffuse_reflectivity + color;
+	color = vec4(diffuse) * light_info.diffuse_intensity * material_info.diffuse_reflectivity * light_factor + color;
 }
 
-float apply_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+/*subroutine float specularity(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color);
+subroutine(specularity) float no_specular(vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+{
+	return 0.0f;
+}*/
+float apply_specular(float light_factor, vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
 	vec3 reflected_light = reflect(normalize(light_vector), vertex_normal);
 	float specular = clamp(dot(reflected_light, normalize(eye_vector)), 0, 1);
 	specular = pow(specular, material_info.shininess_factor);
 
-	color = vec4(specular) * light_info.specular_intensity * material_info.specular_reflectivity + color;
+	color = vec4(specular) * light_info.specular_intensity * material_info.specular_reflectivity * light_factor + color;
 
 	return specular;
 }
 
-void apply_reflection(float specular, vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
+//subroutine uniform specularity apply_specularity;
+
+void apply_reflection(float light_factor, float specular, vec3 eye_vector, vec3 light_vector, vec3 vertex_normal, inout vec4 color)
 {
 	vec3 result = reflect(-eye_vector, vertex_normal);
 
 	vec4 envi_color = texture(environment, result);
 
-	color += envi_color * specular;
+	color += envi_color * specular * light_factor;
 
 	color = mix(color, envi_color, material_info.reflect_factor);
 }
 
-float get_shadow_value(in vec3 world_pos)
+float get_shadow_value(in vec3 world_pos, in vec4 shadow_coord)
 {
-	/*float dist = distance(world_pos, camera_position);
+	const int pcf_count = 1;
+	const float total_texels = (pcf_count * 2.0f + 1.0f) * (pcf_count * 2.0f + 1.0f);
+	const float shadow_distance = 100.0f;
+	const float map_size = 2 * 2048.0f;
+	const float transition_distance = 10.0f;
+
+	float dist = distance(world_pos, camera_position);
 
 	dist = dist - (shadow_distance - transition_distance);
 	dist = dist / transition_distance;
@@ -103,14 +131,14 @@ float get_shadow_value(in vec3 world_pos)
 	float texel_size = 1.0f / map_size;
 	float total = 0.0f;
 
-	if (shadow.x <= 1.0f && shadow.y <= 1.0f && shadow.z <= 1.0f)
+	if (shadow_coord.x <= 1.0f && shadow_coord.y <= 1.0f && shadow_coord.z <= 1.0f)
 	{
 		for (int x = -pcf_count; x <= pcf_count; ++x)
 		{
 			for (int y = -pcf_count; y <= pcf_count; ++y)
 			{
-				float object_nearest_light = texture(shadow_map, shadow.xy + vec2(x, y) * texel_size).x;
-				if (shadow.z > object_nearest_light + 0.002f)
+				float object_nearest_light = texture(shadow_map, shadow_coord.xy + vec2(x, y) * texel_size).x;
+				if (shadow_coord.z > object_nearest_light + 0.002f)
 				{
 					total += 0.5f;
 				}
@@ -119,9 +147,9 @@ float get_shadow_value(in vec3 world_pos)
 		total /= total_texels;
 	}
 
-	float light_factor = 1.0f - (total * dist);*/
+	float light_factor = 1.0f - (total * dist);
 
-	return 0;
+	return light_factor;
 }
 
 float brightness(vec4 color)
@@ -148,10 +176,13 @@ void main(void)
 		vec3 light_vector = normalize(vec3(light_info.light_position));
 		vec3 eye_vector = normalize(camera_position - input_data.vertex_position);
 
-		apply_ambient(final_color);
-		apply_diffuse(light_vector, input_data.vertex_normal, final_color);
-		float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
+		float light_factor = get_shadow_value(input_data.vertex_position, input_data.shadow_coord);
 
-		apply_reflection(specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+		apply_ambient(final_color);
+		apply_diffuse(light_factor, eye_vector, light_vector, input_data.vertex_normal, final_color);
+		//float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
+		float specularity = apply_specular(light_factor, eye_vector, light_vector, input_data.vertex_normal, final_color);
+
+		apply_reflection(light_factor, specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
 	}
 }

@@ -16,7 +16,7 @@ public:
 	auto bind(GLenum binding_point) -> void;
 	auto map(GLenum binding_point, GLenum access) -> void *;
 
-	template <typename T> auto fill(u32 size, T * data, GLenum usage, GLenum binding_point) -> void
+	template <typename T = void> auto fill(u32 size, T * data, GLenum usage, GLenum binding_point) -> void
 	{
 		bind(binding_point);
 		glBufferData(binding_point, size, data, usage);

@@ -13,6 +13,8 @@ out struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec4 shadow_coord;
 }
 vertex_out;
 
@@ -20,6 +22,16 @@ uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 uniform mat4 shadow_bias;
+
+/*layout(std140, row_major) uniform shadow_data 
+{
+	float transition_distance;
+	float shadow_distance;
+	float map_size;
+
+	mat4 shadow_bias;
+} 
+shadow_info;*/
 
 void main(void)
 {
@@ -37,7 +49,7 @@ void main(void)
 	vertex_out.vertex_normal = vec3(model_matrix* vec4(vertex_normal, 0.0f));
 #endif
 
-	//shadow_coord = shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
+	vertex_out.shadow_coord = shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
 
 	gl_Position = projection_matrix * view_matrix * vec4(vertex_out.vertex_position, 1.0f);
 }

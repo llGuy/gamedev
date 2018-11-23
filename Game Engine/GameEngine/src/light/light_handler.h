@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "shadow_handler.h"
 #include "../utils/types.h"
 #include "../api/uniform_buffer.h"
 
@@ -32,15 +33,18 @@ private:
 
 	light_info light;
 
+	shadow_handler shadows;
+
 	uniform_buffer light_uniform_block;
 
 public:
 
 	light_handler(void);
 
-	auto create(void) -> void;
+	auto create(texture * shadow_map) -> void;
 
 	auto update_buffer(void) -> void;
+	auto update_shadows(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & scene_cam_pos, glm::vec3 const & scene_cam_dir) -> void;
 
 	auto prepare_shader(glsl_program & program) -> void;
 
@@ -62,5 +66,10 @@ public:
 	inline auto specular_intensity(void) -> glm::vec3 &
 	{
 		return light.specular_intensity;
+	}
+
+	inline auto get_shadow_handler(void) -> shadow_handler &
+	{
+		return shadows;
 	}
 };

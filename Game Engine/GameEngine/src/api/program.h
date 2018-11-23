@@ -15,6 +15,7 @@ private:
 	std::unordered_map<std::string, i32> uloc_cache;
 
 	std::unordered_map<std::string, i32> block_indices_cache;
+	std::unordered_map<std::string, i32> subroutine_cache;
 
 	u32 id;
 public:
@@ -22,6 +23,7 @@ public:
 
 	auto attach(glsl_shader const & sh) -> void;
 public:
+	auto bind_subroutine(std::string const & var, std::string const & func_name, GLenum shader) -> void;
 	auto bind_uniform_block(uniform_buffer & uniform_block, std::string const & name) -> void;
 
 	auto send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void;
@@ -51,6 +53,8 @@ private:
 
 	auto check_status(void) -> void;
 
+	auto get_subroutine_index(std::string const & name, GLenum shader) -> i32;
+	auto get_subroutine_location(std::string const & name, GLenum shader) -> i32;
 	auto get_uniform_location(std::string const & name) -> i32;
 	auto get_uniform_block_index(std::string const & name) -> i32;
 private:

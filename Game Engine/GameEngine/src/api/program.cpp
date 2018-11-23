@@ -87,6 +87,32 @@ auto glsl_program::bind_uniform_block(uniform_buffer & uniform_block, std::strin
 	glUniformBlockBinding(id, index, uniform_block.get_index());
 }
 
+auto glsl_program::bind_subroutine(std::string const & var, std::string const & func_name, GLenum shader) -> void
+{
+	auto subroutine_index = get_subroutine_index(func_name, shader);
+	auto subroutine_location = get_subroutine_location(var, shader);
+
+	//glUniformSubroutinesuiv(shader, 1, &subroutine_index);
+}
+
+auto glsl_program::get_subroutine_index(std::string const & name, GLenum shader) -> i32
+{
+	if (auto location = subroutine_cache.find(name); location != subroutine_cache.end())
+	{
+		return location->second;
+	}
+	return (subroutine_cache[name] = glGetSubroutineIndex(id, shader, name.c_str()));
+}
+
+auto glsl_program::get_subroutine_location(std::string const & name, GLenum shader) -> i32
+{
+	if (auto location = subroutine_cache.find(name); location != subroutine_cache.end())
+	{
+		return location->second;
+	}
+	return (subroutine_cache[name] = glGetSubroutineUniformLocation(id, shader, name.c_str()));
+}
+
 auto glsl_program::get_uniform_location(std::string const & name) -> i32
 {
 	if (auto location = uloc_cache.find(name); location != uloc_cache.end())

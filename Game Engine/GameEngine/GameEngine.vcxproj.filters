@@ -257,7 +257,7 @@
     <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\visual\shadow_handler.h">
+    <ClInclude Include="src\light\shadow_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

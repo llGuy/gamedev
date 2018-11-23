@@ -10,6 +10,8 @@ struct input_prev
 	vec2 texture_coords;
 
 	vec3 vertex_normal;
+
+	vec4 shadow_coord;
 };
 
 in input_prev vertex_out[];
@@ -47,6 +49,8 @@ void main(void)
 #else
 		geometry_out.vertex_color = vertex_out[i].vertex_color;
 #endif
+
+		geometry_out.shadow_coord = vertex_out[i].shadow_coord;
 
 		gl_Position = gl_in[i].gl_Position;
 
