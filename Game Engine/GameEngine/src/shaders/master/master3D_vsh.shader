@@ -21,17 +21,17 @@ vertex_out;
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
-uniform mat4 shadow_bias;
 
-/*layout(std140, row_major) uniform shadow_data 
+layout(std140) uniform shadow_data 
 {
+	mat4 shadow_bias;
+
 	float transition_distance;
 	float shadow_distance;
 	float map_size;
-
-	mat4 shadow_bias;
+	float pcf_count;
 } 
-shadow_info;*/
+shadow_info;
 
 void main(void)
 {
@@ -49,7 +49,7 @@ void main(void)
 	vertex_out.vertex_normal = vec3(model_matrix* vec4(vertex_normal, 0.0f));
 #endif
 
-	vertex_out.shadow_coord = shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
+	vertex_out.shadow_coord = shadow_info.shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
 
 	gl_Position = projection_matrix * view_matrix * vec4(vertex_out.vertex_position, 1.0f);
 }

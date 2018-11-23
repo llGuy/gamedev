@@ -54,15 +54,16 @@ layout(std140, row_major) uniform material
 }
 material_info;
 
-/*layout(std140, row_major) uniform shadow_data
+layout(std140) uniform shadow_data
 {
+	mat4 shadow_bias;
+
 	float transition_distance;
 	float shadow_distance;
 	float map_size;
-
-	mat4 shadow_bias;
-}
-shadow_info;*/
+	float pcf_count;
+} 
+shadow_info;
 
 uniform sampler2D diffuse;
 uniform sampler2D shadow_map;
@@ -116,26 +117,22 @@ void apply_reflection(float light_factor, float specular, vec3 eye_vector, vec3 
 
 float get_shadow_value(in vec3 world_pos, in vec4 shadow_coord)
 {
-	const int pcf_count = 1;
-	const float total_texels = (pcf_count * 2.0f + 1.0f) * (pcf_count * 2.0f + 1.0f);
-	const float shadow_distance = 100.0f;
-	const float map_size = 2 * 2048.0f;
-	const float transition_distance = 10.0f;
+	float total_texels = (shadow_info.pcf_count * 2.0f + 1.0f) * (shadow_info.pcf_count * 2.0f + 1.0f);
 
 	float dist = distance(world_pos, camera_position);
 
-	dist = dist - (shadow_distance - transition_distance);
-	dist = dist / transition_distance;
+	dist = dist - (shadow_info.shadow_distance - shadow_info.transition_distance);
+	dist = dist / shadow_info.transition_distance;
 	dist = clamp(1.0 - dist, 0.0, 1.0);
 
-	float texel_size = 1.0f / map_size;
+	float texel_size = 1.0f / shadow_info.map_size;
 	float total = 0.0f;
 
 	if (shadow_coord.x <= 1.0f && shadow_coord.y <= 1.0f && shadow_coord.z <= 1.0f)
 	{
-		for (int x = -pcf_count; x <= pcf_count; ++x)
+		for (int x = int(-shadow_info.pcf_count); x <= int(shadow_info.pcf_count); ++x)
 		{
-			for (int y = -pcf_count; y <= pcf_count; ++y)
+			for (int y = int(-shadow_info.pcf_count); y <= int(shadow_info.pcf_count); ++y)
 			{
 				float object_nearest_light = texture(shadow_map, shadow_coord.xy + vec2(x, y) * texel_size).x;
 				if (shadow_coord.z > object_nearest_light + 0.002f)

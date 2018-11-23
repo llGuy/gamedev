@@ -75,9 +75,6 @@ auto application::update(void) -> void
 	f32 aspect = (f32)display.pixel_width() / (f32)display.pixel_height();
 
 	camera & scene_camera = world.get_scene_camera();
-//	shadows.update_light_view(lights.light_position());
-//	shadows.update(200.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
-
 	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 
 	world.update(time_handler.elapsed());

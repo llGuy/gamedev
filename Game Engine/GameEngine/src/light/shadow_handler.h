@@ -11,13 +11,12 @@
 
 struct shadow_uniform_block_data
 {
+	glm::mat4 shadow_bias;
+
 	f32 transition_distance;
 	f32 shadow_distance;
 	f32 shadow_map_size;
-
-	f32 pad;
-
-	glm::mat4 shadow_bias;
+	f32 pcf_count;
 };
 
 class shadow_handler
@@ -85,11 +84,11 @@ public:
 		auto ptr = shadow_uniform_block.map(GL_UNIFORM_BUFFER, GL_READ_ONLY);
 
 		shadow_uniform_block_data data;
-		data.shadow_distance = 200.0f;
+		data.shadow_distance = 100.0f;
 		data.shadow_map_size = 4096.0f;
-		data.transition_distance = 20.0f;
+		data.transition_distance = 10.0f;
+		data.pcf_count = 1.0f;
 		data.shadow_bias = shadow_bias;
-		data.pad = 0.0f;
 
 		*((shadow_uniform_block_data *)ptr) = data;
 
@@ -98,9 +97,7 @@ public:
 
 	auto prepare_shader(glsl_program & program) -> void
 	{
-		//program.bind_uniform_block(shadow_uniform_block, "shadow_data");
-		glm::mat4 bias = shadow_bias * shadow_camera.get_projection_matrix() * shadow_camera.get_view_matrix();
-		program.send_uniform_mat4("shadow_bias", glm::value_ptr(bias), 1);
+		program.bind_uniform_block(shadow_uniform_block, "shadow_data");
 		shadow_map->bind(GL_TEXTURE_2D, 1);
 	}
 
@@ -113,6 +110,9 @@ public:
 
 		shadow_camera.get_projection_matrix() = projection_matrix;
 		shadow_camera.get_view_matrix() = light_view_matrix;
+
+		glm::mat4 bias = shadow_bias * shadow_camera.get_projection_matrix() * shadow_camera.get_view_matrix();
+		shadow_uniform_block.partial_fill<glm::mat4>(0, sizeof glm::mat4, &bias, GL_UNIFORM_BUFFER);
 	}
 	auto update_light_view(glm::vec3 const & light_pos) -> void
 	{
