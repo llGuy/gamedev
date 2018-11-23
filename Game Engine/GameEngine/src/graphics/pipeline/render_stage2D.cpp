@@ -40,8 +40,3 @@ auto render_stage2D::execute(u32 current_id, std::vector<render_stage *> & stage
 
 	guis->render_one(shader);
 }
-
-auto render_stage2D::add_texture2D_bind(texture * tex) -> void
-{
-	textures2D.push_back(tex);
-}

@@ -150,6 +150,8 @@
     <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master3D_gsh.shader" />
     <None Include="src\shaders\master\master3D_vsh.shader" />
+    <None Include="src\shaders\post_processing\dof\fsh.shader" />
+    <None Include="src\shaders\post_processing\dof\vsh.shader" />
     <None Include="src\shaders\post_processing\gaussian_blur\fsh.shader" />
     <None Include="src\shaders\post_processing\gaussian_blur\h_vsh.shader" />
     <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />

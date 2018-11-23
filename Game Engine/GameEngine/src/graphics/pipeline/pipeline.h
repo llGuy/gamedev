@@ -14,7 +14,7 @@
 #define RENDER_STAGE_CREATE_INFO_DEPTH_TEXTURE 1 << 3
 #define RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER 1 << 4
 
-#define TEXTURE2D_BINDING_PREVIOUS_OUTPUT nullptr
+#define TEXTURE2D_BINDING_PREVIOUS_OUTPUT (texture *)nullptr
 
 struct render_stage_create_info
 {

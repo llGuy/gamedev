@@ -29,6 +29,8 @@ struct uniform_float : uniform_command
 	}
 };
 
+using active_texture_uniform_pair = std::pair<std::string, i32>;
+
 class render_stage2D : public render_stage
 {
 private:
@@ -49,8 +51,17 @@ public:
 
 	auto execute(u32 current_id, std::vector<render_stage *> & stages) -> void override;
 
-	auto add_texture2D_bind(texture * tex) -> void;
+	template <typename ... T> auto add_texture2D_bind(T * ... textures) -> void
+	{
+		(textures2D.push_back(textures), ...);
+	}
 
+	/* T = std::pair<std::string, int> */
+	template <typename ... T> auto set_active_textures(T ... pairs) -> void
+	{
+		shader->bind();
+		(shader->send_uniform_int(pairs.first, pairs.second), ...);
+	}
 
 	inline
 	auto add_uniform_command(uniform_command * command) -> void
