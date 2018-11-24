@@ -5,6 +5,7 @@
 #include "../graphics/3D/model_comp/cube.h"
 #include "../graphics/3D/model_comp/quad3D.h"
 #include "../animation/animation_component.h"
+#include "../animation/animation_key_control_component.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -80,6 +81,7 @@ auto application::update(void) -> void
 	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 
 	world.update(time_handler.elapsed());
+
 	time_handler.reset();
 
 	is_running = display.is_open();
@@ -114,10 +116,11 @@ auto application::init_game_objects(void) -> void
 	component<component_behavior_key, game_object_data> key_comp{
 		DEFAULT_KEY_BINDINGS, display.user_inputs() };
 
-	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs() };
+	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs(), world.get_scene_camera() };
 
 	player.add_component(key_comp); 
 	player.add_component(mouse_comp);
+
 	world.bind_camera_to_object(player);
 
 	game_object & monkey = world.init_game_object({ 
@@ -129,6 +132,17 @@ auto application::init_game_objects(void) -> void
 	component<component_model_matrix, game_object_data> model_matrix_comp;
 
 	monkey.add_component(model_matrix_comp);
+
+	animation_key_association associations{ { 
+			std::pair{ 0, "" } 
+			, std::pair{ GLFW_KEY_W, "animation.running" }
+			, std::pair{ GLFW_KEY_A, "animation.running" }
+			, std::pair{ GLFW_KEY_S, "animation.running" }
+			, std::pair{ GLFW_KEY_D, "animation.running" }
+		}
+	};
+	component<component_animation3D_key_control, game_object_data> control{ &animations, associations, display.user_inputs() };
+	monkey.add_component(control);
 
 	game_object & platform = world.init_game_object({ 
 		glm::vec3(0.0f, -4.0f, 0.0f)
@@ -167,7 +181,7 @@ auto application::init_models(void) -> void
 	animations.load_animation_data("animation.running", player, xml_doc);
 
 	auto & animation_comp = player.get_component<component_animation3D>();
-	animation_comp.set_animation("animation.running");
+	animation_comp.set_animation("");
 
 	cube_model_computation comp;
 	cube_model = models.init_model("model.cube");
@@ -397,5 +411,5 @@ auto application::init_pipeline(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.dof"));
+	final_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
 }

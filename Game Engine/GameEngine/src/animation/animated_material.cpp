@@ -12,12 +12,7 @@ auto skeletal_material::render(glsl_program * shader) -> void
 
 	shader->send_uniform_mat4("model_matrix", glm::value_ptr(transform_matrix), 1);
 
-	for (u32 i = 0; i < joint_transforms.size(); ++i)
-	{
-		shader->send_uniform_mat4("joint_transforms[" + std::to_string(i) + "]", glm::value_ptr(joint_transforms[i]), 1);
-	}
-
-	//shader->bind_uniform_block(uniform_block, "transform_matrices");
+	shader->bind_uniform_block(uniform_block, "bones");
 
 	renderable->vao.bind();
 	auto & indices = renderable.get_component<index_buffer_component>();

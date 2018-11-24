@@ -23,7 +23,10 @@ uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
 
-uniform mat4 joint_transforms[MAX_JOINTS];
+layout(std140) uniform bones
+{
+	mat4 joint_transforms[MAX_JOINTS];
+};
 
 void main(void)
 {

@@ -76,11 +76,14 @@ private:
 
 	glm::vec2 previous_cursor_position;
 
+	camera * scene_camera;
+
 	bool initialized{ false };
 public:
-	component(input_handler & inputs, bool third_person = false)
+	component(input_handler & inputs, camera & scene_camera)
 		: input(&inputs)
 		, previous_cursor_position(0.0f)
+		, scene_camera(&scene_camera)
 	{
 	}
 
@@ -98,6 +101,9 @@ public:
 		{
 			glm::vec2 difference = input->cursor_position() - previous_cursor_position;
 			previous_cursor_position = input->cursor_position();
+
+			scene_camera->get_rotation_angles() -= difference * 0.5f;
+
 			object->direction = glm::normalize(look_fps(difference, object->direction, td));
 		}
 	}

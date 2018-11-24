@@ -46,16 +46,12 @@ template <> struct component<struct component_animation3D, game_object_data> : c
 	{
 		final_matrices = animation_handler.update(time * play_speed, &root, joint_count);
 
-	//	update_uniform_buffer();
+		update_uniform_buffer();
 	}
 private:
 	auto update_uniform_buffer(void) -> void
 	{
-		animation_uniform_block.bind(GL_UNIFORM_BUFFER);
-		u8 * ptr = (u8 *)(animation_uniform_block.map(GL_UNIFORM_BUFFER, GL_READ_WRITE));
-
-		memcpy(ptr, final_matrices.data(), sizeof(glm::mat4) * final_matrices.size());
-
-		unmap_buffers(GL_UNIFORM_BUFFER);
+		animation_uniform_block.fill<glm::mat4>(sizeof(glm::mat4) * final_matrices.size(), final_matrices.data(), GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
 	}
 };
+

@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "../animation/animation_component.h"
 #include "../animation/animation_render_component.h"
+#include "../animation/animation_key_control_component.h"
 
 auto scene::init(void) -> void
 {
@@ -12,6 +13,7 @@ auto scene::init(void) -> void
 	components.add_system<component_behavior_mouse>(20);
 	components.add_system<component_animation3D>(20);
 	components.add_system<component_animation3D_render>(20);
+	components.add_system<component_animation3D_key_control>(20);
 }
 
 auto scene::init_game_object(game_object_data const & data) -> game_object &
@@ -51,4 +53,5 @@ auto scene::get_scene_camera(void) -> camera &
 auto scene::bind_camera_to_object(game_object & subject) -> void
 {
 	scene_camera.init(subject.id);
+	scene_camera.get_direction() = subject->direction;
 }

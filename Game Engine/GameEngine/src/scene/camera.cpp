@@ -45,6 +45,16 @@ auto camera::get_view_matrix_without_translation(void) const -> glm::mat4
 	return vmatrix;
 }
 
+auto camera::toggle_fp(void) -> void
+{
+	is_fp ^= true;
+}
+
+auto camera::is_first_person(void) const -> bool
+{
+	return is_fp;
+}
+
 auto camera::get_position(void)->glm::vec3 &
 {
 	return position;
@@ -58,6 +68,11 @@ auto camera::get_direction(void)->glm::vec3 &
 auto camera::get_bound_object(void)->i32 &
 {
 	return bound_game_object;
+}
+
+auto camera::get_rotation_angles(void)->glm::vec2 &
+{
+	return angles_third_person;
 }
 
 #define SENSITIVITY 0.02f
