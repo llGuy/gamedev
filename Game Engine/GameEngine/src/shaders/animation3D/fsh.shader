@@ -1,4 +1,5 @@
 layout(location = 0) out vec4 final_color;
+layout(location = 1) out vec4 bright_color;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -92,9 +93,17 @@ void apply_reflection(float specular, vec3 eye_vector, vec3 light_vector, vec3 v
 	color = mix(color, envi_color, material_info.reflect_factor);
 }
 
-float brightness(vec4 color)
+void calculate_bright_color(void)
 {
-	return (color.r * 0.2126) + (color.g * 0.7152) + (color.b * 0.0722);
+	float brightness = (final_color.r * 0.2126) + (final_color.g * 0.7152) + (final_color.b * 0.722);
+	if (brightness > 0.7)
+	{
+		bright_color = final_color;
+	}
+	else
+	{
+		bright_color = vec4(0);
+	}
 }
 
 void main(void)
@@ -124,4 +133,5 @@ void main(void)
 	{
 		final_color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
+	calculate_bright_color();
 }

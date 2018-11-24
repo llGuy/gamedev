@@ -286,6 +286,8 @@
     <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
     <None Include="src\shaders\post_processing\dof\vsh.shader" />
     <None Include="src\shaders\post_processing\dof\fsh.shader" />
+    <None Include="src\shaders\post_processing\bloom\vsh.shader" />
+    <None Include="src\shaders\post_processing\bloom\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

@@ -19,6 +19,13 @@ public:
 	auto clean_up(void) -> void;
 	auto bind(GLenum point) -> void;
 
+	template <typename ... T> auto draw_buffers(T ... targets)
+	{
+		bind(GL_FRAMEBUFFER);
+		GLenum buffers[] { targets... };
+		glDrawBuffers(sizeof...(T), buffers);
+	}
+
 	auto resolve(framebuffer & other) -> void;
 
 	auto add_texture(texture * tx) -> void;

@@ -285,6 +285,11 @@ auto application::init_shaders(void) -> void
 	glsl_shader dof_vsh = shaders.create_shader(GL_VERTEX_SHADER, dof_shader, extract_file("src/shaders/post_processing/dof/vsh.shader"));
 	glsl_shader dof_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, dof_shader, extract_file("src/shaders/post_processing/dof/fsh.shader"));
 	shaders.combine(dof_shader, dof_vsh, dof_fsh);
+
+	shader_handle bloom_shader("shader.bloom");
+	glsl_shader bloom_vsh = shaders.create_shader(GL_VERTEX_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/vsh.shader"));
+	glsl_shader bloom_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/fsh.shader"));
+	shaders.combine(bloom_shader, bloom_vsh, bloom_fsh);
 }
 
 auto application::init_textures(void) -> void
@@ -317,7 +322,13 @@ auto application::init_textures(void) -> void
 	create_depth_texture(*shadow_map_texture, shadow_handler::get_shadow_map_size(), shadow_handler::get_shadow_map_size());
 
 	auto * scene_depth_texture = textures.init_texture("texture.scene_depth");
-	create_depth_texture(*scene_depth_texture, display.pixel_width(), display.pixel_height());
+	create_depth_texture(*scene_depth_texture, display.pixel_width(), display.pixel_height()); 
+
+	auto * bright_colors = textures.init_texture("texture.bright_color");
+	create_color_texture(*bright_colors, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * bloom = textures.init_texture("texture.bloom");
+	create_color_texture(*bloom, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
@@ -344,6 +355,7 @@ auto application::init_pipeline(void) -> void
 	render_pipeline.add_render_stage<render_stage3D>("render_stage.shadow_pass", &materials, &lights.get_shadow_handler().get_shadow_camera());
 	render_pipeline.create_render_stage("render_stage.shadow_pass", info, renderbuffers, textures);
 
+
 	auto depth = renderbuffers.add_renderbuffer("renderbuffer.first_stage");
 	create_depth_renderbuffer(*depth, display_w, display_h);
 
@@ -354,8 +366,29 @@ auto application::init_pipeline(void) -> void
 	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
 		| RENDER_STAGE_CREATE_INFO_DEPTH_TEXTURE;
 
-	render_pipeline.add_render_stage<render_stage3D>("render_stage.init", &materials, &world.get_scene_camera());
+	auto first = render_pipeline.add_render_stage<render_stage3D>("render_stage.init", &materials, &world.get_scene_camera());
 	render_pipeline.create_render_stage("render_stage.init", info, renderbuffers, textures);
+	first->attach_texture(*textures.get_texture("texture.bright_color"), GL_COLOR_ATTACHMENT1, 0);
+	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1);
+
+
+	auto depth_bloom = renderbuffers.add_renderbuffer("renderbuffer.bloom_depth");
+	create_depth_renderbuffer(*depth_bloom, display_w, display_h);
+
+	info.color_name = "texture.bloom";
+	info.depth_name = "renderbuffer.bloom_depth";
+	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto bloom = render_pipeline.add_render_stage<render_stage2D>("render_stage.bloom", shaders[shader_handle("shader.bloom")], &guis);
+	render_pipeline.create_render_stage("render_stage.bloom", info, renderbuffers, textures);
+	bloom->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
+
+	bloom->add_texture2D_bind(textures.get_texture("texture.scene_color")
+		, textures.get_texture("texture.bright_color"));
+	bloom->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
+		, active_texture_uniform_pair{ "brightness", 1 } );
+
 
 	auto depth_vblur1 = renderbuffers.add_renderbuffer("renderbuffer.vblur1");
 	create_depth_renderbuffer(*depth_vblur1, display_w / BLUR_LEVEL, display_h / BLUR_LEVEL);
@@ -373,6 +406,7 @@ auto application::init_pipeline(void) -> void
 	vblur1_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
 	vblur1_stage->add_uniform_command(new uniform_float("target_height", DISPLAY_HEIGHT / BLUR_LEVEL));
 
+
 	auto depth_hblur1 = renderbuffers.add_renderbuffer("renderbuffer.hblur1");
 	create_depth_renderbuffer(*depth_hblur1, display_w / BLUR_LEVEL, display_h / BLUR_LEVEL);
 
@@ -389,6 +423,7 @@ auto application::init_pipeline(void) -> void
 	hblur1_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
 	hblur1_stage->add_uniform_command(new uniform_float("target_width", DISPLAY_WIDTH / BLUR_LEVEL));
 
+
 	auto depth_dof = renderbuffers.add_renderbuffer("renderbuffer.dof_depth");
 	create_depth_renderbuffer(*depth_dof, display_w, display_h);
 
@@ -402,14 +437,15 @@ auto application::init_pipeline(void) -> void
 	auto dof_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.dof", shaders[shader_handle("shader.dof")], &guis);
 	render_pipeline.create_render_stage("render_stage.dof", info, renderbuffers, textures);
 
-	dof_stage->add_texture2D_bind(textures.get_texture("texture.scene_color")
+	dof_stage->add_texture2D_bind(textures.get_texture("texture.bloom")
 		, textures.get_texture("texture.hblur1")
 		, textures.get_texture("texture.scene_depth"));
 	dof_stage->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
 		, active_texture_uniform_pair{ "blurred", 1 } 
 		, active_texture_uniform_pair{ "depth_map", 2 } );
 
+
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
+	final_stage->add_texture2D_bind(textures.get_texture("texture.dof"));
 }

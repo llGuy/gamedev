@@ -1,4 +1,5 @@
 layout(location = 0) out vec4 final_color;
+layout(location = 1) out vec4 bright_color;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -149,6 +150,19 @@ float get_shadow_value(in vec3 world_pos, in vec4 shadow_coord)
 	return light_factor;
 }
 
+void calculate_bright_color(void)
+{
+	float brightness = (final_color.r * 0.2126) + (final_color.g * 0.7152) + (final_color.b * 0.722);
+	if (brightness > 0.7)
+	{
+		bright_color = final_color;
+	}
+	else
+	{
+		bright_color = vec4(0);
+	}
+}
+
 float brightness(vec4 color)
 {
 	return (color.r * 0.2126) + (color.g * 0.7152) + (color.b * 0.0722);
@@ -181,5 +195,7 @@ void main(void)
 		float specularity = apply_specular(light_factor, eye_vector, light_vector, input_data.vertex_normal, final_color);
 
 		apply_reflection(light_factor, specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+
+		calculate_bright_color();
 	}
 }

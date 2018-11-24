@@ -53,6 +53,12 @@ public:
 		output_textures.push_back(&tex);
 	}
 
+	template <typename ... T> 
+	auto set_draw_buffers(T ... ts) -> void
+	{
+		fbo.draw_buffers(ts...);
+	}
+
 	inline
 	auto attach_renderbuffer(renderbuffer & buff, u32 attachment) -> void
 	{
