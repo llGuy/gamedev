@@ -11,7 +11,7 @@ struct light_info_shader_data
 };
 
 light_handler::light_handler(void)
-	: light{ glm::vec3(10.0f, 10.0f, 10.0f)
+	: light{ glm::vec3(-10.0f, 10.0f, -10.0f)
 	, glm::vec3(1.0f)
 	, glm::vec3(1.0f)
 	, glm::vec3(1.0f) }

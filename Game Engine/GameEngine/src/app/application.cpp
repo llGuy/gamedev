@@ -80,7 +80,11 @@ auto application::update(void) -> void
 	camera & scene_camera = world.get_scene_camera();
 	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 
+
+
 	world.update(time_handler.elapsed());
+
+	current_fps->value = 1.0f / time_handler.elapsed();
 
 	time_handler.reset();
 
@@ -89,9 +93,20 @@ auto application::update(void) -> void
 
 auto application::render(void) -> void
 {
+	inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
+	inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
+
+	if (display.received_key(GLFW_KEY_P))
+	{
+		printf("%s\n", glm::to_string(world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix()).c_str());
+		printf("%s\n\n", glm::to_string(previous_view_proj->value).c_str());
+	}
+
 	render_pipeline.execute_stages(display.pixel_width(), display.pixel_height());
 
 	guis.render();
+
+	previous_view_proj->value = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix();
 }
 
 auto application::running(void) -> bool
@@ -147,7 +162,7 @@ auto application::init_game_objects(void) -> void
 	game_object & platform = world.init_game_object({ 
 		glm::vec3(0.0f, -4.0f, 0.0f)
 		, glm::vec3(1.0f, 0.0f, 0.0f)
-		, glm::vec3(3.0f)
+		, glm::vec3(4.0f)
 		, "game_object.platform" });
 
 	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
@@ -194,8 +209,6 @@ auto application::init_models(void) -> void
 
 auto application::init_3D_test(void) -> void
 {
-//	shadows.create(lights.light_position());
-
 	/* initializing normal 3D renderer */
 	/* just initializing uniform variables */
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f), 
@@ -290,6 +303,11 @@ auto application::init_shaders(void) -> void
 	glsl_shader bloom_vsh = shaders.create_shader(GL_VERTEX_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/vsh.shader"));
 	glsl_shader bloom_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/fsh.shader"));
 	shaders.combine(bloom_shader, bloom_vsh, bloom_fsh);
+
+	shader_handle motion_blur_shader("shader.motion_blur");
+	glsl_shader motion_vsh = shaders.create_shader(GL_VERTEX_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/vsh.shader"));
+	glsl_shader motion_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/fsh.shader"));
+	shaders.combine(motion_blur_shader, motion_vsh, motion_fsh);
 }
 
 auto application::init_textures(void) -> void
@@ -329,6 +347,9 @@ auto application::init_textures(void) -> void
 
 	auto * bloom = textures.init_texture("texture.bloom");
 	create_color_texture(*bloom, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * motion_blur = textures.init_texture("texture.motion_blur");
+	create_color_texture(*motion_blur, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
@@ -339,10 +360,16 @@ auto application::init_fonts(void) -> void
 
 auto application::init_pipeline(void) -> void
 {
-	u32 display_w = display.pixel_width();
-	u32 display_h = display.pixel_height();
+	init_shadow_pass();
+	init_scene_pass();
+	init_motion_blur_pass();
+	init_blur_passes();
+	init_dof_pass();
+	init_final_pass();
+}
 
-
+auto application::init_shadow_pass(void) -> void
+{
 	/* create shadow stage */
 	render_stage_create_info info;
 	info.width = shadow_handler::get_shadow_map_size();
@@ -354,7 +381,14 @@ auto application::init_pipeline(void) -> void
 
 	render_pipeline.add_render_stage<render_stage3D>("render_stage.shadow_pass", &materials, &lights.get_shadow_handler().get_shadow_camera());
 	render_pipeline.create_render_stage("render_stage.shadow_pass", info, renderbuffers, textures);
+}
 
+auto application::init_scene_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage_create_info info;
 
 	auto depth = renderbuffers.add_renderbuffer("renderbuffer.first_stage");
 	create_depth_renderbuffer(*depth, display_w, display_h);
@@ -370,25 +404,14 @@ auto application::init_pipeline(void) -> void
 	render_pipeline.create_render_stage("render_stage.init", info, renderbuffers, textures);
 	first->attach_texture(*textures.get_texture("texture.bright_color"), GL_COLOR_ATTACHMENT1, 0);
 	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1);
+}
 
+auto application::init_blur_passes(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
 
-	auto depth_bloom = renderbuffers.add_renderbuffer("renderbuffer.bloom_depth");
-	create_depth_renderbuffer(*depth_bloom, display_w, display_h);
-
-	info.color_name = "texture.bloom";
-	info.depth_name = "renderbuffer.bloom_depth";
-	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
-		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
-
-	auto bloom = render_pipeline.add_render_stage<render_stage2D>("render_stage.bloom", shaders[shader_handle("shader.bloom")], &guis);
-	render_pipeline.create_render_stage("render_stage.bloom", info, renderbuffers, textures);
-	bloom->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
-
-	bloom->add_texture2D_bind(textures.get_texture("texture.scene_color")
-		, textures.get_texture("texture.bright_color"));
-	bloom->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
-		, active_texture_uniform_pair{ "brightness", 1 } );
-
+	render_stage_create_info info;
 
 	auto depth_vblur1 = renderbuffers.add_renderbuffer("renderbuffer.vblur1");
 	create_depth_renderbuffer(*depth_vblur1, display_w / BLUR_LEVEL, display_h / BLUR_LEVEL);
@@ -419,10 +442,53 @@ auto application::init_pipeline(void) -> void
 
 	auto hblur1_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.hblur1", shaders[shader_handle("shader.horizontal_blur")], &guis);
 	render_pipeline.create_render_stage("render_stage.hblur1", info, renderbuffers, textures);
-	
+
 	hblur1_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
 	hblur1_stage->add_uniform_command(new uniform_float("target_width", DISPLAY_WIDTH / BLUR_LEVEL));
+}
 
+auto application::init_motion_blur_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	auto motion_blur_depth = renderbuffers.add_renderbuffer("renderbuffer.motion_blur_depth");
+	create_depth_renderbuffer(*motion_blur_depth, display_w, display_h);
+	
+	render_stage_create_info info;
+	info.width = display_w;
+	info.height = display_h;
+	info.color_name = "texture.motion_blur";
+	info.depth_name = "renderbuffer.motion_blur_depth";
+	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto motion_blur = render_pipeline.add_render_stage<render_stage2D>("render_stage.motion_blur", shaders[shader_handle("shader.motion_blur")], &guis);
+	render_pipeline.create_render_stage("render_stage.motion_blur", info, renderbuffers, textures);
+
+	motion_blur->add_texture2D_bind(textures.get_texture("texture.scene_depth")
+		, textures.get_texture("texture.scene_color"));
+	motion_blur->set_active_textures(active_texture_uniform_pair{ "scene_depth", 0 }
+	, active_texture_uniform_pair{ "diffuse", 1 });
+
+	/* need to update these  every frame */
+	inverse_proj_matrix = new uniform_mat4("inverse_proj_matrix", glm::mat4(1.0f));
+	inverse_view_matrix = new uniform_mat4("inverse_view_matrix", glm::mat4(1.0f));
+	previous_view_proj = new uniform_mat4("previous_view_proj", glm::mat4(1.0f));
+	current_fps = new uniform_float("current_fps", 0.0f);
+
+	motion_blur->add_uniform_command(inverse_proj_matrix
+		, inverse_view_matrix
+		, previous_view_proj
+		, current_fps);
+}
+
+auto application::init_dof_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage_create_info info;
 
 	auto depth_dof = renderbuffers.add_renderbuffer("renderbuffer.dof_depth");
 	create_depth_renderbuffer(*depth_dof, display_w, display_h);
@@ -437,13 +503,18 @@ auto application::init_pipeline(void) -> void
 	auto dof_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.dof", shaders[shader_handle("shader.dof")], &guis);
 	render_pipeline.create_render_stage("render_stage.dof", info, renderbuffers, textures);
 
-	dof_stage->add_texture2D_bind(textures.get_texture("texture.bloom")
+	dof_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur")
 		, textures.get_texture("texture.hblur1")
 		, textures.get_texture("texture.scene_depth"));
 	dof_stage->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
-		, active_texture_uniform_pair{ "blurred", 1 } 
-		, active_texture_uniform_pair{ "depth_map", 2 } );
+		, active_texture_uniform_pair{ "blurred", 1 }
+	, active_texture_uniform_pair{ "depth_map", 2 });
+}
 
+auto application::init_final_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);

@@ -5,7 +5,7 @@
 auto animation_wrapper::set_current_animation(animation * new_current) -> void
 {
 	current_animation = new_current;
-}
+} 
 
 auto animation_wrapper::update(f32 td, joint * root, u32 joint_count) -> std::vector<glm::mat4>
 {

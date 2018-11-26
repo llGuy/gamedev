@@ -22,7 +22,7 @@ public:
 	template <typename ... T> auto draw_buffers(T ... targets)
 	{
 		bind(GL_FRAMEBUFFER);
-		GLenum buffers[] { targets... };
+		GLenum buffers[] { static_cast<GLenum>(targets)... };
 		glDrawBuffers(sizeof...(T), buffers);
 	}
 

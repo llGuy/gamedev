@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\animation_key_control_component.h" />
+    <ClInclude Include="src\graphics\pipeline\uniform_commands.h" />
     <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h" />
     <ClInclude Include="src\animation\animated_material.h" />
     <ClInclude Include="src\animation\animation_render_component.h" />
@@ -158,6 +159,8 @@
     <None Include="src\shaders\post_processing\gaussian_blur\fsh.shader" />
     <None Include="src\shaders\post_processing\gaussian_blur\h_vsh.shader" />
     <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
+    <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
+    <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png" />

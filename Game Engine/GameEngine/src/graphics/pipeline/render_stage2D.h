@@ -3,31 +3,7 @@
 #include <vector>
 #include "render_stage.h"
 
-struct uniform_command
-{
-	std::string name;
-	glsl_program * shader;
-
-	uniform_command(std::string const & name)
-		: name(name)
-	{
-	}
-	virtual auto execute(void) -> void = 0;
-};
-
-struct uniform_float : uniform_command
-{
-	f32 value;
-
-	uniform_float(std::string const & name, f32 value)
-		: uniform_command(name), value(value)
-	{
-	}
-	auto execute(void) -> void override
-	{
-		shader->send_uniform_float(name, value);
-	}
-};
+#include "uniform_commands.h"
 
 using active_texture_uniform_pair = std::pair<std::string, i32>;
 
@@ -63,11 +39,11 @@ public:
 		(shader->send_uniform_int(pairs.first, pairs.second), ...);
 	}
 
-	inline
-	auto add_uniform_command(uniform_command * command) -> void
+	template <typename ... T> auto add_uniform_command(T ... command) -> void
 	{
-		command->shader = shader;
-		extra_commands.push_back(command);
+		(([this](uniform_command * com) { com->shader = shader; })(command), ...);
+
+		(extra_commands.push_back(command), ...);
 	}
 
 };

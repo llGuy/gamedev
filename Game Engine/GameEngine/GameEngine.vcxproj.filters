@@ -263,6 +263,9 @@
     <ClInclude Include="src\animation\animation_key_control_component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\pipeline\uniform_commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master3D_gsh.shader" />
@@ -288,6 +291,8 @@
     <None Include="src\shaders\post_processing\dof\fsh.shader" />
     <None Include="src\shaders\post_processing\bloom\vsh.shader" />
     <None Include="src\shaders\post_processing\bloom\fsh.shader" />
+    <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
+    <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

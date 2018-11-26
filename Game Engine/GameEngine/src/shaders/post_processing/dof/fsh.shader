@@ -10,7 +10,7 @@ uniform sampler2D diffuse;
 uniform sampler2D blurred;
 uniform sampler2D depth_map;
 
-const float near = 0.001f;
+const float near = 0.1f;
 const float far = 10000.0f;
 
 float convert_depth(float d)
@@ -27,5 +27,5 @@ void main(void)
 
 	float diff = clamp(abs(depth_at_center - depth_at_point), 0, 1.0f);
 
-	final_color = mix(texture(diffuse, vertex_out.texture_coords), texture(blurred, vertex_out.texture_coords), diff);
+	final_color = mix(texture(diffuse, vertex_out.texture_coords), texture(blurred, vertex_out.texture_coords), diff * 0.7);
 }

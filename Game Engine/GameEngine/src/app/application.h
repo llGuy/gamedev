@@ -41,6 +41,11 @@ private:
 	model cube_model;
 	model player_model;
 	model quad3D_model;
+
+	uniform_mat4 * inverse_proj_matrix;
+	uniform_mat4 * inverse_view_matrix;
+	uniform_mat4 * previous_view_proj;
+	uniform_float * current_fps;
 public:
 	application(void);
 
@@ -58,4 +63,12 @@ private:
 	auto init_textures(void) -> void;
 	auto init_fonts(void) -> void;
 	auto init_pipeline(void) -> void;
+private:
+	/* initialize pipeline stages */
+	auto init_shadow_pass(void) -> void;
+	auto init_scene_pass(void) -> void;
+	auto init_blur_passes(void) -> void;
+	auto init_dof_pass(void) -> void;
+	auto init_motion_blur_pass(void) -> void;
+	auto init_final_pass(void) -> void;
 };
