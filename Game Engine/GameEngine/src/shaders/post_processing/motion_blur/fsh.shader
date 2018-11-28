@@ -8,6 +8,15 @@ vertex_out;
 
 uniform sampler2D scene_depth;
 uniform sampler2D diffuse;
+
+/*layout(std140) uniform data
+{
+	uniform mat4 inverse_proj_matrix;
+	uniform mat4 inverse_view_matrix;
+	uniform mat4 previous_view_proj;
+	uniform float current_fps;
+};*/
+
 uniform mat4 inverse_proj_matrix;
 uniform mat4 inverse_view_matrix;
 uniform mat4 previous_view_proj;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../api/api.h"
+#include "../../api/uniform_buffer.h"
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -41,5 +42,20 @@ struct uniform_mat4 : uniform_command
 	auto execute(void) -> void override
 	{
 		shader->send_uniform_mat4(name, glm::value_ptr(value), 1);
+	}
+};
+
+struct uniform_buffer_bind : uniform_command
+{
+	uniform_buffer data;
+
+	uniform_buffer_bind(std::string const & name, u32 index)
+		: uniform_command(name), data(index)
+	{
+	}
+
+	auto execute(void) -> void override
+	{
+		shader->bind_uniform_block(data, name);
 	}
 };

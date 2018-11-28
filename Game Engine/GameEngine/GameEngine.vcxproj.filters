@@ -266,11 +266,11 @@
     <ClInclude Include="src\graphics\pipeline\uniform_commands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\light\sun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\master\master3D_gsh.shader" />
-    <None Include="src\shaders\master\master3D_vsh.shader" />
-    <None Include="src\shaders\master\master3D_fsh.shader" />
     <None Include="src\shaders\master\master2D_vsh.shader" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
     <None Include="src\shaders\environment\vsh.shader" />
@@ -293,6 +293,12 @@
     <None Include="src\shaders\post_processing\bloom\fsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
+    <None Include="src\shaders\master\master3D_gsh.shader" />
+    <None Include="src\shaders\master\master3D_vsh.shader" />
+    <None Include="src\shaders\master\master3D_fsh.shader" />
+    <None Include="src\shaders\deferred\master3D_gsh.shader" />
+    <None Include="src\shaders\deferred\master3D_fsh.shader" />
+    <None Include="src\shaders\deferred\master3D_vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

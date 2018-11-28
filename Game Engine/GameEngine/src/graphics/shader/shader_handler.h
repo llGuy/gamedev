@@ -102,9 +102,9 @@ public:
 		master2D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/master/master2D_vsh.shader");
 		master2D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/master/master2D_fsh.shader");
 
-		master3D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/master/master3D_vsh.shader"); 
-		master3D_srcs.srcs[GL_GEOMETRY_SHADER] = extract_file("src/shaders/master/master3D_gsh.shader");
-		master3D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/master/master3D_fsh.shader");
+		master3D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/deferred/master3D_vsh.shader"); 
+		master3D_srcs.srcs[GL_GEOMETRY_SHADER] = extract_file("src/shaders/deferred/master3D_gsh.shader");
+		master3D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/deferred/master3D_fsh.shader");
 	}
 
 	auto create_program(shader_handle const & handle, std::string const & shader /* 3D or 2D */) -> glsl_program *

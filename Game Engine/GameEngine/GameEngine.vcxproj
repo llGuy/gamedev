@@ -116,6 +116,7 @@
     <ClInclude Include="src\light\shadow_handler.h" />
     <ClInclude Include="src\io\io.h" />
     <ClInclude Include="src\light\light_handler.h" />
+    <ClInclude Include="src\light\sun.h" />
     <ClInclude Include="src\scene\camera.h" />
     <ClInclude Include="src\scene\component\behavior.h" />
     <ClInclude Include="src\scene\component\component.h" />
@@ -145,6 +146,9 @@
     <None Include="src\shaders\animation3D\fsh.shader" />
     <None Include="src\shaders\animation3D\gsh.shader" />
     <None Include="src\shaders\animation3D\vsh.shader" />
+    <None Include="src\shaders\deferred\master3D_fsh.shader" />
+    <None Include="src\shaders\deferred\master3D_gsh.shader" />
+    <None Include="src\shaders\deferred\master3D_vsh.shader" />
     <None Include="src\shaders\environment\fsh.shader" />
     <None Include="src\shaders\environment\vsh.shader" />
     <None Include="src\shaders\master\master2D_fsh.shader" />

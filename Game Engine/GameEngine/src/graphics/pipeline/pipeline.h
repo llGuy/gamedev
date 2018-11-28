@@ -61,4 +61,10 @@ public:
 
 		return new_stage;
 	}
+
+	template <typename T, typename ... Args>
+	auto init_render_stage(std::string const & name, Args && ... args) -> T *
+	{
+
+	}
 };

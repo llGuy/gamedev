@@ -84,8 +84,9 @@ auto application::update(void) -> void
 
 	world.update(time_handler.elapsed());
 
+	auto elapsed = time_handler.elapsed();
 	current_fps->value = 1.0f / time_handler.elapsed();
-
+	
 	time_handler.reset();
 
 	is_running = display.is_open();
@@ -95,12 +96,6 @@ auto application::render(void) -> void
 {
 	inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
 	inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
-
-	if (display.received_key(GLFW_KEY_P))
-	{
-		printf("%s\n", glm::to_string(world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix()).c_str());
-		printf("%s\n\n", glm::to_string(previous_view_proj->value).c_str());
-	}
 
 	render_pipeline.execute_stages(display.pixel_width(), display.pixel_height());
 
@@ -350,6 +345,15 @@ auto application::init_textures(void) -> void
 
 	auto * motion_blur = textures.init_texture("texture.motion_blur");
 	create_color_texture(*motion_blur, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * g_buffer_position = textures.init_texture("texture.g_buffer.position");
+	create_color_texture(*g_buffer_position, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * g_buffer_normal = textures.init_texture("texture.g_buffer.normal");
+	create_color_texture(*g_buffer_normal, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * g_buffer_albedo = textures.init_texture("texture.g_buffer.albedo");
+	create_color_texture(*g_buffer_albedo, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
@@ -361,7 +365,8 @@ auto application::init_fonts(void) -> void
 auto application::init_pipeline(void) -> void
 {
 	init_shadow_pass();
-	init_scene_pass();
+	//init_scene_pass();
+	init_deferred_renderer();
 	init_motion_blur_pass();
 	init_blur_passes();
 	init_dof_pass();
@@ -454,7 +459,7 @@ auto application::init_motion_blur_pass(void) -> void
 
 	auto motion_blur_depth = renderbuffers.add_renderbuffer("renderbuffer.motion_blur_depth");
 	create_depth_renderbuffer(*motion_blur_depth, display_w, display_h);
-	
+
 	render_stage_create_info info;
 	info.width = display_w;
 	info.height = display_h;
@@ -518,5 +523,26 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.dof"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.g_buffer.normal"));
+}
+
+auto application::init_deferred_renderer(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage_create_info info;
+
+	info.width = display_w;
+	info.height = display_h;
+	info.color_name = "texture.g_buffer.position";
+	info.depth_name = "texture.scene_depth";
+	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_TEXTURE;
+
+	auto first = render_pipeline.add_render_stage<render_stage3D>("render_stage.init", &materials, &world.get_scene_camera());
+	render_pipeline.create_render_stage("render_stage.init", info, renderbuffers, textures);
+	first->attach_texture(*textures.get_texture("texture.g_buffer.normal"), GL_COLOR_ATTACHMENT1, 0);
+	first->attach_texture(*textures.get_texture("texture.g_buffer.albedo"), GL_COLOR_ATTACHMENT2, 0);
+	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2);
 }
