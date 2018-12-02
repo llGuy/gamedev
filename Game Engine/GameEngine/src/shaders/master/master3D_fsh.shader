@@ -1,5 +1,7 @@
 layout(location = 0) out vec4 final_color;
 layout(location = 1) out vec4 bright_color;
+layout(location = 2) out vec4 view_positions;
+layout(location = 3) out vec4 view_normals;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -198,4 +200,10 @@ void main(void)
 
 		calculate_bright_color();
 	}
+
+
+	view_positions = view_matrix * vec4(input_data.vertex_position, 1.0f);
+	view_normals = vec4(input_data.vertex_normal, 1.0f);
+
+	final_color.a = 1;
 }

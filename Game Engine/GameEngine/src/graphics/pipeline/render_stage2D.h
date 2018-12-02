@@ -16,6 +16,7 @@ private:
 	gui_handler * guis;
 
 	std::vector<texture *> textures2D;
+	std::vector<texture *> textures3D;
 
 	std::vector<uniform_command *> extra_commands;
 
@@ -30,6 +31,11 @@ public:
 	template <typename ... T> auto add_texture2D_bind(T * ... textures) -> void
 	{
 		(textures2D.push_back(textures), ...);
+	}
+
+	template <typename ... T> auto add_texture3D_bind(T * ... textures) -> void
+	{
+		(textures3D.push_back(textures), ...);
 	}
 
 	/* T = std::pair<std::string, int> */

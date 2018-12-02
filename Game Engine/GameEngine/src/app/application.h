@@ -46,6 +46,8 @@ private:
 	uniform_mat4 * inverse_view_matrix;
 	uniform_mat4 * previous_view_proj;
 	uniform_float * current_fps;
+	uniform_mat4 * view_matrix_command;
+	uniform_vec3 * cam_pos_command;
 public:
 	application(void);
 
@@ -73,4 +75,5 @@ private:
 	auto init_final_pass(void) -> void;
 
 	auto init_deferred_renderer(void) -> void;
+	auto init_ssr(void) -> void;
 };

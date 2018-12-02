@@ -54,14 +54,14 @@ void main(void)
 #endif
 #ifdef USES_TEXTURE
 	albedo = texture(diffuse, input_data.texture_coords);
-	albedo.a = material_info.reflect_factor;
 #endif
 
 #ifdef USES_COLOR
 	albedo = vec4(input_data.vertex_color, 1.0f);
-	albedo.a = material_info.reflect_factor;
 #endif
 
 	position = vec4(input_data.vertex_position, 1.0f);
 	normal = vec4(input_data.vertex_normal, 1.0f);
+
+	normal.a = material_info.reflect_factor + 1.0f;
 }

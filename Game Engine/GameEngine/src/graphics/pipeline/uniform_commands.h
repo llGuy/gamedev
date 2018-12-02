@@ -17,6 +17,20 @@ struct uniform_command
 	virtual auto execute(void) -> void = 0;
 };
 
+struct uniform_vec3 : uniform_command
+{
+	glm::vec3 value;
+
+	uniform_vec3(std::string const & name, glm::vec3 const & value)
+		: uniform_command(name), value(value)
+	{
+	}
+	auto execute(void) -> void override
+	{
+		shader->send_uniform_vec3(name, glm::value_ptr(value), 1);
+	}
+};
+
 struct uniform_float : uniform_command
 {
 	f32 value;

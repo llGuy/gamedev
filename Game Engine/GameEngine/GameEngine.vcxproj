@@ -146,6 +146,8 @@
     <None Include="src\shaders\animation3D\fsh.shader" />
     <None Include="src\shaders\animation3D\gsh.shader" />
     <None Include="src\shaders\animation3D\vsh.shader" />
+    <None Include="src\shaders\deferred\lighting_fsh.shader" />
+    <None Include="src\shaders\deferred\lighting_vsh.shader" />
     <None Include="src\shaders\deferred\master3D_fsh.shader" />
     <None Include="src\shaders\deferred\master3D_gsh.shader" />
     <None Include="src\shaders\deferred\master3D_vsh.shader" />
@@ -165,6 +167,8 @@
     <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
+    <None Include="src\shaders\post_processing\ssr\fsh.shader" />
+    <None Include="src\shaders\post_processing\ssr\vsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png" />

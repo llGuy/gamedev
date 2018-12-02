@@ -13,15 +13,17 @@ struct light_info_shader_data
 light_handler::light_handler(void)
 	: light{ glm::vec3(-10.0f, 10.0f, -10.0f)
 	, glm::vec3(1.0f)
-	, glm::vec3(1.0f)
-	, glm::vec3(1.0f) }
+	, glm::vec3(0.8f)
+	, glm::vec3(0.8f) }
 	, light_uniform_block(LIGHT_BLOCK_INDEX)
+	, deferred_block(0)
 {
 }
 
 auto light_handler::prepare_shader(glsl_program & program) -> void
 {
 	program.bind_uniform_block(light_uniform_block, "light");
+	//program.bind_uniform_block(deferred_block, "light");
 	shadows.prepare_shader(program);
 }
 
@@ -40,6 +42,9 @@ auto light_handler::create(texture * shadow_map) -> void
 	light_uniform_block.fill<void>(sizeof(light_info_shader_data), nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
 
 	update_buffer();
+
+	deferred_block.create();
+	deferred_block.fill<void>(sizeof(int) + sizeof(glm::vec3) * 10, nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
 }
 
 auto light_handler::update_buffer(void) -> void
@@ -57,4 +62,11 @@ auto light_handler::update_buffer(void) -> void
 	memcpy(ptr, &data, sizeof(light_info_shader_data));
 
 	unmap_buffers(GL_UNIFORM_BUFFER);
+
+
+	i32 num_lights = 1;
+	deferred_block.partial_fill(0, sizeof i32, &num_lights, GL_UNIFORM_BUFFER);
+	
+	glm::vec3 light_pos1 = light.light_position;
+	deferred_block.partial_fill(sizeof i32, sizeof glm::vec3, &light_pos1, GL_UNIFORM_BUFFER);
 }

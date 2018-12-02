@@ -23,4 +23,6 @@ void main(void)
 	final_color = texture(cube_map, direction);
 
 	calculate_bright_color();
+
+	final_color.a = 0;
 }

@@ -37,6 +37,8 @@ private:
 
 	uniform_buffer light_uniform_block;
 
+	uniform_buffer deferred_block;
+
 public:
 
 	light_handler(void);

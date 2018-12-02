@@ -87,7 +87,7 @@ public:
 		data.shadow_distance = 100.0f;
 		data.shadow_map_size = 4096.0f;
 		data.transition_distance = 10.0f;
-		data.pcf_count = 1.0f;
+		data.pcf_count = 2.0f;
 		data.shadow_bias = shadow_bias;
 
 		*((shadow_uniform_block_data *)ptr) = data;

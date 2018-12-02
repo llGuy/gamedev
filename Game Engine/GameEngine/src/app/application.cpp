@@ -51,7 +51,6 @@ auto application::init(void) -> void
 		is_running = true;
 
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	catch(xcp::gl_xcp const & exception)
 	{
@@ -94,10 +93,16 @@ auto application::update(void) -> void
 
 auto application::render(void) -> void
 {
+	view_matrix_command->value = world.get_scene_camera().get_view_matrix();
+	cam_pos_command->value = world.get_scene_camera().get_position();
 	inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
 	inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
 
+	glDisable(GL_BLEND);
 	render_pipeline.execute_stages(display.pixel_width(), display.pixel_height());
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	guis.render();
 
@@ -303,6 +308,12 @@ auto application::init_shaders(void) -> void
 	glsl_shader motion_vsh = shaders.create_shader(GL_VERTEX_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/vsh.shader"));
 	glsl_shader motion_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/fsh.shader"));
 	shaders.combine(motion_blur_shader, motion_vsh, motion_fsh);
+
+	/* Shader for deferred renderer */
+	shader_handle ssr_shader("shader.ssr");
+	glsl_shader ssr_vsh = shaders.create_shader(GL_VERTEX_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/vsh.shader"));
+	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh.shader"));
+	shaders.combine(ssr_shader, ssr_vsh, ssr_fsh);
 }
 
 auto application::init_textures(void) -> void
@@ -354,6 +365,9 @@ auto application::init_textures(void) -> void
 
 	auto * g_buffer_albedo = textures.init_texture("texture.g_buffer.albedo");
 	create_color_texture(*g_buffer_albedo, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * lighting = textures.init_texture("texture.ssr");
+	create_color_texture(*lighting, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
@@ -365,11 +379,12 @@ auto application::init_fonts(void) -> void
 auto application::init_pipeline(void) -> void
 {
 	init_shadow_pass();
-	//init_scene_pass();
-	init_deferred_renderer();
+	init_scene_pass();
+	init_ssr();
+	//init_deferred_renderer();
 	init_motion_blur_pass();
-	init_blur_passes();
-	init_dof_pass();
+	//init_blur_passes();
+	//init_dof_pass();
 	init_final_pass();
 }
 
@@ -408,7 +423,9 @@ auto application::init_scene_pass(void) -> void
 	auto first = render_pipeline.add_render_stage<render_stage3D>("render_stage.init", &materials, &world.get_scene_camera());
 	render_pipeline.create_render_stage("render_stage.init", info, renderbuffers, textures);
 	first->attach_texture(*textures.get_texture("texture.bright_color"), GL_COLOR_ATTACHMENT1, 0);
-	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1);
+	first->attach_texture(*textures.get_texture("texture.g_buffer.position"), GL_COLOR_ATTACHMENT2, 0);
+	first->attach_texture(*textures.get_texture("texture.g_buffer.normal"), GL_COLOR_ATTACHMENT3, 0);
+	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3);
 }
 
 auto application::init_blur_passes(void) -> void
@@ -472,7 +489,7 @@ auto application::init_motion_blur_pass(void) -> void
 	render_pipeline.create_render_stage("render_stage.motion_blur", info, renderbuffers, textures);
 
 	motion_blur->add_texture2D_bind(textures.get_texture("texture.scene_depth")
-		, textures.get_texture("texture.scene_color"));
+		, textures.get_texture("texture.ssr"));
 	motion_blur->set_active_textures(active_texture_uniform_pair{ "scene_depth", 0 }
 	, active_texture_uniform_pair{ "diffuse", 1 });
 
@@ -523,7 +540,7 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.g_buffer.normal"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.ssr"));
 }
 
 auto application::init_deferred_renderer(void) -> void
@@ -545,4 +562,62 @@ auto application::init_deferred_renderer(void) -> void
 	first->attach_texture(*textures.get_texture("texture.g_buffer.normal"), GL_COLOR_ATTACHMENT1, 0);
 	first->attach_texture(*textures.get_texture("texture.g_buffer.albedo"), GL_COLOR_ATTACHMENT2, 0);
 	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2);
+
+	auto depth_lighting = renderbuffers.add_renderbuffer("renderbuffer.lighting_depth");
+	create_depth_renderbuffer(*depth_lighting, display_w, display_h);
+
+	render_stage_create_info lighting_info;
+	lighting_info.width = display_w;
+	lighting_info.height = display_h;
+	lighting_info.color_name = "texture.lighting";
+	lighting_info.depth_name = "renderbuffer.lighting_depth";
+	lighting_info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto lighting_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.lighting", shaders[shader_handle("shader.lighting")], &guis);
+	render_pipeline.create_render_stage("render_stage.lighting", lighting_info, renderbuffers, textures);
+	lighting_stage->add_texture2D_bind(textures.get_texture("texture.g_buffer.position")
+		, textures.get_texture("texture.g_buffer.normal")
+		, textures.get_texture("texture.g_buffer.albedo"));
+	lighting_stage->set_active_textures( active_texture_uniform_pair{ "positions", 0 } 
+		, active_texture_uniform_pair{ "normals", 1 }
+		, active_texture_uniform_pair{ "albedo", 2 } );
+}
+
+auto application::init_ssr(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	auto depth_ssr = renderbuffers.add_renderbuffer("renderbuffer.ssr_depth");
+	create_depth_renderbuffer(*depth_ssr, display_w, display_h);
+
+	render_stage_create_info ssr_info;
+	ssr_info.width = display_w;
+	ssr_info.height = display_h;
+	ssr_info.color_name = "texture.ssr";
+	ssr_info.depth_name = "renderbuffer.ssr_depth";
+	ssr_info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto ssr_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.ssr", shaders[shader_handle("shader.ssr")], &guis);
+	render_pipeline.create_render_stage("render_stage.ssr", ssr_info, renderbuffers, textures);
+	ssr_stage->add_texture2D_bind(textures.get_texture("texture.scene_color")
+		, textures.get_texture("texture.scene_depth")
+		, textures.get_texture("texture.g_buffer.position")
+		, textures.get_texture("texture.g_buffer.normal"));
+	ssr_stage->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
+		, active_texture_uniform_pair{ "depth", 1 }
+		, active_texture_uniform_pair{ "view_positions", 2 }
+		, active_texture_uniform_pair{ "view_normals", 3 });
+	ssr_stage->add_texture3D_bind(textures.get_texture("texture.sky"));
+
+	uniform_mat4 * projection_command = new uniform_mat4("projection_matrix", world.get_scene_camera().get_projection_matrix());
+	ssr_stage->add_uniform_command(projection_command);
+	
+	view_matrix_command = new uniform_mat4("view_matrix", world.get_scene_camera().get_view_matrix());
+	ssr_stage->add_uniform_command(view_matrix_command);
+
+	cam_pos_command = new uniform_vec3("camera_position", world.get_scene_camera().get_position());
+	ssr_stage->add_uniform_command(cam_pos_command);
 }

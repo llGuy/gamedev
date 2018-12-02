@@ -299,6 +299,10 @@
     <None Include="src\shaders\deferred\master3D_gsh.shader" />
     <None Include="src\shaders\deferred\master3D_fsh.shader" />
     <None Include="src\shaders\deferred\master3D_vsh.shader" />
+    <None Include="src\shaders\deferred\lighting_vsh.shader" />
+    <None Include="src\shaders\deferred\lighting_fsh.shader" />
+    <None Include="src\shaders\post_processing\ssr\vsh.shader" />
+    <None Include="src\shaders\post_processing\ssr\fsh.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

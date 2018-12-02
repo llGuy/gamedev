@@ -31,6 +31,11 @@ auto render_stage2D::execute(u32 current_id, std::vector<render_stage *> & stage
 		}
 	}
 
+	for (u32 i = 0; i < textures3D.size(); ++i)
+	{
+		textures3D[i]->bind(GL_TEXTURE_CUBE_MAP, i);
+	}
+
 	if (shader) shader->bind();
 
 	std::for_each(extra_commands.begin(), extra_commands.end()
