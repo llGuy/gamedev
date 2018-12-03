@@ -29,7 +29,7 @@ auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & 
 	glsl_shader gsh = shaders.create_shader(GL_GEOMETRY_SHADER, animation_shader, extract_file("src/shaders/animation3D/gsh.shader"));
 	glsl_shader fsh = shaders.create_shader(GL_FRAGMENT_SHADER, animation_shader, extract_file("src/shaders/animation3D/fsh.shader"));
 
-	glsl_program * shader = shaders.combine(animation_shader, vsh, gsh, fsh);
+	glsl_program * shader = shaders.combine(animation_shader, true, vsh, gsh, fsh);
 
 	//auto animated_material = materials.add_material("material.animated", material_light_info(), shader, lights, mat_cam);
 

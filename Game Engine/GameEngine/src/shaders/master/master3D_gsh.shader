@@ -12,6 +12,8 @@ struct input_prev
 	vec3 vertex_normal;
 
 	vec4 shadow_coord;
+
+	vec4 view_position;
 };
 
 in input_prev vertex_out[];
@@ -51,6 +53,8 @@ void main(void)
 #endif
 
 		geometry_out.shadow_coord = vertex_out[i].shadow_coord;
+
+		geometry_out.view_position = vertex_out[i].view_position;
 
 		gl_Position = gl_in[i].gl_Position;
 

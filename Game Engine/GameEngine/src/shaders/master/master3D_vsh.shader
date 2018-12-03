@@ -15,6 +15,8 @@ out struct input_prev
 	vec3 vertex_normal;
 
 	vec4 shadow_coord;
+
+	vec4 view_position;
 }
 vertex_out;
 
@@ -52,4 +54,6 @@ void main(void)
 	vertex_out.shadow_coord = shadow_info.shadow_bias * vec4(vertex_out.vertex_position, 1.0f);
 
 	gl_Position = projection_matrix * view_matrix * vec4(vertex_out.vertex_position, 1.0f);
+
+	vertex_out.view_position = view_matrix * vec4(vertex_out.vertex_position, 1.0f);
 }

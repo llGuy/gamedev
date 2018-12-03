@@ -107,14 +107,14 @@ public:
 		master3D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/master/master3D_fsh.shader");
 	}
 
-	auto create_program(shader_handle const & handle, std::string const & shader /* 3D or 2D */) -> glsl_program *
+	auto create_program(shader_handle const & handle, std::string const & shader /* 3D or 2D */, bool prepend_version = true) -> glsl_program *
 	{
 		glsl_program * ret;
 		if (shader == "2D")
 		{
 			glsl_shader vsh = create_shader(GL_VERTEX_SHADER, handle, shader);
 			glsl_shader fsh = create_shader(GL_FRAGMENT_SHADER, handle, shader);
-			ret = combine(handle, vsh, fsh);
+			ret = combine(handle, prepend_version, vsh, fsh);
 		}
 		else if (shader == "3D")
 		{
@@ -124,9 +124,9 @@ public:
 			if (handle[shader_property::linked_to_gsh] == true)
 			{
 				glsl_shader gsh = create_shader(GL_GEOMETRY_SHADER, handle, shader);
-				ret = combine(handle, vsh, gsh, fsh);
+				ret = combine(handle, prepend_version, vsh, gsh, fsh);
 			}
-			else ret = combine(handle, vsh, fsh);
+			else ret = combine(handle, prepend_version, vsh, fsh);
 		}
 		else ret = nullptr;
 
@@ -158,10 +158,10 @@ public:
 		return new_shader;
 	}
 
-	template <typename ... Ts> auto combine(shader_handle const & handle, Ts ... shaders) -> glsl_program *
+	template <typename ... Ts> auto combine(shader_handle const & handle, bool prepend_version, Ts ... shaders) -> glsl_program *
 	{
 		glsl_program * program = new glsl_program;
-		(program->attach(shaders), ...);
+		(program->attach(shaders, prepend_version), ...);
 		program->link();
 
 		u32 id = programs.size();

@@ -17,6 +17,8 @@ in struct input_prev
 	vec3 vertex_normal;
 
 	vec4 shadow_coord;
+
+	vec4 view_position;
 }
 geometry_out;
 
@@ -33,6 +35,11 @@ in struct input_prev
 	vec3 vertex_normal;
 
 	vec4 shadow_coord;
+
+
+
+
+	vec4 view_position;
 } 
 vertex_out;
 
@@ -184,6 +191,7 @@ void main(void)
 #ifdef USES_COLOR
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
+	final_color = vec4(0, 0.5, 0, 1);
 	if (lighting == 1)
 	{
 		vec3 light_vector = normalize(vec3(light_info.light_position));
@@ -201,9 +209,10 @@ void main(void)
 		calculate_bright_color();
 	}
 
+	view_positions = vec4(input_data.vertex_position, 1.0f);
 
-	view_positions = view_matrix * vec4(input_data.vertex_position, 1.0f);
 	view_normals = vec4(input_data.vertex_normal, 1.0f);
+
 
 	final_color.a = 1;
 }

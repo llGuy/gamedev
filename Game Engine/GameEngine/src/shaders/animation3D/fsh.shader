@@ -1,5 +1,7 @@
 layout(location = 0) out vec4 final_color;
 layout(location = 1) out vec4 bright_color;
+layout(location = 2) out vec4 view_position;
+layout(location = 3) out vec4 normal;
 
 /* determine whether is linked to gsh or not */
 #ifdef LINKED_TO_GSH
@@ -128,6 +130,10 @@ void main(void)
 		float specularity = apply_specular(eye_vector, light_vector, -input_data.vertex_normal, final_color);
 
 		apply_reflection(specularity, eye_vector, light_vector, -input_data.vertex_normal, final_color);
+
+		view_position = view_matrix * vec4(input_data.vertex_position, 1.0f);
+
+		normal = vec4(input_data.vertex_normal, 1.0f);
 	}
 	else
 	{

@@ -2,6 +2,7 @@
 #include "../io/io.h"
 #include "application.h"
 #include "../xcp/exception.h"
+#include "../console/console.h"
 #include "../graphics/3D/model_comp/cube.h"
 #include "../graphics/3D/model_comp/quad3D.h"
 #include "../animation/animation_component.h"
@@ -23,6 +24,7 @@ auto application::init(void) -> void
 {
 	try
 	{
+		ENG_MARK("Initializing");
 		glfw_init();
 
 		display.init(false);
@@ -51,12 +53,14 @@ auto application::init(void) -> void
 		is_running = true;
 
 		glEnable(GL_BLEND);
+
+		ENG_MARK("Begin Session");
 	}
 	catch(xcp::gl_xcp const & exception)
 	{
 		glfw_terminate();
 		display.destroy();
-		std::cerr << exception.what();
+		ENG_ERROR(exception.what());
 
 		std::cin.get();
 	}
@@ -77,7 +81,7 @@ auto application::update(void) -> void
 	f32 aspect = (f32)display.pixel_width() / (f32)display.pixel_height();
 
 	camera & scene_camera = world.get_scene_camera();
-	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
+	lights.update_shadows(60.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 
 
 
@@ -122,7 +126,7 @@ auto application::clean_up(void) -> void
 
 auto application::init_game_objects(void) -> void
 {
-	game_object & player = world.init_game_object({ 
+	game_object & player = world.init_game_object({
 		glm::vec3(10.0f)
 		, glm::vec3(-1.0f)
 		, glm::vec3(0.4f)
@@ -178,7 +182,7 @@ auto application::init_models(void) -> void
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
 	platform_model = models.init_model("model.platform");
-	models.load_model_from_obj("res/model/platform.obj", platform_model);
+	models.load_model_from_obj("res/model/test3.obj", platform_model);
 
 	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
@@ -216,23 +220,6 @@ auto application::init_3D_test(void) -> void
 
 	world.get_scene_camera().get_projection_matrix() = projection_matrix;
 
-	/* initializing low poly material */
-
-	auto low_poly_material = materials.add_material("material.low_poly"
-		, MATERIAL_HIGHLY_REFLECTIVE
-		, shaders[shader_handle("shader.low_poly")]
-		, lights);
-
-	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
-	low_poly_material->set_texture_3D(textures.get_texture("texture.sky"));
-
-	component<component_render, game_object_data> render_comp_platform{ 
-		platform_model
-		, materials.get_material_id("material.low_poly")
-        , materials };
-
-	world.get_game_object("game_object.platform").add_component(render_comp_platform);
-
 	/* initialize sky renderer and material */
 	auto sky_material = materials.add_material("material.sky"
 		, material_light_info() /* no lighting */
@@ -246,8 +233,25 @@ auto application::init_3D_test(void) -> void
 
 	materials.submit(sky);
 
+
 	/* initializing animation material_prototype textures */
 	materials["material.animated"]->set_texture_2D(textures.get_texture("texture.player"));
+
+
+
+	auto low_poly_material = materials.add_material("material.low_poly"
+		, MATERIAL_HIGHLY_REFLECTIVE
+		, shaders[shader_handle("shader.low_poly")]
+		, lights);
+
+	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
+
+	component<component_render, game_object_data> render_comp_platform { 
+		platform_model 
+		, materials.get_material_id("material.low_poly") 
+		, materials };
+
+	world.get_game_object("game_object.platform").add_component(render_comp_platform);
 }
 
 auto application::init_2D_test(void) -> void
@@ -281,45 +285,54 @@ auto application::init_shaders(void) -> void
 	shader_handle sky_shader_handle("shader.sky");
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));
 	glsl_shader sky_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, sky_shader_handle, extract_file("src/shaders/environment/fsh.shader"));
-	shaders.combine(sky_shader_handle, sky_vsh, sky_fsh);
+	shaders.combine(sky_shader_handle, true, sky_vsh, sky_fsh);
 
 	auto blur_fsh_raw = extract_file("src/shaders/post_processing/gaussian_blur/fsh.shader");
 
 	shader_handle vertical_blur("shader.vertical_blur");
 	glsl_shader vertical_vsh = shaders.create_shader(GL_VERTEX_SHADER, vertical_blur, extract_file("src/shaders/post_processing/gaussian_blur/v_vsh.shader"));
 	glsl_shader blur_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, vertical_blur, blur_fsh_raw);
-	shaders.combine(vertical_blur, vertical_vsh, blur_fsh);
+	shaders.combine(vertical_blur, true, vertical_vsh, blur_fsh);
 
 	shader_handle horizontal_blur("shader.horizontal_blur");
 	glsl_shader horizontal_vsh = shaders.create_shader(GL_VERTEX_SHADER, horizontal_blur, extract_file("src/shaders/post_processing/gaussian_blur/h_vsh.shader"));
-	shaders.combine(horizontal_blur, horizontal_vsh, blur_fsh);
+	shaders.combine(horizontal_blur, true, horizontal_vsh, blur_fsh);
 
 	shader_handle dof_shader("shader.dof");
 	glsl_shader dof_vsh = shaders.create_shader(GL_VERTEX_SHADER, dof_shader, extract_file("src/shaders/post_processing/dof/vsh.shader"));
 	glsl_shader dof_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, dof_shader, extract_file("src/shaders/post_processing/dof/fsh.shader"));
-	shaders.combine(dof_shader, dof_vsh, dof_fsh);
+	shaders.combine(dof_shader, true, dof_vsh, dof_fsh);
 
 	shader_handle bloom_shader("shader.bloom");
 	glsl_shader bloom_vsh = shaders.create_shader(GL_VERTEX_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/vsh.shader"));
 	glsl_shader bloom_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, bloom_shader, extract_file("src/shaders/post_processing/bloom/fsh.shader"));
-	shaders.combine(bloom_shader, bloom_vsh, bloom_fsh);
+	shaders.combine(bloom_shader, true, bloom_vsh, bloom_fsh);
 
 	shader_handle motion_blur_shader("shader.motion_blur");
 	glsl_shader motion_vsh = shaders.create_shader(GL_VERTEX_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/vsh.shader"));
 	glsl_shader motion_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, motion_blur_shader, extract_file("src/shaders/post_processing/motion_blur/fsh.shader"));
-	shaders.combine(motion_blur_shader, motion_vsh, motion_fsh);
+	shaders.combine(motion_blur_shader, true, motion_vsh, motion_fsh);
 
 	/* Shader for deferred renderer */
 	shader_handle ssr_shader("shader.ssr");
-	glsl_shader ssr_vsh = shaders.create_shader(GL_VERTEX_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/vsh.shader"));
-	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh.shader"));
-	shaders.combine(ssr_shader, ssr_vsh, ssr_fsh);
+	glsl_shader ssr_vsh = shaders.create_shader(GL_VERTEX_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/vsh.vert"));
+	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh.frag"));
+	shaders.combine(ssr_shader, false, ssr_vsh, ssr_fsh);
+
+	/* Shader for normal mapped, specular mapped.... models */
+	shader_handle high_def("shader.high_def");
+	glsl_shader high_def_vsh = shaders.create_shader(GL_VERTEX_SHADER, high_def, extract_file("src/shaders/high_def/vsh.vert"));
+	glsl_shader high_def_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, high_def, extract_file("src/shaders/high_def/fsh.frag"));
+	auto high_def_shader = shaders.combine(high_def, false, high_def_vsh, high_def_fsh);
+	high_def_shader->bind();
+	high_def_shader->send_uniform_int("diffuse", 0);
+	high_def_shader->send_uniform_int("shadow_map", 1);
 }
 
 auto application::init_textures(void) -> void
 {
 	auto * low_poly_texture = textures.init_texture("texture.low_poly");
-	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR);
+	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR, flip_vertically);
 
 	auto * test_gui_texture = textures.init_texture("texture.gui_test");
 	textures.load_texture_png("res/textures/gui_test.png", test_gui_texture, GL_NEAREST, flip_vertically);
@@ -329,7 +342,7 @@ auto application::init_textures(void) -> void
 
 	auto * sky_texture = textures.init_texture("texture.sky");
 	textures.load_3D_texture_png("res/textures/sky", sky_texture);
-
+	
 	auto * scene_color = textures.init_texture("texture.scene_color");
 	create_color_texture(*scene_color, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 
@@ -358,16 +371,19 @@ auto application::init_textures(void) -> void
 	create_color_texture(*motion_blur, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 
 	auto * g_buffer_position = textures.init_texture("texture.g_buffer.position");
-	create_color_texture(*g_buffer_position, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+	create_color_texture_info(*g_buffer_position, display.pixel_width(), display.pixel_height(), nullptr, GL_NEAREST);
 
 	auto * g_buffer_normal = textures.init_texture("texture.g_buffer.normal");
-	create_color_texture(*g_buffer_normal, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+	create_color_texture_info(*g_buffer_normal, display.pixel_width(), display.pixel_height(), nullptr, GL_NEAREST);
 
 	auto * g_buffer_albedo = textures.init_texture("texture.g_buffer.albedo");
 	create_color_texture(*g_buffer_albedo, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 
 	auto * lighting = textures.init_texture("texture.ssr");
 	create_color_texture(*lighting, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto * blue_ice_color = textures.init_texture("texture.blue_ice_color");
+	textures.load_texture_png("res/textures/materials/blue_ice/color.png", blue_ice_color, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void

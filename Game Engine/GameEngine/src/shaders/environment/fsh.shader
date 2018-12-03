@@ -1,7 +1,10 @@
 layout(location = 0) out vec4 final_color;
 layout(location = 1) out vec4 bright_color;
+layout(location = 2) out vec4 view_positions;
+layout(location = 3) out vec4 normal;
 
 in vec3 direction;
+in vec4 view_position;
 
 uniform samplerCube cube_map;
 
@@ -23,6 +26,9 @@ void main(void)
 	final_color = texture(cube_map, direction);
 
 	calculate_bright_color();
+
+	view_positions = view_position;
+	normal = vec4(0);
 
 	final_color.a = 0;
 }

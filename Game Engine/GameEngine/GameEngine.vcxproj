@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\console\console.cpp" />
     <ClCompile Include="src\graphics\renderbuffers\renderbuffer_handler.cpp" />
     <ClCompile Include="src\animation\animated_material.cpp" />
     <ClCompile Include="src\animation\animation.cpp" />
@@ -65,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\animation_key_control_component.h" />
+    <ClInclude Include="src\console\console.h" />
     <ClInclude Include="src\graphics\pipeline\uniform_commands.h" />
     <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h" />
     <ClInclude Include="src\animation\animated_material.h" />
@@ -153,6 +155,8 @@
     <None Include="src\shaders\deferred\master3D_vsh.shader" />
     <None Include="src\shaders\environment\fsh.shader" />
     <None Include="src\shaders\environment\vsh.shader" />
+    <None Include="src\shaders\high_def\fsh.frag" />
+    <None Include="src\shaders\high_def\vsh.vert" />
     <None Include="src\shaders\master\master2D_fsh.shader" />
     <None Include="src\shaders\master\master2D_vsh.shader" />
     <None Include="src\shaders\master\master3D_fsh.shader" />
@@ -167,8 +171,8 @@
     <None Include="src\shaders\post_processing\gaussian_blur\v_vsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
-    <None Include="src\shaders\post_processing\ssr\fsh.shader" />
-    <None Include="src\shaders\post_processing\ssr\vsh.shader" />
+    <None Include="src\shaders\post_processing\ssr\fsh.frag" />
+    <None Include="src\shaders\post_processing\ssr\vsh.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png" />

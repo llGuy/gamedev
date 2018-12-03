@@ -23,7 +23,7 @@ public:
 
 	auto provide(std::string const & src) -> void;
 
-	auto compile(std::string const & dbg_name) -> void;
+	auto compile(std::string const & dbg_name, bool prepend_version = true) -> void;
 
 	auto destroy(void) -> void;
 

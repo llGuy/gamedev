@@ -30,5 +30,6 @@ public:
 };
 
 extern auto unbind_all_textures(GLenum target) -> void;
-extern auto create_color_texture(texture &, int32_t w, int32_t h, void * data, GLenum magminfilter) -> void;
+extern auto create_color_texture(texture &, int32_t w, int32_t h, void * data, GLenum magminfilter, GLenum internal_type = GL_UNSIGNED_BYTE) -> void;
 extern auto create_depth_texture(texture & t, int32_t w, int32_t h) -> void;
+extern auto create_color_texture_info(texture & t, int32_t w, int32_t h, void * data, GLenum magmin_filter) -> void;

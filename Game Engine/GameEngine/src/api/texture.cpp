@@ -5,11 +5,22 @@ auto unbind_all_textures(GLenum target) -> void
 	glBindTexture(target, 0);
 }
 
-auto create_color_texture(texture & t, int32_t w, int32_t h, void * data, GLenum magmin_filter) -> void
+auto create_color_texture(texture & t, int32_t w, int32_t h, void * data, GLenum magmin_filter, GLenum internal_type) -> void
 {
 	t.create();
 	t.bind(GL_TEXTURE_2D);
-	t.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, data, w, h);
+	t.fill(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, internal_type, data, w, h);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magmin_filter);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, magmin_filter);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+auto create_color_texture_info(texture & t, int32_t w, int32_t h, void * data, GLenum magmin_filter) -> void
+{
+	t.create();
+	t.bind(GL_TEXTURE_2D);
+	t.fill(GL_TEXTURE_2D, GL_RGBA16F, GL_RGBA, GL_FLOAT, data, w, h);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magmin_filter);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, magmin_filter);
 	t.int_param(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
