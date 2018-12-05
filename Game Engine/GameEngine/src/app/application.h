@@ -48,6 +48,7 @@ private:
 	uniform_float * current_fps;
 	uniform_mat4 * view_matrix_command;
 	uniform_vec3 * cam_pos_command;
+	uniform_int * num_marches;
 public:
 	application(void);
 

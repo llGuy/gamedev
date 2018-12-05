@@ -31,6 +31,20 @@ struct uniform_vec3 : uniform_command
 	}
 };
 
+struct uniform_int : uniform_command
+{
+	i32 value;
+
+	uniform_int(std::string const & name, i32 value)
+		: uniform_command(name), value(value)
+	{
+	}
+	auto execute(void) -> void override
+	{
+		shader->send_uniform_int(name, value);
+	}
+};
+
 struct uniform_float : uniform_command
 {
 	f32 value;

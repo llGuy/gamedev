@@ -133,7 +133,7 @@ void main(void)
 
 		view_position = view_matrix * vec4(input_data.vertex_position, 1.0f);
 
-		normal = vec4(input_data.vertex_normal, 1.0f);
+		normal = view_matrix * vec4(input_data.vertex_normal, 0);
 	}
 	else
 	{

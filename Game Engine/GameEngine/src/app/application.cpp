@@ -102,6 +102,15 @@ auto application::render(void) -> void
 	inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
 	inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
 
+	if (display.user_inputs().got_key(GLFW_KEY_1))
+	{
+		num_marches->value -= 1;
+	}
+	else if (display.user_inputs().got_key(GLFW_KEY_2))
+	{
+		num_marches->value += 1;
+	}
+
 	glDisable(GL_BLEND);
 	render_pipeline.execute_stages(display.pixel_width(), display.pixel_height());
 
@@ -127,7 +136,7 @@ auto application::clean_up(void) -> void
 auto application::init_game_objects(void) -> void
 {
 	game_object & player = world.init_game_object({
-		glm::vec3(10.0f)
+		glm::vec3(0)
 		, glm::vec3(-1.0f)
 		, glm::vec3(0.4f)
 		, "game_object.player" });
@@ -143,7 +152,7 @@ auto application::init_game_objects(void) -> void
 	world.bind_camera_to_object(player);
 
 	game_object & monkey = world.init_game_object({ 
-		glm::vec3(-3.5f, -1.5f, -4.5f)
+		glm::vec3(-3.5f, 0, -4.5f)
 		, glm::vec3(1.0f)
 		, glm::vec3(1.0f, 0.7f, 1.0f)
 		, "game_object.monkey" });
@@ -164,7 +173,7 @@ auto application::init_game_objects(void) -> void
 	monkey.add_component(control);
 
 	game_object & platform = world.init_game_object({ 
-		glm::vec3(0.0f, -4.0f, 0.0f)
+		glm::vec3(0.0f, 0.0f, 0.0f)
 		, glm::vec3(1.0f, 0.0f, 0.0f)
 		, glm::vec3(4.0f)
 		, "game_object.platform" });
@@ -636,4 +645,7 @@ auto application::init_ssr(void) -> void
 
 	cam_pos_command = new uniform_vec3("camera_position", world.get_scene_camera().get_position());
 	ssr_stage->add_uniform_command(cam_pos_command);
+
+	num_marches = new uniform_int("num_marches", 2);
+	ssr_stage->add_uniform_command(num_marches);
 }

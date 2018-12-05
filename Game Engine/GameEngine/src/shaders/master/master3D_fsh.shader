@@ -209,9 +209,10 @@ void main(void)
 		calculate_bright_color();
 	}
 
-	view_positions = vec4(input_data.vertex_position, 1.0f);
+	view_positions = view_matrix * vec4(input_data.vertex_position, 1.0f);
 
-	view_normals = vec4(input_data.vertex_normal, 1.0f);
+	view_normals = view_matrix * vec4(input_data.vertex_normal, 0.0f);
+	view_normals.a = 1;
 
 
 	final_color.a = 1;
