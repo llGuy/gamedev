@@ -191,7 +191,7 @@ void main(void)
 #ifdef USES_COLOR
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
-	final_color = vec4(0, 0.5, 0, 1);
+
 	if (lighting == 1)
 	{
 		vec3 light_vector = normalize(vec3(light_info.light_position));

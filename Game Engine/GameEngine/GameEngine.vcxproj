@@ -63,9 +63,12 @@
     <ClCompile Include="src\utils\log.cpp" />
     <ClCompile Include="src\window\input.cpp" />
     <ClCompile Include="src\window\window.cpp" />
+    <ClCompile Include="vendor\AudioFile\AudioFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\animation_key_control_component.h" />
+    <ClInclude Include="src\audio\al_buffer.h" />
+    <ClInclude Include="src\audio\audio_handler.h" />
     <ClInclude Include="src\console\console.h" />
     <ClInclude Include="src\graphics\pipeline\uniform_commands.h" />
     <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h" />
@@ -137,6 +140,8 @@
     <ClInclude Include="src\window\input.h" />
     <ClInclude Include="src\window\window.h" />
     <ClInclude Include="src\xcp\exception.h" />
+    <ClInclude Include="vendor\AudioFile\AudioFile.h" />
+    <ClInclude Include="vendor\freealut-master\include\AL\alut.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\font\comic.fnt" />
@@ -172,6 +177,7 @@
     <None Include="src\shaders\post_processing\motion_blur\fsh.shader" />
     <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
     <None Include="src\shaders\post_processing\ssr\fsh.frag" />
+    <None Include="src\shaders\post_processing\ssr\fsh2.frag" />
     <None Include="src\shaders\post_processing\ssr\vsh.vert" />
   </ItemGroup>
   <ItemGroup>
@@ -239,13 +245,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameEngine\vendor\spdlog\include;C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDIr)GameEngine\vendor\freealut-master\include\;$(SolutionDir)GameEngine\vendor\AudioFile;$(SolutionDir)GameEngine\vendor\spdlog\include;C:\dependencies\stb-master;C:\dependencies\OpenAL\include;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\dependencies\stb-master;C:\dependencies\GLEW\lib\Release\Win32\;C:\dependencies\GLFW\lib-vc2015\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dependencies\OpenAL\libs\Win32;C:\dependencies\stb-master;C:\dependencies\GLEW\lib\Release\Win32\;C:\dependencies\GLFW\lib-vc2015\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;OpenAL32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

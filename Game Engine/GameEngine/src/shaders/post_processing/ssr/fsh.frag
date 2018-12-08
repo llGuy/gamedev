@@ -100,6 +100,23 @@ vec4 cast_ray(inout vec3 direction, inout vec3 hit_coord, in vec3 view_normal)
 	return vec4(0);
 }
 
+/*vec3 hash(vec3 a)
+{
+	a = fract(a * Scale);
+    a += dot(a, a.yxz + K);
+    return fract((a.xxy + a.yxx)*a.zyx);
+}*/
+
+const float roughness = 1;
+const float spec = 0.5;
+
+float hash11(float p)
+{
+	vec3 p3  = fract(vec3(p) * .1031);
+    p3 += dot(p3, p3.yzx + 19.19);
+    return fract((p3.x + p3.y) * p3.z);
+}
+
 void main(void)
 {
 	vec3 view_position = (textureLod(view_positions, vertex_out.texture_coords, 2)).xyz;
@@ -116,14 +133,14 @@ void main(void)
 		 
 		vec3 hit_coord = view_position;
 
-		vec3 ray_dir = view_direction * 0.1;
-		//vec3 ray_dir = view_direction * max(0.1, -view_position.z);
+		//vec3 ray_dir = view_direction * 0.1;
+		vec3 ray_dir = view_direction * max(0.1, -view_position.z) * 0.1;
 		vec4 projected_coord;
 		float sampled_depth;
 
 		bool success = false;
 
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			hit_coord += ray_dir;
 

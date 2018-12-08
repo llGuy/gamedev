@@ -8,6 +8,8 @@
 #include "../animation/animation_component.h"
 #include "../animation/animation_key_control_component.h"
 
+#include <al.h>
+
 #include <glm/gtc/type_ptr.hpp>
 
 #define DISPLAY_WIDTH 1500
@@ -191,7 +193,7 @@ auto application::init_models(void) -> void
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
 	platform_model = models.init_model("model.platform");
-	models.load_model_from_obj("res/model/test3.obj", platform_model);
+	models.load_model_from_obj("res/model/platform_test.obj", platform_model);
 
 	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
@@ -325,7 +327,7 @@ auto application::init_shaders(void) -> void
 	/* Shader for deferred renderer */
 	shader_handle ssr_shader("shader.ssr");
 	glsl_shader ssr_vsh = shaders.create_shader(GL_VERTEX_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/vsh.vert"));
-	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh.frag"));
+	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh2.frag"));
 	shaders.combine(ssr_shader, false, ssr_vsh, ssr_fsh);
 
 	/* Shader for normal mapped, specular mapped.... models */
@@ -341,7 +343,7 @@ auto application::init_shaders(void) -> void
 auto application::init_textures(void) -> void
 {
 	auto * low_poly_texture = textures.init_texture("texture.low_poly");
-	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR, flip_vertically);
+	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR);
 
 	auto * test_gui_texture = textures.init_texture("texture.gui_test");
 	textures.load_texture_png("res/textures/gui_test.png", test_gui_texture, GL_NEAREST, flip_vertically);
@@ -514,13 +516,12 @@ auto application::init_motion_blur_pass(void) -> void
 	render_pipeline.create_render_stage("render_stage.motion_blur", info, renderbuffers, textures);
 
 	motion_blur->add_texture2D_bind(textures.get_texture("texture.scene_depth")
-		, textures.get_texture("texture.ssr"));
+		, textures.get_texture("texture.scene_color"));
 	motion_blur->set_active_textures(active_texture_uniform_pair{ "scene_depth", 0 }
 	, active_texture_uniform_pair{ "diffuse", 1 });
 
 	/* need to update these  every frame */
 	inverse_proj_matrix = new uniform_mat4("inverse_proj_matrix", glm::mat4(1.0f));
-	inverse_view_matrix = new uniform_mat4("inverse_view_matrix", glm::mat4(1.0f));
 	previous_view_proj = new uniform_mat4("previous_view_proj", glm::mat4(1.0f));
 	current_fps = new uniform_float("current_fps", 0.0f);
 
@@ -648,4 +649,7 @@ auto application::init_ssr(void) -> void
 
 	num_marches = new uniform_int("num_marches", 2);
 	ssr_stage->add_uniform_command(num_marches);
+
+	inverse_view_matrix = new uniform_mat4("inverse_view_matrix", glm::mat4(1.0f));
+	ssr_stage->add_uniform_command(inverse_view_matrix);
 }
