@@ -41,11 +41,11 @@ auto glsl_program::bind(void) -> void
 	glUseProgram(id);
 }
 
-auto glsl_program::attach(glsl_shader const & sh, bool prepend_version) -> void
+auto glsl_program::attach(std::string const & name, glsl_shader const & sh, bool prepend_version) -> void
 {
 	shaders.push_back(sh);
 
-	shaders.back().compile("", prepend_version);
+	shaders.back().compile(name, prepend_version);
 }
 
 auto glsl_program::send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void

@@ -202,6 +202,11 @@ auto model_handler::process_vertex(std::vector<std::string> const & vertex_data,
 	if (raw_normals.size() > 0)
 	{
 		glm::vec3 current_normal = raw_normals[std::stoi(vertex_data[2]) - 1];
+		f32 normal_y = current_normal.y;
+		f32 normal_z = current_normal.z;
+		//current_normal.y = -normal_y;
+		//current_normal.z = normal_z;
+		//current_normal.y *= -1;
 		normals[current_vertex] = current_normal;
 	}
 }

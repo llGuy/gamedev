@@ -192,6 +192,8 @@ void main(void)
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
 
+	input_data.vertex_normal.y *= -1;
+
 	if (lighting == 1)
 	{
 		vec3 light_vector = normalize(vec3(light_info.light_position));
@@ -212,6 +214,7 @@ void main(void)
 	view_positions = view_matrix * vec4(input_data.vertex_position, 1.0f);
 
 	view_normals = view_matrix * vec4(input_data.vertex_normal, 0.0f);
+//	view_normals = vec4(input_data.vertex_normal, 0.0);
 	view_normals.a = 1;
 
 

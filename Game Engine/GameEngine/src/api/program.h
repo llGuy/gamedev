@@ -21,7 +21,7 @@ private:
 public:
 	auto bind(void) -> void;
 
-	auto attach(glsl_shader const & sh, bool prepend_version = true) -> void;
+	auto attach(std::string const & name, glsl_shader const & sh, bool prepend_version = true) -> void;
 public:
 	auto bind_subroutine(std::string const & var, std::string const & func_name, GLenum shader) -> void;
 	auto bind_uniform_block(uniform_buffer & uniform_block, std::string const & name) -> void;

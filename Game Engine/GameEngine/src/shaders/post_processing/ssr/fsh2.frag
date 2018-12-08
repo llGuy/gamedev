@@ -84,14 +84,20 @@ vec4 ray_cast(inout vec3 direction, inout vec3 hit_coord, out float depth_differ
 
 		if (sampled_depth <= original_coord.z)
 		{
-			if (depth_difference <= 0.0)
+			if ((projected_coord.x > 0) && (projected_coord.y > 0) && (projected_coord.x < 1) && (projected_coord.y < 1))
 			{
-				vec4 result;
-				result = vec4(binary_search(direction, hit_coord, depth_difference), 1.0);
+			if ((direction.z - depth_difference) < 1.2)
+			{
+				if (depth_difference <= 0.0)
+				{
+					vec4 result;
+					result = vec4(binary_search(direction, hit_coord, depth_difference), 1.0);
 
-				success = true;
+					success = true;
 
-				return result;
+					return result;
+				}
+			}
 			}
 		}
 	}
@@ -104,11 +110,31 @@ vec3 fresnel_schlick(float cos_theta, vec3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cos_theta, 5.0);
 }
 
+void apply_cube_map_reflection(in vec3 vs_eye_vector, in vec3 vs_normal)
+{
+	vec3 result = reflect(-normalize(vs_eye_vector), vs_normal);
+	vec3 ws_reflect = vec3(inverse_view_matrix * vec4(result, 1.0));
+
+	vec3 ws_eye_vector = vec3(inverse_view_matrix * vec4(vs_eye_vector, 1.0));
+	vec3 ws_normal     = vec3(inverse_view_matrix * vec4(vs_normal, 1.0));
+	
+	vec3 reflect_dir = normalize(reflect(-normalize(ws_eye_vector), ws_normal));
+
+	vec4 envi_color = texture(cube_map, reflect_dir);
+
+	//	final_color += envi_color;
+	//	final_color = mix(final_color, envi_color, 0.5);
+	//	final_color = envi_color;
+//	final_color = vec4(, 1.0);
+}
+
 void main(void)
 {
 	vec3 view_position = (textureLod(view_positions, vertex_out.texture_coords, 2)).xyz;
 	vec3 view_normal = (textureLod(view_normals, vertex_out.texture_coords, 2)).xyz;
 	vec4 pixel_color = texture(diffuse, vertex_out.texture_coords);
+
+	vec3 original_position = view_position;
 
 	if (pixel_color.a > 0.5)
 	{
@@ -141,6 +167,8 @@ void main(void)
 
 		if(hit) final_color = mix(texture(diffuse, coords.xy), pixel_color, 0.5);
 		else final_color = pixel_color;
+
+		//apply_cube_map_reflection(-original_position, view_normal);
 	}
 	else final_color = pixel_color;
 }

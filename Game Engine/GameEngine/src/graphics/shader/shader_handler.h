@@ -161,7 +161,7 @@ public:
 	template <typename ... Ts> auto combine(shader_handle const & handle, bool prepend_version, Ts ... shaders) -> glsl_program *
 	{
 		glsl_program * program = new glsl_program;
-		(program->attach(shaders, prepend_version), ...);
+		(program->attach(handle.str(), shaders, prepend_version), ...);
 		program->link();
 
 		u32 id = programs.size();
