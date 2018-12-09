@@ -155,7 +155,10 @@ auto model_handler::load_model_from_obj(std::string const & file_name, model & o
 	while (std::getline(file, line))
 	{
 		std::vector<std::string> words = split(line, ' ');
-		break_face_line(words, indices, raw_texture_coords, raw_normals, texture_coords, normals);
+		if (words[0] == "f")
+		{
+			break_face_line(words, indices, raw_texture_coords, raw_normals, texture_coords, normals);
+		}
 	}
 
 	create_model(vertices, normals, texture_coords, indices, object);

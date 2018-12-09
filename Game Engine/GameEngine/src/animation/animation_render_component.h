@@ -43,6 +43,6 @@ template <> struct component<struct component_animation3D_render, game_object_da
 		mat->get_transforms_array() = std::move(anim_component.final_matrices);
 		mat->get_uniform_block() = anim_component.animation_uniform_block;
 
-		materials->submit(mat);
+	//	materials->submit(mat);
 	}
 };

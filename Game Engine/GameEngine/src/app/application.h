@@ -42,6 +42,14 @@ private:
 	model player_model;
 	model quad3D_model;
 
+	struct
+	{
+		model cube;
+		model sphere;
+		model taurus;
+		model monkey;
+	} platform;
+
 	uniform_mat4 * inverse_proj_matrix;
 	uniform_mat4 * inverse_view_matrix;
 	uniform_mat4 * previous_view_proj;

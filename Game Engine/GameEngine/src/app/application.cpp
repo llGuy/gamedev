@@ -12,8 +12,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1500
-#define DISPLAY_HEIGHT 800
+#define DISPLAY_WIDTH 1000
+#define DISPLAY_HEIGHT 500
 
 #define BLUR_LEVEL 1
 
@@ -139,10 +139,10 @@ auto application::init_game_objects(void) -> void
 {
 	game_object & player = world.init_game_object({
 		glm::vec3(0)
-		, glm::vec3(-1.0f)
+		, glm::vec3(0, 0, 1)
 		, glm::vec3(0.4f)
 		, "game_object.player" });
-
+	
 	component<component_behavior_key, game_object_data> key_comp{
 		DEFAULT_KEY_BINDINGS, display.user_inputs() };
 
@@ -174,7 +174,7 @@ auto application::init_game_objects(void) -> void
 	component<component_animation3D_key_control, game_object_data> control{ &animations, associations, display.user_inputs() };
 	monkey.add_component(control);
 
-	game_object & platform = world.init_game_object({ 
+	game_object & sphere = world.init_game_object({ 
 		glm::vec3(0.0f, 0.0f, 0.0f)
 		, glm::vec3(1.0f, 0.0f, 0.0f)
 		, glm::vec3(4.0f)
@@ -182,7 +182,25 @@ auto application::init_game_objects(void) -> void
 
 	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
 
-	platform.add_component(model_matrix_comp_platform);
+	sphere.add_component(model_matrix_comp_platform);
+
+	/*game_object & taurus = world.init_game_object({
+			glm::vec3(15.0f, 2.0f, -15.0f)
+			, glm::vec3(1.0f, 0.0f, 0.0f)
+			, glm::vec3(4.0f)
+			, "game_object.taurus" });
+
+	component<component_model_matrix, game_object_data> model_matrix_compo_taurus;
+	taurus.add_component(model_matrix_compo_taurus);
+
+	game_object & ground = world.init_game_object({
+		glm::vec3(10.0f, -5.0f, 10.0f)
+		, glm::vec3(1.0f, 0.0f, 0.0f)
+		, glm::vec3(20.0f, 0.2f, 20.0f)
+		, "game_object.ground" });
+
+	component<component_model_matrix, game_object_data> model_matrix_compo_ground;
+	ground.add_component(model_matrix_compo_ground);*/
 }
 
 auto application::init_models(void) -> void
@@ -193,7 +211,17 @@ auto application::init_models(void) -> void
 	models.load_model_from_obj("res/model/monkey.obj", monkey_model);
 
 	platform_model = models.init_model("model.platform");
-	models.load_model_from_obj("res/model/platform_test.obj", platform_model);
+	models.load_model_from_obj("res/model/test_platform9.obj", platform_model);
+
+/*platform.cube = models.init_model("model.platform.cube");
+	platform.monkey = models.init_model("model.platform.monkey");
+	platform.sphere = models.init_model("model.platform.sphere");
+	platform.taurus = models.init_model("model.platform.taurus");
+
+	models.load_model_from_obj("res/model/platform/sphere.obj", platform.sphere);
+	models.load_model_from_obj("res/model/platform/monkey.obj", platform.monkey);
+	models.load_model_from_obj("res/model/platform/taurus.obj", platform.taurus);
+	models.load_model_from_obj("res/model/platform/cube.obj", platform.cube);*/
 
 	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
@@ -258,11 +286,33 @@ auto application::init_3D_test(void) -> void
 	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
 
 	component<component_render, game_object_data> render_comp_platform { 
-		platform_model 
+		platform_model
 		, materials.get_material_id("material.low_poly") 
 		, materials };
 
 	world.get_game_object("game_object.platform").add_component(render_comp_platform);
+
+	/*component<component_render, game_object_data> render_comp_platform_taurus{
+		platform.taurus
+		, materials.get_material_id("material.low_poly")
+		, materials };
+
+	world.get_game_object("game_object.taurus").add_component(render_comp_platform_taurus);
+
+
+	auto low_poly_actual_material = materials.add_material("material.low_poly2"
+		, MATERIAL_HIGHLY_REFLECTIVE
+		, shaders[shader_handle("shader.low_poly2")]
+		, lights);
+
+	low_poly_actual_material->set_texture_2D(textures.get_texture("texture.low_poly"));
+
+	component<component_render, game_object_data> render_comp_plat{
+		platform.cube
+		, materials.get_material_id("material.low_poly2")
+		, materials };
+
+	world.get_game_object("game_object.ground").add_component(render_comp_plat);*/
 }
 
 auto application::init_2D_test(void) -> void
@@ -278,7 +328,7 @@ auto application::init_2D_test(void) -> void
 	stream_panel->init(vertices, nullptr);
 
 	font_stream * stream = guis.init_font_stream("gui.panel.font_test", "gui.font.stream.font_test", "comic", glm::vec2(320.0f), 20.0f);
-	stream->submit_text("Super Awesome new Rendering System!!!");
+	stream->submit_text("SSR");
 
 	guis.update(display.pixel_width(), display.pixel_height());
 }
@@ -286,12 +336,20 @@ auto application::init_2D_test(void) -> void
 auto application::init_shaders(void) -> void
 {
 	shader_handle shader = models.create_shader_handle(platform_model);
-	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
+	//shader.set(shader_property::linked_to_gsh);
 	shader.set_name("shader.low_poly");
 	auto program = shaders.create_program(shader, "3D");
 	program->bind();
 	program->send_uniform_int("diffuse", 0);
 	program->send_uniform_int("shadow_map", 1);
+
+	/*shader_handle low_poly_shader = models.create_shader_handle(platform.cube);
+	low_poly_shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals, shader_property::invert_normals);
+	low_poly_shader.set_name("shader.low_poly2");
+	auto program_low_poly = shaders.create_program(low_poly_shader, "3D");
+	program_low_poly->bind();
+	program_low_poly->send_uniform_int("diffuse", 0);
+	program_low_poly->send_uniform_int("shadow_map", 1);*/
 
 	shader_handle sky_shader_handle("shader.sky");
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));

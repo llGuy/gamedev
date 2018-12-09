@@ -107,7 +107,9 @@ float apply_specular(float light_factor, vec3 eye_vector, vec3 light_vector, vec
 	float specular = clamp(dot(reflected_light, normalize(eye_vector)), 0, 1);
 	specular = pow(specular, material_info.shininess_factor);
 
-	color = vec4(specular) * light_info.specular_intensity * material_info.specular_reflectivity * light_factor + color;
+	//color = vec4(specular) * light_info.specular_intensity * material_info.specular_reflectivity * light_factor + color;
+	//color = vec4(specular);
+	//color = vec4(specular) + color;
 
 	return specular;
 }
@@ -192,7 +194,10 @@ void main(void)
 	final_color = vec4(input_data.vertex_color, 1.0f);
 #endif
 
-	input_data.vertex_normal.y *= -1;
+
+//#ifdef INVERT_NORMALS
+	input_data.vertex_normal *= -1;
+//#endif
 
 	if (lighting == 1)
 	{
@@ -206,7 +211,7 @@ void main(void)
 		//float specularity = apply_specular(eye_vector, light_vector, input_data.vertex_normal, final_color);
 		float specularity = apply_specular(light_factor, eye_vector, light_vector, input_data.vertex_normal, final_color);
 
-		apply_reflection(light_factor, specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
+		//apply_reflection(light_factor, specularity, eye_vector, light_vector, input_data.vertex_normal, final_color);
 
 		calculate_bright_color();
 	}
@@ -214,7 +219,7 @@ void main(void)
 	view_positions = view_matrix * vec4(input_data.vertex_position, 1.0f);
 
 	view_normals = view_matrix * vec4(input_data.vertex_normal, 0.0f);
-//	view_normals = vec4(input_data.vertex_normal, 0.0);
+	//view_normals = vec4(input_data.vertex_normal, 0.0);
 	view_normals.a = 1;
 
 

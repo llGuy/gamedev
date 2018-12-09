@@ -7,7 +7,8 @@ enum class shader_property : u32
 {
 	vertex_color, vertex_normal,
 	texture_coords, dynamic_normals,
-	linked_to_gsh, sharp_normals, invalid
+	linked_to_gsh, sharp_normals, invert_normals,
+	invalid
 };
 
 constexpr std::array<char const *, static_cast<u32>(shader_property::invalid)> property_map
@@ -18,4 +19,5 @@ constexpr std::array<char const *, static_cast<u32>(shader_property::invalid)> p
 	"#define DYNAMIC_NORMALS\n",
 	"#define LINKED_TO_GSH\n",
 	"#define SHARP_NORMALS\n",
+	"#define INVERT_NORMALS\n"
 };
