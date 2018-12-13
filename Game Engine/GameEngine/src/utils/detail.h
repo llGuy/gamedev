@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <numeric>
 #include <utility>
 #include "types.h"
@@ -52,6 +53,19 @@ namespace detail {
 			result[i] = (T)(rand() % max);
 
 		return result;
+	}
+
+	template <typename T> auto copy_from_pointer(T * ptr, std::size_t size_bytes) -> std::vector<T>
+	{
+		std::size_t size = size_bytes / sizeof(T);
+
+		std::vector<T> arr;
+		arr.reserve(size);
+
+		for (std::size_t i = 0; i < size; ++i)
+			arr.push_back(ptr[i]);
+
+		return arr;
 	}
 
 	constexpr auto compile_hash(char const * str, u32 size) -> u32

@@ -1,7 +1,7 @@
+#include <future>
 #include "model_handler.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <xml_parser/rapidxml.hpp>
-
 
 
 model_handler::model_handler(void)
@@ -103,6 +103,44 @@ auto model_handler::load_model_from_dae(model & obj, std::string const & file_na
 	create_model(vertices, normals_in_order, uvs_in_order, indices, obj);
 
 	return std::pair(doc, parsed.second);
+}
+
+auto model_handler::load_model_from_ubobj(std::string const & file_name, model & object) -> void
+{
+	std::ifstream file(file_name, std::ios::binary | std::ios::ate);
+
+	std::size_t file_size_bytes = static_cast<std::size_t>(file.tellg());
+	std::vector<char> byte_buffer;
+	byte_buffer.resize(file_size_bytes);
+
+	file.clear();
+	file.seekg(0);
+	file.read(byte_buffer.data(), file_size_bytes);
+
+	struct header
+	{
+		uint32_t vertices_offset; uint32_t vertices_size;
+		uint32_t normals_offset;  uint32_t normals_size;
+		uint32_t tcoords_offset;  uint32_t tcoords_size;
+		uint32_t indices_offset;  uint32_t indices_size;
+	} head = *(header *)(byte_buffer.data());
+
+	auto * p_vertices = (glm::vec3 *)(byte_buffer.data() + head.vertices_offset);
+	auto * p_normals = (glm::vec3 *)(byte_buffer.data() + head.normals_offset);
+	auto * p_tcoords = (glm::vec2 *)(byte_buffer.data() + head.tcoords_offset);
+	auto * p_indices = (uint32_t *)(byte_buffer.data() + head.indices_offset);
+
+	auto f_vertices = std::async(std::launch::async, detail::copy_from_pointer<glm::vec3>, p_vertices, head.vertices_size);
+	auto f_normals = std::async(std::launch::async, detail::copy_from_pointer<glm::vec3>, p_normals, head.normals_size);
+	auto f_tcoords = std::async(std::launch::async, detail::copy_from_pointer<glm::vec2>, p_tcoords, head.tcoords_size);
+	auto f_indices = std::async(std::launch::async, detail::copy_from_pointer<uint32_t>, p_indices, head.indices_size);
+
+	std::vector<glm::vec3> vertices = std::move(f_vertices.get());
+	std::vector<glm::vec3> normals = std::move(f_normals.get());
+	std::vector<glm::vec2> tcoords = std::move(f_tcoords.get());
+	std::vector<uint32_t> indices = std::move(f_indices.get());
+
+	create_model(vertices, normals, tcoords, indices, object);
 }
 
 auto model_handler::load_model_from_obj(std::string const & file_name, model & object) -> void

@@ -149,7 +149,7 @@ float get_shadow_value(in vec3 world_pos, in vec4 shadow_coord)
 				float object_nearest_light = texture(shadow_map, shadow_coord.xy + vec2(x, y) * texel_size).x;
 				if (shadow_coord.z > object_nearest_light + 0.002f)
 				{
-					total += 0.5f;
+					total += 0.8f;
 				}
 			}
 		}

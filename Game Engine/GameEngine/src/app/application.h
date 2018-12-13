@@ -37,11 +37,9 @@ private:
 	pipeline render_pipeline;
 
 	model platform_model;
-	model monkey_model;
 	model cube_model;
 	model player_model;
-	model quad3D_model;
-
+	
 	struct
 	{
 		model cube;

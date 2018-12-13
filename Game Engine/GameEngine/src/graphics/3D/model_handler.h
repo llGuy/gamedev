@@ -88,6 +88,8 @@ public:
 
 	auto load_model_from_obj(std::string const & file_name, model & object) -> void;
 
+	auto load_model_from_ubobj(std::string const & file_name, model & object) -> void;
+
 	auto load_model_from_dae(model & obj, std::string const & file_name
 		, std::pair<rapidxml::xml_document<char> *, std::string *> parsed = std::pair(nullptr, nullptr)) -> std::pair<rapidxml::xml_document<char> *, std::string *>;
 

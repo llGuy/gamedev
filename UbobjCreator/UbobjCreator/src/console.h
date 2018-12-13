@@ -60,7 +60,7 @@ private:
 	console(HANDLE handle);
 };
 
-#define ENG_INFO(...) console::get()->output_info(__VA_ARGS__);
-#define ENG_WARN(...) console::get()->output_warning(__VA_ARGS__);
-#define ENG_ERROR(...) console::get()->output_error(__VA_ARGS__);
-#define ENG_MARK(txt) console::get()->mark(txt);
+#define LOG_INFO(...) console::get()->output_info(__VA_ARGS__);
+#define LOG_WARN(...) console::get()->output_warning(__VA_ARGS__);
+#define LOG_ERROR(...) console::get()->output_error(__VA_ARGS__);
+#define LOG_MARK(txt) console::get()->mark(txt);

@@ -44,7 +44,7 @@ vec3 binary_search(inout vec3 dir, inout vec3 hit_coord, inout float depth_diffe
 
 		depth = textureLod(view_positions, projected_coord.xy, 2).z;
 
-		depth_difference = hit_coord.z - depth_difference;
+		depth_difference = hit_coord.z - depth;
 
 		dir *= 0.5;
 		if (depth_difference > 0.0) hit_coord += dir;
@@ -62,7 +62,7 @@ vec4 ray_cast(inout vec3 direction, inout vec3 hit_coord, out float depth_differ
 {
 	vec3 original_coord = hit_coord;
 
-	direction *= 0.2;
+	direction *= 0.1;
 
 	vec4 projected_coord;
 	float sampled_depth;
@@ -85,16 +85,17 @@ vec4 ray_cast(inout vec3 direction, inout vec3 hit_coord, out float depth_differ
 
 		depth_difference = hit_coord.z - sampled_depth;
 
-		if ((direction.z - depth_difference) < 1.2)
+		//if ((direction.z - depth_difference) < 1.2)
 		{
 			if (depth_difference <= 0)
 			{
 				if (depth_difference > -distance(previous_ray_coord, hit_coord))
 				{
-				vec4 result = vec4(binary_search(direction, hit_coord, depth_difference), 0.0);
+				vec4 result	= vec4(binary_search(direction,	hit_coord, depth_difference), 0.0);
 
 				success = true;
 
+		//		return vec4(projected_coord.xy, sampled_depth, 0.0);
 				return result;
 				}
 			}
@@ -134,7 +135,6 @@ void main(void)
 
 	if (pixel_color.a > 0.5)
 	{
-
 		bool hit = false;
 
 		vec3 F0 = vec3(0.04);
@@ -143,10 +143,10 @@ void main(void)
 
 		float ddepth;
 		vec3 world_position = vec3(inverse_view_matrix * vec4(view_position, 1.0));
-		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), 0.5);
+		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), 1);
 		vec3 ray_dir = normalize(reflect(normalize(view_position), normalize(view_normal)));
 
-		ray_dir = jitt + ray_dir * max(0.2, -view_position.z);
+		ray_dir = jitt + ray_dir * max(0.1, -view_position.z);
 
 		/* ray cast */
 		vec4 coords = ray_cast(ray_dir, view_position, ddepth, hit);
@@ -154,7 +154,8 @@ void main(void)
 		vec2 d_coords = smoothstep(0.2, 0.6, abs(vec2(0.5, 0.5) - coords.xy));
 		float edge_factor = clamp(1.0 - (d_coords.x + d_coords.y), 0.0, 1.0);
 
-		vec4 reflected_color = texture(diffuse, coords.xy) * clamp(edge_factor, 0.0, 0.9) * vec4(fresnel, 1.0);
+		vec4 reflected_color = texture(diffuse, coords.xy);
+	//	vec4 reflected_color = texture(diffuse, coords.xy) * clamp(edge_factor, 0.0, 0.9) * vec4(fresnel, 1.0);
 
 		pixel_color = apply_cube_map_reflection(-normalize(original_position + jitt), view_normal, pixel_color);
 
@@ -166,7 +167,9 @@ void main(void)
 		if (hit)
 		{
 			//final_color = vec4(abs(coords.z) / 100.0);
-			final_color	= mix(pixel_color, reflected_color, edge_factor);
+			final_color	= mix(pixel_color, reflected_color, edge_factor * 0.5);
+			//final_color = texture(diffuse, coords.xy);
+//			final_color = reflected_color;
 			//final_color = pixel_color;
 		}
 		else final_color = pixel_color;
