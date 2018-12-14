@@ -114,7 +114,7 @@ auto material_prototype::get_textures_cubemap(void)->std::vector<texture *> &
 	return textures_cubemap;
 }
 
-material::material(model const & renderable, glm::mat4 const & transform, u32 material_type_id)
+material::material(model & renderable, glm::mat4 const & transform, u32 material_type_id)
 	: renderable(renderable), transform_matrix(transform), material_type_id(material_type_id)
 {
 }

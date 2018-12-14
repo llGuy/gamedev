@@ -1,12 +1,14 @@
 #pragma once
 
 #include "camera.h"
+#include "loader.h"
 #include "game_object.h"
-#include "component/component.h"
 
 class scene
 {
 private:
+	friend class scene_loader;
+
 	game_object_component_system components;
 
 	/* vector of game objects */
@@ -14,8 +16,10 @@ private:
 	std::unordered_map<std::string, u32> index_map;
 
 	camera scene_camera;
+
+	scene_loader loader;
 public:
-	auto init(void) -> void;
+	auto init(input_handler & inputs, model_handler & models, material_handler & materials) -> void;
 
 	auto init_game_object(game_object_data const & data) -> game_object &;
 
@@ -28,4 +32,6 @@ public:
 	auto get_scene_camera(void) -> camera &;
 
 	auto bind_camera_to_object(game_object & subject) -> void;
+
+	auto load_from_file(void) -> void;
 };

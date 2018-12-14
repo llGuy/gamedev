@@ -56,6 +56,7 @@
     <ClCompile Include="src\graphics\renderbuffers\renderbuffer_handler.cpp" />
     <ClCompile Include="src\console\console.cpp" />
     <ClCompile Include="vendor\AudioFile\AudioFile.cpp" />
+    <ClCompile Include="src\scene\loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -286,6 +287,9 @@
     <ClInclude Include="vendor\freealut-master\include\AL\alut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\scene\loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master2D_vsh.shader" />
@@ -323,6 +327,8 @@
     <None Include="src\shaders\high_def\vsh.vert" />
     <None Include="src\shaders\high_def\fsh.frag" />
     <None Include="src\shaders\post_processing\ssr\fsh2.frag" />
+    <None Include="src\shaders\post_processing\ssr\layer.vert" />
+    <None Include="res\saves\entities.json" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

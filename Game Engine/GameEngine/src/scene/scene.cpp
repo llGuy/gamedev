@@ -1,9 +1,10 @@
 #include "scene.h"
+#include "component/component.h"
 #include "../animation/animation_component.h"
 #include "../animation/animation_render_component.h"
 #include "../animation/animation_key_control_component.h"
 
-auto scene::init(void) -> void
+auto scene::init(input_handler & inputs, model_handler & models, material_handler & materials) -> void
 {
 	/* creates all the systems */
 	components.add_system<component_log>(20);
@@ -14,6 +15,13 @@ auto scene::init(void) -> void
 	components.add_system<component_animation3D>(20);
 	components.add_system<component_animation3D_render>(20);
 	components.add_system<component_animation3D_key_control>(20);
+
+	loader.init(*this, inputs, models, materials);
+}
+
+auto scene::load_from_file(void) -> void
+{
+	loader.load(extract_file("res/saves/entities.json"), *this);
 }
 
 auto scene::init_game_object(game_object_data const & data) -> game_object &

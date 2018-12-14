@@ -36,7 +36,7 @@ private:
 
 	pipeline render_pipeline;
 
-	model platform_model;
+//	model platform_model;
 	model cube_model;
 	model player_model;
 	

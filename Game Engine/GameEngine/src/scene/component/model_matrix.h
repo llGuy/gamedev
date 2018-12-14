@@ -52,3 +52,16 @@ public:
 		return scale;
 	}
 };
+
+struct model_matrix_apply_func : apply_func
+{
+	auto apply(class scene & dest, nlohmann::json::iterator & it, game_object & obj) -> void override
+	{
+		if (it.value())
+		{
+			component<struct component_model_matrix, game_object_data> matrix_component;
+
+			obj.add_component(matrix_component);
+		}
+	}
+};

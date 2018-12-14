@@ -78,13 +78,15 @@ private:
 	/* models don't need any data */
 	component_system<model_data> components;
 
-	std::unordered_map<std::string, model> models;
+	std::unordered_map<std::string, u32> model_indices;
+
+	std::vector<model> models;
 public:
 	model_handler(void);
 
 	auto init(void) -> void;
 
-	auto init_model(std::string const & model_name) -> model;
+	auto init_model(std::string const & model_name) -> model &;
 
 	auto load_model_from_obj(std::string const & file_name, model & object) -> void;
 
@@ -96,6 +98,12 @@ public:
 	auto create_shader_handle(model & object) -> shader_handle;
 
 	auto compute_model(model_computation & computation, model & object) -> void;
+
+	auto get_model(std::string const & name) -> model &;
+
+	auto get_model(u32 id) -> model &;
+
+	auto get_model_id(std::string const & name) -> u32;
 private:
 	/* code for loading models from blender */
 	auto break_face_line(std::vector<std::string> const & face_line_words,

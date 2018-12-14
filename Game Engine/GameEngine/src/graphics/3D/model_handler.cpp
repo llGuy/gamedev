@@ -22,12 +22,15 @@ auto model_handler::init(void) -> void
 	components.add_system<texture_component>(20);
 }
 
-auto model_handler::init_model(std::string const & model_name) -> model
+auto model_handler::init_model(std::string const & model_name) -> model &
 {
-	model new_object;
-	components.ready_object(new_object);
+	models.push_back(model());
 
-	return new_object;
+	components.ready_object(models.back());
+
+	model_indices[model_name] = models.size() - 1;
+
+	return models.back();
 }
 
 auto model_handler::create_shader_handle(model & object) -> shader_handle
@@ -310,4 +313,19 @@ auto model_handler::create_model(std::vector<glm::vec3> & vertices, std::vector<
 auto model_handler::compute_model(model_computation & computation, model & object) -> void
 {
 	computation.compute(object);
+}
+
+auto model_handler::get_model(u32 id)->model &
+{
+	return models[id];
+}
+
+auto model_handler::get_model_id(std::string const & name) -> u32
+{
+	return model_indices[name];
+}
+
+auto model_handler::get_model(std::string const & name) -> model &
+{
+	return models[model_indices[name]];
 }

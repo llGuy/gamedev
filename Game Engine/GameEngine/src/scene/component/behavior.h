@@ -1,7 +1,10 @@
 #pragma once
 
+#include "../loader.h"
 #include <string>
 #include <iostream>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "../camera.h"
 #include "../game_object.h"
@@ -9,6 +12,8 @@
 #include "../../window/input.h"
 #include <glm/gtx/string_cast.hpp>
 #include "../../data/components.h"
+
+#include "../scene.h"
 
 struct key_bind
 {
@@ -21,6 +26,7 @@ struct key_bind
 };
 
 #define DEFAULT_KEY_BINDINGS key_bind{ GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D, GLFW_KEY_SPACE, GLFW_KEY_LEFT_SHIFT }
+
 
 template <> struct component<struct component_behavior_key, game_object_data> : component_base
 {
@@ -69,6 +75,7 @@ public:
 	}
 };
 
+
 template <> struct component<struct component_behavior_mouse, game_object_data> : component_base
 {
 private:
@@ -105,6 +112,65 @@ public:
 			scene_camera->get_rotation_angles() -= difference * 0.5f;
 
 			object->direction = glm::normalize(look_fps(difference, object->direction, td));
+		}
+	}
+};
+
+struct key_control_apply_func : apply_func
+{
+	input_handler & inputs;
+
+	key_control_apply_func(input_handler & inputs)
+		: inputs(inputs)
+	{
+	}
+
+	auto apply(scene & dest, nlohmann::json::iterator & it, game_object & obj) -> void override
+	{
+		if (it.value())
+		{
+			component<component_behavior_key, game_object_data> key_component(DEFAULT_KEY_BINDINGS, inputs);
+
+			obj.add_component(key_component);
+		}
+	}
+};
+
+struct mouse_control_apply_func : apply_func
+{
+	input_handler & inputs;
+	camera & scene_camera;
+
+	mouse_control_apply_func(input_handler & inputs, camera & scene_camera)
+		: inputs(inputs), scene_camera(scene_camera)
+	{
+	}
+
+	auto apply(scene & dest, nlohmann::json::iterator & it, game_object & obj) -> void override
+	{
+		if (it.value())
+		{
+			component<component_behavior_mouse, game_object_data> mouse_component(inputs, scene_camera);
+
+			obj.add_component(mouse_component);
+		}
+	}
+};
+
+struct bind_camera_apply_func : apply_func
+{
+	camera & scene_camera;
+
+	bind_camera_apply_func(camera & scene_camera)
+		: scene_camera(scene_camera)
+	{
+	}
+
+	auto apply(scene & dest, nlohmann::json::iterator & it, game_object & obj) -> void override
+	{
+		if (it.value())
+		{
+			dest.bind_camera_to_object(obj);
 		}
 	}
 };

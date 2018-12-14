@@ -58,6 +58,7 @@
     <ClCompile Include="src\io\io.cpp" />
     <ClCompile Include="src\light\light_handler.cpp" />
     <ClCompile Include="src\scene\camera.cpp" />
+    <ClCompile Include="src\scene\loader.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
     <ClCompile Include="src\utils\log.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="src\scene\component\third_person_mouse_movement.h" />
     <ClInclude Include="src\scene\environment\environment.h" />
     <ClInclude Include="src\scene\game_object.h" />
+    <ClInclude Include="src\scene\loader.h" />
     <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\scene\tps_camera.h" />
     <ClInclude Include="src\time\timer.h" />
@@ -150,6 +152,7 @@
     <None Include="res\font\superscript.fnt" />
     <None Include="res\font\verdana.fnt" />
     <None Include="res\model\model_test.dae" />
+    <None Include="res\saves\entities.json" />
     <None Include="src\shaders\animation3D\fsh.shader" />
     <None Include="src\shaders\animation3D\gsh.shader" />
     <None Include="src\shaders\animation3D\vsh.shader" />
@@ -178,6 +181,7 @@
     <None Include="src\shaders\post_processing\motion_blur\vsh.shader" />
     <None Include="src\shaders\post_processing\ssr\fsh.frag" />
     <None Include="src\shaders\post_processing\ssr\fsh2.frag" />
+    <None Include="src\shaders\post_processing\ssr\layer.vert" />
     <None Include="src\shaders\post_processing\ssr\vsh.vert" />
   </ItemGroup>
   <ItemGroup>
@@ -245,7 +249,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDIr)GameEngine\vendor\freealut-master\include\;$(SolutionDir)GameEngine\vendor\AudioFile;$(SolutionDir)GameEngine\vendor\spdlog\include;C:\dependencies\stb-master;C:\dependencies\OpenAL\include;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameEngine\vendor\json-loader\include;$(SolutionDIr)GameEngine\vendor\freealut-master\include\;$(SolutionDir)GameEngine\vendor\AudioFile;$(SolutionDir)GameEngine\vendor\spdlog\include;C:\dependencies\stb-master;C:\dependencies\OpenAL\include;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;C:\dependencies\xml_parser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

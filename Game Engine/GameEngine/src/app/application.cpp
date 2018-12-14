@@ -36,7 +36,7 @@ auto application::init(void) -> void
 		glew_init();
 
 		shaders.init();
-		world.init();
+		world.init(display.user_inputs(), models, materials);
 		models.init();
 
 		init_game_objects();
@@ -137,7 +137,7 @@ auto application::clean_up(void) -> void
 
 auto application::init_game_objects(void) -> void
 {
-	game_object & player = world.init_game_object({
+	/*game_object & player = world.init_game_object({
 		glm::vec3(0)
 		, glm::vec3(0, 0, 1)
 		, glm::vec3(0.4f)
@@ -151,7 +151,7 @@ auto application::init_game_objects(void) -> void
 	player.add_component(key_comp); 
 	player.add_component(mouse_comp);
 
-	world.bind_camera_to_object(player);
+	world.bind_camera_to_object(player);*/
 
 	game_object & monkey = world.init_game_object({ 
 		glm::vec3(-3.5f, 0, -4.5f)
@@ -174,7 +174,7 @@ auto application::init_game_objects(void) -> void
 	component<component_animation3D_key_control, game_object_data> control{ &animations, associations, display.user_inputs() };
 	monkey.add_component(control);
 
-	game_object & sphere = world.init_game_object({ 
+	/*game_object & sphere = world.init_game_object({ 
 		glm::vec3(0.0f, 0.0f, 0.0f)
 		, glm::vec3(1.0f, 0.0f, 0.0f)
 		, glm::vec3(4.0f)
@@ -182,14 +182,14 @@ auto application::init_game_objects(void) -> void
 
 	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
 
-	sphere.add_component(model_matrix_comp_platform);
+	sphere.add_component(model_matrix_comp_platform);*/
 }
 
 auto application::init_models(void) -> void
 {
 	animations.init(shaders, lights, materials, &world.get_scene_camera());
 
-	platform_model = models.init_model("model.platform");
+	model & platform_model = models.init_model("model.platform");
 	models.load_model_from_ubobj("res/model/test_platform2.ubobj", platform_model);
 
 	player_model = models.init_model("model.player");
@@ -250,12 +250,14 @@ auto application::init_3D_test(void) -> void
 
 	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
 
-	component<component_render, game_object_data> render_comp_platform { 
+	world.load_from_file();
+
+/*	component<component_render, game_object_data> render_comp_platform { 
 		platform_model
 		, materials.get_material_id("material.low_poly") 
 		, materials };
 
-	world.get_game_object("game_object.platform").add_component(render_comp_platform);
+	world.get_game_object("game_object.platform").add_component(render_comp_platform);*/
 }
 
 auto application::init_2D_test(void) -> void
@@ -278,7 +280,7 @@ auto application::init_2D_test(void) -> void
 
 auto application::init_shaders(void) -> void
 {
-	shader_handle shader = models.create_shader_handle(platform_model);
+	shader_handle shader = models.create_shader_handle(models.get_model("model.platform"));
 	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	shader.set_name("shader.low_poly");
 	auto program = shaders.create_program(shader, "3D");

@@ -76,12 +76,12 @@ protected:
 	friend class renderer3D;
 	friend class material_handler;
 
-	model renderable;
+	model & renderable;
 	glm::mat4 transform_matrix;
 
 	u32 material_type_id;
 public:
-	material(model const & renderable, glm::mat4 const & transform, u32 material_type_id);
+	material(model & renderable, glm::mat4 const & transform, u32 material_type_id);
 
 	virtual auto render(glsl_program * shader) -> void;
 

@@ -11,7 +11,7 @@ private:
 	
 	uniform_buffer uniform_block;
 public:
-	skeletal_material(model const & renderable, glm::mat4 const & model_matrix, u32 material_type_id);
+	skeletal_material(model & renderable, glm::mat4 const & model_matrix, u32 material_type_id);
 
 	auto render(glsl_program * shader) -> void override;
 
