@@ -133,26 +133,12 @@ auto application::clean_up(void) -> void
 {
 	display.destroy();
 	glfw_terminate();
+
+	world.destroy();
 }
 
 auto application::init_game_objects(void) -> void
 {
-	/*game_object & player = world.init_game_object({
-		glm::vec3(0)
-		, glm::vec3(0, 0, 1)
-		, glm::vec3(0.4f)
-		, "game_object.player" });
-	
-	component<component_behavior_key, game_object_data> key_comp{
-		DEFAULT_KEY_BINDINGS, display.user_inputs() };
-
-	component<component_behavior_mouse, game_object_data> mouse_comp{ display.user_inputs(), world.get_scene_camera() };
-
-	player.add_component(key_comp); 
-	player.add_component(mouse_comp);
-
-	world.bind_camera_to_object(player);*/
-
 	game_object & monkey = world.init_game_object({ 
 		glm::vec3(-3.5f, 0, -4.5f)
 		, glm::vec3(1.0f)
@@ -173,16 +159,6 @@ auto application::init_game_objects(void) -> void
 	};
 	component<component_animation3D_key_control, game_object_data> control{ &animations, associations, display.user_inputs() };
 	monkey.add_component(control);
-
-	/*game_object & sphere = world.init_game_object({ 
-		glm::vec3(0.0f, 0.0f, 0.0f)
-		, glm::vec3(1.0f, 0.0f, 0.0f)
-		, glm::vec3(4.0f)
-		, "game_object.platform" });
-
-	component<component_model_matrix, game_object_data> model_matrix_comp_platform;
-
-	sphere.add_component(model_matrix_comp_platform);*/
 }
 
 auto application::init_models(void) -> void
@@ -191,6 +167,9 @@ auto application::init_models(void) -> void
 
 	model & platform_model = models.init_model("model.platform");
 	models.load_model_from_ubobj("res/model/test_platform2.ubobj", platform_model);
+
+	model & sphere_model = models.init_model("model.sphere");
+	models.load_model_from_ubobj("res/model/sphere.ubobj", sphere_model);
 
 	player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
@@ -203,9 +182,11 @@ auto application::init_models(void) -> void
 		, shaders[shader_handle("shader.animation3D")]
 		, lights);
 
-	animations.load_model_animation_data(player_model, xml_doc);
-	animations.load_skeleton(player, player_model, materials.get_material_id("material.animated"), materials, xml_doc);
+	animations.load_skeleton(player, xml_doc);
 	animations.load_animation_data("animation.running", player, xml_doc);
+
+	animations.load_model_animation_data(player_model, xml_doc);
+	animations.add_render_component(player, player_model, materials.get_material_id("material.animated"), materials);
 
 	auto & animation_comp = player.get_component<component_animation3D>();
 	animation_comp.set_animation("");

@@ -140,6 +140,4 @@ void main(void)
 		final_color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	calculate_bright_color();
-
-	final_color.a = 0;
 }

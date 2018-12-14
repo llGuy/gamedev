@@ -38,7 +38,7 @@ auto skeletal_animation_handler::init(shader_handler & shaders, light_handler & 
 	/* rest of the animated material must be initialized outside this class in the animation for customizability */
 }
 
-auto skeletal_animation_handler::load_skeleton(game_object & entity, model & renderable, u32 mat_id, material_handler & materials, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void
+auto skeletal_animation_handler::load_skeleton(game_object & entity, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void
 {
 	using namespace rapidxml;
 
@@ -62,10 +62,15 @@ auto skeletal_animation_handler::load_skeleton(game_object & entity, model & ren
 	root->calculate_inverses();
 
 	component<component_animation3D, game_object_data> entity_animation_component{ this, *root, index_joint_map.size() };
-	skeletal_material mat{ renderable, glm::mat4(1.0f), mat_id };
-	component<component_animation3D_render, game_object_data> entity_animation_render_component{ this, mat, materials };
 
 	entity.add_component(entity_animation_component);
+}
+
+auto skeletal_animation_handler::add_render_component(game_object & entity, model & renderable, u32 material_id, material_handler & materials) -> void
+{
+	skeletal_material mat{ renderable, glm::mat4(1.0f), material_id };
+	component<component_animation3D_render, game_object_data> entity_animation_render_component{ this, mat, materials };
+
 	entity.add_component(entity_animation_render_component);
 }
 

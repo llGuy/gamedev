@@ -1,0 +1,13 @@
+{
+  "platform": {
+    "format": ".ubobj",
+
+    "path": "res/model/test_platform10.ubobj"
+  },
+
+  "sphere": {
+    "format": ".ubobj",
+
+    "path": "res/model/sphere.ubobj"
+  }
+}

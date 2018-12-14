@@ -57,6 +57,7 @@
     <ClCompile Include="src\console\console.cpp" />
     <ClCompile Include="vendor\AudioFile\AudioFile.cpp" />
     <ClCompile Include="src\scene\loader.cpp" />
+    <ClCompile Include="src\graphics\3D\model_json_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\window\window.h">
@@ -290,6 +291,12 @@
     <ClInclude Include="src\scene\loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\3D\model_json_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\component\save.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\master\master2D_vsh.shader" />
@@ -329,6 +336,8 @@
     <None Include="src\shaders\post_processing\ssr\fsh2.frag" />
     <None Include="src\shaders\post_processing\ssr\layer.vert" />
     <None Include="res\saves\entities.json" />
+    <None Include="res\saves\models.json" />
+    <None Include="res\saves\materials.json" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\font\comic.png">

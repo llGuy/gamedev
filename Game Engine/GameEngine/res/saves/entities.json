@@ -1,13 +1,13 @@
 {
-
-  "player": {
-    "position": {
-      "x": 0.0,
-      "y": 5.0,
-      "z": 0.0
-    },
+  "animation_test": {
     "direction": {
       "x": 1.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "model_matrix": true,
+    "position": {
+      "x": 0.0,
       "y": 0.0,
       "z": 0.0
     },
@@ -15,42 +15,49 @@
       "x": 1.0,
       "y": 1.0,
       "z": 1.0
-    },
-
-
-
-    "key_control": true,
-
-    "bind_camera": true
+    }
   },
-
-
-
   "platform": {
-    "position": {
-      "x": 0.0,
-      "y": 0.0,
-      "z": 0.0
-    },
     "direction": {
       "x": 1.0,
       "y": 0.0,
       "z": 0.0
     },
+    "model_matrix": true,
+    "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "render": {
+      "material": "low_poly",
+      "model": "platform"
+    },
     "scale": {
       "x": 4.0,
       "y": 4.0,
       "z": 4.0
+    }
+  },
+  "player": {
+    "bind_camera": true,
+    "direction": {
+      "x": 0.49687817692756653,
+      "y": -0.09410833567380905,
+      "z": 0.8627025485038757
     },
-
-    "model_matrix": true,
-
+    "key_control": true,
     "mouse_control": true,
-
-    "render": {
-      "model": "platform",
-      "material": "low_poly"
+    "position": {
+      "x": -19.212074279785156,
+      "y": 7.2766337394714355,
+      "z": -30.415714263916016
+    },
+    "save": true,
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
     }
   }
-
 }

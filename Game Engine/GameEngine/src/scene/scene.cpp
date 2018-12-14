@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "component/save.h"
 #include "component/component.h"
 #include "../animation/animation_component.h"
 #include "../animation/animation_render_component.h"
@@ -8,6 +9,7 @@ auto scene::init(input_handler & inputs, model_handler & models, material_handle
 {
 	/* creates all the systems */
 	components.add_system<component_log>(20);
+	components.add_system<component_save>(20);
 	components.add_system<component_render>(20);
 	components.add_system<component_behavior_key>(20);
 	components.add_system<component_model_matrix>(20);
@@ -62,4 +64,9 @@ auto scene::bind_camera_to_object(game_object & subject) -> void
 {
 	scene_camera.init(subject.id);
 	scene_camera.get_direction() = subject->direction;
+}
+
+auto scene::destroy(void) -> void
+{
+	components.destroy_all(objects);
 }

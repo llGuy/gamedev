@@ -34,4 +34,6 @@ public:
 	auto bind_camera_to_object(game_object & subject) -> void;
 
 	auto load_from_file(void) -> void;
+
+	auto destroy(void) -> void;
 };

@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "loader.h"
+#include "component/save.h"
 #include "component/component.h"
 
 auto scene_loader::init(scene & dest, input_handler & inputs, model_handler & models, material_handler & materials) -> void
@@ -13,6 +14,7 @@ auto scene_loader::init(scene & dest, input_handler & inputs, model_handler & mo
 	map_funcs["key_control"] = new key_control_apply_func{ inputs };
 	map_funcs["mouse_control"] = new mouse_control_apply_func{ inputs, dest.get_scene_camera() };
 	map_funcs["bind_camera"] = new bind_camera_apply_func{ dest.get_scene_camera() };
+	map_funcs["save"] = new save_apply_func{ &json_handle };
 }
 
 auto scene_loader::load(std::string const & contents, scene & dest) -> void

@@ -27,7 +27,9 @@ public:
 	auto init(shader_handler & shaders, light_handler & lights, material_handler & materials, camera * mat_cam) -> void; 
 
 	/* loads the bones to a animation component and animation render component */
-	auto load_skeleton(game_object & entity, model & renderable, u32 mat_id, material_handler & materials, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+	auto load_skeleton(game_object & entity, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
+
+	auto add_render_component(game_object & entity, model & renderable, u32 material_id, material_handler & materials) -> void;
 
 	/* loads the weights and joint ids for each vertex */
 	auto load_model_animation_data(model & subject, std::pair<rapidxml::xml_document<char> *, std::string *> parsed) -> void;
