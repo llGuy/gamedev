@@ -1,0 +1,22 @@
+{
+  "plane": {
+    "path": {
+      "format": ".obj",
+      "dir": "res/model/repeat_plane.obj"
+    }
+  },
+
+  "sphere": {
+    "path": {
+      "format": ".ubobj",
+      "dir": "res/model/sphere.ubobj"
+    }
+  },
+
+  "loaded_cube": {
+    "path": {
+      "format": ".ubobj",
+      "dir": "res/model/cube.ubobj"
+    }
+  }
+}

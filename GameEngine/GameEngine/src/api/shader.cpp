@@ -14,13 +14,16 @@ auto glsl_shader::provide(std::string const & src) -> void
 	srcs.push_back(src);
 }
 
-auto glsl_shader::compile(std::string const & dbg_name) -> void
+auto glsl_shader::compile(std::string const & dbg_name, bool prepend_version) -> void
 {
 	id = glCreateShader(shader_type);
 
 	std::vector<char const *> srcs_raw;
 	
-	srcs_raw.push_back(version);
+	if (prepend_version)
+	{
+		srcs_raw.push_back(version);
+	}
 
 	for (auto & src : srcs) srcs_raw.push_back(src.c_str());
 
@@ -57,9 +60,4 @@ auto glsl_shader::destroy(void) -> void
 auto glsl_shader::get_id(void) const -> u32
 {
 	return id;
-}
-
-auto glsl_shader::get_file_name(void) const -> std::string const &
-{
-	return "";
 }

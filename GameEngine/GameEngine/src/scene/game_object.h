@@ -11,11 +11,6 @@ struct game_object_data
 	glm::vec3 scale;
 
 	std::string name;
-
-	auto operator->(void) -> game_object_data *
-	{
-		return this;
-	}
 };
 
 /* anything that is in the world, can be manipulated ...

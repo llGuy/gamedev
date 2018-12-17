@@ -24,7 +24,9 @@ void glew_init(void)
 }
 
 window::window(int32_t w, int32_t h, std::string const & t)
-	: width(w), height(h), title(t)
+	: width(w)
+	, height(h)
+	, title(t)
 {
 }
 auto window::init(bool full_screen) -> void

@@ -48,6 +48,10 @@ public:
 	{
 		return component_systems->get_component<T>(components[component_type<T, Data>::value]);
 	}
+	template <typename T> auto get_component(u32 index) -> component<T, Data> &
+	{
+		return component_systems->get_component<T>(index);
+	}
 	template <typename T> auto add_component(component<T, Data> & comp) -> void
 	{
 		comp.entity_index = id;
@@ -61,9 +65,9 @@ public:
 	{
 		return components.find(component_type<T, Data>::value) != components.end();
 	}
-	auto operator->(void) -> Data &
+	auto operator->(void) -> Data *
 	{
-		return data;
+		return &data;
 	}
 	
 	auto object_id(void) -> u32 &
@@ -91,7 +95,7 @@ public:
 	virtual ~icomponent(void) = default;
 	/* components may need to access other common components such as height or is_flying */
 	virtual auto update(f32 id, vec_dd<object<Data>> & entities) -> void {}
-	virtual auto destroy(void) -> void { entity_index = -1; }
+	virtual auto destroy(vec_dd<object<Data>> & entities) -> void { entity_index = -1; }
 	virtual auto active(void) -> bool { return entity_index != -1; }
 	
 	auto subject_index(void) -> i32 & { return entity_index; }
@@ -120,9 +124,14 @@ public:
 	/* in icomponent is the index of entity that the component is pointing to */
 	T value;
 	
-	component(object<Data> &, i32 index, T val)
-		: value(val), icomponent<Data>::icomponent(index)
+	component(T val)
+		: value(val)
 	{
+	}
+
+	auto operator->(void) -> T *
+	{
+		return &value;
 	}
 };
 
@@ -131,7 +140,8 @@ template <typename Data> class isystem
 public:
 	virtual auto update(f32 td, vec_dd<object<Data>> & entities,
 		component_system<Data> & ecs, std::function<bool(i32)> const &) -> void = 0;
-	virtual auto remove(i32 at) -> void = 0;
+	virtual auto remove(i32 at, vec_dd<object<Data>> & entities) -> void = 0;
+	virtual auto destroy_all(vec_dd<object<Data>> & entities) -> void = 0;
 };
 
 /* component_system contains a contiguous block of memory for storing
@@ -155,6 +165,18 @@ public:
 			if (components[i].active() && func(components[i].subject_index()))
 				components[i].update(td, entities);
 	}
+
+	auto destroy_all(vec_dd<object<Data>> & entities) -> void override
+	{
+		for (u32 i = 0; i < components.vec_size(); ++i)
+		{
+			if (components[i].active())
+			{
+				components[i].destroy(entities);
+			}
+		}
+	}
+
 	auto operator[](i32 comp_at) -> component<T, Data> &
 	{
 		return components[comp_at];
@@ -170,9 +192,9 @@ public:
 return components.emplace(std::forward<Args>(constr_args)...);
 }*/
 	
-	auto remove(i32 at) -> void override
+	auto remove(i32 at, vec_dd<object<Data>> & entities) -> void override
 	{
-		components[at].destroy();
+		components[at].destroy(entities);
 		components.remove(at);
 	}
 };
@@ -224,19 +246,25 @@ public:
 		subject.add_component(std::pair{ component_type<T, Data>::value, comp_at });
 	}
 public:
+	auto destroy_all(vec_dd<object<Data>> & entities) -> void 
+	{
+		std::for_each(systems.begin(), systems.end(), 
+			[&entities](std::unique_ptr<isystem<Data>> & sys) -> void { sys->destroy_all(entities); });
+	}
+
 	auto ready_object(object<Data> & subject) -> void
 	{
 		subject.component_systems = this;
 	}
 	
 	/* removing */
-	auto remove(object<Data> & subject) -> void
+	auto remove(object<Data> & subject, vec_dd<object<Data>> & entities) -> void
 	{
 		for (auto & comp_handle : subject.components)
 		{
 			auto[type, index] = comp_handle;
 			auto & sys = get_system(type);
-			sys->remove(index);
+			sys->remove(index, entities);
 		}
 	}
 public:

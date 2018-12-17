@@ -33,5 +33,5 @@ auto vertex_layout::in_plane_attrib(buffer & buff, u32 i, attribute att) -> void
 	buff.bind(GL_ARRAY_BUFFER);
 
 	glEnableVertexAttribArray(i);
-	glVertexAttribPointer(i, att.s, att.t, att.n, att.st, att.p);
+	glVertexAttribPointer(i, att.size, att.type, att.normalized, att.stride, att.pointer);
 }

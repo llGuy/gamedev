@@ -1,0 +1,15 @@
+{
+  "pebble": {
+    "shader": "low_poly",
+
+    "lighting": {
+      "ambient": [ 1.0, 1.0, 1.0 ],
+      "diffuse": [ 0.7, 0.7, 0.7 ],
+      "specular": [ 0.5, 0.5, 0.5 ]
+    },
+
+    "flush": true,
+
+    "textures_2D": [ "low_poly" ]
+  }
+}

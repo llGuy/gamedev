@@ -1,0 +1,20 @@
+{
+  "pebble_color": {
+    "load": {
+
+      "dir": "res/textures/materials/pebble/color.png",
+
+      "flip": false,
+
+      "mipmap": true
+    }
+  },
+
+  "pebble_normal": {
+    "load": {
+      "dir": "res/textures/materials/pebble/normal.png",
+
+      "flip": false
+    }
+  }
+}

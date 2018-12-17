@@ -9,18 +9,27 @@ extern auto unbind_vertex_layouts(void) -> void;
 struct attribute
 {
 	attribute(void) = default;
+
 	attribute(u32 n, u32 type, GLenum size,
 		GLenum normalized, u32 stride, void * ptr, std::optional<i32> d = {})
-		: number(n), t(type), s(size), n(normalized), st(stride), p(ptr), divisor(d)
+		: number(n), type(type), size(size), normalized(normalized), stride(stride), pointer(ptr), divisor(d)
 	{
 	}
 
+	/* all parameters to the glVertexAttribPointer function */
+
 	u32 number;
-	u32 t;
-	GLenum s;
-	GLenum n;
-	u32 st;
-	void * p;
+
+	u32 type;
+
+	GLenum size;
+
+	GLenum normalized;
+
+	u32 stride;
+
+	void * pointer;
+
 	std::optional<i32> divisor;
 };
 
@@ -43,12 +52,22 @@ public:
 
 	auto counter(void)->u32;
 
-	auto add_attrib(attribute a) -> void
+	auto add_attrib(attribute attrib) -> void
 	{
-		glEnableVertexAttribArray(a.number);
-		if (a.divisor.has_value())
-			glVertexAttribDivisor(a.number, a.divisor.value());
-		glVertexAttribPointer(a.number, a.s, a.t, a.n, a.st, a.p);
+		glEnableVertexAttribArray(attrib.number);
+		if (attrib.divisor.has_value())
+		{
+			glVertexAttribDivisor(attrib.number, attrib.divisor.value());
+		}
+
+		if (attrib.type == GL_INT)
+		{
+			glVertexAttribIPointer(attrib.number, attrib.size, attrib.type, attrib.stride, attrib.pointer);
+		}
+		else
+		{
+			glVertexAttribPointer(attrib.number, attrib.size, attrib.type, attrib.normalized, attrib.stride, attrib.pointer);
+		}
 	};
 private:
 	u32 count;

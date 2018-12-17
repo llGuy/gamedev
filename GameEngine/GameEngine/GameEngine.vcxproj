@@ -20,31 +20,144 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\animation\animated_material.cpp" />
+    <ClCompile Include="src\animation\animation.cpp" />
+    <ClCompile Include="src\animation\animation_handler.cpp" />
+    <ClCompile Include="src\animation\animation_wrapper.cpp" />
+    <ClCompile Include="src\animation\joint.cpp" />
+    <ClCompile Include="src\animation\key_frame.cpp" />
+    <ClCompile Include="src\api\buffer.cpp" />
+    <ClCompile Include="src\api\framebuffer.cpp" />
+    <ClCompile Include="src\api\program.cpp" />
+    <ClCompile Include="src\api\renderbuffer.cpp" />
+    <ClCompile Include="src\api\shader.cpp" />
+    <ClCompile Include="src\api\texture.cpp" />
+    <ClCompile Include="src\api\uniform_buffer.cpp" />
+    <ClCompile Include="src\api\vertex_layout.cpp" />
     <ClCompile Include="src\app\application.cpp" />
+    <ClCompile Include="src\console\console.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font_handler.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\font\font_stream.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\gui.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\gui_handler.cpp" />
+    <ClCompile Include="src\graphics\2D\gui\panel\panel.cpp" />
+    <ClCompile Include="src\graphics\2D\renderer\batch_renderer2D.cpp" />
+    <ClCompile Include="src\graphics\3D\material\material.cpp" />
+    <ClCompile Include="src\graphics\3D\material\material_handler.cpp" />
+    <ClCompile Include="src\graphics\3D\model_comp\cube.cpp" />
+    <ClCompile Include="src\graphics\3D\model_comp\quad3D.cpp" />
+    <ClCompile Include="src\graphics\3D\model_handler.cpp" />
+    <ClCompile Include="src\graphics\3D\model_json_loader.cpp" />
+    <ClCompile Include="src\graphics\3D\renderer\renderer3D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\pipeline.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage2D.cpp" />
+    <ClCompile Include="src\graphics\pipeline\render_stage3D.cpp" />
+    <ClCompile Include="src\graphics\renderbuffers\renderbuffer_handler.cpp" />
+    <ClCompile Include="src\graphics\target\target.cpp" />
+    <ClCompile Include="src\graphics\texture\json_loader.cpp" />
+    <ClCompile Include="src\graphics\texture\texture_handler.cpp" />
+    <ClCompile Include="src\io\io.cpp" />
+    <ClCompile Include="src\light\light_handler.cpp" />
+    <ClCompile Include="src\scene\camera.cpp" />
     <ClCompile Include="src\scene\scene.cpp" />
     <ClCompile Include="src\time\timer.cpp" />
+    <ClCompile Include="src\utils\log.cpp" />
     <ClCompile Include="src\window\input.cpp" />
     <ClCompile Include="src\window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animation\animated_material.h" />
+    <ClInclude Include="src\animation\animation.h" />
+    <ClInclude Include="src\animation\animation_component.h" />
+    <ClInclude Include="src\animation\animation_handler.h" />
+    <ClInclude Include="src\animation\animation_key_control_component.h" />
+    <ClInclude Include="src\animation\animation_render_component.h" />
+    <ClInclude Include="src\animation\animation_wrapper.h" />
+    <ClInclude Include="src\animation\joint.h" />
+    <ClInclude Include="src\animation\key_frame.h" />
+    <ClInclude Include="src\api\api.h" />
+    <ClInclude Include="src\api\buffer.h" />
+    <ClInclude Include="src\api\framebuffer.h" />
+    <ClInclude Include="src\api\program.h" />
+    <ClInclude Include="src\api\renderbuffer.h" />
+    <ClInclude Include="src\api\shader.h" />
+    <ClInclude Include="src\api\texture.h" />
+    <ClInclude Include="src\api\uniform_buffer.h" />
+    <ClInclude Include="src\api\vertex_layout.h" />
     <ClInclude Include="src\app\application.h" />
+    <ClInclude Include="src\audio\al_buffer.h" />
+    <ClInclude Include="src\audio\audio_handler.h" />
+    <ClInclude Include="src\console\console.h" />
     <ClInclude Include="src\data\components.h" />
     <ClInclude Include="src\data\vec_dd.h" />
+    <ClInclude Include="src\graphics\2D\gui\font\font.h" />
+    <ClInclude Include="src\graphics\2D\gui\font\font_handler.h" />
+    <ClInclude Include="src\graphics\2D\gui\font\font_stream.h" />
+    <ClInclude Include="src\graphics\2D\gui\gui.h" />
+    <ClInclude Include="src\graphics\2D\gui\gui_handler.h" />
+    <ClInclude Include="src\graphics\2D\gui\panel\panel.h" />
+    <ClInclude Include="src\graphics\2D\renderer\batch_renderer2D.h" />
+    <ClInclude Include="src\graphics\3D\component_types.h" />
+    <ClInclude Include="src\graphics\3D\material\material.h" />
+    <ClInclude Include="src\graphics\3D\material\material_handler.h" />
+    <ClInclude Include="src\graphics\3D\mesh.h" />
+    <ClInclude Include="src\graphics\3D\model_comp\cube.h" />
+    <ClInclude Include="src\graphics\3D\model_comp\mesh_comp.h" />
+    <ClInclude Include="src\graphics\3D\model_comp\quad3D.h" />
+    <ClInclude Include="src\graphics\3D\model_data.h" />
+    <ClInclude Include="src\graphics\3D\model_handler.h" />
+    <ClInclude Include="src\graphics\3D\model_json_loader.h" />
+    <ClInclude Include="src\graphics\3D\model_loader_apply_funcs.h" />
+    <ClInclude Include="src\graphics\3D\renderer\renderer3D.h" />
+    <ClInclude Include="src\graphics\pipeline\pipeline.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage2D.h" />
+    <ClInclude Include="src\graphics\pipeline\render_stage3D.h" />
+    <ClInclude Include="src\graphics\pipeline\uniform_commands.h" />
+    <ClInclude Include="src\graphics\renderbuffers\renderbuffer_handler.h" />
+    <ClInclude Include="src\graphics\shader\shader_handler.h" />
+    <ClInclude Include="src\graphics\shader\shader_properties.h" />
+    <ClInclude Include="src\graphics\target\depth_target.h" />
+    <ClInclude Include="src\graphics\target\target.h" />
+    <ClInclude Include="src\graphics\texture\apply_funcs.h" />
+    <ClInclude Include="src\graphics\texture\json_loader.h" />
+    <ClInclude Include="src\graphics\texture\texture_handler.h" />
+    <ClInclude Include="src\io\io.h" />
+    <ClInclude Include="src\json_loader.h" />
+    <ClInclude Include="src\light\light_handler.h" />
+    <ClInclude Include="src\light\shadow_handler.h" />
+    <ClInclude Include="src\light\sun.h" />
+    <ClInclude Include="src\scene\camera.h" />
     <ClInclude Include="src\scene\component\behavior.h" />
     <ClInclude Include="src\scene\component\component.h" />
     <ClInclude Include="src\scene\component\log.h" />
+    <ClInclude Include="src\scene\component\model_matrix.h" />
+    <ClInclude Include="src\scene\component\render_color.h" />
+    <ClInclude Include="src\scene\component\save.h" />
+    <ClInclude Include="src\scene\component\third_person_mouse_movement.h" />
+    <ClInclude Include="src\scene\environment\environment.h" />
     <ClInclude Include="src\scene\game_object.h" />
+    <ClInclude Include="src\scene\loader\components_loader.h" />
+    <ClInclude Include="src\scene\loader\loader_functor.h" />
     <ClInclude Include="src\scene\scene.h" />
+    <ClInclude Include="src\scene\test_json_loader.h" />
+    <ClInclude Include="src\scene\tps_camera.h" />
     <ClInclude Include="src\time\timer.h" />
     <ClInclude Include="src\utils\detail.h" />
+    <ClInclude Include="src\utils\log.h" />
     <ClInclude Include="src\utils\types.h" />
     <ClInclude Include="src\window\input.h" />
     <ClInclude Include="src\window\window.h" />
     <ClInclude Include="src\xcp\exception.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\saves\textures.json" />
+    <None Include="src\shaders\post_processing\ssr\fsh.frag" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{eecea32a-d65c-4c4a-beb7-a95c34284707}</ProjectGuid>
+    <ProjectGuid>{ae9e0ad5-e910-4a37-b1a3-d2bd4e48499b}</ProjectGuid>
     <RootNamespace>GameEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -100,8 +213,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\dependencies\xml_parser;$(SolutionDir)GameEngine\vendor\json-loader\include;C:\dependencies\stb-master;C:\dependencies;C:\dependencies\GLEW\include;C:\dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;GLM_ENABLE_EXPERIMENTAL;STB_IMAGE_IMPLEMENTATION</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

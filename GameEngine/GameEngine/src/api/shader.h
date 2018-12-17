@@ -23,13 +23,11 @@ public:
 
 	auto provide(std::string const & src) -> void;
 
-	auto compile(std::string const & dbg_name) -> void;
+	auto compile(std::string const & dbg_name, bool prepend_version = true) -> void;
 
 	auto destroy(void) -> void;
 
 	auto get_id(void) const->u32;
-	auto get_file_name(void) const->std::string const &;
 private:
-	auto extract_source(std::string const &)->std::string;
 	auto check_status(std::string const & dbg_name) -> void;
 };

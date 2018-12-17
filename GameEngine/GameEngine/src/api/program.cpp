@@ -1,4 +1,5 @@
 #include "program.h"
+#include "uniform_buffer.h"
 
 auto glsl_program::attach_shaders(void) -> void
 {
@@ -40,11 +41,11 @@ auto glsl_program::bind(void) -> void
 	glUseProgram(id);
 }
 
-auto glsl_program::attach(glsl_shader const & sh) -> void
+auto glsl_program::attach(std::string const & name, glsl_shader const & sh, bool prepend_version) -> void
 {
 	shaders.push_back(sh);
 
-	shaders.back().compile("");
+	shaders.back().compile(name, prepend_version);
 }
 
 auto glsl_program::send_uniform_vec2(std::string const & name, float * ptr, u32 count) -> void
@@ -77,6 +78,41 @@ auto glsl_program::send_uniform_int(std::string const & name, i32 v) -> void
 	glUniform1i(get_uniform_location(name), v);
 }
 
+auto glsl_program::bind_uniform_block(uniform_buffer & uniform_block, std::string const & name) -> void
+{
+	auto index = get_uniform_block_index(name);
+
+	uniform_block.bind_base(GL_UNIFORM_BUFFER);
+
+	glUniformBlockBinding(id, index, uniform_block.get_index());
+}
+
+auto glsl_program::bind_subroutine(std::string const & var, std::string const & func_name, GLenum shader) -> void
+{
+	auto subroutine_index = get_subroutine_index(func_name, shader);
+	auto subroutine_location = get_subroutine_location(var, shader);
+
+	//glUniformSubroutinesuiv(shader, 1, &subroutine_index);
+}
+
+auto glsl_program::get_subroutine_index(std::string const & name, GLenum shader) -> i32
+{
+	if (auto location = subroutine_cache.find(name); location != subroutine_cache.end())
+	{
+		return location->second;
+	}
+	return (subroutine_cache[name] = glGetSubroutineIndex(id, shader, name.c_str()));
+}
+
+auto glsl_program::get_subroutine_location(std::string const & name, GLenum shader) -> i32
+{
+	if (auto location = subroutine_cache.find(name); location != subroutine_cache.end())
+	{
+		return location->second;
+	}
+	return (subroutine_cache[name] = glGetSubroutineUniformLocation(id, shader, name.c_str()));
+}
+
 auto glsl_program::get_uniform_location(std::string const & name) -> i32
 {
 	if (auto location = uloc_cache.find(name); location != uloc_cache.end())
@@ -85,4 +121,19 @@ auto glsl_program::get_uniform_location(std::string const & name) -> i32
 	}
 
 	return (uloc_cache[name] = glGetUniformLocation(id, name.c_str()));
+}
+
+auto glsl_program::get_uniform_block_index(std::string const & name) -> i32
+{
+	if (auto location = block_indices_cache.find(name); location != block_indices_cache.end())
+	{
+		return location->second;
+	}
+
+	return (block_indices_cache[name] = glGetUniformBlockIndex(id, name.c_str()));
+}
+
+auto glsl_program::send_uniform_intv(std::string const & name, i32 * v, i32 amount) -> void
+{
+	glUniform1iv(get_uniform_location(name), amount, v);
 }
