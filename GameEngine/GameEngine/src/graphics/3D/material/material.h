@@ -30,8 +30,14 @@ protected:
 	std::vector<material *> materials;
 	
 	bool enabled_lighting{ true };
+
+	bool flush_each_frame{ true };
 public:
-	material_prototype(void) = default;
+	material_prototype(std::string const & name)
+		: material_block(MATERIAL_PROTOTYPE_BLOCK_INDEX)
+		, material_type_name(name)
+	{
+	}
 
 	material_prototype(material_light_info const & light_info, glsl_program * shader, light_handler & lights, std::string const & name)
 		: shader(shader)
@@ -55,6 +61,9 @@ public:
 	auto get_textures_2D(void) -> std::vector<texture *> &;
 	auto get_textures_cubemap(void) -> std::vector<texture *> &;
 	auto toggle_lighting(void) -> void;
+	auto get_light_info(void) -> material_light_info &;
+	auto get_light_handler_ptr(void) -> light_handler * &;
+	auto get_flush_each_frame(void) -> bool &;
 
 	template <typename ... T> auto set_texture_2D(T ... textures) -> void
 	{
@@ -65,7 +74,6 @@ public:
 	{
 		(textures_cubemap.push_back(textures), ...);
 	}
-private:
 	auto update_uniform_block(void) -> void;
 };
 

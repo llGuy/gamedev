@@ -12,6 +12,7 @@
 
 #include "model_comp/cube.h"
 #include "../../data/vec_dd.h"
+#include "json_model_functor.h"
 #include "../../utils/detail.h"
 #include "../shader/shader_handler.h"
 
@@ -23,8 +24,6 @@
 #include "component_types.h"
 
 #include "../../data/components.h"
-
-#include "model_json_loader.h"
 
 namespace xcp {
 
@@ -83,11 +82,12 @@ private:
 
 	std::vector<model> models;
 
-	model_json_loader json_loader;
+	//model_json_loader json_loader;
+	json_loader<model_loader_functor> loader;
 public:
 	model_handler(void);
 
-	auto init(skeletal_animation_handler & animations) -> void;
+	auto init(class skeletal_animation_handler & animations) -> void;
 
 	auto init_model(std::string const & model_name) -> model &;
 

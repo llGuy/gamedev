@@ -1,13 +1,33 @@
 #include <array>
 #include "../../io/io.h"
 #include "texture_handler.h"
+#include "texture_json_functors.h"
 #include "../../console/console.h"
+
+auto texture_handler::init(void) -> void
+{
+	texture_loader_functor::data_type data{ nullptr, this };
+	loader.init_data(data);
+
+	using data_type = json_loader<texture_loader_functor>;
+
+	loader.init_functors(data_type::functor_type<path_texture_functor>{ "load" });
+}
 
 auto texture_handler::load_from_json(void) -> void
 {
-	json_loader.init();
+	ENG_MARK("Loading textures");
 
-	json_loader.load(extract_file("res/saves/textures.json"), *this);
+	loader.load(extract_file("res/saves/textures.json")
+		, [](texture_loader_functor::data_type & data) -> void {
+
+		std::string name = "texture." + data.iterator->key();
+
+		texture * tex = data.dest->init_texture(name);
+
+		data.dest_texture = tex;
+
+	});
 }
 
 auto texture_handler::init_texture(std::string const & texture_name) -> texture * 

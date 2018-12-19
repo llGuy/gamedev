@@ -20,6 +20,7 @@ public:
 		std::string key;
 	};
 
+	/* to initialize functors, need to use the template type "functor_type<T>" with T as all the derived classes of the base functor */
 	template <typename ... FunctorKeys> auto init_functors(FunctorKeys && ... inits) -> void
 	{
 		auto init_func = [this](auto f) { map_funcs[f.key] = new typename decltype(f)::type; };

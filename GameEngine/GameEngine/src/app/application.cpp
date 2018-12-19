@@ -71,20 +71,7 @@ auto application::update(void) -> void
 {
 	display.refresh();
 
-	/* reset animation renderer */
-	material_prototype * mat_type = materials["material.animated"];
-	mat_type->flush();
-
-	/* reset low poly renderer */
-	material_prototype * mat_type_lp = materials["material.low_poly"];
-	mat_type_lp->flush();
-
-	/* reset smooth renderer */
-	material_prototype * mat_type_smooth = materials["material.smooth"];
-	mat_type_smooth->flush();
-
-	material_prototype * mat_type_pebble = materials["material.pebble"];
-	mat_type_pebble->flush();
+	materials.flush();
 
 	f32 aspect = (f32)display.pixel_width() / (f32)display.pixel_height();
 
@@ -220,10 +207,12 @@ auto application::init_3D_test(void) -> void
 
 	sky_material->set_texture_3D(textures.get_texture("texture.sky"));
 	sky_material->toggle_lighting();
+	sky_material->get_flush_each_frame() = false;
 
 	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)), materials.get_material_id("material.sky") };
 
 	materials.submit(sky);
+
 
 
 	/* initializing animation material_prototype textures */
@@ -238,12 +227,10 @@ auto application::init_3D_test(void) -> void
 
 	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
 
-	auto pebble_material = materials.add_material("material.pebble"
-		, MATERIAL_HIGHLY_REFLECTIVE
-		, shaders[shader_handle("shader.low_poly")]
-		, lights);
 
-	pebble_material->set_texture_2D(textures.get_texture("texture.pebble_color"));
+	materials.init(textures, shaders, lights);
+	materials.load_materials();
+
 
 	auto smooth_material = materials.add_material("material.smooth"
 		, MATERIAL_HIGHLY_REFLECTIVE
@@ -253,13 +240,6 @@ auto application::init_3D_test(void) -> void
 	smooth_material->set_texture_2D(textures.get_texture("texture.low_poly"));
 
 	world.load_from_file();
-
-/*	component<component_render, game_object_data> render_comp_platform { 
-		platform_model
-		, materials.get_material_id("material.low_poly") 
-		, materials };
-
-	world.get_game_object("game_object.platform").add_component(render_comp_platform);*/
 }
 
 auto application::init_2D_test(void) -> void
@@ -337,6 +317,9 @@ auto application::init_shaders(void) -> void
 
 auto application::init_textures(void) -> void
 {
+	textures.init();
+	textures.load_from_json();
+
 	auto * low_poly_texture = textures.init_texture("texture.low_poly");
 	textures.load_texture_png("res/textures/low_poly.png", low_poly_texture, GL_LINEAR);
 
@@ -384,8 +367,6 @@ auto application::init_textures(void) -> void
 
 	auto * lighting = textures.init_texture("texture.ssr");
 	create_color_texture(*lighting, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
-
-	textures.load_from_json();
 }
 
 auto application::init_fonts(void) -> void

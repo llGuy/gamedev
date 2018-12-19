@@ -3,8 +3,10 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "json_loader.h"
+//#include "json_loader.h"
 #include "../../api/api.h"
+#include "json_texture_functor.h"
+#include "../../json_loader.h"
 
 enum flip_bool : bool
 {
@@ -24,8 +26,10 @@ private:
 
 	std::unordered_map<std::string, u32> index_map;
 
-	texture_json_loader json_loader;
+	json_loader<texture_loader_functor> loader;
 public:
+	auto init(void) -> void;
+
 	auto load_from_json(void) -> void;
 
 	auto init_texture(std::string const & name) -> texture *;

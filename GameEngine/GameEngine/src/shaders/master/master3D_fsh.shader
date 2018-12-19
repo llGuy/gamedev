@@ -222,6 +222,5 @@ void main(void)
 	//view_normals = vec4(input_data.vertex_normal, 0.0);
 	view_normals.a = 1;
 
-
 	final_color.a = 1;
 }

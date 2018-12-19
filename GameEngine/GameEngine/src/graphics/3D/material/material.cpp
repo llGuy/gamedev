@@ -109,9 +109,24 @@ auto material_prototype::get_textures_2D(void)->std::vector<texture *> &
 	return textures2D;
 }
 
+auto material_prototype::get_flush_each_frame(void) -> bool &
+{
+	return flush_each_frame;
+}
+
 auto material_prototype::get_textures_cubemap(void)->std::vector<texture *> &
 {
 	return textures_cubemap;
+}
+
+auto material_prototype::get_light_info(void) -> material_light_info &
+{
+	return light_info_receive;
+}
+
+auto material_prototype::get_light_handler_ptr(void)->light_handler * &
+{
+	return lights;
 }
 
 material::material(model & renderable, glm::mat4 const & transform, u32 material_type_id)

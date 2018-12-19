@@ -44,6 +44,8 @@ auto scene::init(input_handler & inputs, model_handler & models, material_handle
 
 auto scene::load_from_file(void) -> void
 {
+	ENG_MARK("Loading entities");
+
 	loader.load(extract_file("res/saves/entities.json")
 		, [](scene_loader_functor::data_type & data) {
 

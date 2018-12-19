@@ -1,7 +1,9 @@
 #include <future>
 #include "model_handler.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "json_model_functors.h"
 #include <xml_parser/rapidxml.hpp>
+#include "../../animation/animation_handler.h"
 
 model_handler::model_handler(void)
 	: check_xcp(true)
@@ -20,12 +22,26 @@ auto model_handler::init(skeletal_animation_handler & animations) -> void
 	components.add_system<color_buffer_component>(20);
 	components.add_system<texture_component>(20);
 
-	json_loader.init(*this, animations);
+	model_loader_functor::data_type data{ nullptr, this };
+	loader.init_data(data);
+	
+	using loader_type = json_loader<model_loader_functor>;
+
+	loader.init_functors(loader_type::functor_type<path_model_functor>{"path"});
 }
 
 auto model_handler::load_from_json(void) -> void
 {
-	json_loader.load(extract_file("res/saves/models.json"), *this);
+	loader.load(extract_file("res/saves/models.json")
+		, [](model_loader_functor::data_type & data) { 
+
+		std::string model_name = "model." + data.iterator->key();
+
+		model & renderable = data.dest->init_model(model_name);
+
+		data.dest_model = &renderable;
+
+	});
 }
 
 auto model_handler::init_model(std::string const & model_name) -> model &
@@ -259,7 +275,7 @@ auto model_handler::break_face_line(std::vector<std::string> const & face_line_w
 	glm::vec2 delta_uv1 = textures[triangle_vertices[1]] - textures[triangle_vertices[0]];
 	glm::vec2 delta_uv2 = textures[triangle_vertices[2]] - textures[triangle_vertices[0]];
 
-	f32 r = 1.0 / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
+	f32 r = 1.0f / (delta_uv1.x * delta_uv2.y - delta_uv1.y * delta_uv2.x);
 	delta_pos1 *= delta_uv2.y;
 	delta_pos2 *= delta_uv1.y;
 	glm::vec3 tangent = delta_pos1 - delta_pos2;
