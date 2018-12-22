@@ -5,27 +5,38 @@ layout(location = 1) in vec2 vertex_uvs;
 layout(location = 2) in vec3 vertex_normal;
 layout(location = 3) in vec3 vertex_tangent;
 
-out struct input_prev
-{
+out VS_OUT {
 	vec3 position;
-
 	vec2 uvs;
-
 	vec3 normal;
-
 	vec4 shadow_coord;
-
 	vec3 tangent;
-
 	vec3 bitangent;
-
 	vec4 view_position;
+	vec4 tangent_view_position;
+	vec3 to_light;
+	vec3 to_camera;
+	vec3 tangent_camera_pos;
+
+	vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
 }
-vertex_out;
+vs_out;
 
 uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
 uniform mat4 view_matrix;
+uniform vec3 camera_position;
+
+layout(std140, row_major) uniform light
+{
+    vec4 light_position;
+	vec4 ambient_intensity;
+	vec4 diffuse_intensity;
+	vec4 specular_intensity;
+} 
+light_info;
 
 layout(std140) uniform shadow_data 
 {
@@ -40,17 +51,45 @@ shadow_info;
 
 void main(void)
 {
-	vertex_out.position = vec3(model_matrix * vec4(vertex_position, 1.0));
+	vs_out.position = vec3(model_matrix * vec4(vertex_position, 1.0));
 
-	vertex_out.shadow_coord = shadow_info.shadow_bias * vec4(vertex_out.position, 1.0);
+	vs_out.shadow_coord = shadow_info.shadow_bias * vec4(vs_out.position, 1.0);
 
-	vertex_out.uvs = vertex_uvs;
+	vs_out.uvs = vertex_uvs;
 
-	vertex_out.tangent = vertex_tangent;
+	vs_out.tangent = vertex_tangent;
 
-	vertex_out.normal = vertex_normal;
+	vs_out.normal = vec3(model_matrix * view_matrix * vec4(vertex_normal, 0.0));
 
-	vertex_out.view_position = view_matrix * vec4(vertex_out.position, 1.0);
+	vs_out.view_position = view_matrix * vec4(vs_out.position, 1.0);
+   
+	vec3 norm = normalize(vs_out.normal);
+	vec3 tang = normalize((model_matrix * view_matrix * vec4(vertex_tangent, 0.0)).xyz);
+	vec3 bitang = normalize(cross(norm, tang));
 
-	gl_Position = projection_matrix * vertex_out.view_position;
+	mat3 to_tangent_space = mat3(
+		tang.x, bitang.x, norm.x,
+		tang.y, bitang.y, norm.y,
+		tang.z, bitang.z, norm.z
+	);
+
+	vs_out.tangent_view_position = vec4(to_tangent_space * vs_out.view_position.xyz, 1.0);
+
+	vec4 vs_light_pos = view_matrix * light_info.light_position;
+
+	vs_out.to_light = to_tangent_space * (-vs_light_pos.xyz);
+
+	vs_out.to_camera = to_tangent_space * vec3(vs_out.view_position);
+
+	vs_out.tangent_camera_pos = to_tangent_space * vec3(0);
+
+
+
+	vs_out.TangentLightPos = to_tangent_space * vec3(light_info.light_position);
+	vs_out.TangentViewPos = to_tangent_space * camera_position;
+	vs_out.TangentFragPos = to_tangent_space * vs_out.position;
+
+
+
+	gl_Position = projection_matrix * vs_out.view_position;
 }

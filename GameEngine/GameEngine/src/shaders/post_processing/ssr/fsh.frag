@@ -122,7 +122,7 @@ vec4 apply_cube_map_reflection(in vec3 vs_eye_vector, in vec3 vs_normal, inout v
 
 	vec4 envi_color = texture(cube_map, reflect_dir);
 
-	return mix(pixel_color, envi_color, 0.3);
+	return mix(pixel_color, envi_color, 0.2);
 }
 
 void main(void)
@@ -158,18 +158,18 @@ void main(void)
 		vec4 reflected_color = texture(diffuse, coords.xy);
 	//	vec4 reflected_color = texture(diffuse, coords.xy) * clamp(edge_factor, 0.0, 0.9) * vec4(fresnel, 1.0);
 
-		//pixel_color = apply_cube_map_reflection(-normalize(original_position + jitt), view_normal, pixel_color);
+		pixel_color = apply_cube_map_reflection(-normalize(original_position + jitt), view_normal, pixel_color);
 
 		//final_color = mix(pixel_color, reflected_color, edge_factor);
 
 //		final_color = pixel_color;
 
 		//if(hit)	final_color	= mix(pixel_color, reflected_color, edge_factor);
-		if (true)
+		if (hit)
 		{
 			//final_color = vec4(abs(coords.z) / 100.0);
 
-			final_color	= mix(pixel_color, reflected_color, edge_factor * 0.5);
+			final_color	= mix(pixel_color, reflected_color, edge_factor * 0.3);
 
 			//final_color = texture(diffuse, coords.xy);
 //			final_color = reflected_color;
