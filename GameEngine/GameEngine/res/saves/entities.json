@@ -1,1 +1,111 @@
-{"ball":{"direction":{"x":1.0,"y":0.0,"z":0.0},"model_matrix":true,"position":{"x":15.0,"y":0.5,"z":15.0},"render":{"material":"smooth","model":"sphere"},"scale":{"x":1.0,"y":1.0,"z":1.0}},"ground":{"direction":{"x":1.0,"y":0.0,"z":0.0},"model_matrix":true,"position":{"x":0.0,"y":0.0,"z":0.0},"render":{"material":"pebble","model":"plane"},"scale":{"x":4.0,"y":4.0,"z":4.0}},"player":{"bind_camera":true,"direction":{"x":-0.9301208257675171,"y":-0.00977079477161169,"z":0.36712369322776794},"key_control":true,"mouse_control":true,"position":{"x":32.23318862915039,"y":2.3436567783355713,"z":-8.485547065734863},"save":true,"scale":{"x":1.0,"y":1.0,"z":1.0}},"wall":{"direction":{"x":1.0,"y":0.0,"z":1.0},"model_matrix":true,"position":{"x":7.0,"y":0.0,"z":7.0},"render":{"material":"low_poly","model":"loaded_cube"},"scale":{"x":0.5,"y":8.0,"z":8.0}}}
+{
+  "ball": {
+    "direction": {
+      "x": 1.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "model_matrix": true,
+    "position": {
+      "x": 15.0,
+      "y": 0.5,
+      "z": 15.0
+    },
+    "render": {
+      "material": "smooth",
+      "model": "sphere"
+    },
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
+    }
+  },
+  "barrel": {
+    "direction": {
+      "x": 1.0,
+      "y": 0.0,
+      "z": 1.0
+    },
+    "model_matrix": true,
+    "position": {
+      "x": -7.0,
+      "y": 7.0,
+      "z": -7.0
+    },
+    "render": {
+      "material": "barrel",
+      "model": "barrel"
+    },
+    "scale": {
+      "x": 0.4,
+      "y": 0.4,
+      "z": 0.4
+    }
+  },
+  "ground": {
+    "direction": {
+      "x": 1.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "model_matrix": true,
+    "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "render": {
+      "material": "pebble",
+      "model": "plane"
+    },
+    "scale": {
+      "x": 4.0,
+      "y": 4.0,
+      "z": 4.0
+    }
+  },
+  "player": {
+    "bind_camera": true,
+    "direction": {
+      "x": -0.7888586521148682,
+      "y": -0.1609157770872116,
+      "z": 0.5931341648101807
+    },
+    "key_control": true,
+    "mouse_control": true,
+    "position": {
+      "x": 27.489850997924805,
+      "y": 10.565516471862793,
+      "z": -33.5765495300293
+    },
+
+    "scale": {
+      "x": 1.0,
+      "y": 1.0,
+      "z": 1.0
+    }
+  },
+  "wall": {
+    "direction": {
+      "x": 1.0,
+      "y": 0.0,
+      "z": 1.0
+    },
+    "model_matrix": true,
+    "position": {
+      "x": 7.0,
+      "y": 0.0,
+      "z": 7.0
+    },
+    "render": {
+      "material": "low_poly",
+      "model": "loaded_cube"
+    },
+    "scale": {
+      "x": 0.5,
+      "y": 8.0,
+      "z": 8.0
+    }
+  }
+}

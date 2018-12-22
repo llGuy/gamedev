@@ -98,7 +98,6 @@ public:
 	auto prepare_shader(glsl_program & program) -> void
 	{
 		program.bind_uniform_block(shadow_uniform_block, "shadow_data");
-		shadow_map->bind(GL_TEXTURE_2D, 1);
 	}
 
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void

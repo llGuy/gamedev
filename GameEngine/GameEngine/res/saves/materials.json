@@ -5,11 +5,31 @@
     "lighting": {
       "ambient": [ 1.0, 1.0, 1.0 ],
       "diffuse": [ 0.7, 0.7, 0.7 ],
-      "specular": [ 0.5, 0.5, 0.5 ]
+      "specular": [ 0.5, 0.5, 0.5 ],
+
+      "shiny": 20.0,
+      "reflect": 0.4
     },
 
     "flush": true,
 
-    "textures_2D": [ "low_poly" ]
+    "textures_2D": [ "pebble_color", "shadow_map" ]
+  },
+
+  "barrel": {
+    "shader": "normal_mapped",
+
+    "lighting": {
+      "ambient": [ 0.6, 0.6, 0.6 ],
+      "diffuse": [ 0.4, 0.4, 0.4 ],
+      "specular": [ 0.3, 0.3, 0.3 ],
+
+      "shiny": 20.0,
+      "reflect": 0.4
+    },
+
+    "flush": true,
+
+    "textures_2D": [ "barrel", "barrel_normal", "shadow_map" ]
   }
 }

@@ -226,6 +226,7 @@ auto application::init_3D_test(void) -> void
 		, lights);
 
 	low_poly_material->set_texture_2D(textures.get_texture("texture.low_poly"));
+	low_poly_material->set_texture_2D(textures.get_texture("texture.shadow_map"));
 
 
 	materials.init(textures, shaders, lights);
@@ -262,6 +263,8 @@ auto application::init_2D_test(void) -> void
 
 auto application::init_shaders(void) -> void
 {
+	shaders.load_from_json();
+
 	shader_handle shader = models.create_shader_handle(models.get_model("model.platform"));
 	shader.set(shader_property::linked_to_gsh, shader_property::sharp_normals);
 	shader.set_name("shader.low_poly");

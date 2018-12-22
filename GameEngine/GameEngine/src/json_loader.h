@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 
 /* Functor needs to have : json iterator pointer */
-template <typename Functor> class json_loader
+template <typename Functor, bool ParseSub = true> class json_loader
 {
 private:
 	std::unordered_map<std::string, Functor *> map_funcs;
@@ -46,7 +46,7 @@ public:
 
 			func(data);
 
-			parse_sub(data, it);
+			if constexpr (ParseSub) parse_sub(data, it);
 		}
 	}
 private:

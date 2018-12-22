@@ -1,0 +1,19 @@
+{
+  "normal_mapped": {
+    "src": {
+      "vsh": "src/shaders/normal_mapped/vsh.vert",
+
+      "fsh": "src/shaders/normal_mapped/fsh.frag"
+    },
+
+    "send": {
+
+      "int": {
+        "diffuse_map": 0,
+        "normal_map": 1,
+        "shadow_map": 2
+      }
+
+    }
+  }
+}

@@ -16,5 +16,21 @@
 
       "flip": false
     }
+  },
+
+  "barrel": {
+    "load": {
+      "dir": "res/model/normal_mapped/barrel.png",
+
+      "flip": false
+    }
+  },
+
+  "barrel_normal": {
+    "load": {
+      "dir": "res/model/normal_mapped/barrelNormal.png",
+
+      "flip": false
+    }
   }
 }

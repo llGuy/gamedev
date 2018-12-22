@@ -18,5 +18,12 @@
       "format": ".ubobj",
       "dir": "res/model/cube.ubobj"
     }
+  },
+
+  "barrel": {
+    "path": {
+      "format": ".obj",
+      "dir": "res/model/normal_mapped/barrel.obj"
+    }
   }
 }

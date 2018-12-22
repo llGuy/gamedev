@@ -5,6 +5,7 @@
 #include "../../io/io.h"
 #include "../../api/api.h"
 #include "shader_properties.h"
+#include "../../json_loader.h"
 
 class shader_handle
 {
@@ -78,6 +79,13 @@ namespace std {
 	};
 }
 
+struct shader_load_functor
+{
+	struct data_type { nlohmann::json * handle; nlohmann::json::iterator * iterator; };
+
+	auto apply(data_type & data) -> void {}
+};
+
 class shader_handler
 {
 private:
@@ -94,6 +102,8 @@ private:
 	std::unordered_map<shader_handle, u32> program_index_map;
 
 	std::vector<glsl_program *> programs;
+
+	json_loader<shader_load_functor> loader;
 public:
 	shader_handler(void) = default;
 
@@ -102,9 +112,62 @@ public:
 		master2D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/master/master2D_vsh.shader");
 		master2D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/master/master2D_fsh.shader");
 
-		master3D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/master/master3D_vsh.shader"); 
+		master3D_srcs.srcs[GL_VERTEX_SHADER] = extract_file("src/shaders/master/master3D_vsh.shader");
 		master3D_srcs.srcs[GL_GEOMETRY_SHADER] = extract_file("src/shaders/master/master3D_gsh.shader");
 		master3D_srcs.srcs[GL_FRAGMENT_SHADER] = extract_file("src/shaders/master/master3D_fsh.shader");
+	}
+
+	auto load_from_json(void) -> void
+	{
+		loader.load(extract_file("res/saves/shaders.json")
+			, [this](shader_load_functor::data_type & data) -> void {
+
+			auto int_uniform = [](nlohmann::json::iterator & it, glsl_program & shader) 
+			{
+				shader.bind();
+				for (nlohmann::json::iterator uniform = it.value().begin(); uniform != it.value().end(); ++uniform)
+				{
+					shader.send_uniform_int(uniform.key(), uniform.value());
+				}
+			};
+
+			std::unordered_map<std::string, std::function<void(nlohmann::json::iterator &, glsl_program &)>> uniform_funcs
+			{
+				std::pair("int", int_uniform)
+			};
+
+			std::unordered_map<std::string, GLenum> map_shader_type
+			{
+				std::pair("vsh", GL_VERTEX_SHADER)
+				, std::pair("fsh", GL_FRAGMENT_SHADER)
+				, std::pair("gsh", GL_GEOMETRY_SHADER)
+			};
+
+			std::string shader_name = "shader." + std::string(data.iterator->key());
+
+			shader_handle handle(shader_name);
+
+			std::vector<glsl_shader> shaders;
+
+			auto src_node = data.iterator->value().find("src");
+
+			for (nlohmann::json::iterator src_it = src_node.value().begin()
+				; src_it != src_node.value().end(); ++src_it)
+			{
+				shaders.push_back(create_shader(map_shader_type[src_it.key()], handle, extract_file(src_it.value())));
+			}
+
+			auto shader = combine(handle, false, shaders);
+
+			auto send_uniform_node = data.iterator->value().find("send");
+
+			for (nlohmann::json::iterator uniform_it = send_uniform_node.value().begin()
+				; uniform_it != send_uniform_node.value().end(); ++uniform_it)
+			{
+				uniform_funcs[uniform_it.key()](uniform_it, *shader);
+			}
+
+		});
 	}
 
 	auto create_program(shader_handle const & handle, std::string const & shader /* 3D or 2D */, bool prepend_version = true) -> glsl_program *
@@ -162,6 +225,25 @@ public:
 	{
 		glsl_program * program = new glsl_program;
 		(program->attach(handle.str(), shaders, prepend_version), ...);
+		program->link();
+
+		u32 id = programs.size();
+
+		program_index_map[handle] = id;
+
+		programs.push_back(program);
+
+		return program;
+	}
+
+	auto combine(shader_handle const & handle, bool prepend_version, std::vector<glsl_shader> & shaders) -> glsl_program *
+	{
+		glsl_program * program = new glsl_program;
+
+		for (auto shader : shaders)
+		{
+			program->attach(handle.str(), shader, prepend_version);
+		}
 		program->link();
 
 		u32 id = programs.size();
