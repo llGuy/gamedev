@@ -21,6 +21,9 @@ out VS_OUT {
 	vec3 TangentLightPos;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+	
+	mat3 inv_tangent;
+	mat3 to_tangent_space;
 }
 vs_out;
 
@@ -59,7 +62,7 @@ void main(void)
 
 	vs_out.tangent = vertex_tangent;
 
-	vs_out.normal = vec3(model_matrix * view_matrix * vec4(vertex_normal, 0.0));
+	vs_out.normal = vec3(view_matrix * model_matrix * vec4(vertex_normal, 0.0));
 
 	vs_out.view_position = view_matrix * vec4(vs_out.position, 1.0);
    
@@ -83,7 +86,8 @@ void main(void)
 
 	vs_out.tangent_camera_pos = to_tangent_space * vec3(0);
 
-
+	vs_out.to_tangent_space = to_tangent_space;
+	vs_out.inv_tangent = inverse(to_tangent_space);
 
 	vs_out.TangentLightPos = to_tangent_space * vec3(light_info.light_position);
 	vs_out.TangentViewPos = to_tangent_space * camera_position;

@@ -10,8 +10,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1500
-#define DISPLAY_HEIGHT 800
+#define DISPLAY_WIDTH 2000
+#define DISPLAY_HEIGHT 1200
 
 #define BLUR_LEVEL 1
 

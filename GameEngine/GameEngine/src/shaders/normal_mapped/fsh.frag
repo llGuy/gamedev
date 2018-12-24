@@ -27,6 +27,9 @@ in VS_OUT {
 	vec3 TangentLightPos;
     vec3 TangentViewPos;
     vec3 TangentFragPos;
+
+	mat3 inv_tangent;
+	mat3 to_tangent_space;
 }
 fs_in;
 
@@ -84,7 +87,7 @@ vec2 parallax()
 {
 	vec2 uvs = fs_in.uvs;
 	vec3 view_dir = normalize(vec3(fs_in.tangent_camera_pos) - vec3(fs_in.tangent_view_position));
-
+	view_dir.y *= -1;
 	const float min_layers = 8.0;
 	const float max_layers = 32.0;
 	float num_layers = mix(max_layers, min_layers, abs(dot(vec3(0.0, 0.0, 1.0), view_dir)));
@@ -131,7 +134,7 @@ void main(void)
 
 	float shadow_factor = get_shadow_factor();
 
-	float brightness = clamp(dot(normalize(unit_normal), normalize(to_light)), 0.0, 1.0);
+	float brightness = clamp(dot(normalize(unit_normal), normalize(to_light)), 0.0, 1.0) * 0.7;
 
 	vec3 reflected_light = reflect(normalize(to_light), unit_normal);
 	float specular = clamp(dot(reflected_light, normalize(fs_in.to_camera)), 0, 1);
@@ -139,7 +142,10 @@ void main(void)
 
 	final_color = (color + vec4(brightness) + vec4(specular)) * shadow_factor;
 
+	//final_color = vec4(fs_in.inv_tangent * vec3(0, 1, 0), 1.0);
+
 	view_normal = vec4(fs_in.normal, 1.0);
+	//view_normal = vec4(fs_in.inv_tangent * unit_normal, 1.0);
 
 	view_position = fs_in.view_position;
 }
