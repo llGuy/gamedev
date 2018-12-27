@@ -11,9 +11,10 @@ uniform samplerCube cube_map;
 void calculate_bright_color(void)
 {
 	float brightness = (final_color.r * 0.2126) + (final_color.g * 0.7152) + (final_color.b * 0.722);
-	if (brightness > 0.7)
+	
+	if (brightness > 0.9)
 	{
-		bright_color = final_color * brightness;
+		bright_color = final_color;
 	}
 	else
 	{

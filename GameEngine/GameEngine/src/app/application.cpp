@@ -10,10 +10,10 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 2000
+#define DISPLAY_WIDTH 2800
 #define DISPLAY_HEIGHT 1200
 
-#define BLUR_LEVEL 1
+#define BLUR_LEVEL 16
 
 application::application(void)
 	: display(DISPLAY_WIDTH, DISPLAY_HEIGHT, "Game Engine")
@@ -188,6 +188,10 @@ auto application::init_models(void) -> void
 	cube_model_computation comp;
 	cube_model = models.init_model("model.cube");
 	models.compute_model(comp, cube_model);
+
+	quad3D_model_computation quad_comp;
+	auto quad_model = models.init_model("model.quad3D");
+	models.compute_model(quad_comp, quad_model);
 }
 
 auto application::init_3D_test(void) -> void
@@ -385,7 +389,8 @@ auto application::init_pipeline(void) -> void
 	init_ssr();
 	//init_deferred_renderer();
 	init_motion_blur_pass();
-	//init_blur_passes();
+	init_blur_passes();
+	init_bloom_pass();
 	//init_dof_pass();
 	init_final_pass();
 }
@@ -450,7 +455,7 @@ auto application::init_blur_passes(void) -> void
 	auto vblur1_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.vblur1", shaders[shader_handle("shader.vertical_blur")], &guis);
 	render_pipeline.create_render_stage("render_stage.vblur1", info, renderbuffers, textures);
 
-	vblur1_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
+	vblur1_stage->add_texture2D_bind(textures.get_texture("texture.bright_color"));
 	vblur1_stage->add_uniform_command(new uniform_float("target_height", DISPLAY_HEIGHT / BLUR_LEVEL));
 
 
@@ -506,6 +511,32 @@ auto application::init_motion_blur_pass(void) -> void
 		, current_fps);
 }
 
+auto application::init_bloom_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage_create_info info;
+
+	auto depth_dof = renderbuffers.add_renderbuffer("renderbuffer.bloom_depth");
+	create_depth_renderbuffer(*depth_dof, display_w, display_h);
+
+	info.width = display_w;
+	info.height = display_h;
+	info.color_name = "texture.bloom";
+	info.depth_name = "renderbuffer.bloom_depth";
+	info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto bloom_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.bloom", shaders[shader_handle("shader.bloom")], &guis);
+	render_pipeline.create_render_stage("render_stage.bloom", info, renderbuffers, textures);
+
+	bloom_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur")
+		, textures.get_texture("texture.hblur1"));
+	bloom_stage->set_active_textures(active_texture_uniform_pair{ "diffuse", 0 }
+	, active_texture_uniform_pair{ "brightness", 1 });
+}
+
 auto application::init_dof_pass(void) -> void
 {
 	u32 display_w = display.pixel_width();
@@ -541,7 +572,7 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.bloom"));
 }
 
 auto application::init_deferred_renderer(void) -> void

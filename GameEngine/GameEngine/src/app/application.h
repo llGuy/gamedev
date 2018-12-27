@@ -79,6 +79,7 @@ private:
 	auto init_scene_pass(void) -> void;
 	auto init_blur_passes(void) -> void;
 	auto init_dof_pass(void) -> void;
+	auto init_bloom_pass(void) -> void;
 	auto init_motion_blur_pass(void) -> void;
 	auto init_final_pass(void) -> void;
 

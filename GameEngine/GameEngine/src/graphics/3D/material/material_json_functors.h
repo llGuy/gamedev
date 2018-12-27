@@ -77,3 +77,13 @@ struct lighting_material_functor : material_loader_functor
 		data.mat->update_uniform_block();
 	}
 };
+
+struct toggle_lighting_functor : material_loader_functor
+{
+	auto apply(material_loader_functor::data_type & data) -> void override
+	{
+		bool lit = data.iterator->value();
+
+		data.mat->is_lit() = lit;
+	}
+};

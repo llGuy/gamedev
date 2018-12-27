@@ -33,7 +33,8 @@ auto material_handler::init(texture_handler & textures, shader_handler & shaders
 		loader_type::functor_type<flush_material_functor>{ "flush" },
 		loader_type::functor_type<textures2D_material_functor>{ "textures_2D" },
 		loader_type::functor_type<textures3D_material_functor>{ "textures_3D" },
-		loader_type::functor_type<lighting_material_functor>{ "lighting" }
+		loader_type::functor_type<lighting_material_functor>{ "lighting" },
+		loader_type::functor_type<toggle_lighting_functor>{ "lit" }
 	);
 }
 

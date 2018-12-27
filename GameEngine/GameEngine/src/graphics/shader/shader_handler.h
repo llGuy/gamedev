@@ -160,11 +160,13 @@ public:
 			auto shader = combine(handle, false, shaders);
 
 			auto send_uniform_node = data.iterator->value().find("send");
-
-			for (nlohmann::json::iterator uniform_it = send_uniform_node.value().begin()
-				; uniform_it != send_uniform_node.value().end(); ++uniform_it)
+			if (send_uniform_node != data.iterator->value().end())
 			{
-				uniform_funcs[uniform_it.key()](uniform_it, *shader);
+				for (nlohmann::json::iterator uniform_it = send_uniform_node.value().begin()
+					; uniform_it != send_uniform_node.value().end(); ++uniform_it)
+				{
+					uniform_funcs[uniform_it.key()](uniform_it, *shader);
+				}
 			}
 
 		});

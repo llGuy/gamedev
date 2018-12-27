@@ -49,7 +49,7 @@ public:
 	}
 
 	auto init(void) -> void;
-
+	
 	auto submit_material(material * mat) -> void;
 	auto render(camera & scene_camera) -> void;
 	auto flush(void) -> void;
@@ -64,6 +64,7 @@ public:
 	auto get_light_info(void) -> material_light_info &;
 	auto get_light_handler_ptr(void) -> light_handler * &;
 	auto get_flush_each_frame(void) -> bool &;
+	auto is_lit(void) -> bool &;
 
 	template <typename ... T> auto set_texture_2D(T ... textures) -> void
 	{

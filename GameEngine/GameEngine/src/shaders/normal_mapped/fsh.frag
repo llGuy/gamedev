@@ -1,6 +1,7 @@
 #version 400
 
 layout(location = 0) out vec4 final_color;
+layout(location = 1) out vec4 bright_color;
 layout(location = 2) out vec4 view_position;
 layout(location = 3) out vec4 view_normal;
 
@@ -120,10 +121,18 @@ vec2 parallax()
 	return final_uv;
 }
 
+bool is_1(in vec3 value)
+{
+	float prec = 0.2;
+	vec3 diff = abs(value - vec3(1.0));
+
+	return diff.x < prec && diff.y < prec && diff.z < prec;
+}
+
 void main(void)
 {
 	vec2 displacement = parallax();
-
+	
 	vec4 color = texture(diffuse_map, displacement);
 
 	vec4 normal = 2.0 * texture(normal_map, displacement) - 1.0;
@@ -138,7 +147,7 @@ void main(void)
 
 	vec3 reflected_light = reflect(normalize(to_light), unit_normal);
 	float specular = clamp(dot(reflected_light, normalize(fs_in.to_camera)), 0, 1);
-	specular = pow(specular, 15) * 0.4;
+	specular = pow(specular, 10) * 0.7;
 
 	final_color = (color + vec4(brightness) + vec4(specular)) * shadow_factor;
 
@@ -148,4 +157,15 @@ void main(void)
 	//view_normal = vec4(fs_in.inv_tangent * unit_normal, 1.0);
 
 	view_position = fs_in.view_position;
+
+	float bright_colorness = (final_color.r * 0.2126) + (final_color.g * 0.7152) + (final_color.b * 0.722);
+	
+	if (bright_colorness > 0.9)
+	{
+		bright_color = final_color;
+	}
+	else
+	{
+		bright_color = vec4(0);
+	}
 }

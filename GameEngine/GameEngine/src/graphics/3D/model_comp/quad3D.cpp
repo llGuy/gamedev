@@ -8,7 +8,9 @@ auto quad3D_model_computation::compute(object<model_data> & obj) -> void
 	buffer vertex_buffer;
 	vertex_buffer.create();
 	vertex_buffer.fill(vertices.size() * sizeof(f32), vertices.data(), GL_STATIC_DRAW, GL_ARRAY_BUFFER);
+
 	attribute vertex_attribute{ 0, GL_FLOAT, 3, GL_FALSE, 3 * sizeof(f32), nullptr };
+	attribute uvs_attribute{ 1, GL_FALSE, 2, GL_FALSE, 2 * sizeof(f32), (void *)(sizeof(f32) * 12) };
 
 	std::vector<u32> indices = create_indices();
 
@@ -35,10 +37,14 @@ auto quad3D_model_computation::create_vertices(void)->std::vector<f32>
 
 	return std::vector<f32>
 	{
-		-radius, 0.0f, -radius,
-		-radius, 0.0f, +radius,
-		+radius, 0.0f, -radius,
-		+radius, 0.0f, +radius
+		-radius, -radius, 0.0f,
+		-radius, +radius, 0.0f,
+		+radius, -radius, 0.0f,
+		+radius, +radius, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 1.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
 	};
 }
 

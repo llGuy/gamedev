@@ -36,9 +36,14 @@ auto material_prototype::update_uniform_block(void) -> void
 	unmap_buffers(GL_UNIFORM_BUFFER);
 }
 
-auto material_prototype::toggle_lighting(void) -> void
+auto material_prototype::toggle_lighting() -> void
 {
 	enabled_lighting ^= 0b0001;
+}
+
+auto material_prototype::is_lit(void) -> bool &
+{
+	return enabled_lighting;
 }
 
 auto material_prototype::prepare(camera & scene_camera) -> void
