@@ -43,9 +43,9 @@ public:
 
 	light_handler(void);
 
-	auto create(texture * shadow_map) -> void;
+	auto create(texture * shadow_map, camera & cam) -> void;
 
-	auto update_buffer(void) -> void;
+	auto update_buffer(camera & cam) -> void;
 	auto update_shadows(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & scene_cam_pos, glm::vec3 const & scene_cam_dir) -> void;
 
 	auto prepare_shader(glsl_program & program) -> void;

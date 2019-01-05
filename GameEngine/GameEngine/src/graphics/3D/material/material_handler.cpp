@@ -54,11 +54,11 @@ auto material_handler::load_materials(void) -> void
 	});
 }
 
-auto material_handler::render_all(camera & scene_camera) -> void
+auto material_handler::render_all(camera & scene_camera, timer & timeh) -> void
 {
 	for (auto renderer : materials)
 	{
-		renderer->render(scene_camera);
+		renderer->render(scene_camera, timeh);
 	}
 }
 

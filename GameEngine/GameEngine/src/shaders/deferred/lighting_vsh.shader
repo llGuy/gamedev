@@ -1,15 +1,16 @@
-layout(location = 0) in vec2 vertex_position;
-layout(location = 1) in vec2 texture_coords;
+#version 400
 
-out struct input_prev
-{
-	vec2 texture_coords;
-} 
-vertex_out;
+layout(location = 0) in vec2 vertex_position;
+layout(location = 1) in vec2 vertex_uvs;
+
+out VS_DATA{
+	vec2 uvs;
+}
+vs_out;
 
 void main(void)
 {
-	vertex_out.texture_coords = texture_coords;
+	vs_out.uvs = vertex_uvs;
 
 	gl_Position = vec4(vertex_position, 0, 1);
 }

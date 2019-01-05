@@ -15,3 +15,13 @@ auto timer::elapsed(void) -> float
 	float count = seconds.count();
 	return count;
 }
+
+auto timer::accumulate(float factor) -> void
+{
+	accum += elapsed() * factor;
+}
+
+auto timer::accumulated(void) -> float &
+{
+	return accum;
+}

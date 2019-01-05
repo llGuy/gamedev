@@ -31,6 +31,7 @@ in VS_OUT {
 
 	mat3 inv_tangent;
 	mat3 to_tangent_space;
+	mat3 ws_inv_tangent;
 }
 fs_in;
 
@@ -143,18 +144,21 @@ void main(void)
 
 	float shadow_factor = get_shadow_factor();
 
-	float brightness = clamp(dot(normalize(unit_normal), normalize(to_light)), 0.0, 1.0) * 0.7;
-
+/*	float brightness = clamp(dot(normalize(unit_normal), normalize(to_light)), 0.0, 1.0) * 0.7;
+   
 	vec3 reflected_light = reflect(normalize(to_light), unit_normal);
 	float specular = clamp(dot(reflected_light, normalize(fs_in.to_camera)), 0, 1);
-	specular = pow(specular, 10) * 0.7;
+	specular = pow(specular, 10) * 0.7;*/
 
-	final_color = (color + vec4(brightness) + vec4(specular)) * shadow_factor;
+	final_color = (color) * shadow_factor;
 
 	//final_color = vec4(fs_in.inv_tangent * vec3(0, 1, 0), 1.0);
 
-	view_normal = vec4(fs_in.normal, 1.0);
-	//view_normal = vec4(fs_in.inv_tangent * unit_normal, 1.0);
+	//view_normal = vec4(fs_in.normal, 1.0);
+
+	view_normal = view_matrix * vec4(fs_in.ws_inv_tangent * normal.rgb, 0.0);
+//	view_normal.z *= -1;
+//view_normal = vec4(normal.rbg, 1.0);
 
 	view_position = fs_in.view_position;
 

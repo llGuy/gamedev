@@ -24,6 +24,7 @@ out VS_OUT {
 	
 	mat3 inv_tangent;
 	mat3 to_tangent_space;
+	mat3 ws_inv_tangent;
 }
 vs_out;
 
@@ -65,9 +66,21 @@ void main(void)
 	vs_out.normal = vec3(view_matrix * model_matrix * vec4(vertex_normal, 0.0));
 
 	vs_out.view_position = view_matrix * vec4(vs_out.position, 1.0);
+
+	vec3 ws_norm = normalize(mat3(model_matrix) * vertex_normal);
+	vec3 ws_tang = normalize((model_matrix * vec4(vertex_tangent, 0.0)).xyz);
+	vec3 ws_bitang = normalize(cross(ws_norm, ws_tang));
+
+	mat3 to_tangent_ws = mat3 (
+		ws_tang.x, ws_bitang.x, ws_norm.x,
+		ws_tang.y, ws_bitang.y, ws_norm.y,
+		ws_tang.z, ws_bitang.z, ws_norm.z
+	);
+
+	vs_out.ws_inv_tangent = inverse(to_tangent_ws);
    
 	vec3 norm = normalize(vs_out.normal);
-	vec3 tang = normalize((model_matrix * view_matrix * vec4(vertex_tangent, 0.0)).xyz);
+	vec3 tang = normalize((view_matrix * model_matrix * vec4(vertex_tangent, 0.0)).xyz);
 	vec3 bitang = normalize(cross(norm, tang));
 
 	mat3 to_tangent_space = mat3(

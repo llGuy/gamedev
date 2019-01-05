@@ -1,9 +1,14 @@
 #include "camera.h"
+#include "../api/api.h"
 #include "../utils/detail.h"
 
 auto camera::init(i32 bound_game_object) -> void
 {
 	this->bound_game_object = bound_game_object;
+
+	/* initialize the uniform buffer for shaders */
+	//ubuffer.create();
+	//ubuffer.fill<ubuffer_data>(sizeof(ubuffer_data), nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
 }
 
 /* needs vector of objects to access object with index */

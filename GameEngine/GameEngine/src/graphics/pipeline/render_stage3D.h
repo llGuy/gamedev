@@ -13,9 +13,11 @@ private:
 
 	camera * scene_camera;
 	
+	timer * timeh;
+
 public:
 
-	render_stage3D(material_handler * materials, camera * scene_camera);
+	render_stage3D(material_handler * materials, camera * scene_camera, timer & timeh);
 
 	auto init(u32 w, u32 h) -> void override;
 

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "../utils/types.h"
 #include <glm/gtx/transform.hpp>
+#include "../api/uniform_buffer.h"
 
 #include "game_object.h"
 
@@ -20,6 +21,16 @@ private:
 	bool is_fp{ true };
 
 	glm::vec2 angles_third_person{ 0 };
+
+	//uniform_buffer ubuffer;
+
+	struct ubuffer_data
+	{
+		glm::vec4 position;
+		glm::mat4 view_matrix;
+		glm::mat4 view_matrix_no_translation;
+		glm::mat4 projection_matrix;
+	};
 public:
 	camera(void) = default;
 

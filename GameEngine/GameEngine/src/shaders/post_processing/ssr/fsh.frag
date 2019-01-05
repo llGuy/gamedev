@@ -12,6 +12,15 @@ uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform mat4 inverse_view_matrix;
 
+layout(std140, row_major) uniform light
+{
+	vec4 light_position;
+	vec4 ambient_intensity;
+	vec4 diffuse_intensity;
+	vec4 specular_intensity;
+}
+light_info;
+
 uniform vec3 camera_position;
 uniform int num_marches;
 
@@ -21,8 +30,6 @@ noperspective in struct input_prev
 }
 vertex_out;
 
-
-
 vec3 hash33(vec3 p3)
 {
 	p3 = fract(p3 * vec3(.8, .8, .8));
@@ -30,7 +37,9 @@ vec3 hash33(vec3 p3)
 	return fract((p3.xxy + p3.yxx) * p3.zyx);
 }
 
-vec3 binary_search(inout vec3 dir, inout vec3 hit_coord, inout float depth_difference)
+vec3 binary_search(inout vec3 dir
+		   , inout vec3 hit_coord
+		   , inout float depth_difference)
 {
 	float depth;
 
@@ -58,7 +67,11 @@ vec3 binary_search(inout vec3 dir, inout vec3 hit_coord, inout float depth_diffe
 	return vec3(projected_coord.xy, depth);
 }
 
-vec4 ray_cast(inout vec3 direction, inout vec3 hit_coord, out float depth_difference, out bool success, inout float d)
+vec4 ray_cast(inout vec3 direction
+	      , inout vec3 hit_coord
+	      , out float depth_difference
+	      , out bool success
+	      , inout float d)
 {
 	vec3 original_coord = hit_coord;
 
@@ -85,70 +98,74 @@ vec4 ray_cast(inout vec3 direction, inout vec3 hit_coord, out float depth_differ
 
 		depth_difference = hit_coord.z - sampled_depth;
 
-		//if ((direction.z - depth_difference) < 1.2)
+		if (depth_difference <= 0)
 		{
-//		return vec4();
-			if (depth_difference <= 0)
-			{
-			
-				vec4 result	= vec4(binary_search(direction,	hit_coord, depth_difference), 0.0);
-				//if (depth_difference > -distance(previous_ray_coord, hit_coord))
-				//if (abs(depth_difference) < abs(hit_coord.z - previous_ray_coord.z))
-				{
-				success = true;
-			//	result.w = 1.0 / (diff * diff);
-		//		return vec4(projected_coord.xy, sampled_depth, 0.0);
-		d = texture(view_positions, result.xy).z;
-				return result;
-				//return vec4(abs(hit_coord.z - previous_ray_coord.z) / 4);
-				}
-			}
+		    vec4 result	= vec4(binary_search(direction,	hit_coord, depth_difference), 0.0);
+		    {
+			success = true;
+			d = texture(view_positions, result.xy).z;
+			return result;
+		    }
 		}
 	}
 
 	return vec4(projected_coord.xy, sampled_depth, 0.0);
 }
 
-vec3 fresnel_schlick(float cos_theta, vec3 F0)
+vec3 fresnel_schlick(float cos_theta
+		     , vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(1.0 - cos_theta, 5.0);
 }
 
-vec4 apply_cube_map_reflection(in vec3 vs_eye_vector, in vec3 vs_normal, inout vec4 pixel_color)
+vec4 apply_cube_map_reflection(in vec3 vs_eye_vector
+			       , in vec3 vs_normal
+			       , inout vec4 pixel_color
+			       , in vec4 fresnel)
 {
 	vec3 result = reflect(-normalize(vs_eye_vector), vs_normal);
-	vec3 ws_reflect = vec3(inverse_view_matrix * vec4(result, 1.0));
 
-	vec3 ws_eye_vector = vec3(inverse_view_matrix * vec4(vs_eye_vector, 0.0));
-	vec3 ws_normal     = vec3(inverse_view_matrix * vec4(vs_normal, 0.0));
+	mat4 inv_view = inverse(view_matrix);
+	vec3 ws_reflect = normalize(vec3(inv_view * vec4(result, 1.0)));
+
+	vec3 ws_eye_vector = normalize(vec3(inv_view * vec4(vs_eye_vector, 0.0)));
+	vec3 ws_normal     = normalize(vec3(inv_view * vec4(vs_normal, 0.0)));
 	
 	vec3 reflect_dir = normalize(reflect(-normalize(ws_eye_vector), normalize(ws_normal)));
 
 	vec4 envi_color = texture(cube_map, reflect_dir);
 
-	return mix(pixel_color, envi_color, 0.3);
+	return mix(pixel_color, envi_color * fresnel, 0.5);
+//	return vec4(ws_reflect, 1.0);
 }
 
 void main(void)
 {
 	vec3 view_position = (textureLod(view_positions, vertex_out.texture_coords, 2)).xyz;
-	vec3 view_normal = (textureLod(view_normals, vertex_out.texture_coords, 2)).xyz;
+	vec4 vnormal = (textureLod(view_normals, vertex_out.texture_coords, 2));
+	vec3 view_normal = vnormal.xyz;
 	vec4 pixel_color = texture(diffuse, vertex_out.texture_coords);
+	float metallic = vnormal.a;
 
 	vec3 original_position = view_position;
 
-	if (pixel_color.a > 0.5)
+	if (pixel_color.a > 0.1)
 	{
 		bool hit = false;
 
 		vec3 F0 = vec3(0.04);
-		F0 = mix(F0, pixel_color.rgb, 0.4);
-		vec3 fresnel = fresnel_schlick(max(dot(view_normal, normalize(view_position)), 0.0), F0);
-		float fres = abs(dot(normalize(view_normal), -normalize(view_position)));
+
+		F0 = mix(F0, pixel_color.rgb, metallic);
+
+		vec3 to_camera = normalize(-view_position);
+		vec3 to_light = normalize(vec3(light_info.light_position));
+		vec3 halfway = normalize(to_camera + to_light);
+
+		vec4 fresnel = vec4(fresnel_schlick(max(dot(view_normal, to_camera), 0.0), F0), 1.0);
 
 		float ddepth;
 		vec3 world_position = vec3(inverse_view_matrix * vec4(view_position, 1.0));
-		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), 1.0);
+		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), pixel_color.a);
 		vec3 ray_dir = normalize(reflect(normalize(original_position), normalize(view_normal)));
 
 		ray_dir = jitt + ray_dir * max(0.1, -view_position.z);
@@ -161,15 +178,13 @@ void main(void)
 		float edge_factor = clamp(1.0 - (d_coords.x + d_coords.y), 0.0, 1.0);
 
 		vec4 reflected_color = texture(diffuse, coords.xy);
-	//	vec4 reflected_color = texture(diffuse, coords.xy) * clamp(edge_factor, 0.0, 0.9) * vec4(fresnel, 1.0);
 
-		pixel_color = apply_cube_map_reflection(-normalize(original_position + jitt), view_normal, pixel_color);
+		pixel_color = apply_cube_map_reflection(-normalize(original_position + jitt)
+							, view_normal
+							, pixel_color
+							, fresnel);
 
-		//final_color = mix(pixel_color, reflected_color, edge_factor);
 
-//		final_color = pixel_color;
-
-		//if(hit)	final_color	= mix(pixel_color, reflected_color, edge_factor);
 		if (hit)
 		{
 			vec3 vs_reflected_dir = normalize(ray_dir);
@@ -178,23 +193,10 @@ void main(void)
 
 			float dotted = dot(vs_reflected_dir, vs_reflected_point_to_original);
 			
-			//final_color = vec4(dotted);
-			if (dotted > 0.9998) final_color = mix(pixel_color, reflected_color, edge_factor);
+			if (dotted > 0.9998) final_color = mix(pixel_color, reflected_color * fresnel, edge_factor);
 			else final_color = pixel_color;
-//		if ((scaled.z < placeholder)) final_color = vec4(1.0);
-			//final_color = vec4(abs(coords.z) / 100.0);
-
-//			 final_color	= mix(pixel_color, reflected_color, edge_factor);
-
-			//else final_color = vec4(0.0);
-			//final_color = vec4(abs(coords.z - original_position.z) / 4);
-
-			//final_color = texture(diffuse, coords.xy);
-			//final_color = reflected_color;
-//final_color = coords;
-			//final_color = pixel_color;
 		}
-		else final_color = pixel_color;
+		else final_color = pixel_color;		
 	}
 	else final_color = pixel_color;
 }

@@ -6,6 +6,7 @@
 #include "../../3D/model_handler.h"
 #include "../../../light/light_handler.h"
 #include "../../../api/uniform_buffer.h"
+#include "../../../time/timer.h"
 
 class material;
 
@@ -51,10 +52,10 @@ public:
 	auto init(void) -> void;
 	
 	auto submit_material(material * mat) -> void;
-	auto render(camera & scene_camera) -> void;
+	auto render(camera & scene_camera, timer & timeh) -> void;
 	auto flush(void) -> void;
 
-	virtual auto prepare(camera & scene_camera) -> void;
+	virtual auto prepare(camera & scene_camera, timer & timeh) -> void;
 	
 	auto get_shader(void) -> glsl_program * &;
 	auto get_name(void) -> std::string &;

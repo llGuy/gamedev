@@ -81,6 +81,7 @@ private:
 	auto init_dof_pass(void) -> void;
 	auto init_bloom_pass(void) -> void;
 	auto init_motion_blur_pass(void) -> void;
+	auto init_light_pass(void) -> void;
 	auto init_final_pass(void) -> void;
 
 	auto init_deferred_renderer(void) -> void;

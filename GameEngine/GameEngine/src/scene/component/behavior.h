@@ -55,6 +55,7 @@ public:
 		if (input->got_key(keys_affected.right)) accumulate_velocity(td, glm::cross(lateral_dir, detail::up), result);
 		if (input->got_key(keys_affected.up)) accumulate_velocity(td, detail::up, result);
 		if (input->got_key(keys_affected.down)) accumulate_velocity(td, -detail::up, result);
+		if (input->got_key(GLFW_KEY_R)) result *= 4.0f;
 
 		if (movements > 0)
 		{

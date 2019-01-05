@@ -25,7 +25,7 @@ public:
 	auto add_material(std::string mat_name, material_light_info const & light_info
 		, glsl_program * shader, light_handler & lights) -> material_prototype *;
 
-	auto render_all(camera & scene_camera /* view matrix */) -> void;
+	auto render_all(camera & scene_camera /* view matrix */, timer & timeh) -> void;
 
 	auto flush(void) -> void;
 

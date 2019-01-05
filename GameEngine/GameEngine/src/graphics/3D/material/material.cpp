@@ -46,7 +46,7 @@ auto material_prototype::is_lit(void) -> bool &
 	return enabled_lighting;
 }
 
-auto material_prototype::prepare(camera & scene_camera) -> void
+auto material_prototype::prepare(camera & scene_camera, timer & timeh) -> void
 {
 	shader->bind();
 
@@ -77,6 +77,7 @@ auto material_prototype::prepare(camera & scene_camera) -> void
 	shader->send_uniform_mat4("view_matrix_no_translation", glm::value_ptr(no_translation), 1);
 	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(scene_camera.get_projection_matrix()), 1);
 	shader->send_uniform_vec3("camera_position", glm::value_ptr(scene_camera.get_position()), 1);
+	shader->send_uniform_float("move_factor", timeh.accumulated());
 }
 
 auto material_prototype::submit_material(material * mat) -> void
@@ -84,9 +85,9 @@ auto material_prototype::submit_material(material * mat) -> void
 	materials.push_back(mat);
 }
 
-auto material_prototype::render(camera & scene_camera) -> void
+auto material_prototype::render(camera & scene_camera, timer & timeh) -> void
 {
-	prepare(scene_camera);
+	prepare(scene_camera, timeh);
 
 	for (auto & mat : materials)
 	{

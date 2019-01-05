@@ -5,6 +5,7 @@
 #include "../../io/io.h"
 #include "../../api/api.h"
 #include "shader_properties.h"
+#include <glm/gtc/type_ptr.hpp>
 #include "../../json_loader.h"
 
 class shader_handle
@@ -131,9 +132,31 @@ public:
 				}
 			};
 
+			auto float_uniform = [](nlohmann::json::iterator & it, glsl_program & shader)
+			{
+				shader.bind();
+				for (nlohmann::json::iterator uniform = it.value().begin(); uniform != it.value().end(); ++uniform)
+				{
+					shader.send_uniform_float(uniform.key(), uniform.value());
+				}
+			};
+
+			auto vec3_uniform = [](nlohmann::json::iterator & it, glsl_program & shader)
+			{
+				shader.bind();
+				for (nlohmann::json::iterator uniform = it.value().begin(); uniform != it.value().end(); ++uniform)
+				{
+					std::vector<float> vec_array = uniform.value();
+					glm::vec3 vec3 = glm::vec3(vec_array[0], vec_array[1], vec_array[2]);
+					shader.send_uniform_vec3(uniform.key(), glm::value_ptr(vec3), 1);
+				}
+			};
+
 			std::unordered_map<std::string, std::function<void(nlohmann::json::iterator &, glsl_program &)>> uniform_funcs
 			{
-				std::pair("int", int_uniform)
+				std::pair("int", int_uniform),
+				std::pair("float", float_uniform),
+				std::pair("vec3", vec3_uniform)
 			};
 
 			std::unordered_map<std::string, GLenum> map_shader_type
@@ -165,7 +188,8 @@ public:
 				for (nlohmann::json::iterator uniform_it = send_uniform_node.value().begin()
 					; uniform_it != send_uniform_node.value().end(); ++uniform_it)
 				{
-					uniform_funcs[uniform_it.key()](uniform_it, *shader);
+					auto key = uniform_it.key();
+					uniform_funcs[key](uniform_it, *shader);
 				}
 			}
 

@@ -1,7 +1,7 @@
 #include "render_stage3D.h"
 
-render_stage3D::render_stage3D(material_handler * materials, camera * scene_camera)
-	: materials(materials), scene_camera(scene_camera)
+render_stage3D::render_stage3D(material_handler * materials, camera * scene_camera, timer & timeh)
+	: materials(materials), scene_camera(scene_camera), timeh(&timeh)
 {
 }
 
@@ -14,5 +14,5 @@ auto render_stage3D::execute(u32 current_id, std::vector<render_stage *> & stage
 {
 	glEnable(GL_DEPTH_TEST);
 
-	materials->render_all(*scene_camera);
+	materials->render_all(*scene_camera, *timeh);
 }
