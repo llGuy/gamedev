@@ -42,7 +42,7 @@ public:
 	template <typename ... T> auto set_active_textures(T ... pairs) -> void
 	{
 		shader->bind();
-		(shader->send_uniform_int(pairs.first, pairs.second), ...);
+		(shader->send_uniform_int(create_hashed_string(pairs.first), pairs.second), ...);
 	}
 
 	template <typename ... T> auto add_uniform_command(T ... command) -> void

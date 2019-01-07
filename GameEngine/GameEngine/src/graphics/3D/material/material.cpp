@@ -52,13 +52,13 @@ auto material_prototype::prepare(camera & scene_camera, timer & timeh) -> void
 
 	if (enabled_lighting)
 	{
-		shader->bind_uniform_block(material_block, "material");
-		shader->send_uniform_int("lighting", 1);
+		shader->bind_uniform_block(material_block, "material"_hash);
+		shader->send_uniform_int("lighting"_hash, 1);
 		lights->prepare_shader(*shader);
 	}
 	else
 	{
-		shader->send_uniform_int("lighting", 0);
+		shader->send_uniform_int("lighting"_hash, 0);
 	}
 
 	for (u32 i = 0; i < textures2D.size(); ++i)
@@ -73,11 +73,9 @@ auto material_prototype::prepare(camera & scene_camera, timer & timeh) -> void
 
 	glm::mat4 no_translation = scene_camera.get_view_matrix_without_translation();
 
-	shader->send_uniform_mat4("view_matrix", glm::value_ptr(scene_camera.get_view_matrix()), 1);
-	shader->send_uniform_mat4("view_matrix_no_translation", glm::value_ptr(no_translation), 1);
-	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(scene_camera.get_projection_matrix()), 1);
-	shader->send_uniform_vec3("camera_position", glm::value_ptr(scene_camera.get_position()), 1);
-	shader->send_uniform_float("move_factor", timeh.accumulated());
+	shader->bind_uniform_block(scene_camera.get_uniform_block(), "camera"_hash);
+
+	shader->send_uniform_float("move_factor"_hash, timeh.accumulated());
 }
 
 auto material_prototype::submit_material(material * mat) -> void
@@ -144,7 +142,7 @@ auto material::render(glsl_program * shader) -> void
 {
 	shader->bind();
 	
-	shader->send_uniform_mat4("model_matrix", glm::value_ptr(transform_matrix), 1);
+	shader->send_uniform_mat4("model_matrix"_hash, glm::value_ptr(transform_matrix), 1);
 
 	renderable->vao.bind();
 	auto & indices = renderable.get_component<index_buffer_component>();

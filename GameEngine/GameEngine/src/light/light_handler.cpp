@@ -22,8 +22,7 @@ light_handler::light_handler(void)
 
 auto light_handler::prepare_shader(glsl_program & program) -> void
 {
-	program.bind_uniform_block(light_uniform_block, "light");
-	//program.bind_uniform_block(deferred_block, "light");
+	program.bind_uniform_block(light_uniform_block, "light"_hash);
 	shadows.prepare_shader(program);
 }
 

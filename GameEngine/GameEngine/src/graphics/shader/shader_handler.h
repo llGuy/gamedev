@@ -128,7 +128,7 @@ public:
 				shader.bind();
 				for (nlohmann::json::iterator uniform = it.value().begin(); uniform != it.value().end(); ++uniform)
 				{
-					shader.send_uniform_int(uniform.key(), uniform.value());
+					shader.send_uniform_int(create_hashed_string(uniform.key()), uniform.value());
 				}
 			};
 
@@ -137,7 +137,7 @@ public:
 				shader.bind();
 				for (nlohmann::json::iterator uniform = it.value().begin(); uniform != it.value().end(); ++uniform)
 				{
-					shader.send_uniform_float(uniform.key(), uniform.value());
+					shader.send_uniform_float(create_hashed_string(uniform.key()), uniform.value());
 				}
 			};
 
@@ -148,7 +148,7 @@ public:
 				{
 					std::vector<float> vec_array = uniform.value();
 					glm::vec3 vec3 = glm::vec3(vec_array[0], vec_array[1], vec_array[2]);
-					shader.send_uniform_vec3(uniform.key(), glm::value_ptr(vec3), 1);
+					shader.send_uniform_vec3(create_hashed_string(uniform.key()), glm::value_ptr(vec3), 1);
 				}
 			};
 

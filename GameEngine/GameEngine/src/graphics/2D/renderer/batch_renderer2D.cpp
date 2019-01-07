@@ -47,7 +47,7 @@ auto batch_renderer2D::init(glsl_program * shader) -> void
 
 	this->shader = shader;
 	this->shader->bind();
-	this->shader->send_uniform_intv("diffuse", texture_slot_inits.data(), 32);
+	this->shader->send_uniform_intv("diffuse"_hash, texture_slot_inits.data(), 32);
 
 	quad2D default_quad;
 	default_quad[0] = vertex2D{ glm::vec2(-1.0f, +1.0f), glm::vec2(0.0f, 1.0f), 0 };

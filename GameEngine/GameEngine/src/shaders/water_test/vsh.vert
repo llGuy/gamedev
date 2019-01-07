@@ -16,10 +16,15 @@ out VS_OUT {
 }
 vs_out;
 
-uniform mat4 projection_matrix;
 uniform mat4 model_matrix;
-uniform mat4 view_matrix;
-uniform vec3 camera_position;
+
+layout(std140) uniform camera
+{
+	vec4 position;
+	mat4 view_matrix;
+	mat4 projection_matrix;
+} 
+camera_info;
 
 layout(std140, row_major) uniform light
 {
@@ -49,16 +54,16 @@ void main(void)
 
 	vs_out.uvs = vertex_uvs;
 
-	vs_out.normal = vec3(view_matrix * model_matrix * vec4(vertex_normal, 0.0));
+	vs_out.normal = vec3(camera_info.view_matrix * model_matrix * vec4(vertex_normal, 0.0));
 
-	vs_out.view_position = view_matrix * vec4(vs_out.position, 1.0);
+	vs_out.view_position = camera_info.view_matrix * vec4(vs_out.position, 1.0);
 
-	vec4 vs_light_pos = view_matrix * light_info.light_position;
+	vec4 vs_light_pos = camera_info.view_matrix * light_info.light_position;
 
 	vs_out.to_light = (-vs_light_pos.xyz);
 
 	vs_out.to_camera = vec3(vs_out.view_position);
 
 
-	gl_Position = projection_matrix * vs_out.view_position;
+	gl_Position = camera_info.projection_matrix * vs_out.view_position;
 }

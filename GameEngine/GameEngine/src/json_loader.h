@@ -55,7 +55,8 @@ private:
 		for (nlohmann::json::iterator sub_it = it.value().begin(); sub_it != it.value().end(); ++sub_it)
 		{
 			data.iterator = &sub_it;
-			map_funcs[sub_it.key()]->apply(data);
+			std::string key = sub_it.key();
+			map_funcs[key]->apply(data);
 		}
 	}
 };

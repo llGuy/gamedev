@@ -27,7 +27,7 @@ struct uniform_vec3 : uniform_command
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_vec3(name, glm::value_ptr(value), 1);
+		shader->send_uniform_vec3(create_hashed_string(name), glm::value_ptr(value), 1);
 	}
 };
 
@@ -41,7 +41,7 @@ struct uniform_int : uniform_command
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_int(name, value);
+		shader->send_uniform_int(create_hashed_string(name), value);
 	}
 };
 
@@ -55,7 +55,7 @@ struct uniform_float : uniform_command
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_float(name, value);
+		shader->send_uniform_float(create_hashed_string(name), value);
 	}
 };
 
@@ -69,7 +69,7 @@ struct uniform_mat4 : uniform_command
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_mat4(name, glm::value_ptr(value), 1);
+		shader->send_uniform_mat4(create_hashed_string(name), glm::value_ptr(value), 1);
 	}
 };
 
@@ -84,6 +84,6 @@ struct uniform_buffer_bind : uniform_command
 
 	auto execute(void) -> void override
 	{
-		shader->bind_uniform_block(data, name);
+		shader->bind_uniform_block(data, create_hashed_string(name));
 	}
 };

@@ -141,3 +141,26 @@ namespace detail {
 	}
 
 }
+
+using hashed_string_value_type = u32;
+
+struct hashed_string
+{
+	char const * str;
+	unsigned int length;
+	unsigned int hashed_value;
+};
+
+static auto create_hashed_string(std::string const & str) -> hashed_string
+{
+	hashed_string ret{ str.c_str(), str.length(), ((str.length() ? detail::compile_hash(str.c_str(), str.length() - 1) : 2166136261u) ^ str.c_str()[str.length()]) * 16777619u };
+
+	return ret;
+}
+
+constexpr auto operator""_hash(char const * s, std::size_t count) -> hashed_string
+{
+	hashed_string ret{ s, count, ((count ? detail::compile_hash(s, count - 1) : 2166136261u) ^ s[count]) * 16777619u };
+
+	return ret;
+}

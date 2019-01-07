@@ -14,7 +14,7 @@ in VS_DATA {
     vec2 uvs;
 } fs_in;
 
-void main(void) 
+void main(void)
 {
      gAlbedo = vec4(color, roughness);
 

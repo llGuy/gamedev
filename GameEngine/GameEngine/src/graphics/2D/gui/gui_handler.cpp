@@ -7,7 +7,7 @@ auto gui_handler::init(shader_handler & shaders) -> void
 	shader_handle gui_shader_handle("shader.gui");
 	auto program = shaders.create_program(gui_shader_handle, "2D");
 	program->bind();
-	program->send_uniform_mat4("projection_matrix", glm::value_ptr(detail::identity_matrix), 1);
+	program->send_uniform_mat4("projection_matrix"_hash, glm::value_ptr(detail::identity_matrix), 1);
 
 	renderer.init(program);
 }

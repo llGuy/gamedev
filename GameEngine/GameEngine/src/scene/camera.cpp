@@ -7,8 +7,13 @@ auto camera::init(i32 bound_game_object) -> void
 	this->bound_game_object = bound_game_object;
 
 	/* initialize the uniform buffer for shaders */
-	//ubuffer.create();
-	//ubuffer.fill<ubuffer_data>(sizeof(ubuffer_data), nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
+	ubuffer.create();
+	ubuffer.fill<ubuffer_data>(sizeof(ubuffer_data), nullptr, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
+}
+
+auto camera::update_uniform_block(void) -> void
+{
+	ubuffer.fill(sizeof(ubuffer_data), &data, GL_DYNAMIC_DRAW, GL_UNIFORM_BUFFER);
 }
 
 /* needs vector of objects to access object with index */
@@ -18,30 +23,37 @@ auto camera::update_view_matrix(vector_dyndel<game_object> & objects) -> void
 
 	if (bound_game_object == -1)
 	{
-		view_matrix = glm::lookAt(glm::vec3(0), glm::vec3(0.1f, 0.1f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		data.view_matrix = glm::lookAt(glm::vec3(0), glm::vec3(0.1f, 0.1f, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		position = bound_object->position;
+		data.position = bound_object->position;
 		direction = bound_object->direction;
 
-		view_matrix = glm::lookAt(position, position + direction, detail::up);
+		data.view_matrix = glm::lookAt(data.position, data.position + direction, detail::up);
+
+		update_uniform_block();
 	}
 }
 
 auto camera::get_projection_matrix(void)->glm::mat4 &
 {
-	return projection_matrix;
+	return data.projection_matrix;
 }
 
 auto camera::get_view_matrix(void)->glm::mat4 &
 {
-	return view_matrix;
+	return data.view_matrix;
+}
+
+auto camera::get_uniform_block(void) -> uniform_buffer &
+{
+	return ubuffer;
 }
 
 auto camera::get_view_matrix_without_translation(void) const -> glm::mat4
 {
-	glm::mat4 vmatrix = view_matrix;
+	glm::mat4 vmatrix = data.view_matrix;
 
 	vmatrix[3][0] = 0.0f;
 	vmatrix[3][1] = 0.0f;
@@ -62,7 +74,7 @@ auto camera::is_first_person(void) const -> bool
 
 auto camera::get_position(void)->glm::vec3 &
 {
-	return position;
+	return data.position;
 } 
 
 auto camera::get_direction(void)->glm::vec3 &

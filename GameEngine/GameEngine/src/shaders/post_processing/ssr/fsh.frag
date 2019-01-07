@@ -136,7 +136,6 @@ vec4 apply_cube_map_reflection(in vec3 vs_eye_vector
 	vec4 envi_color = texture(cube_map, reflect_dir);
 
 	return mix(pixel_color, envi_color * fresnel, 0.5);
-//	return vec4(ws_reflect, 1.0);
 }
 
 void main(void)
@@ -149,7 +148,7 @@ void main(void)
 
 	vec3 original_position = view_position;
 
-	if (pixel_color.a > 0.1)
+	if (pixel_color.a > 0.01)
 	{
 		bool hit = false;
 
@@ -185,7 +184,11 @@ void main(void)
 							, fresnel);
 
 
-		if (hit)
+		//check if is skybox
+		vec3 check_skybox = texture(view_normals, coords.xy).xyz;
+		bool is_skybox = check_skybox.x < 0.000001 && check_skybox.y < 0.000001 && check_skybox.z < 0.000001;
+
+		if (hit && !is_skybox)
 		{
 			vec3 vs_reflected_dir = normalize(ray_dir);
 			vec3 vs_reflected_point = texture(view_positions, coords.xy).xyz;
@@ -193,7 +196,7 @@ void main(void)
 
 			float dotted = dot(vs_reflected_dir, vs_reflected_point_to_original);
 			
-			if (dotted > 0.9998) final_color = mix(pixel_color, reflected_color * fresnel, edge_factor);
+			if (dotted > 0.999) final_color = mix(pixel_color, reflected_color * fresnel, edge_factor * metallic);
 			else final_color = pixel_color;
 		}
 		else final_color = pixel_color;		

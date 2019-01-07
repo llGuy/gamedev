@@ -9,14 +9,6 @@ vertex_out;
 uniform sampler2D scene_depth;
 uniform sampler2D diffuse;
 
-/*layout(std140) uniform data
-{
-	uniform mat4 inverse_proj_matrix;
-	uniform mat4 inverse_view_matrix;
-	uniform mat4 previous_view_proj;
-	uniform float current_fps;
-};*/
-
 uniform mat4 inverse_proj_matrix;
 uniform mat4 inverse_view_matrix;
 uniform mat4 previous_view_proj;
@@ -58,7 +50,10 @@ void main(void)
 	for (int i = 1; i < num_samples; ++i)
 	{
 		vec2 offset = blur_vector * (float(i) / float(num_samples - 1) - 0.5);
-		result += texture(diffuse, vertex_out.texture_coords + offset);
+		vec2 uvs = offset + vertex_out.texture_coords;
+		if (uvs.x > 1.0 || uvs.y > 1.0 || uvs.x < 0.0 || uvs.y < 0.0)
+			result += texture(diffuse, vertex_out.texture_coords);
+		else result += texture(diffuse, vertex_out.texture_coords + offset);
 	}
 	result /= float(num_samples);
 

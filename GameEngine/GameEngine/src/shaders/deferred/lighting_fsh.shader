@@ -76,6 +76,7 @@ vec3 fresnel_schlick(float cos_theta, vec3 F0)
 vec4 pbr(void)
 {
 	vec4 albedo = texture(gAlbedo, fs_in.uvs);
+	albedo.xyz = pow(albedo.xyz, vec3(2.2));
 	vec3 vs_position = texture(gPosition, fs_in.uvs).xyz;
 	vec4 gnormal = texture(gNormal, fs_in.uvs);
 	vec3 vs_normal = gnormal.xyz;
@@ -101,11 +102,14 @@ vec4 pbr(void)
 	float den = 4 * max(dot(vs_normal, to_camera), 0.0) * max(dot(vs_normal, light_vector), 0.0);
 	vec3 spec = num / max(den, 0.001);
 
-	vec3 ks = F;
+	vec3 ks = F * 0.5;
 	vec3 kd = vec3(1.0) - ks;
 	kd *= 1.0 - metallic;
 
 	vec3 result = (kd * vec3(albedo) / PI + spec) * radiance * n_dot_l;
+
+	vec3 ambient = vec3(0.03) * vec3(albedo);
+	result += ambient;
 
 	result = result / (result + vec3(1.0));
 	result = pow(result, vec3(1.0 / 2.2));

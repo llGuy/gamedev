@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../io/io.h"
 #include "application.h"
+#include "../utils/detail.h"
 #include "../xcp/exception.h"
 #include "../console/console.h"
 #include "../graphics/3D/model_comp/cube.h"
@@ -10,8 +11,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 1400
-#define DISPLAY_HEIGHT 800
+#define DISPLAY_WIDTH 900
+#define DISPLAY_HEIGHT 500
 
 #define BLUR_LEVEL 16
 
@@ -88,7 +89,7 @@ auto application::update(void) -> void
 	auto elapsed = time_handler.elapsed();
 	current_fps->value = 1.0f / time_handler.elapsed();
 
-	time_handler.accumulate(0.1);
+	time_handler.accumulate(0.1f);
 
 	time_handler.reset();
 
@@ -273,8 +274,8 @@ auto application::init_shaders(void) -> void
 	shader.set_name("shader.low_poly");
 	auto program = shaders.create_program(shader, "3D");
 	program->bind();
-	program->send_uniform_int("diffuse", 0);
-	program->send_uniform_int("shadow_map", 1);
+	program->send_uniform_int("diffuse"_hash, 0);
+	program->send_uniform_int("shadow_map"_hash, 1);
 
 	shader_handle sky_shader_handle("shader.sky");
 	glsl_shader sky_vsh = shaders.create_shader(GL_VERTEX_SHADER, sky_shader_handle, extract_file("src/shaders/environment/vsh.shader"));
@@ -322,8 +323,8 @@ auto application::init_shaders(void) -> void
 	smooth.set_name("shader.smooth");
 	auto smooth_program = shaders.create_program(smooth, "3D");
 	smooth_program->bind();
-	smooth_program->send_uniform_int("diffuse", 0);
-	smooth_program->send_uniform_int("shadow_map", 1);
+	smooth_program->send_uniform_int("diffuse"_hash, 0);
+	smooth_program->send_uniform_int("shadow_map"_hash, 1);
 }
 
 auto application::init_textures(void) -> void
@@ -397,8 +398,8 @@ auto application::init_pipeline(void) -> void
 	init_ssr();
 	//init_deferred_renderer();
 	init_motion_blur_pass();
-	//init_blur_passes();
-	//init_bloom_pass();
+	init_blur_passes();
+	init_bloom_pass();
 	//init_dof_pass();
 	init_final_pass();
 }
@@ -580,7 +581,7 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.bloom"));
 }
 
 auto application::init_light_pass(void) -> void

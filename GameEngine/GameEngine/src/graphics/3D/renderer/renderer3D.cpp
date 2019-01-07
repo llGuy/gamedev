@@ -15,14 +15,14 @@ auto renderer3D::set_projection(glm::mat4 & projection) -> void
 {
 	glsl_program * shader = material_type->get_shader();
 	shader->bind();
-	shader->send_uniform_mat4("projection_matrix", glm::value_ptr(projection), 1);
+	shader->send_uniform_mat4("projection_matrix"_hash, glm::value_ptr(projection), 1);
 }
 
 auto renderer3D::set_view(glm::mat4 & view) -> void
 {
 	glsl_program * shader = material_type->get_shader();
 	shader->bind();
-	shader->send_uniform_mat4("view_matrix", glm::value_ptr(view), 1);
+	shader->send_uniform_mat4("view_matrix"_hash, glm::value_ptr(view), 1);
 }
 
 auto renderer3D::render(void) -> void

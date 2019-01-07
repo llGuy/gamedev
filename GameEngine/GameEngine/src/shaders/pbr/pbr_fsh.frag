@@ -9,27 +9,31 @@ uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
 uniform sampler2D shadow_map;
 uniform sampler2D disp_map;
+uniform sampler2D metallic;
+uniform sampler2D roughness;
 
 in VS_OUT {
 	vec3 position;
 	vec2 uvs;
 	vec3 normal;
 	vec4 shadow_coord;
+	vec3 tangent;
+	vec3 bitangent;
 	vec4 view_position;
+    vec4 tangent_view_position;
 	vec3 to_light;
 	vec3 to_camera;
+	vec3 tangent_camera_pos;
+
+	vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+
+	mat3 inv_tangent;
+	mat3 to_tangent_space;
+	mat3 ws_inv_tangent;
 }
 fs_in;
-
-uniform float move_factor;
-
-layout(std140) uniform camera
-{
-	vec4 position;
-	mat4 view_matrix;
-	mat4 projection_matrix;
-} 
-camera_info;
 
 layout(std140) uniform shadow_data
 {
@@ -41,6 +45,14 @@ layout(std140) uniform shadow_data
 	float pcf_count;
 } 
 shadow_info;
+
+layout(std140) uniform camera
+{
+	vec4 position;
+	mat4 view_matrix;
+	mat4 projection_matrix;
+} 
+camera_info;
 
 float get_shadow_factor()
 {
@@ -82,7 +94,7 @@ float get_shadow_factor()
 vec2 parallax()
 {
 	vec2 uvs = fs_in.uvs;
-	vec3 view_dir = normalize(vec3(fs_in.view_position));
+	vec3 view_dir = normalize(vec3(fs_in.tangent_camera_pos) - vec3(fs_in.tangent_view_position));
 	view_dir.y *= -1;
 	const float min_layers = 8.0;
 	const float max_layers = 32.0;
@@ -126,26 +138,40 @@ bool is_1(in vec3 value)
 
 void main(void)
 {
-	vec2 displacement = parallax();
-	displacement += vec2(move_factor * 0.5);
+	//vec2 displacement = parallax();
+	vec2 displacement = fs_in.uvs;
 	
 	vec4 color = texture(diffuse_map, displacement);
+
+	float metalness_val = texture(metallic, displacement).x;
+	float roughness_val = texture(roughness, displacement).x;
 
 	vec4 normal = 2.0 * texture(normal_map, displacement) - 1.0;
 
 	vec3 unit_normal = normalize(normal.rbg);
-	unit_normal.xz *= 0.1;
 
 	vec3 to_light = fs_in.to_light;
-
+	 
 	float shadow_factor = get_shadow_factor();
 
-	//final_color = (color);
-	final_color = vec4(49, 59, 98, 256) / 256 * shadow_factor;
-	final_color.a = 0.3;
+/*	float brightness = clamp(dot(normalize(unit_normal), normalize(to_light)), 0.0, 1.0) * 0.7;
+   
+	vec3 reflected_light = reflect(normalize(to_light), unit_normal);
+	float specular = clamp(dot(reflected_light, normalize(fs_in.to_camera)), 0, 1);
+	specular = pow(specular, 10) * 0.7;*/
 
-	view_normal = camera_info.view_matrix * vec4(unit_normal, 0.0);
-	view_normal.a = 0.8;
+	final_color = (color) * 1.0;
+
+	final_color.a = roughness_val;
+
+	//final_color = vec4(fs_in.inv_tangent * vec3(0, 1, 0), 1.0);
+
+	//view_normal = vec4(fs_in.normal, 1.0);
+
+	view_normal = camera_info.view_matrix * vec4(fs_in.ws_inv_tangent * normal.rgb, 0.0);
+	view_normal.a = metalness_val;
+//	view_normal.z *= -1;
+//view_normal = vec4(normal.rbg, 1.0);
 
 	view_position = fs_in.view_position;
 

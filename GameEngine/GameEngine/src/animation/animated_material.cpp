@@ -10,9 +10,9 @@ auto skeletal_material::render(glsl_program * shader) -> void
 {
 	shader->bind();
 
-	shader->send_uniform_mat4("model_matrix", glm::value_ptr(transform_matrix), 1);
+	shader->send_uniform_mat4("model_matrix"_hash, glm::value_ptr(transform_matrix), 1);
 
-	shader->bind_uniform_block(uniform_block, "bones");
+	shader->bind_uniform_block(uniform_block, "bones"_hash);
 
 	renderable->vao.bind();
 	auto & indices = renderable.get_component<index_buffer_component>();

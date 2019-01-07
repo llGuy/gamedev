@@ -73,6 +73,8 @@ public:
 	{
 		this->shadow_map = shadow_map;
 
+		shadow_camera.init(0);
+
 		create_shadow_bias_matrix();
 		create_light_view_matrix(light_dir = glm::normalize(glm::vec3(light_pos.x, -light_pos.y, light_pos.z)));
 
@@ -97,7 +99,7 @@ public:
 
 	auto prepare_shader(glsl_program & program) -> void
 	{
-		program.bind_uniform_block(shadow_uniform_block, "shadow_data");
+		program.bind_uniform_block(shadow_uniform_block, "shadow_data"_hash);
 	}
 
 	auto update(f32 far, f32 near, f32 aspect, f32 fov, glm::vec3 const & pos, glm::vec3 const & dir) -> void
@@ -112,6 +114,8 @@ public:
 
 		glm::mat4 bias = shadow_bias * shadow_camera.get_projection_matrix() * shadow_camera.get_view_matrix();
 		shadow_uniform_block.partial_fill<glm::mat4>(0, sizeof glm::mat4, &bias, GL_UNIFORM_BUFFER);
+
+		shadow_camera.update_uniform_block();
 	}
 	auto update_light_view(glm::vec3 const & light_pos) -> void
 	{
@@ -181,7 +185,10 @@ private:
 private:
 	auto create_light_view_matrix(glm::vec3 const & light_dir) -> void
 	{
-		light_view_matrix = glm::lookAt(glm::normalize(-light_dir), glm::vec3(0), detail::up);
+		glm::vec3 light_dir_actual = light_dir;
+		light_dir_actual.x *= -1.0f;
+		light_dir_actual.z *= -1.0f;
+		light_view_matrix = glm::lookAt(glm::normalize(-light_dir_actual), glm::vec3(0), detail::up);
 	}
 	auto create_shadow_bias_matrix(void) -> void
 	{

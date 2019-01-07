@@ -10,10 +10,6 @@
 class camera
 {
 private:
-	glm::mat4 view_matrix;
-	glm::mat4 projection_matrix;
-
-	glm::vec3 position;
 	glm::vec3 direction{ 1, 0, 0 };
 
 	i32 bound_game_object{ -1 };
@@ -22,15 +18,15 @@ private:
 
 	glm::vec2 angles_third_person{ 0 };
 
-	//uniform_buffer ubuffer;
+	uniform_buffer ubuffer{ 4 };
 
 	struct ubuffer_data
 	{
-		glm::vec4 position;
+		glm::vec3 position;
+		float pad;
 		glm::mat4 view_matrix;
-		glm::mat4 view_matrix_no_translation;
 		glm::mat4 projection_matrix;
-	};
+	} data;
 public:
 	camera(void) = default;
 
@@ -38,6 +34,8 @@ public:
 
 	/* needs vector of objects to access object with index */
 	auto update_view_matrix(vector_dyndel<game_object> & objects) -> void;
+
+	auto update_uniform_block(void) -> void;
 
 	auto toggle_fp(void) -> void;
 
@@ -47,6 +45,7 @@ public:
 	auto get_position(void) -> glm::vec3 &;
 	auto get_direction(void) -> glm::vec3 &;
 	auto get_bound_object(void)-> i32 &;
+	auto get_uniform_block(void) -> uniform_buffer &;
 	auto is_first_person(void) const -> bool;
 	auto get_rotation_angles(void) -> glm::vec2 &;
 };
