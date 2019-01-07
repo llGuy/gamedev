@@ -13,10 +13,10 @@ class glsl_program
 {
 private:
 	std::vector<glsl_shader> shaders;
-	std::unordered_map<hashed_string_value_type, i32> uloc_cache;
+	std::unordered_map<hashed_string_value_type, i32, string_hash<hashed_string_value_type>> uloc_cache;
 
-	std::unordered_map<hashed_string_value_type, i32> block_indices_cache;
-	std::unordered_map<hashed_string_value_type, i32> subroutine_cache;
+	std::unordered_map<hashed_string_value_type, i32, string_hash<hashed_string_value_type>> block_indices_cache;
+	std::unordered_map<hashed_string_value_type, i32, string_hash<hashed_string_value_type>> subroutine_cache;
 
 	u32 id;
 public:

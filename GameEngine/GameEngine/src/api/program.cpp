@@ -97,40 +97,48 @@ auto glsl_program::bind_subroutine(hashed_string const & var, hashed_string cons
 
 auto glsl_program::get_subroutine_index(hashed_string const & name, GLenum shader) -> i32
 {
-	if (auto location = subroutine_cache.find(name.hashed_value); location != subroutine_cache.end())
+	hashed_string_value_type hashed{ name.hashed_value };
+
+	if (auto location = subroutine_cache.find(hashed); location != subroutine_cache.end())
 	{
 		return location->second;
 	}
-	return (subroutine_cache[name.hashed_value] = glGetSubroutineIndex(id, shader, name.str));
+	return (subroutine_cache[hashed] = glGetSubroutineIndex(id, shader, name.str));
 }
 
 auto glsl_program::get_subroutine_location(hashed_string const & name, GLenum shader) -> i32
 {
-	if (auto location = subroutine_cache.find(name.hashed_value); location != subroutine_cache.end())
+	hashed_string_value_type hashed{ name.hashed_value };
+
+	if (auto location = subroutine_cache.find(hashed); location != subroutine_cache.end())
 	{
 		return location->second;
 	}
-	return (subroutine_cache[name.hashed_value] = glGetSubroutineUniformLocation(id, shader, name.str));
+	return (subroutine_cache[hashed] = glGetSubroutineUniformLocation(id, shader, name.str));
 }
 
 auto glsl_program::get_uniform_location(hashed_string const & name) -> i32
 {
-	if (auto location = uloc_cache.find(name.hashed_value); location != uloc_cache.end())
+	hashed_string_value_type hashed{ name.hashed_value };
+
+	if (auto location = uloc_cache.find(hashed); location != uloc_cache.end())
 	{
 		return location->second;
 	}
 
-	return (uloc_cache[name.hashed_value] = glGetUniformLocation(id, name.str));
+	return (uloc_cache[hashed] = glGetUniformLocation(id, name.str));
 }
 
 auto glsl_program::get_uniform_block_index(hashed_string const & name) -> i32
 {
-	if (auto location = block_indices_cache.find(name.hashed_value); location != block_indices_cache.end())
+	hashed_string_value_type hashed{ name.hashed_value };
+
+	if (auto location = block_indices_cache.find(hashed); location != block_indices_cache.end())
 	{
 		return location->second;
 	}
 
-	return (block_indices_cache[name.hashed_value] = glGetUniformBlockIndex(id, name.str));
+	return (block_indices_cache[hashed] = glGetUniformBlockIndex(id, name.str));
 }
 
 auto glsl_program::send_uniform_intv(hashed_string const & name, i32 * v, i32 amount) -> void

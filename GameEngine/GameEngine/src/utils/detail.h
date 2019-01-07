@@ -142,7 +142,26 @@ namespace detail {
 
 }
 
-using hashed_string_value_type = u32;
+struct hashed_string_value_type
+{
+	u32 value;
+
+	auto operator==(hashed_string_value_type const & other) const -> bool
+	{
+		return value == other.value;
+	}
+};
+
+template<typename T> class string_hash;
+
+template<> class string_hash<hashed_string_value_type>
+{
+public:
+	auto operator()(hashed_string_value_type const & s) const -> std::size_t
+	{
+		return s.value;
+	}
+};
 
 struct hashed_string
 {

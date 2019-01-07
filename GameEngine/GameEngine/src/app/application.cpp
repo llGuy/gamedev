@@ -87,7 +87,7 @@ auto application::update(void) -> void
 	world.update(time_handler.elapsed());
 
 	auto elapsed = time_handler.elapsed();
-	current_fps->value = 1.0f / time_handler.elapsed();
+	//current_fps->value = 1.0f / time_handler.elapsed();
 
 	time_handler.accumulate(0.1f);
 
@@ -100,8 +100,8 @@ auto application::render(void) -> void
 {
 	view_matrix_command->value = world.get_scene_camera().get_view_matrix();
 	cam_pos_command->value = world.get_scene_camera().get_position();
-	inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
-	inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
+	//inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
+	//inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
 
 	if (display.user_inputs().got_key(GLFW_KEY_1))
 	{
@@ -120,7 +120,7 @@ auto application::render(void) -> void
 
 	guis.render();
 
-	previous_view_proj->value = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix();
+	//previous_view_proj->value = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix();
 }
 
 auto application::running(void) -> bool
@@ -397,9 +397,9 @@ auto application::init_pipeline(void) -> void
 	init_light_pass();
 	init_ssr();
 	//init_deferred_renderer();
-	init_motion_blur_pass();
-	init_blur_passes();
-	init_bloom_pass();
+	//init_motion_blur_pass();
+	//init_blur_passes();
+	//init_bloom_pass();
 	//init_dof_pass();
 	init_final_pass();
 }
@@ -581,7 +581,7 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.bloom"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.ssr"));
 }
 
 auto application::init_light_pass(void) -> void
