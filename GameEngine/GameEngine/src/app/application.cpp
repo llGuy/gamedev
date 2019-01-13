@@ -5,14 +5,19 @@
 #include "../xcp/exception.h"
 #include "../console/console.h"
 #include "../graphics/3D/model_comp/cube.h"
+#include "../scene/component/model_matrix.h"
 #include "../graphics/3D/model_comp/quad3D.h"
 #include "../animation/animation_component.h"
 #include "../animation/animation_key_control_component.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-#define DISPLAY_WIDTH 900
-#define DISPLAY_HEIGHT 500
+#define PRE_RENDER "pre_render"_hash
+#define POST_RENDER "post_render"_hash
+#define TIME "time"_hash
+
+#define DISPLAY_WIDTH 1200
+#define DISPLAY_HEIGHT 700
 
 #define BLUR_LEVEL 16
 
@@ -25,8 +30,6 @@ auto application::init(void) -> void
 {
 	try
 	{
-		std::cout << extract_file("src/shaders/post_processing/ssr/fsh.frag") << std::endl;
-
 		ENG_MARK("Initializing");
 		glfw_init();
 
@@ -79,15 +82,14 @@ auto application::update(void) -> void
 	f32 aspect = (f32)display.pixel_width() / (f32)display.pixel_height();
 
 	camera & scene_camera = world.get_scene_camera();
-	lights.update_shadows(60.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
+	lights.update_shadows(100.0f, 1.0f, aspect, 60.0f, scene_camera.get_position(), scene_camera.get_direction());
 	lights.update_buffer(world.get_scene_camera());
-
-
 
 	world.update(time_handler.elapsed());
 
+	updateables.update("time"_hash);
+
 	auto elapsed = time_handler.elapsed();
-	//current_fps->value = 1.0f / time_handler.elapsed();
 
 	time_handler.accumulate(0.1f);
 
@@ -98,19 +100,7 @@ auto application::update(void) -> void
 
 auto application::render(void) -> void
 {
-	view_matrix_command->value = world.get_scene_camera().get_view_matrix();
-	cam_pos_command->value = world.get_scene_camera().get_position();
-	//inverse_proj_matrix->value = glm::inverse(world.get_scene_camera().get_projection_matrix());
-	//inverse_view_matrix->value = glm::inverse(world.get_scene_camera().get_view_matrix());
-
-	if (display.user_inputs().got_key(GLFW_KEY_1))
-	{
-		num_marches->value -= 1;
-	}
-	else if (display.user_inputs().got_key(GLFW_KEY_2))
-	{
-		num_marches->value += 1;
-	}
+	updateables.update("pre_render"_hash);
 
 	glDisable(GL_BLEND);
 	render_pipeline.execute_stages(display.pixel_width(), display.pixel_height());
@@ -120,7 +110,7 @@ auto application::render(void) -> void
 
 	guis.render();
 
-	//previous_view_proj->value = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix();
+	updateables.update("post_render"_hash);
 }
 
 auto application::running(void) -> bool
@@ -217,7 +207,7 @@ auto application::init_3D_test(void) -> void
 	sky_material->toggle_lighting();
 	sky_material->get_flush_each_frame() = false;
 
-	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)), materials.get_material_id("material.sky") };
+	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)), materials.get_material_id("material.sky"), transparency{ false, 0, 0 } };
 
 	materials.submit(sky);
 
@@ -319,6 +309,11 @@ auto application::init_shaders(void) -> void
 	glsl_shader ssr_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, ssr_shader, extract_file("src/shaders/post_processing/ssr/fsh.frag"));
 	shaders.combine(ssr_shader, false, ssr_vsh, ssr_fsh);
 
+	shader_handle god_rays_shader("shader.god_rays");
+	glsl_shader god_rays_vsh = shaders.create_shader(GL_VERTEX_SHADER, god_rays_shader, extract_file("src/shaders/post_processing/god_rays/vsh.vert"));
+	glsl_shader god_rays_fsh = shaders.create_shader(GL_FRAGMENT_SHADER, god_rays_shader, extract_file("src/shaders/post_processing/god_rays/fsh.frag"));
+	shaders.combine(god_rays_shader, false, god_rays_vsh, god_rays_fsh);
+
 	shader_handle smooth = models.create_shader_handle(models.get_model("model.platform"));
 	smooth.set_name("shader.smooth");
 	auto smooth_program = shaders.create_program(smooth, "3D");
@@ -382,6 +377,12 @@ auto application::init_textures(void) -> void
 
 	auto * lighting_t = textures.init_texture("texture.lighting");
 	create_color_texture(*lighting_t, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto rays = textures.init_texture("texture.sun_only");
+	create_color_texture(*rays, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
+
+	auto god_rays = textures.init_texture("texture.god_rays");
+	create_color_texture(*god_rays, display.pixel_width(), display.pixel_height(), nullptr, GL_LINEAR);
 }
 
 auto application::init_fonts(void) -> void
@@ -396,8 +397,9 @@ auto application::init_pipeline(void) -> void
 	init_scene_pass();
 	init_light_pass();
 	init_ssr();
+	init_god_ray_pass();
 	//init_deferred_renderer();
-	//init_motion_blur_pass();
+	init_motion_blur_pass();
 	//init_blur_passes();
 	//init_bloom_pass();
 	//init_dof_pass();
@@ -441,7 +443,8 @@ auto application::init_scene_pass(void) -> void
 	first->attach_texture(*textures.get_texture("texture.bright_color"), GL_COLOR_ATTACHMENT1, 0);
 	first->attach_texture(*textures.get_texture("texture.g_buffer.position"), GL_COLOR_ATTACHMENT2, 0);
 	first->attach_texture(*textures.get_texture("texture.g_buffer.normal"), GL_COLOR_ATTACHMENT3, 0);
-	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3);
+	first->attach_texture(*textures.get_texture("texture.sun_only"), GL_COLOR_ATTACHMENT4, 0);
+	first->set_draw_buffers(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4);
 }
 
 auto application::init_blur_passes(void) -> void
@@ -465,7 +468,7 @@ auto application::init_blur_passes(void) -> void
 	render_pipeline.create_render_stage("render_stage.vblur1", info, renderbuffers, textures);
 
 	vblur1_stage->add_texture2D_bind(textures.get_texture("texture.bright_color"));
-	vblur1_stage->add_uniform_command(new uniform_float("target_height", DISPLAY_HEIGHT / BLUR_LEVEL));
+	vblur1_stage->add_uniform_command(new uniform_float("target_height", new value_holder{ DISPLAY_HEIGHT / BLUR_LEVEL }));
 
 
 	auto depth_hblur1 = renderbuffers.add_renderbuffer("renderbuffer.hblur1");
@@ -482,7 +485,8 @@ auto application::init_blur_passes(void) -> void
 	render_pipeline.create_render_stage("render_stage.hblur1", info, renderbuffers, textures);
 
 	hblur1_stage->add_texture2D_bind(TEXTURE2D_BINDING_PREVIOUS_OUTPUT);
-	hblur1_stage->add_uniform_command(new uniform_float("target_width", DISPLAY_WIDTH / BLUR_LEVEL));
+
+	hblur1_stage->add_uniform_command(new uniform_float("target_width", new value_holder{ DISPLAY_WIDTH / BLUR_LEVEL }));
 }
 
 auto application::init_motion_blur_pass(void) -> void
@@ -509,15 +513,34 @@ auto application::init_motion_blur_pass(void) -> void
 	motion_blur->set_active_textures(active_texture_uniform_pair{ "scene_depth", 0 }
 	, active_texture_uniform_pair{ "diffuse", 1 });
 
-	/* need to update these  every frame */
-	inverse_proj_matrix = new uniform_mat4("inverse_proj_matrix", glm::mat4(1.0f));
-	previous_view_proj = new uniform_mat4("previous_view_proj", glm::mat4(1.0f));
-	current_fps = new uniform_float("current_fps", 0.0f);
+	auto inv_proj = updateables.init_updateable("pre_render"_hash, "inv_proj", [this](glm::mat4 & v) -> void {
 
-	motion_blur->add_uniform_command(inverse_proj_matrix
-		, inverse_view_matrix
-		, previous_view_proj
-		, current_fps);
+		v = glm::inverse(world.get_scene_camera().get_projection_matrix());
+
+	}, glm::mat4(1.0f));
+
+	auto inv_view = updateables.init_updateable("pre_render"_hash, "inv_view", [this](glm::mat4 & v) -> void {
+
+		v = glm::inverse(world.get_scene_camera().get_view_matrix());
+
+	}, glm::mat4(1.0f));
+
+	auto fps = updateables.init_updateable("time"_hash, "fps", [this](f32 & v) -> void {
+
+		v = 1.0f / time_handler.elapsed();
+
+	}, 0.0f);
+
+	auto prev_vp = updateables.init_updateable("post_render"_hash, "previous_vp", [this](glm::mat4 & v) -> void {
+	
+		v = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix();
+
+	}, glm::mat4(1.0f));
+
+	motion_blur->add_uniform_command(new uniform_mat4("previous_view_proj", prev_vp)
+		, new uniform_float("current_fps", fps)
+		, new uniform_mat4("inverse_proj_matrix", inv_proj)
+		, new uniform_mat4("inverse_view_matrix", inv_view));
 }
 
 auto application::init_bloom_pass(void) -> void
@@ -581,7 +604,63 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.ssr"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur"));
+}
+
+auto application::init_god_ray_pass(void) -> void
+{
+	u32 display_w = display.pixel_width();
+	u32 display_h = display.pixel_height();
+
+	render_stage_create_info lighting_info;
+	lighting_info.width = display_w;
+	lighting_info.height = display_h;
+	lighting_info.color_name = "texture.god_rays";
+	lighting_info.depth_name = "renderbuffer.god_rays_depth";
+	lighting_info.create_flags = RENDER_STAGE_CREATE_INFO_COLOR_TEXTURE
+		| RENDER_STAGE_CREATE_INFO_DEPTH_RENDERBUFFER;
+
+	auto lighting_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.god_rays", shaders[shader_handle("shader.god_rays")], &guis);
+	render_pipeline.create_render_stage("render_stage.god_rays", lighting_info, renderbuffers, textures);
+
+	lighting_stage->add_texture2D_bind(textures.get_texture("texture.sun_only")
+		, textures.get_texture("texture.ssr"));
+	lighting_stage->set_active_textures(active_texture_uniform_pair{ "sun_only_tex", 0 }
+	, active_texture_uniform_pair{ "diffuse", 1 });
+
+
+	auto sun_id = world.get_game_object_index("game_object.sun");
+
+	auto f = updateables.init_updateable("pre_render"_hash, "light_screen_pos", [this, sun_id](glm::vec2 & v) -> void {
+
+		glm::mat4 view_matrix_no_translation = world.get_scene_camera().get_view_matrix();
+		auto sun_entity = world[sun_id].get_component<component_model_matrix>();
+		glm::mat4 model_matrix_transpose_rotation = sun_entity.get_trs();
+
+		glm::mat3 rotation_part = glm::mat3(view_matrix_no_translation);
+		rotation_part = glm::transpose(rotation_part);
+
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				model_matrix_transpose_rotation[i][j] = rotation_part[i][j];
+			}
+		}
+
+		view_matrix_no_translation[3][0] = 0;
+		view_matrix_no_translation[3][1] = 0;
+		view_matrix_no_translation[3][2] = 0;
+
+		glm::vec4 sun_ndc = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix() * sun_entity.get_trs() * glm::vec4(glm::vec3(0, 0, 0), 1.0);
+
+		sun_ndc /= sun_ndc.w;
+
+		v = glm::vec2(sun_ndc);
+	
+	}, glm::vec2(0.0f));
+
+	lighting_stage->add_uniform_command(new uniform_vec2("light_screen_pos", f));
 }
 
 auto application::init_light_pass(void) -> void
@@ -605,9 +684,6 @@ auto application::init_light_pass(void) -> void
 	lighting_stage->set_active_textures(active_texture_uniform_pair{ "gPosition", 0 }
 		, active_texture_uniform_pair{ "gNormal", 1 }
 	, active_texture_uniform_pair{ "gAlbedo", 2 });
-
-	cam_pos_command = new uniform_vec3("camera_position", world.get_scene_camera().get_position());
-	lighting_stage->add_uniform_command(cam_pos_command);
 }
 
 auto application::init_deferred_renderer(void) -> void
@@ -679,17 +755,7 @@ auto application::init_ssr(void) -> void
 	, active_texture_uniform_pair{ "view_normals", 3 });
 	ssr_stage->add_texture3D_bind(textures.get_texture("texture.sky"));
 
-	uniform_mat4 * projection_command = new uniform_mat4("projection_matrix", world.get_scene_camera().get_projection_matrix());
-	ssr_stage->add_uniform_command(projection_command);
 
-	view_matrix_command = new uniform_mat4("view_matrix", world.get_scene_camera().get_view_matrix());
-	ssr_stage->add_uniform_command(view_matrix_command);
-
-	//ssr_stage->add_uniform_command(cam_pos_command);
-
-	num_marches = new uniform_int("num_marches", 2);
-	ssr_stage->add_uniform_command(num_marches);
-
-	inverse_view_matrix = new uniform_mat4("inverse_view_matrix", glm::mat4(1.0f));
-	ssr_stage->add_uniform_command(inverse_view_matrix);
+	auto scene_camera_buffer = &world.get_scene_camera().get_uniform_block();
+	ssr_stage->add_uniform_command(new uniform_buffer_bind("camera", scene_camera_buffer));
 }

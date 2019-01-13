@@ -2,6 +2,7 @@ layout(location = 0) out vec4 final_color;
 layout(location = 1) out vec4 bright_color;
 layout(location = 2) out vec4 view_positions;
 layout(location = 3) out vec4 normal;
+layout(location = 4) out vec4 sun_only;
 
 in vec3 direction;
 in vec4 view_position;
@@ -31,5 +32,7 @@ void main(void)
 	view_positions = view_position;
 	normal = vec4(0);
 
-	final_color.a = 0;
+	normal = vec4(10);
+
+	sun_only = vec4(0.0, 0.0, 0.1, 1.0);
 }

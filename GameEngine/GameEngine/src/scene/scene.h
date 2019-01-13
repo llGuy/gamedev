@@ -29,6 +29,8 @@ public:
 
 	auto get_game_object(std::string const & name) -> game_object &;
 
+	auto get_game_object_index(std::string const & name) -> u32;
+
 	auto update(f32 td) -> void;
 
 	auto get_scene_camera(void) -> camera &;

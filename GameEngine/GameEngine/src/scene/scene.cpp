@@ -42,6 +42,11 @@ auto scene::init(input_handler & inputs, model_handler & models, material_handle
 	);
 }
 
+auto scene::get_game_object_index(std::string const & name) -> u32
+{
+	return index_map.at(name);
+}
+
 auto scene::load_from_file(void) -> void
 {
 	ENG_MARK("Loading entities");

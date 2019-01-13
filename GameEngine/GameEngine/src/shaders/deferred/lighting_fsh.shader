@@ -31,8 +31,6 @@ layout(std140, row_major) uniform light
 }
 light_info;
 
-uniform vec3 camera_position;
-
 const float PI = 3.14159265359;
 
 float normal_distribution_ggx(vec3 vs_normal, vec3 halfway, float roughness)
@@ -120,7 +118,8 @@ vec4 pbr(void)
 void main(void)
 {
 	vec4 in_color = texture(gAlbedo, fs_in.uvs);
-	if (in_color.a > 0.000001)
+	vec4 in_normal = texture(gNormal, fs_in.uvs);
+	if (in_normal.x < 5)
 	{
 		/*vec4 extra = texture(gExtra, fs_in.uvs);
 

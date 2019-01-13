@@ -5,6 +5,18 @@
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
+template<typename V_Type> struct value_holder
+{
+	using type = V_Type;
+
+	V_Type value;
+
+	value_holder(V_Type const & v)
+		: value(v)
+	{
+	}
+};
+
 struct uniform_command
 {
 	std::string name;
@@ -17,73 +29,87 @@ struct uniform_command
 	virtual auto execute(void) -> void = 0;
 };
 
-struct uniform_vec3 : uniform_command
+template <typename V_Holder> struct uniform_vec3 : uniform_command
 {
-	glm::vec3 value;
+	V_Holder * holder;
 
-	uniform_vec3(std::string const & name, glm::vec3 const & value)
-		: uniform_command(name), value(value)
+	uniform_vec3(std::string const & name, V_Holder * value)
+		: uniform_command(name), holder(value)
 	{
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_vec3(create_hashed_string(name), glm::value_ptr(value), 1);
+		shader->send_uniform_vec3(create_hashed_string(name), glm::value_ptr(holder->value), 1);
 	}
 };
 
-struct uniform_int : uniform_command
+template <typename V_Holder> struct uniform_vec2 : uniform_command
 {
-	i32 value;
+	V_Holder * holder;
 
-	uniform_int(std::string const & name, i32 value)
-		: uniform_command(name), value(value)
+	uniform_vec2(std::string const & name, V_Holder * value)
+		: uniform_command(name), holder(value)
 	{
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_int(create_hashed_string(name), value);
+		shader->send_uniform_vec2(create_hashed_string(name), glm::value_ptr(holder->value), 1);
 	}
 };
 
-struct uniform_float : uniform_command
+template <typename V_Holder> struct uniform_int : uniform_command
 {
-	f32 value;
+	V_Holder * holder;
 
-	uniform_float(std::string const & name, f32 value)
-		: uniform_command(name), value(value)
+	uniform_int(std::string const & name, V_Holder * value)
+		: uniform_command(name), holder(value)
 	{
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_float(create_hashed_string(name), value);
+		shader->send_uniform_int(create_hashed_string(name), holder->value);
 	}
 };
 
-struct uniform_mat4 : uniform_command
+template <typename V_Holder> struct uniform_float : uniform_command
 {
-	glm::mat4 value;
+	V_Holder * holder;
 
-	uniform_mat4(std::string const & name, glm::mat4 const & value)
-		: uniform_command(name), value(value)
+	uniform_float(std::string const & name, V_Holder * value)
+		: uniform_command(name), holder(value)
 	{
 	}
 	auto execute(void) -> void override
 	{
-		shader->send_uniform_mat4(create_hashed_string(name), glm::value_ptr(value), 1);
+		shader->send_uniform_float(create_hashed_string(name), holder->value);
+	}
+};
+
+template <typename V_Holder> struct uniform_mat4 : uniform_command
+{
+	V_Holder * holder;
+
+	uniform_mat4(std::string const & name, V_Holder * value)
+		: uniform_command(name), holder(value)
+	{
+	}
+	auto execute(void) -> void override
+	{
+		shader->send_uniform_mat4(create_hashed_string(name), glm::value_ptr(holder->value), 1);
 	}
 };
 
 struct uniform_buffer_bind : uniform_command
 {
-	uniform_buffer data;
+	uniform_buffer * data;
 
-	uniform_buffer_bind(std::string const & name, u32 index)
-		: uniform_command(name), data(index)
+	uniform_buffer_bind(std::string const & name, uniform_buffer * ubuffer)
+		: uniform_command(name), data(ubuffer)
 	{
 	}
 
 	auto execute(void) -> void override
 	{
-		shader->bind_uniform_block(data, create_hashed_string(name));
+		shader->bind_uniform_block(*data, create_hashed_string(name));
 	}
 };

@@ -58,13 +58,26 @@ struct render_functor : scene_loader_functor
 {
 	auto apply(scene_loader_functor::data_type & data) -> void override
 	{
+#define STR(s) #s
+
 		auto render_node_contents = data.iterator->value();
 
 		std::string model_name = "model." + std::string(data.iterator->value()["model"]);
 		std::string material_name = "material." + std::string(data.iterator->value()["material"]);
 
+		transparency is_transparent{ false, 0, 0 };
+		auto transp_iter = data.iterator->value().find("transparent");
+		if (transp_iter != data.iterator->value().end())
+		{
+			is_transparent.yes = true;
+			std::string s_factor_str = transp_iter.value()["s_factor"];
+			std::string d_factor_str = transp_iter.value()["d_factor"];
+			if (s_factor_str == STR(GL_SRC_ALPHA)) is_transparent.sfactor = GL_SRC_ALPHA;
+			if (d_factor_str == STR(GL_ONE)) is_transparent.dfactor = GL_ONE;
+		}
+
 		component<component_render, game_object_data> render_component(data.models->get_model(model_name)
-			, data.materials->get_material_id(material_name), *data.materials);
+			, data.materials->get_material_id(material_name), *data.materials, is_transparent);
 
 		data.obj->add_component(render_component);
 	}

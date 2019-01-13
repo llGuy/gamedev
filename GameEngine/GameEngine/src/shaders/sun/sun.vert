@@ -3,8 +3,14 @@
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec2 uvs;
 
-uniform mat4 projection_matrix;
-uniform mat4 view_matrix;
+layout(std140) uniform camera
+{
+	vec4 position;
+	mat4 view_matrix;
+	mat4 projection_matrix;
+} 
+camera_info;
+
 uniform mat4 model_matrix;
 
 out VS_DATA {
@@ -13,21 +19,26 @@ out VS_DATA {
 
 void main(void)
 {
-	mat4 view_matrix_no_rotation = view_matrix;
+	mat4 view_matrix_no_translation = camera_info.view_matrix;
+	mat4 model_matrix_transpose_rotation = model_matrix;
 
-	view_matrix_no_rotation[0][0] = 1;
-	view_matrix_no_rotation[0][1] = 0;
-	view_matrix_no_rotation[0][2] = 0;
 
-	view_matrix_no_rotation[1][0] = 0;
-	view_matrix_no_rotation[1][1] = 1;
-	view_matrix_no_rotation[1][2] = 0;
+	mat3 rotation_part = mat3(view_matrix_no_translation);
+	rotation_part = transpose(rotation_part);
 
-	view_matrix_no_rotation[2][0] = 0;
-	view_matrix_no_rotation[2][1] = 0;
-	view_matrix_no_rotation[2][2] = 1;
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			model_matrix_transpose_rotation[i][j] = rotation_part[i][j];
+		}
+	}
 
-	gl_Position = projection_matrix * view_matrix_no_rotation * model_matrix * vec4(vertex_position, 1.0);
+	view_matrix_no_translation[3][0] = 0;
+	view_matrix_no_translation[3][1] = 0;
+	view_matrix_no_translation[3][2] = 0;
+
+	gl_Position = camera_info.projection_matrix * view_matrix_no_translation * model_matrix_transpose_rotation * vec4(vertex_position * 50, 1.0);
 
 	vs_out.uvs = uvs;
 }

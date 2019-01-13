@@ -42,7 +42,7 @@ void main(void)
 
 	vec2 blur_vector = (vertex_out.texture_coords - previous.xy);
 
-	float target_fps = 40;
+	float target_fps = 30;
 	blur_vector = (previous.xy - vertex_out.texture_coords) * (current_fps / target_fps);
 
 	vec4 result = texture(diffuse, vertex_out.texture_coords);

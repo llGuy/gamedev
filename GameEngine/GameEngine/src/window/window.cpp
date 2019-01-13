@@ -31,6 +31,9 @@ window::window(int32_t w, int32_t h, std::string const & t)
 }
 auto window::init(bool full_screen) -> void
 {
+	window_hint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	window_hint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
 	(glfw_window = glfwCreateWindow(width, height, title.c_str(),
 		full_screen ? glfwGetPrimaryMonitor() : nullptr, nullptr));
 

@@ -2,7 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 skeletal_material::skeletal_material(model & renderable, glm::mat4 const & model_matrix, u32 material_type_id)
-	: material::material(renderable, model_matrix, material_type_id), uniform_block(ANIMATION_BLOCK_INDEX)
+	: material::material(renderable, model_matrix, material_type_id, transparency{ false, 0, 0 }), uniform_block(ANIMATION_BLOCK_INDEX)
 {
 }
 

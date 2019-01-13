@@ -9,6 +9,7 @@
 #include "../graphics/shader/shader_handler.h"
 #include "../graphics/texture/texture_handler.h"
 #include "../graphics/2D/gui/font/font_handler.h"
+#include "../data/updateable/updateable_handler.h"
 #include "../graphics/3D/material/material_handler.h"
 #include "../graphics/renderbuffers/renderbuffer_handler.h"
 
@@ -30,13 +31,13 @@ private:
 	texture_handler textures;
 	light_handler lights;
 	gui_handler guis;
+	updateable_handler updateables;
 	material_handler materials;
 	renderbuffer_handler renderbuffers;
 	skeletal_animation_handler animations;
 
 	pipeline render_pipeline;
 
-//	model platform_model;
 	model cube_model;
 	model player_model;
 	
@@ -48,13 +49,6 @@ private:
 		model monkey;
 	} platform;
 
-	uniform_mat4 * inverse_proj_matrix;
-	uniform_mat4 * inverse_view_matrix;
-	uniform_mat4 * previous_view_proj;
-	uniform_float * current_fps;
-	uniform_mat4 * view_matrix_command;
-	uniform_vec3 * cam_pos_command;
-	uniform_int * num_marches;
 public:
 	application(void);
 
@@ -82,6 +76,7 @@ private:
 	auto init_bloom_pass(void) -> void;
 	auto init_motion_blur_pass(void) -> void;
 	auto init_light_pass(void) -> void;
+	auto init_god_ray_pass(void) -> void;
 	auto init_final_pass(void) -> void;
 
 	auto init_deferred_renderer(void) -> void;

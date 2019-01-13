@@ -4,6 +4,7 @@ layout(location = 0) out vec4 final_color;
 layout(location = 1) out vec4 bright_color;
 layout(location = 2) out vec4 view_position;
 layout(location = 3) out vec4 view_normal;
+layout(location = 4) out vec4 sun_only;
 
 uniform sampler2D diffuse_map;
 uniform sampler2D normal_map;
@@ -185,4 +186,6 @@ void main(void)
 	{
 		bright_color = vec4(0);
 	}
+
+	sun_only = vec4(0.0, 0.0, 0.0, 1.0);
 }

@@ -15,11 +15,14 @@ private:
 	material_handler * materials;
 
 	material * mat;
+
+	transparency is_transparent;
 public:
-	component(model & renderable, u32 material_type, material_handler & materials)
+	component(model & renderable, u32 material_type, material_handler & materials, transparency is_transparent)
 		: renderable(renderable)
-		, mat(new material(renderable, glm::mat4(1.0f), material_type))
+		, mat(new material(renderable, glm::mat4(1.0f), material_type, is_transparent))
 		, materials(&materials)
+		, is_transparent(is_transparent)
 	{
 	}
 
@@ -30,6 +33,7 @@ public:
 		auto & model_matrix_component = object.get_component<component_model_matrix>();
 
 		mat->get_transform() = model_matrix_component.get_trs();
+		mat->get_is_transparent() = is_transparent;
 
 		materials->submit(mat);
 	}

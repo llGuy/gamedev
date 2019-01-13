@@ -133,13 +133,19 @@ auto material_prototype::get_light_handler_ptr(void)->light_handler * &
 	return lights;
 }
 
-material::material(model & renderable, glm::mat4 const & transform, u32 material_type_id)
-	: renderable(renderable), transform_matrix(transform), material_type_id(material_type_id)
+material::material(model & renderable, glm::mat4 const & transform, u32 material_type_id, transparency transp)
+	: renderable(renderable), transform_matrix(transform), material_type_id(material_type_id), is_transparent(transp)
 {
 }
 
 auto material::render(glsl_program * shader) -> void
 {
+	if (is_transparent.yes)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(is_transparent.sfactor, is_transparent.dfactor);
+	}
+
 	shader->bind();
 	
 	shader->send_uniform_mat4("model_matrix"_hash, glm::value_ptr(transform_matrix), 1);
@@ -152,4 +158,6 @@ auto material::render(glsl_program * shader) -> void
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();
+
+	if (is_transparent.yes) glDisable(GL_BLEND);
 }

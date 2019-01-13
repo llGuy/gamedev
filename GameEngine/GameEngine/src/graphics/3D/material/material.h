@@ -80,6 +80,13 @@ public:
 };
 
 /* controled probably by an entity (game object) */
+struct transparency
+{
+	bool yes;
+	GLenum sfactor;
+	GLenum dfactor;
+};
+
 class material
 {
 protected:
@@ -90,14 +97,21 @@ protected:
 	glm::mat4 transform_matrix;
 
 	u32 material_type_id;
+
+	transparency is_transparent;
 public:
-	material(model & renderable, glm::mat4 const & transform, u32 material_type_id);
+	material(model & renderable, glm::mat4 const & transform, u32 material_type_id, transparency transp);
 
 	virtual auto render(glsl_program * shader) -> void;
 
 	inline auto get_transform(void) -> glm::mat4 &
 	{
 		return transform_matrix;
+	}
+
+	inline auto get_is_transparent(void) -> transparency &
+	{
+		return is_transparent;
 	}
 };
 

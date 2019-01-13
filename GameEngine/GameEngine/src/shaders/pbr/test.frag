@@ -3,6 +3,7 @@
 layout(location = 0) out vec4 gAlbedo;
 layout(location = 2) out vec4 gPosition;
 layout(location = 3) out vec4 gNormal;
+layout(location = 4) out vec4 sun_only;
 
 uniform vec3 color;
 uniform float roughness;
@@ -22,4 +23,6 @@ void main(void)
 
      gNormal = normalize(fs_in.vs_normal);
 	 gNormal.a = metallic;
+
+	 sun_only = vec4(0.0, 0.0, 0.0, 1.0);
 }
