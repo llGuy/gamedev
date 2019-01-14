@@ -20,9 +20,10 @@ void main(void)
      gAlbedo = vec4(color, roughness);
 
      gPosition = fs_in.vs_position;
+	 gPosition.a = -1;
 
      gNormal = normalize(fs_in.vs_normal);
-	 gNormal.a = metallic;
+	 gNormal.a = 0.8;
 
 	 sun_only = vec4(0.0, 0.0, 0.0, 1.0);
 }

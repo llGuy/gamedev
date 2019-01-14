@@ -509,7 +509,7 @@ auto application::init_motion_blur_pass(void) -> void
 	render_pipeline.create_render_stage("render_stage.motion_blur", info, renderbuffers, textures);
 
 	motion_blur->add_texture2D_bind(textures.get_texture("texture.scene_depth")
-		, textures.get_texture("texture.ssr"));
+		, textures.get_texture("texture.god_rays"));
 	motion_blur->set_active_textures(active_texture_uniform_pair{ "scene_depth", 0 }
 	, active_texture_uniform_pair{ "diffuse", 1 });
 
@@ -628,7 +628,6 @@ auto application::init_god_ray_pass(void) -> void
 	lighting_stage->set_active_textures(active_texture_uniform_pair{ "sun_only_tex", 0 }
 	, active_texture_uniform_pair{ "diffuse", 1 });
 
-
 	auto sun_id = world.get_game_object_index("game_object.sun");
 
 	auto f = updateables.init_updateable("pre_render"_hash, "light_screen_pos", [this, sun_id](glm::vec2 & v) -> void {
@@ -652,11 +651,11 @@ auto application::init_god_ray_pass(void) -> void
 		view_matrix_no_translation[3][1] = 0;
 		view_matrix_no_translation[3][2] = 0;
 
-		glm::vec4 sun_ndc = world.get_scene_camera().get_projection_matrix() * world.get_scene_camera().get_view_matrix() * sun_entity.get_trs() * glm::vec4(glm::vec3(0, 0, 0), 1.0);
+		glm::vec4 sun_ndc = world.get_scene_camera().get_projection_matrix() * view_matrix_no_translation * sun_entity.get_translation() * glm::vec4(glm::vec3(0, 0, 0), 1.0);
 
 		sun_ndc /= sun_ndc.w;
 
-		v = glm::vec2(sun_ndc);
+		v = (glm::vec2(sun_ndc) + glm::vec2(1.0f)) / 2.0f;
 	
 	}, glm::vec2(0.0f));
 

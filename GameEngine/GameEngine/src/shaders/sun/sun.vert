@@ -19,6 +19,12 @@ out VS_DATA {
 
 void main(void)
 {
+	mat4 scale;
+	scale[0][0] = model_matrix[0][0];
+	scale[1][1]	= model_matrix[1][1];
+	scale[2][2]	= model_matrix[2][2];
+	scale[3][3]	= model_matrix[3][3];
+
 	mat4 view_matrix_no_translation = camera_info.view_matrix;
 	mat4 model_matrix_transpose_rotation = model_matrix;
 
@@ -38,7 +44,7 @@ void main(void)
 	view_matrix_no_translation[3][1] = 0;
 	view_matrix_no_translation[3][2] = 0;
 
-	gl_Position = camera_info.projection_matrix * view_matrix_no_translation * model_matrix_transpose_rotation * vec4(vertex_position * 50, 1.0);
+	gl_Position = camera_info.projection_matrix * view_matrix_no_translation * model_matrix_transpose_rotation * scale * vec4(vertex_position, 1.0);
 
 	vs_out.uvs = uvs;
 }

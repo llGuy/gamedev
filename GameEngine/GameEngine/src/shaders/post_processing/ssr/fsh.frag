@@ -148,7 +148,8 @@ vec4 apply_cube_map_reflection(in vec3 vs_eye_vector
 
 void main(void)
 {
-	vec3 view_position = (textureLod(view_positions, vertex_out.texture_coords, 2)).xyz;
+	vec4 position = (textureLod(view_positions, vertex_out.texture_coords, 2));
+	vec3 view_position = vec3(position);
 	vec4 vnormal = (textureLod(view_normals, vertex_out.texture_coords, 2));
 	vec3 view_normal = vnormal.xyz;
 	vec4 pixel_color = texture(diffuse, vertex_out.texture_coords);
@@ -156,7 +157,7 @@ void main(void)
 
 	vec3 original_position = view_position;
 
-	if (view_normal.x < 5.0)
+	if (view_normal.x < 5.0 && position.a > -0.5)
 	{
 		bool hit = false;
 
@@ -172,7 +173,7 @@ void main(void)
 
 		float ddepth;
 		//vec3 world_position = vec3(inverse_view_matrix * vec4(view_position, 1.0));
-		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), pixel_color.a * 0);
+		vec3 jitt = mix(vec3(0.0), vec3(hash33(view_position)), pixel_color.a);
 		vec3 ray_dir = normalize(reflect(normalize(original_position), normalize(view_normal)));
 
 		ray_dir = jitt + ray_dir * max(0.1, -view_position.z);

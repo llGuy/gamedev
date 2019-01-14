@@ -34,5 +34,5 @@ void main(void)
 
 	normal = vec4(10);
 
-	sun_only = vec4(0.0, 0.0, 0.1, 1.0);
+	sun_only = vec4(0.0, 0.0, 0.0, 1.0);
 }
