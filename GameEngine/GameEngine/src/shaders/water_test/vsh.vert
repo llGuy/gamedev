@@ -52,7 +52,7 @@ void main(void)
 
 	vs_out.shadow_coord = shadow_info.shadow_bias * vec4(vs_out.position, 1.0);
 
-	vs_out.uvs = vertex_position.xz * 20;
+	vs_out.uvs = vertex_position.xz * 15;
 
 	vs_out.normal = vec3(camera_info.view_matrix * model_matrix * vec4(vertex_normal, 0.0));
 

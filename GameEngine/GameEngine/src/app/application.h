@@ -38,17 +38,6 @@ private:
 
 	pipeline render_pipeline;
 
-	model cube_model;
-	model player_model;
-	
-	struct
-	{
-		model cube;
-		model sphere;
-		model taurus;
-		model monkey;
-	} platform;
-
 public:
 	application(void);
 

@@ -14,5 +14,9 @@ auto render_stage3D::execute(u32 current_id, std::vector<render_stage *> & stage
 {
 	glEnable(GL_DEPTH_TEST);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	materials->render_all(*scene_camera, *timeh);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

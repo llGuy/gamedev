@@ -6,6 +6,7 @@
 #include "../console/console.h"
 #include "../graphics/3D/model_comp/cube.h"
 #include "../scene/component/model_matrix.h"
+#include "../graphics/3D/model_comp/mesh3D.h"
 #include "../graphics/3D/model_comp/quad3D.h"
 #include "../animation/animation_component.h"
 #include "../animation/animation_key_control_component.h"
@@ -60,6 +61,8 @@ auto application::init(void) -> void
 		is_running = true;
 
 		glEnable(GL_BLEND);
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex( 0xffffffff );
 
 		ENG_MARK("Begin Session");
 	}
@@ -152,7 +155,7 @@ auto application::init_game_objects(void) -> void
 
 auto application::init_animation(void) -> void
 {
-	player_model = models.init_model("model.player");
+	auto & player_model = models.init_model("model.player");
 	std::pair xml_doc = models.load_model_from_dae(player_model, "res/model/model.dae");
 
 	game_object & player = world.get_game_object("game_object.monkey");
@@ -180,12 +183,16 @@ auto application::init_models(void) -> void
 	models.load_from_json();
 
 	cube_model_computation comp;
-	cube_model = models.init_model("model.cube");
+	auto & cube_model = models.init_model("model.cube");
 	models.compute_model(comp, cube_model);
 
 	quad3D_model_computation quad_comp;
-	auto quad_model = models.init_model("model.quad3D");
+	auto & quad_model = models.init_model("model.quad3D");
 	models.compute_model(quad_comp, quad_model);
+
+	mesh3D_model_computation mesh_comp{ 101, 101 };
+	auto & mesh_model = models.init_model("model.mesh");
+	models.compute_model(mesh_comp, mesh_model);
 }
 
 auto application::init_3D_test(void) -> void
@@ -193,7 +200,7 @@ auto application::init_3D_test(void) -> void
 	/* initializing normal 3D renderer */
 	/* just initializing uniform variables */
 	glm::mat4 projection_matrix = glm::perspective(glm::radians(60.0f),
-		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 10000.0f);
+		(f32)display.pixel_width() / display.pixel_height(), 0.1f, 100000000.0f);
 
 	world.get_scene_camera().get_projection_matrix() = projection_matrix;
 
@@ -207,7 +214,8 @@ auto application::init_3D_test(void) -> void
 	sky_material->toggle_lighting();
 	sky_material->get_flush_each_frame() = false;
 
-	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000.0f)), materials.get_material_id("material.sky"), transparency{ false, 0, 0 } };
+	auto & cube_model = models.get_model("model.cube");
+	material * sky = new material{ cube_model, glm::scale(glm::vec3(1000000.0f)), materials.get_material_id("material.sky"), transparency{ false, 0, 0 } };
 
 	materials.submit(sky);
 
@@ -399,7 +407,7 @@ auto application::init_pipeline(void) -> void
 	init_ssr();
 	init_god_ray_pass();
 	//init_deferred_renderer();
-	init_motion_blur_pass();
+	//init_motion_blur_pass();
 	//init_blur_passes();
 	//init_bloom_pass();
 	//init_dof_pass();
@@ -604,7 +612,7 @@ auto application::init_final_pass(void) -> void
 
 	auto final_stage = render_pipeline.add_render_stage<render_stage2D>("render_stage.final", nullptr, &guis);
 	final_stage->set_to_default(display_w, display_h);
-	final_stage->add_texture2D_bind(textures.get_texture("texture.motion_blur"));
+	final_stage->add_texture2D_bind(textures.get_texture("texture.god_rays"));
 }
 
 auto application::init_god_ray_pass(void) -> void

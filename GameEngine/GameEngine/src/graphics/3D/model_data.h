@@ -8,4 +8,6 @@ struct model_data
 {
 	vertex_layout vao;
 	u32 count; 
+
+	GLenum mode{ GL_TRIANGLES };
 };

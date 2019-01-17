@@ -154,7 +154,7 @@ auto material::render(glsl_program * shader) -> void
 	auto & indices = renderable.get_component<index_buffer_component>();
 	indices->value.bind(GL_ELEMENT_ARRAY_BUFFER);
 
-	glDrawElements(GL_TRIANGLES, renderable->count, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(renderable->mode, renderable->count, GL_UNSIGNED_INT, nullptr);
 
 	unbind_buffers(GL_ELEMENT_ARRAY_BUFFER);
 	unbind_vertex_layouts();

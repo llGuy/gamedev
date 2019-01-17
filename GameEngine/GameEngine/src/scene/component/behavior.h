@@ -30,6 +30,11 @@ struct key_bind
 template <> struct component<struct component_behavior_key, game_object_data> : component_base
 {
 private:
+	static constexpr f32 max_speed = 20.0f;
+	static constexpr f32 accelerate = max_speed + 20.0f;
+
+	f32 current_speed;
+
 	key_bind keys_affected;
 
 	input_handler * input;
@@ -39,7 +44,15 @@ public:
 	component(key_bind const & keys, input_handler & inputs)
 		: keys_affected(keys)
 		, input(&inputs)
+		, current_speed(10.0f)
 	{
+	}
+
+	auto accumulate_velocity(f32 td, glm::vec3 const & dir, glm::vec3 & dest) -> void
+	{
+		++movements;
+
+		dest += dir;
 	}
 
 	auto update(f32 td, vec_dd<game_object> & objects) -> void override
@@ -55,23 +68,24 @@ public:
 		if (input->got_key(keys_affected.right)) accumulate_velocity(td, glm::cross(lateral_dir, detail::up), result);
 		if (input->got_key(keys_affected.up)) accumulate_velocity(td, detail::up, result);
 		if (input->got_key(keys_affected.down)) accumulate_velocity(td, -detail::up, result);
-		if (input->got_key(GLFW_KEY_R)) result *= 4.0f;
+		if (input->got_key(GLFW_KEY_E)) result /= 10.0f;
+		if (input->got_key(GLFW_KEY_R)) result *= 20.0f;
 
 		if (movements > 0)
 		{
-			result = result * 15.0f * td;
+			if (current_speed < max_speed - 0.001) current_speed += accelerate * td;
+			else current_speed = max_speed;
+
+			result = result * current_speed * td;
 
 			object->position += result;
 		}
+		else
+		{
+			current_speed = 10.0f;
+		}
 
 		movements = 0;
-	}
-
-	auto accumulate_velocity(f32 td, glm::vec3 const & dir, glm::vec3 & dest) -> void
-	{
-		++movements;
-
-		dest += dir;
 	}
 };
 
